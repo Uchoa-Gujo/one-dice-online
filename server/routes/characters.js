@@ -7,7 +7,7 @@ router.use(authRequired);
 
 router.get('/', async (req, res) => {
   const result = await query(
-    'select id, name, data, created_at, updated_at from characters where owner_id = $1 order by updated_at desc',
+    'select id, owner_id, name, data, created_at, updated_at from characters where owner_id = $1 order by updated_at desc',
     [req.user.id]
   );
   res.json({ characters: result.rows });

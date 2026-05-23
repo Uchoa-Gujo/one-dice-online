@@ -3483,3 +3483,51 @@ body.dark-sheet .campaign-mini-card {
     width: min(250px, calc(100vw - 30px));
   }
 }
+
+/* =========================
+   V42 - Ajustes leves para celular
+========================= */
+@media (max-width: 860px) {
+  body { overflow-x: hidden; }
+  .auth-card { width: min(94vw, 520px); padding: 18px; }
+  .app-layout, .main-grid, .content-grid, .sheet-layout, .table-experience-grid, .master-dashboard-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .topbar, .main-topbar, .sheet-header, .session-header, .campaign-card, .campaign-main {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+  .topbar-actions, .sheet-tabs, .tab-bar, .campaign-actions, .account-character-actions {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+  .sheet-tabs button, .tab-bar button, .primary-btn, .ghost-btn, .danger-btn {
+    min-height: 42px;
+  }
+  .status-grid, .attributes-grid, .resistances-grid, .simple-inventory-grid, .spell-grid, .ability-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .character-pill, .session-character, .account-character-card, .public-character-card, .master-character-card {
+    width: 100% !important;
+  }
+  .chat-panel, .right-panel, .sidebar, .sheet-sidebar {
+    position: static !important;
+    width: 100% !important;
+    max-height: none !important;
+  }
+  input, textarea, select, button { font-size: 16px; }
+  dialog { width: min(94vw, 560px); }
+  .block-inventory-integrated, .block-inventory-shell { overflow-x: auto; }
+}
+
+@media (max-width: 520px) {
+  .logo-panel img, .brand-logo, .auth-logo { max-width: 220px; }
+  .auth-card h1, .section-title, .sheet-title { font-size: 1.45rem !important; }
+  .campaign-card, .account-character-card, .panel, .sheet-card { padding: 12px !important; }
+  .status-card input { max-width: 100%; }
+  .sheet-tabs button { flex: 1 1 42%; }
+  .simple-inventory-card { min-width: 0; }
+  .master-dashboard-card, .public-character-card { grid-template-columns: 56px 1fr !important; }
+}

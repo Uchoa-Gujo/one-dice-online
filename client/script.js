@@ -2527,3 +2527,400 @@ document.addEventListener("input", event => {
 });
 
 setTimeout(() => { renderTransformations(currentChar()); v39RenderCommercePanel(); }, 100);
+
+/* =========================
+   V42 - Online real: login, fichas e mesas via servidor
+========================= */
+const OD42_SESSION_KEY = "od_online_session_v42";
+let od42SaveTimer = null;
+let od42Booted = false;
+
+function od42SessionRaw() {
+  return sessionStorage.getItem(OD42_SESSION_KEY) || localStorage.getItem(OD42_SESSION_KEY) || null;
+}
+function od42GetSession() {
+  try { return JSON.parse(od42SessionRaw() || "null"); } catch (_) { return null; }
+}
+function od42SetSession(payload) {
+  const remember = document.getElementById("remember-login")?.checked !== false;
+  const value = JSON.stringify(payload || null);
+  if (remember) {
+    localStorage.setItem(OD42_SESSION_KEY, value);
+    sessionStorage.removeItem(OD42_SESSION_KEY);
+  } else {
+    sessionStorage.setItem(OD42_SESSION_KEY, value);
+    localStorage.removeItem(OD42_SESSION_KEY);
+  }
+}
+function od42ClearSession() {
+  localStorage.removeItem(OD42_SESSION_KEY);
+  sessionStorage.removeItem(OD42_SESSION_KEY);
+  clearSessionValue();
+}
+function od42Token() { return od42GetSession()?.token || ""; }
+function od42Headers(extra = {}) {
+  const headers = { ...extra };
+  if (od42Token()) headers.Authorization = `Bearer ${od42Token()}`;
+  return headers;
+}
+async function od42Api(path, options = {}) {
+  const response = await fetch(path, {
+    ...options,
+    headers: od42Headers({ "Content-Type": "application/json", ...(options.headers || {}) })
+  });
+  let data = null;
+  try { data = await response.json(); } catch (_) { data = {}; }
+  if (!response.ok) throw new Error(data?.error || `Erro HTTP ${response.status}`);
+  return data;
+}
+function od42User(apiUser) {
+  if (!apiUser) return null;
+  return {
+    id: apiUser.id,
+    nick: apiUser.nick,
+    realName: apiUser.real_name || apiUser.realName || apiUser.name || apiUser.nick,
+    name: apiUser.real_name || apiUser.realName || apiUser.name || apiUser.nick
+  };
+}
+function od42RoleFromApi(role) {
+  if (role === "master") return "mestre";
+  if (role === "player") return "jogador";
+  if (role === "master_player") return "mestre_jogador";
+  return role || "jogador";
+}
+function od42RoleToApi(role) {
+  if (role === "mestre") return "master";
+  if (role === "jogador") return "player";
+  if (role === "mestre_jogador") return "master_player";
+  return role;
+}
+function od42CharacterFromRow(row) {
+  const data = row?.data || row?.character_data || {};
+  const char = { ...createCharacter(row?.owner_id || row?.user_id || currentUser?.id, row?.name || row?.character_name || data.name || "Ficha"), ...data };
+  char.id = row?.id || row?.character_id || data.id;
+  char.ownerId = row?.owner_id || row?.user_id || data.ownerId || currentUser?.id;
+  char.name = row?.name || row?.character_name || data.name || char.name;
+  char.skills = char.skills || createCharacter(char.ownerId, char.name).skills;
+  char.resistances = char.resistances || createCharacter(char.ownerId, char.name).resistances;
+  char.inventoryItems = Array.isArray(char.inventoryItems) ? char.inventoryItems : [];
+  char.spells = Array.isArray(char.spells) ? char.spells : [];
+  char.abilities = Array.isArray(char.abilities) ? char.abilities : [];
+  char.attacks = Array.isArray(char.attacks) ? char.attacks : [];
+  return char;
+}
+function od42TableFromRow(row) {
+  return {
+    id: row.id,
+    name: row.name,
+    code: row.invite_code || row.code,
+    ownerId: row.owner_id || row.ownerId,
+    createdAt: row.created_at || row.createdAt,
+    updatedAt: row.updated_at || row.updatedAt,
+    settings: row.settings || {}
+  };
+}
+function od42MemberFromRow(row) {
+  return {
+    id: row.id,
+    campaignId: row.table_id || row.campaignId || row.id,
+    userId: row.user_id || row.userId,
+    role: od42RoleFromApi(row.role),
+    characterId: row.character_id || row.characterId || null
+  };
+}
+function od42MergeById(storageKey, items) {
+  const current = get(storageKey, []);
+  const byId = new Map(current.map(item => [item.id, item]));
+  items.filter(Boolean).forEach(item => byId.set(item.id, { ...(byId.get(item.id) || {}), ...item }));
+  set(storageKey, [...byId.values()]);
+}
+async function od42RefreshOwnCharacters() {
+  const data = await od42Api('/api/characters');
+  const owned = (data.characters || []).map(od42CharacterFromRow).filter(c => c.id);
+  const others = get(STORAGE.characters, []).filter(c => c.ownerId !== currentUser?.id);
+  set(STORAGE.characters, [...others, ...owned]);
+  return owned;
+}
+async function od42RefreshTables() {
+  const data = await od42Api('/api/tables');
+  const tables = (data.tables || []).map(od42TableFromRow).filter(t => t.id);
+  const members = (data.tables || []).map(row => ({
+    id: `${row.id}_${currentUser.id}`,
+    campaignId: row.id,
+    userId: currentUser.id,
+    role: od42RoleFromApi(row.role),
+    characterId: row.character_id || null
+  }));
+  setCampaigns(tables);
+  setMembers(members);
+  od42MergeById(STORAGE.users, [currentUser]);
+  return { tables, members };
+}
+async function od42LoadTableState(tableId) {
+  const data = await od42Api(`/api/tables/${tableId}/state`);
+  const table = od42TableFromRow(data.table);
+  const members = (data.members || []).map(od42MemberFromRow);
+  const users = (data.members || []).map(row => od42User({ id: row.user_id, nick: row.nick, real_name: row.real_name })).filter(Boolean);
+  const chars = (data.members || [])
+    .filter(row => row.character_id && row.character_data)
+    .map(row => od42CharacterFromRow({ id: row.character_id, owner_id: row.user_id, name: row.character_name, data: row.character_data }));
+
+  const tables = getCampaigns().filter(c => c.id !== table.id);
+  setCampaigns([table, ...tables]);
+  const allMembers = getMembers().filter(m => m.campaignId !== table.id);
+  setMembers([...allMembers, ...members]);
+  od42MergeById(STORAGE.users, users);
+  od42MergeById(STORAGE.characters, chars);
+  return { table, members, users, chars };
+}
+async function od42Login(nick, password) {
+  const data = await od42Api('/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ nick: normalizeNick(nick), password: String(password || '').trim() })
+  });
+  currentUser = od42User(data.user);
+  od42SetSession({ token: data.token, user: currentUser });
+  setSessionValue(currentUser.id);
+  od42MergeById(STORAGE.users, [currentUser]);
+  await od42RefreshOwnCharacters();
+  await od42RefreshTables();
+  showSessions();
+}
+async function od42Register() {
+  const nick = normalizeNick(byId("register-nick")?.value);
+  const realName = byId("register-real-name")?.value?.trim();
+  const password = byId("register-password")?.value?.trim();
+  const passwordConfirm = byId("register-password-confirm")?.value?.trim();
+  if (!nick) return alert("Digite um nick/login.");
+  if (!realName) return alert("Digite seu nome real.");
+  if (!validSixDigitPassword(password)) return alert("A senha precisa ter exatamente 6 dígitos numéricos.");
+  if (password !== passwordConfirm) return alert("As senhas não conferem.");
+  const data = await od42Api('/api/auth/register', {
+    method: 'POST',
+    body: JSON.stringify({ nick, realName, password })
+  });
+  currentUser = od42User(data.user);
+  od42SetSession({ token: data.token, user: currentUser });
+  setSessionValue(currentUser.id);
+  od42MergeById(STORAGE.users, [currentUser]);
+  await od42RefreshOwnCharacters();
+  await od42RefreshTables();
+  showSessions();
+}
+async function od42CreateCharacter(name = "Novo Personagem") {
+  const base = createCharacter(currentUser.id, name);
+  const data = await od42Api('/api/characters', {
+    method: 'POST',
+    body: JSON.stringify({ name: base.name, data: base })
+  });
+  const char = od42CharacterFromRow(data.character);
+  od42MergeById(STORAGE.characters, [char]);
+  return char;
+}
+function od42ScheduleCharacterSave(char) {
+  if (!char || char.ownerId !== currentUser?.id) return;
+  clearTimeout(od42SaveTimer);
+  od42SaveTimer = setTimeout(async () => {
+    try {
+      await od42Api(`/api/characters/${char.id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ name: char.name || 'Ficha', data: char })
+      });
+    } catch (error) {
+      console.warn('Falha ao salvar ficha online:', error);
+    }
+  }, 450);
+}
+
+// overrides principais
+login = function(nick, password) {
+  od42Login(nick, password).catch(error => alert(error.message || 'Erro ao entrar.'));
+};
+
+const od42OriginalSaveCurrentCharacter = saveCurrentCharacter;
+saveCurrentCharacter = function() {
+  od42OriginalSaveCurrentCharacter();
+  const char = currentChar();
+  od42ScheduleCharacterSave(char);
+};
+
+createAccountCharacter = function(openAfterCreate = true) {
+  od42CreateCharacter("Novo Personagem").then(char => {
+    currentCharacterId = char.id;
+    renderAccountCharacterMenu();
+    if (openAfterCreate) initAccountCharacterEditor(char.id);
+  }).catch(error => alert(error.message || 'Erro ao criar ficha.'));
+};
+
+duplicateAccountCharacter = function(id) {
+  const original = get(STORAGE.characters, []).find(c => c.id === id && c.ownerId === currentUser?.id);
+  if (!original) return;
+  const copy = structuredClone(original);
+  copy.id = undefined;
+  copy.name = `${original.name} Cópia`;
+  copy.ownerId = currentUser.id;
+  od42Api('/api/characters', { method: 'POST', body: JSON.stringify({ name: copy.name, data: copy }) })
+    .then(data => {
+      od42MergeById(STORAGE.characters, [od42CharacterFromRow(data.character)]);
+      renderAccountCharacterMenu();
+    })
+    .catch(error => alert(error.message || 'Erro ao duplicar ficha.'));
+};
+
+deleteAccountCharacter = function(id) {
+  const char = get(STORAGE.characters, []).find(c => c.id === id && c.ownerId === currentUser?.id);
+  if (!char) return;
+  if (!confirm(`Apagar a ficha "${char.name}"?`)) return;
+  od42Api(`/api/characters/${id}`, { method: 'DELETE' })
+    .then(async () => {
+      set(STORAGE.characters, get(STORAGE.characters, []).filter(c => c.id !== id));
+      setMembers(getMembers().map(m => m.characterId === id ? { ...m, characterId: null } : m));
+      if (currentCharacterId === id) currentCharacterId = null;
+      await od42RefreshTables();
+      renderAccountCharacterMenu();
+      renderCampaignMenu();
+    })
+    .catch(error => alert(error.message || 'Erro ao apagar ficha.'));
+};
+
+createCampaign = async function() {
+  try {
+    const name = byId("new-campaign-name")?.value?.trim() || "Nova Mesa";
+    const data = await od42Api('/api/tables', { method: 'POST', body: JSON.stringify({ name }) });
+    const table = od42TableFromRow(data.table);
+    byId("new-campaign-name").value = "";
+    await od42RefreshTables();
+    renderCampaignMenu();
+    alert(`Mesa criada! Código de convite: ${table.code}`);
+  } catch (error) {
+    alert(error.message || 'Erro ao criar mesa.');
+  }
+};
+
+joinCampaignByCode = async function() {
+  try {
+    const code = (byId("join-campaign-code")?.value || "").trim().toUpperCase();
+    if (code.length !== 5) return alert("Digite um código de 5 letras.");
+    const data = await od42Api('/api/tables/join', { method: 'POST', body: JSON.stringify({ code }) });
+    const table = od42TableFromRow(data.table);
+    byId("join-campaign-code").value = "";
+    await od42RefreshTables();
+    await od42LoadTableState(table.id);
+    renderCampaignMenu();
+    openChooseCharacterModal(table.id);
+  } catch (error) {
+    alert(error.message || 'Erro ao entrar na mesa.');
+  }
+};
+
+attachCharacterToCampaign = async function(campaignId, characterId) {
+  try {
+    await od42Api(`/api/tables/${campaignId}/member`, { method: 'PUT', body: JSON.stringify({ characterId }) });
+    await od42RefreshTables();
+    await od42LoadTableState(campaignId);
+    byId("choose-character-modal")?.close();
+    renderCampaignMenu();
+    if (currentCampaignId === campaignId) initApp(campaignId);
+  } catch (error) {
+    alert(error.message || 'Erro ao vincular ficha.');
+  }
+};
+
+createCharacterForCampaign = async function() {
+  try {
+    const char = await od42CreateCharacter("Novo Personagem");
+    await attachCharacterToCampaign(pendingChooseCampaignId, char.id);
+  } catch (error) {
+    alert(error.message || 'Erro ao criar ficha.');
+  }
+};
+
+enterCampaign = async function(campaignId) {
+  try {
+    await od42RefreshOwnCharacters();
+    await od42RefreshTables();
+    await od42LoadTableState(campaignId);
+    const member = getMembers().find(m => m.campaignId === campaignId && m.userId === currentUser.id);
+    if (!member) return alert("Você não faz parte desta mesa.");
+    currentCampaignId = campaignId;
+    set(STORAGE.activeCampaign, campaignId);
+    initApp(campaignId);
+  } catch (error) {
+    alert(error.message || 'Erro ao abrir mesa.');
+  }
+};
+
+deleteCampaign = async function(campaignId) {
+  const campaign = getCampaigns().find(c => c.id === campaignId);
+  if (!campaign) return;
+  if (campaign.ownerId !== currentUser.id) return alert("Apenas o criador da mesa pode excluir esta mesa.");
+  if (!confirm(`Excluir a mesa "${campaign.name}"?`)) return;
+  try {
+    await od42Api(`/api/tables/${campaignId}`, { method: 'DELETE' });
+    await od42RefreshTables();
+    if (currentCampaignId === campaignId) currentCampaignId = null;
+    renderCampaignMenu();
+  } catch (error) {
+    alert(error.message || 'Erro ao excluir mesa.');
+  }
+};
+
+leaveCampaign = async function(campaignId) {
+  const campaign = getCampaigns().find(c => c.id === campaignId);
+  if (!campaign) return;
+  if (campaign.ownerId === currentUser.id) return deleteCampaign(campaignId);
+  if (!confirm(`Sair da mesa "${campaign.name}"?`)) return;
+  try {
+    await od42Api(`/api/tables/${campaignId}/leave`, { method: 'DELETE' });
+    await od42RefreshTables();
+    if (currentCampaignId === campaignId) currentCampaignId = null;
+    renderCampaignMenu();
+  } catch (error) {
+    alert(error.message || 'Erro ao sair da mesa.');
+  }
+};
+
+function od42WireForms() {
+  const loginForm = byId("login-form");
+  if (loginForm) loginForm.onsubmit = e => { e.preventDefault(); login(byId("login-nick").value, byId("login-password").value); };
+  const registerForm = byId("register-form");
+  if (registerForm) registerForm.onsubmit = e => { e.preventDefault(); od42Register().catch(error => alert(error.message || 'Erro ao criar conta.')); };
+  const sessionsLogout = byId("sessions-logout");
+  if (sessionsLogout) sessionsLogout.onclick = () => { od42ClearSession(); currentUser = null; showAuth(); };
+  const createBtn = byId("create-campaign-btn");
+  if (createBtn) createBtn.onclick = event => { event.preventDefault(); createCampaign(); };
+  const joinBtn = byId("join-campaign-btn");
+  if (joinBtn) joinBtn.onclick = event => { event.preventDefault(); joinCampaignByCode(); };
+}
+
+async function od42Boot() {
+  if (od42Booted) return;
+  od42Booted = true;
+  od42WireForms();
+  const session = od42GetSession();
+  if (!session?.token) return;
+  try {
+    const data = await od42Api('/api/auth/me');
+    currentUser = od42User(data.user);
+    od42SetSession({ token: session.token, user: currentUser });
+    setSessionValue(currentUser.id);
+    od42MergeById(STORAGE.users, [currentUser]);
+    await od42RefreshOwnCharacters();
+    await od42RefreshTables();
+    const active = get(STORAGE.activeCampaign, null);
+    if (active && getMembers().some(m => m.campaignId === active && m.userId === currentUser.id)) {
+      await enterCampaign(active);
+    } else {
+      showSessions();
+    }
+  } catch (error) {
+    console.warn('Sessão online inválida:', error);
+    od42ClearSession();
+    showAuth();
+  }
+}
+
+setTimeout(() => {
+  od42WireForms();
+  od42Boot();
+}, 50);
