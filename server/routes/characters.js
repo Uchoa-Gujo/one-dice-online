@@ -32,12 +32,23 @@ router.put('/:id', async (req, res) => {
     [name, data, id, req.user.id]
   );
   if (!result.rowCount) return res.status(404).json({ error: 'Ficha não encontrada.' });
-  res.json({ character: result.rows[0] });
+  const character = result.rows[0];
+  const io = req.app.get('io');
+  if (io) {
+    const links = await query('select table_id from table_members where character_id = $1', [id]);
+    links.rows.forEach(row => io.to(`table:${row.table_id}`).emit('character:updated', { tableId: row.table_id, character }));
+  }
+  res.json({ character });
 });
 
 router.delete('/:id', async (req, res) => {
   const result = await query('delete from characters where id = $1 and owner_id = $2 returning id', [req.params.id, req.user.id]);
   if (!result.rowCount) return res.status(404).json({ error: 'Ficha não encontrada.' });
+  const io = req.app.get('io');
+  if (io) {
+    const links = await query('select table_id from table_members where character_id = $1', [req.params.id]);
+    links.rows.forEach(row => io.to(`table:${row.table_id}`).emit('character:deleted', { tableId: row.table_id, characterId: req.params.id }));
+  }
   res.json({ ok: true });
 });
 

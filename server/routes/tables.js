@@ -21,6 +21,38 @@ async function uniqueInviteCode() {
   throw new Error('Não foi possível gerar código de convite.');
 }
 
+
+
+async function memberFor(tableId, userId) {
+  const result = await query('select * from table_members where table_id = $1 and user_id = $2', [tableId, userId]);
+  return result.rows[0] || null;
+}
+
+function isMasterRole(role) {
+  return role === 'master' || role === 'master_player' || role === 'mestre' || role === 'mestre_jogador';
+}
+
+function emitTable(req, tableId, eventName, payload = {}) {
+  const io = req.app.get('io');
+  if (io) io.to(`table:${tableId}`).emit(eventName, { tableId, ...payload });
+}
+
+async function requireTableMember(req, res, next) {
+  const tableId = req.params.id;
+  const member = await memberFor(tableId, req.user.id);
+  if (!member) return res.status(403).json({ error: 'Você não faz parte desta mesa.' });
+  req.tableMember = member;
+  next();
+}
+
+async function requireTableMaster(req, res, next) {
+  const tableId = req.params.id;
+  const member = await memberFor(tableId, req.user.id);
+  if (!member || !isMasterRole(member.role)) return res.status(403).json({ error: 'Apenas o mestre pode fazer isso.' });
+  req.tableMember = member;
+  next();
+}
+
 function apiRole(role) {
   if (role === 'mestre') return 'master';
   if (role === 'jogador') return 'player';
@@ -56,6 +88,7 @@ router.post('/', async (req, res) => {
     [table.id, req.user.id]
   );
 
+  emitTable(req, table.id, 'table:updated', { reason: 'created' });
   res.json({ table });
 });
 
@@ -86,6 +119,7 @@ router.post('/join', async (req, res) => {
                   updated_at = now()
   `, [table.id, req.user.id, wantedRole, characterId]);
 
+  emitTable(req, table.id, 'member:updated', { reason: 'join' });
   res.json({ table, role: wantedRole });
 });
 
@@ -135,7 +169,86 @@ router.put('/:id/member', async (req, res) => {
     returning *
   `, [characterId, role, tableId, req.user.id]);
 
+  emitTable(req, tableId, 'member:updated', { reason: 'character-linked', member: updated.rows[0] });
   res.json({ member: updated.rows[0] });
+});
+
+
+
+router.get('/:id/messages', requireTableMember, async (req, res) => {
+  const tableId = req.params.id;
+  const result = await query(`
+    select cm.*, u.nick, u.real_name, c.name as character_name
+    from chat_messages cm
+    left join users u on u.id = cm.user_id
+    left join characters c on c.id = cm.character_id
+    where cm.table_id = $1
+    order by cm.created_at asc
+    limit 250
+  `, [tableId]);
+  res.json({ messages: result.rows });
+});
+
+router.post('/:id/messages', requireTableMember, async (req, res) => {
+  const tableId = req.params.id;
+  const channel = ['conversation', 'rolls', 'system'].includes(req.body.channel) ? req.body.channel : 'conversation';
+  const message = String(req.body.message || '').trim().slice(0, 2000);
+  const characterId = req.body.characterId || null;
+  if (!message) return res.status(400).json({ error: 'Mensagem vazia.' });
+
+  const created = await query(`
+    insert into chat_messages (table_id, user_id, character_id, channel, message, payload)
+    values ($1, $2, $3, $4, $5, $6)
+    returning *
+  `, [tableId, req.user.id, characterId, channel, message, req.body.payload || {}]);
+
+  const msg = created.rows[0];
+  emitTable(req, tableId, 'message:created', { message: msg });
+  res.json({ message: msg });
+});
+
+router.get('/:id/initiative', requireTableMember, async (req, res) => {
+  const tableId = req.params.id;
+  const result = await query('select settings from tables where id = $1', [tableId]);
+  if (!result.rowCount) return res.status(404).json({ error: 'Mesa não encontrada.' });
+  const initiative = result.rows[0].settings?.initiative || { active: false, round: 1, entries: [] };
+  res.json({ initiative });
+});
+
+router.put('/:id/initiative', requireTableMember, async (req, res) => {
+  const tableId = req.params.id;
+  const initiative = req.body.initiative || { active: false, round: 1, entries: [] };
+  initiative.active = !!initiative.active;
+  initiative.round = Number(initiative.round || 1);
+  initiative.entries = Array.isArray(initiative.entries) ? initiative.entries.slice(0, 100) : [];
+
+  const result = await query(`
+    update tables
+    set settings = jsonb_set(coalesce(settings, '{}'::jsonb), '{initiative}', $1::jsonb, true), updated_at = now()
+    where id = $2
+    returning settings
+  `, [JSON.stringify(initiative), tableId]);
+  const saved = result.rows[0]?.settings?.initiative || initiative;
+  emitTable(req, tableId, 'initiative:updated', { initiative: saved });
+  res.json({ initiative: saved });
+});
+
+router.put('/:id/characters/:characterId', requireTableMaster, async (req, res) => {
+  const tableId = req.params.id;
+  const characterId = req.params.characterId;
+  const linked = await query('select id from table_members where table_id = $1 and character_id = $2', [tableId, characterId]);
+  if (!linked.rowCount) return res.status(404).json({ error: 'Ficha não está vinculada a esta mesa.' });
+
+  const name = String(req.body.name || req.body.data?.name || 'Ficha').trim().slice(0, 120) || 'Ficha';
+  const data = req.body.data || {};
+  const result = await query(
+    'update characters set name = $1, data = $2, updated_at = now() where id = $3 returning *',
+    [name, data, characterId]
+  );
+  if (!result.rowCount) return res.status(404).json({ error: 'Ficha não encontrada.' });
+  const character = result.rows[0];
+  emitTable(req, tableId, 'character:updated', { character });
+  res.json({ character });
 });
 
 router.delete('/:id/leave', async (req, res) => {
@@ -146,12 +259,14 @@ router.delete('/:id/leave', async (req, res) => {
     return res.status(400).json({ error: 'O dono deve excluir a mesa em vez de sair.' });
   }
   await query('delete from table_members where table_id = $1 and user_id = $2', [tableId, req.user.id]);
+  emitTable(req, tableId, 'member:updated', { reason: 'leave' });
   res.json({ ok: true });
 });
 
 router.delete('/:id', async (req, res) => {
   const result = await query('delete from tables where id = $1 and owner_id = $2 returning id', [req.params.id, req.user.id]);
   if (!result.rowCount) return res.status(403).json({ error: 'Somente o dono pode excluir a mesa.' });
+  emitTable(req, req.params.id, 'table:deleted', { reason: 'deleted' });
   res.json({ ok: true });
 });
 

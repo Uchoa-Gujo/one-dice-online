@@ -44,12 +44,6 @@
         <input id="register-password-confirm" type="password" placeholder="repita os 6 dígitos" inputmode="numeric" maxlength="6" autocomplete="new-password" required />
         <button type="submit" class="primary-btn">Criar Conta</button>
       </form>
-
-      <div class="demo-box">
-        <strong>Demo rápida:</strong>
-        <span>Nick: mestre</span>
-        <span>Senha: 123456</span>
-      </div>
     </div>
   </section>
 
@@ -123,6 +117,8 @@
   <section id="app-screen" class="screen">
     <header id="main-topbar" class="topbar collapsed">
       <button id="topbar-menu-toggle" class="topbar-menu-toggle" type="button" title="Abrir menu">☰</button>
+      <button id="master-dashboard-dock-btn" class="master-dashboard-dock-btn hidden" type="button" title="Voltar ao painel do mestre">▣</button>
+      <button id="sidebar-dock-btn" class="sidebar-dock-btn hidden" type="button" title="Mostrar jogadores">👥</button>
       <div id="campaign-mini-card" class="campaign-mini-card hidden"></div>
 
       <div class="topbar-content">
@@ -137,7 +133,6 @@
         <nav class="top-actions">
           <button id="back-to-sessions-btn" class="ghost-btn" type="button">Mesas</button>
           <button id="campaign-character-btn" class="ghost-btn" type="button">Minha Ficha na Mesa</button>
-          <button id="new-character-btn" class="ghost-btn topbar-create-sheet-hidden" type="button">+ Nova Ficha</button>
           <button id="theme-toggle" class="ghost-btn">Tema Escuro</button>
           <select id="accent-select" class="accent-select" title="Cor principal">
             <option value="black">Preto</option>
@@ -160,8 +155,11 @@
     </header>
 
     <main class="app-grid">
-      <aside class="sidebar manga-panel reveal">
-        <h2 id="sidebar-title">Mesa</h2>
+      <aside id="players-sidebar" class="sidebar manga-panel reveal">
+        <div class="sidebar-title-row">
+          <h2 id="sidebar-title">Mesa</h2>
+          <button id="sidebar-toggle-btn" class="sidebar-toggle-btn" type="button" title="Minimizar jogadores">—</button>
+        </div>
         <div id="campaign-info" class="campaign-info-box"></div>
         <div id="character-list" class="character-list"></div>
       </aside>
@@ -205,7 +203,11 @@
 
       <section class="sheet-area reveal">
         <div class="sheet manga-panel">
-          <div class="sheet-header">
+          <button id="mobile-identity-toggle" class="mobile-identity-toggle" type="button">
+            <span>Identidade do Personagem</span>
+            <strong>+</strong>
+          </button>
+          <div class="sheet-header" id="mobile-identity-panel">
             <div class="portrait-wrap">
               <button id="portrait-button" class="portrait-button" title="Clique para trocar o retrato" type="button">
                 <img id="char-portrait-preview" src="" alt="Retrato" />
@@ -676,8 +678,8 @@
           <div id="last-roll" class="last-roll">—</div>
         </section>
 
-        <section class="chat-box manga-panel split-chat-box">
-          <h2>Chat de Conversa</h2>
+        <section class="chat-box manga-panel split-chat-box" id="conversation-chat-box">
+          <div class="chat-title-row"><h2>Chat de Conversa</h2><button class="chat-minimize-btn" data-toggle-chat="conversation-chat-box" type="button" title="Minimizar chat">—</button></div>
           <div id="chat-log" class="chat-log conversation-log"></div>
           <form id="chat-form" class="chat-form">
             <input id="chat-input" type="text" placeholder="Mensagem para a mesa..." autocomplete="off" />
@@ -685,8 +687,8 @@
           </form>
         </section>
 
-        <section class="chat-box manga-panel split-chat-box roll-chat-box">
-          <h2>Chat de Rolagens</h2>
+        <section class="chat-box manga-panel split-chat-box roll-chat-box" id="rolls-chat-box">
+          <div class="chat-title-row"><h2>Chat de Rolagens</h2><button class="chat-minimize-btn" data-toggle-chat="rolls-chat-box" type="button" title="Minimizar chat">—</button></div>
           <div id="roll-chat-log" class="chat-log roll-log"></div>
         </section>
       </aside>
@@ -793,6 +795,7 @@
     </form>
   </dialog>
 
+  <script src="/socket.io/socket.io.js"></script>
   <script src="script.js"></script>
   <script type="module" src="block-inventory/script.js"></script>
 </body>

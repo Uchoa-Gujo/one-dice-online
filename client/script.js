@@ -2924,3 +2924,492 @@ setTimeout(() => {
   od42WireForms();
   od42Boot();
 }, 50);
+
+/* =========================
+   V43 - Correção de eventos duplicados do modo online
+   Impede que os handlers antigos/localStorage disparem junto com os handlers online.
+========================= */
+(function od43OnlineEventGuard(){
+  if (window.__od43OnlineEventGuardInstalled) return;
+  window.__od43OnlineEventGuardInstalled = true;
+
+  async function safeRun(fn) {
+    try { await fn(); }
+    catch (error) { alert(error?.message || 'Erro na ação online.'); }
+  }
+
+  document.addEventListener('click', function(event) {
+    const target = event.target;
+
+    const createCampaignBtn = target.closest?.('#create-campaign-btn');
+    if (createCampaignBtn) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return safeRun(() => createCampaign());
+    }
+
+    const joinCampaignBtn = target.closest?.('#join-campaign-btn');
+    if (joinCampaignBtn) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return safeRun(() => joinCampaignByCode());
+    }
+
+    const enterCampaignBtn = target.closest?.('[data-enter-campaign]');
+    if (enterCampaignBtn) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return safeRun(() => enterCampaign(enterCampaignBtn.dataset.enterCampaign));
+    }
+
+    const chooseCampaignBtn = target.closest?.('[data-choose-campaign-char]');
+    if (chooseCampaignBtn) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return openChooseCharacterModal(chooseCampaignBtn.dataset.chooseCampaignChar);
+    }
+
+    const selectCharacterBtn = target.closest?.('[data-select-character-for-campaign]');
+    if (selectCharacterBtn) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return safeRun(() => attachCharacterToCampaign(pendingChooseCampaignId, selectCharacterBtn.dataset.selectCharacterForCampaign));
+    }
+
+    const deleteCampaignBtn = target.closest?.('[data-delete-campaign]');
+    if (deleteCampaignBtn) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return safeRun(() => deleteCampaign(deleteCampaignBtn.dataset.deleteCampaign));
+    }
+
+    const leaveCampaignBtn = target.closest?.('[data-leave-campaign]');
+    if (leaveCampaignBtn) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return safeRun(() => leaveCampaign(leaveCampaignBtn.dataset.leaveCampaign));
+    }
+  }, true);
+
+  document.addEventListener('submit', function(event) {
+    const loginForm = event.target.closest?.('#login-form');
+    if (loginForm) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return safeRun(() => login(byId('login-nick').value, byId('login-password').value));
+    }
+
+    const registerForm = event.target.closest?.('#register-form');
+    if (registerForm) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return safeRun(() => od42Register());
+    }
+  }, true);
+})();
+
+/* =========================
+   V44 - Tempo real: Socket.IO, chats globais da mesa, PV/PE/condições e iniciativa sincronizados
+========================= */
+let od44Socket = null;
+let od44ApplyingInitiative = false;
+let od44PersistInitiativeTimer = null;
+
+function od44OnlineReady() {
+  return !!(typeof od42Token === 'function' && od42Token() && window.io);
+}
+
+function od44ApiMessageToLocal(row) {
+  const users = get(STORAGE.users, []);
+  const user = users.find(u => u.id === row.user_id || u.id === row.userId);
+  const channel = row.channel || 'conversation';
+  return {
+    id: row.id || uid(channel === 'rolls' ? 'roll' : 'msg'),
+    user: userDisplayName(user) || row.nick || row.real_name || 'Sistema',
+    text: row.message || row.text || '',
+    type: channel === 'rolls' ? 'roll' : 'msg',
+    at: row.created_at ? new Date(row.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : (row.at || new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }))
+  };
+}
+
+function od44StoreMessage(row) {
+  if (!row) return;
+  const local = od44ApiMessageToLocal(row);
+  const key = (row.channel === 'rolls' || local.type === 'roll') ? v35RollChatKey() : campaignChatKey();
+  const messages = get(key, []);
+  if (messages.some(m => m.id === local.id)) return;
+  messages.push(local);
+  set(key, messages.slice(-200));
+  renderChat();
+}
+
+async function od44LoadMessages(tableId = currentCampaignId) {
+  if (!tableId || !od42Token()) return;
+  try {
+    const data = await od42Api(`/api/tables/${tableId}/messages`);
+    const conversation = [];
+    const rolls = [];
+    (data.messages || []).forEach(row => {
+      const local = od44ApiMessageToLocal(row);
+      if (row.channel === 'rolls') rolls.push(local);
+      else conversation.push(local);
+    });
+    set(`${STORAGE.chat}_${tableId}`, conversation.slice(-200));
+    set(`${STORAGE.chat}_${tableId}_rolls`, rolls.slice(-200));
+    renderChat();
+  } catch (error) {
+    console.warn('Falha ao carregar mensagens da mesa:', error);
+  }
+}
+
+function od44EnsureSocket() {
+  if (!od44OnlineReady()) return null;
+  if (od44Socket && od44Socket.connected) return od44Socket;
+  if (od44Socket) {
+    try { od44Socket.disconnect(); } catch (_) {}
+  }
+  od44Socket = io({ auth: { token: od42Token() }, transports: ['websocket', 'polling'] });
+
+  od44Socket.on('connect', () => {
+    if (currentCampaignId) od44Socket.emit('table:join', { tableId: currentCampaignId });
+  });
+
+  od44Socket.on('message:created', payload => {
+    if (!payload?.message) return;
+    if (String(payload.tableId) !== String(currentCampaignId)) return;
+    od44StoreMessage(payload.message);
+  });
+
+  od44Socket.on('character:updated', payload => {
+    if (payload?.tableId && String(payload.tableId) !== String(currentCampaignId)) return;
+    const char = od42CharacterFromRow(payload.character);
+    if (!char?.id) return;
+    od42MergeById(STORAGE.characters, [char]);
+    if (currentCharacterId === char.id) loadCharacter(char.id);
+    renderTableExperience();
+  });
+
+  od44Socket.on('character:deleted', payload => {
+    if (payload?.tableId && String(payload.tableId) !== String(currentCampaignId)) return;
+    if (!payload?.characterId) return;
+    set(STORAGE.characters, get(STORAGE.characters, []).filter(c => c.id !== payload.characterId));
+    renderTableExperience();
+  });
+
+  async function reloadTableLive() {
+    if (!currentCampaignId) return;
+    try {
+      await od42LoadTableState(currentCampaignId);
+      await od44LoadMessages(currentCampaignId);
+      await od44LoadInitiative(currentCampaignId);
+      renderTableExperience();
+      renderCampaignMenu();
+    } catch (error) {
+      console.warn('Falha ao atualizar estado da mesa:', error);
+    }
+  }
+
+  od44Socket.on('member:updated', reloadTableLive);
+  od44Socket.on('table:updated', reloadTableLive);
+  od44Socket.on('table:deleted', payload => {
+    if (String(payload?.tableId) === String(currentCampaignId)) {
+      currentCampaignId = null;
+      showSessions();
+      alert('Esta mesa foi excluída pelo mestre.');
+    }
+  });
+
+  od44Socket.on('initiative:updated', payload => {
+    if (payload?.tableId && String(payload.tableId) !== String(currentCampaignId)) return;
+    od44ApplyingInitiative = true;
+    try {
+      set(v35InitiativeKey(), payload.initiative || { active: false, round: 1, entries: [] });
+      renderInitiativePanel();
+    } finally {
+      od44ApplyingInitiative = false;
+    }
+  });
+
+  od44Socket.on('connect_error', error => console.warn('Socket.IO:', error?.message || error));
+  return od44Socket;
+}
+
+async function od44JoinTable(tableId = currentCampaignId) {
+  if (!tableId) return;
+  od44EnsureSocket();
+  if (od44Socket?.connected) od44Socket.emit('table:join', { tableId });
+  await od44LoadMessages(tableId);
+  await od44LoadInitiative(tableId);
+}
+
+async function od44LoadInitiative(tableId = currentCampaignId) {
+  if (!tableId || !od42Token()) return;
+  try {
+    const data = await od42Api(`/api/tables/${tableId}/initiative`);
+    od44ApplyingInitiative = true;
+    set(v35InitiativeKey(), data.initiative || { active: false, round: 1, entries: [] });
+    renderInitiativePanel();
+  } catch (error) {
+    console.warn('Falha ao carregar iniciativa:', error);
+  } finally {
+    od44ApplyingInitiative = false;
+  }
+}
+
+async function od44PersistInitiativeNow(state = get(v35InitiativeKey(), { active: false, round: 1, entries: [] })) {
+  if (!currentCampaignId || !od42Token() || od44ApplyingInitiative) return;
+  try {
+    await od42Api(`/api/tables/${currentCampaignId}/initiative`, {
+      method: 'PUT',
+      body: JSON.stringify({ initiative: state })
+    });
+  } catch (error) {
+    console.warn('Falha ao salvar iniciativa online:', error);
+  }
+}
+
+const od44OriginalAddChat = addChat;
+addChat = function(text, type = 'msg') {
+  const message = String(text || '').trim();
+  if (!message) return;
+  if (currentCampaignId && od42Token()) {
+    const channel = type === 'roll' ? 'rolls' : 'conversation';
+    od42Api(`/api/tables/${currentCampaignId}/messages`, {
+      method: 'POST',
+      body: JSON.stringify({ channel, message, characterId: currentMembership()?.characterId || null })
+    }).catch(error => {
+      console.warn('Falha ao enviar mensagem online:', error);
+      od44OriginalAddChat(message, type);
+    });
+    return;
+  }
+  od44OriginalAddChat(message, type);
+};
+
+const od44OriginalSetInitiativeState = setInitiativeState;
+setInitiativeState = function(state) {
+  od44OriginalSetInitiativeState(state);
+  renderInitiativePanel();
+  if (currentCampaignId && od42Token() && !od44ApplyingInitiative) {
+    clearTimeout(od44PersistInitiativeTimer);
+    od44PersistInitiativeTimer = setTimeout(() => od44PersistInitiativeNow(state), 120);
+  }
+};
+
+async function od44SaveCharacterOnline(char) {
+  if (!char?.id || !od42Token()) return;
+  if (char.ownerId === currentUser?.id) {
+    await od42Api(`/api/characters/${char.id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ name: char.name || 'Ficha', data: char })
+    });
+    return;
+  }
+  if (currentCampaignId && v35IsMaster()) {
+    await od42Api(`/api/tables/${currentCampaignId}/characters/${char.id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ name: char.name || 'Ficha', data: char })
+    });
+  }
+}
+
+const od44OriginalV35UpdateCharacter = v35UpdateCharacter;
+v35UpdateCharacter = function(charId, mutator, logText = '') {
+  const chars = get(STORAGE.characters, []);
+  const index = chars.findIndex(c => c.id === charId);
+  if (index < 0) return;
+  mutator(chars[index]);
+  const updated = chars[index];
+  set(STORAGE.characters, chars);
+  if (currentCharacterId === charId) loadCharacter(charId);
+  renderTableExperience();
+  od44SaveCharacterOnline(updated).catch(error => console.warn('Falha ao salvar alteração rápida:', error));
+  if (logText) addChat(logText, 'roll');
+};
+
+const od44OriginalSaveCurrentCharacter = saveCurrentCharacter;
+saveCurrentCharacter = function() {
+  od44OriginalSaveCurrentCharacter();
+  const char = currentChar();
+  if (char?.id) od44SaveCharacterOnline(char).catch(error => console.warn('Falha ao salvar ficha online:', error));
+};
+
+const od44OriginalEnterCampaign = enterCampaign;
+enterCampaign = async function(campaignId) {
+  await od44OriginalEnterCampaign(campaignId);
+  await od44JoinTable(campaignId);
+  renderTableExperience();
+};
+
+const od44OriginalOd42Login = od42Login;
+od42Login = async function(nick, password) {
+  await od44OriginalOd42Login(nick, password);
+  od44EnsureSocket();
+};
+
+const od44OriginalOd42Register = od42Register;
+od42Register = async function() {
+  await od44OriginalOd42Register();
+  od44EnsureSocket();
+};
+
+const od44OriginalOd42Boot = od42Boot;
+od42Boot = async function() {
+  await od44OriginalOd42Boot();
+  od44EnsureSocket();
+  if (currentCampaignId) await od44JoinTable(currentCampaignId);
+};
+
+setTimeout(() => {
+  od44EnsureSocket();
+  if (currentCampaignId) od44JoinTable(currentCampaignId);
+}, 300);
+
+/* =========================
+   V45 - ajustes de interface solicitados
+========================= */
+// Remove o painel antigo de backup/importação/exportação e impede reinjeção.
+try {
+  const oldTools = document.getElementById('account-tools-panel');
+  if (oldTools) oldTools.remove();
+} catch (_) {}
+v35InjectAccountTools = function() {
+  const oldTools = document.getElementById('account-tools-panel');
+  if (oldTools) oldTools.remove();
+};
+
+function od45SyncMasterDockButton() {
+  const btn = document.getElementById('master-dashboard-dock-btn');
+  if (!btn) return;
+  const shouldShow = document.body.classList.contains('master-dashboard-mode') && document.body.classList.contains('master-sheet-open');
+  btn.classList.toggle('hidden', !shouldShow);
+}
+
+const od45PreviousRenderTableExperience = renderTableExperience;
+renderTableExperience = function() {
+  od45PreviousRenderTableExperience();
+  od45SyncMasterDockButton();
+};
+
+// Reforça o card da mesa abaixo do botão dos três traços.
+const od45PreviousRenderCampaignMiniCard = renderCampaignMiniCard;
+renderCampaignMiniCard = function() {
+  od45PreviousRenderCampaignMiniCard();
+  const box = document.getElementById('campaign-mini-card');
+  if (box && !box.classList.contains('hidden')) {
+    box.setAttribute('aria-label', 'Informações da mesa atual');
+  }
+};
+
+// Eventos de minimizar chats e voltar ao painel do mestre pelo ícone.
+document.addEventListener('click', event => {
+  const dock = event.target.closest('#master-dashboard-dock-btn');
+  if (dock) {
+    event.preventDefault();
+    saveCurrentCharacter();
+    document.body.classList.remove('master-sheet-open');
+    renderTableExperience();
+    document.getElementById('master-dashboard')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
+
+  const chatToggle = event.target.closest('[data-toggle-chat]');
+  if (chatToggle) {
+    event.preventDefault();
+    const id = chatToggle.getAttribute('data-toggle-chat');
+    const box = document.getElementById(id);
+    if (!box) return;
+    box.classList.toggle('chat-collapsed');
+    chatToggle.textContent = box.classList.contains('chat-collapsed') ? '+' : '—';
+  }
+});
+
+setTimeout(() => {
+  v35InjectAccountTools();
+  od45SyncMasterDockButton();
+}, 100);
+
+
+/* =========================
+   V46 - Sidebar de jogadores minimizável
+========================= */
+function od46SyncSidebarDockButton() {
+  const dock = document.getElementById('sidebar-dock-btn');
+  const toggle = document.getElementById('sidebar-toggle-btn');
+  if (!dock) return;
+  const mobile = window.innerWidth <= 860;
+  const collapsed = document.body.classList.contains('sidebar-collapsed');
+  dock.classList.toggle('hidden', mobile || !collapsed);
+  if (toggle) toggle.textContent = collapsed ? '+' : '—';
+}
+
+function od46SetSidebarCollapsed(nextState) {
+  if (window.innerWidth <= 860) {
+    document.body.classList.remove('sidebar-collapsed');
+    od46SyncSidebarDockButton();
+    return;
+  }
+  document.body.classList.toggle('sidebar-collapsed', !!nextState);
+  od46SyncSidebarDockButton();
+}
+
+document.addEventListener('click', event => {
+  const sidebarToggle = event.target.closest('#sidebar-toggle-btn');
+  if (sidebarToggle) {
+    event.preventDefault();
+    od46SetSidebarCollapsed(!document.body.classList.contains('sidebar-collapsed'));
+    return;
+  }
+
+  const sidebarDock = event.target.closest('#sidebar-dock-btn');
+  if (sidebarDock) {
+    event.preventDefault();
+    od46SetSidebarCollapsed(false);
+    document.getElementById('players-sidebar')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
+});
+
+window.addEventListener('resize', od46SyncSidebarDockButton);
+setTimeout(od46SyncSidebarDockButton, 120);
+
+
+/* =========================
+   V47 - Mobile: identidade recolhível e ficha menos longa
+========================= */
+function od47IsMobileSheet() {
+  return window.innerWidth <= 860;
+}
+
+function od47SyncMobileIdentity() {
+  const btn = document.getElementById('mobile-identity-toggle');
+  if (!btn) return;
+  if (!od47IsMobileSheet()) {
+    document.body.classList.remove('mobile-identity-collapsed');
+    btn.querySelector('strong').textContent = '—';
+    return;
+  }
+  if (!document.body.dataset.mobileIdentityTouched) {
+    document.body.classList.add('mobile-identity-collapsed');
+  }
+  const collapsed = document.body.classList.contains('mobile-identity-collapsed');
+  btn.querySelector('strong').textContent = collapsed ? '+' : '×';
+}
+
+document.addEventListener('click', event => {
+  const toggle = event.target.closest('#mobile-identity-toggle');
+  if (!toggle) return;
+  event.preventDefault();
+  document.body.dataset.mobileIdentityTouched = '1';
+  document.body.classList.toggle('mobile-identity-collapsed');
+  od47SyncMobileIdentity();
+});
+
+const od47PreviousLoadCharacter = loadCharacter;
+loadCharacter = function(id) {
+  od47PreviousLoadCharacter(id);
+  od47SyncMobileIdentity();
+};
+
+window.addEventListener('resize', od47SyncMobileIdentity);
+setTimeout(od47SyncMobileIdentity, 150);

@@ -17,6 +17,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: { origin: '*', methods: ['GET', 'POST'] }
 });
+app.set('io', io);
 
 const PORT = Number(process.env.PORT || 3000);
 const rootDir = path.resolve(__dirname, '..');
@@ -31,7 +32,7 @@ app.use(express.json({ limit: '15mb' }));
 app.use('/uploads', express.static(uploadDir));
 
 app.get('/api/health', (req, res) => {
-  res.json({ ok: true, app: 'One Dice Online', version: '0.42.0' });
+  res.json({ ok: true, app: 'One Dice Online', version: '0.44.0' });
 });
 
 app.use('/api/auth', authRoutes);
