@@ -1,0 +1,3485 @@
+:root {
+  --ink: #0c0c0c;
+  --paper: #efefec;
+  --panel: rgba(247, 247, 244, 0.92);
+  --line: #111;
+  --muted: #646464;
+  --gold: #a8833a;
+  --red: #9d1b1b;
+  --blue: #284d8f;
+  --green: #2f7a4d;
+  --shadow: 7px 7px 0 #111;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", system-ui, sans-serif;
+  background: #ddd;
+}
+.paper-bg {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(rgba(255,255,255,.55), rgba(255,255,255,.55)), url("assets/folha.jpg") center/cover;
+  z-index: -2;
+}
+.paper-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 15%, transparent, rgba(0,0,0,.12)), repeating-linear-gradient(135deg, rgba(0,0,0,.02) 0 2px, transparent 2px 7px);
+  z-index: -1;
+}
+button, input, textarea, select { font: inherit; }
+input, textarea, select {
+  width: 100%;
+  border: 2px solid var(--line);
+  background: rgba(255,255,255,.78);
+  padding: 10px 12px;
+  outline: none;
+  transition: .2s ease;
+}
+input:focus, textarea:focus, select:focus {
+  transform: translateY(-1px);
+  box-shadow: 3px 3px 0 var(--line);
+  border-color: var(--gold);
+}
+textarea { min-height: 110px; resize: vertical; }
+label { display: grid; gap: 5px; font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; }
+.screen { display: none; min-height: 100vh; padding: 24px; }
+.screen.active { display: grid; place-items: center; }
+.manga-panel {
+  position: relative;
+  border: 4px solid var(--line);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+}
+.manga-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: url("assets/folha.jpg") center/cover;
+  opacity: .18;
+  mix-blend-mode: multiply;
+}
+.reveal { animation: reveal .55s ease both; }
+@keyframes reveal { from { opacity: 0; transform: translateY(18px) scale(.98); } to { opacity: 1; transform: none; } }
+.auth-card { width: min(560px, 95vw); padding: 32px; text-align: center; }
+.main-logo { width: min(420px, 100%); mix-blend-mode: multiply; margin-bottom: 10px; }
+h1, h2, h3 { margin: 0; text-transform: uppercase; letter-spacing: .04em; }
+.subtitle { color: var(--muted); font-family: Arial, sans-serif; }
+.auth-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 20px 0; }
+.tab-btn, .sheet-tab, .ghost-btn, .primary-btn, .danger-btn {
+  border: 3px solid var(--line);
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  padding: 10px 14px;
+  background: #fff;
+  transition: .18s ease;
+}
+button:hover { transform: translateY(-2px); box-shadow: 4px 4px 0 var(--line); }
+.tab-btn.active, .sheet-tab.active, .primary-btn { background: var(--ink); color: white; }
+.danger-btn { background: var(--red); color: white; }
+.ghost-btn { background: #fff; }
+.small { padding: 7px 10px; font-size: .78rem; }
+.auth-form { display: none; gap: 12px; text-align: left; }
+.auth-form.active { display: grid; }
+.demo-box { margin-top: 18px; display: grid; gap: 4px; padding: 12px; border: 2px dashed var(--line); font-family: Arial, sans-serif; font-size: .9rem; }
+#app-screen.active { display: block; padding: 0; }
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 18px;
+  border-bottom: 4px solid var(--line);
+  background: rgba(245,245,242,.96);
+  backdrop-filter: blur(8px);
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand img { width: 150px; mix-blend-mode: multiply; }
+.brand div { display: grid; }
+.brand span { font-family: Arial, sans-serif; font-size: .8rem; color: var(--muted); }
+.top-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.app-grid {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr) 330px;
+  gap: 22px;
+  padding: 24px;
+}
+.sidebar, .right-panel .manga-panel { padding: 18px; }
+.character-list { display: grid; gap: 12px; margin-top: 18px; }
+.character-pill {
+  border: 3px solid var(--line);
+  background: rgba(255,255,255,.75);
+  padding: 12px;
+  cursor: pointer;
+  display: grid;
+  gap: 4px;
+  transition: .18s ease;
+}
+.character-pill.active { background: var(--ink); color: white; transform: translateX(4px); }
+.character-pill span { font-family: Arial, sans-serif; font-size: .78rem; opacity: .75; }
+.sheet { padding: 20px; }
+.sheet-header { display: grid; grid-template-columns: 190px 1fr; gap: 18px; align-items: start; }
+.portrait-wrap { display: grid; gap: 10px; }
+#char-portrait-preview {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border: 4px solid var(--line);
+  background: #111;
+  animation: pulsePanel 4s infinite ease-in-out;
+}
+@keyframes pulsePanel { 0%, 100% { filter: contrast(1); } 50% { filter: contrast(1.15) brightness(.95); } }
+.identity-grid, .magic-grid, .equipment-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.vitals-grid { display: grid; grid-template-columns: 1fr 1fr 140px 140px; gap: 14px; margin: 18px 0; }
+.vital-card, .stat-card {
+  border: 4px solid var(--line);
+  background: rgba(255,255,255,.72);
+  padding: 14px;
+}
+.vital-title { text-transform: uppercase; letter-spacing: .07em; }
+.vital-inputs { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; margin: 8px 0; }
+.bar-shell { height: 18px; border: 3px solid var(--line); background: #ddd; overflow: hidden; }
+.bar-fill { height: 100%; width: 100%; transition: width .45s cubic-bezier(.2, 1.3, .4, 1); background: linear-gradient(90deg, #111, #555); }
+.pv-card .bar-fill { background: linear-gradient(90deg, #5c0f0f, #d31e1e); }
+.pe-card .bar-fill { background: linear-gradient(90deg, #143a76, #4f8cff); }
+.stat-card span { display: block; text-transform: uppercase; margin-bottom: 8px; }
+.stat-card input { font-size: 1.7rem; text-align: center; }
+.tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; }
+.tab-panel { display: none; padding-top: 16px; }
+.tab-panel.active { display: block; animation: reveal .25s ease both; }
+.attributes-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.attr-card {
+  border: 4px solid var(--line);
+  background: rgba(255,255,255,.75);
+  padding: 12px;
+  text-align: center;
+  clip-path: polygon(12% 0, 88% 0, 100% 22%, 100% 78%, 88% 100%, 12% 100%, 0 78%, 0 22%);
+}
+.attr-card input { text-align: center; font-size: 2rem; background: white; }
+.mod-badge { margin-top: 8px; font-size: 1.2rem; }
+.resistances-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.res-card { border: 3px solid var(--line); padding: 10px; background: rgba(255,255,255,.65); }
+.table-wrap { overflow-x: auto; border: 3px solid var(--line); background: rgba(255,255,255,.7); }
+table { border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; }
+th, td { border-bottom: 1px solid #333; padding: 8px; text-align: left; }
+th { background: #111; color: white; text-transform: uppercase; font-size: .75rem; }
+.skill-roll { cursor: pointer; font-weight: 800; }
+.table-tools, .section-title-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
+.cards-list { display: grid; gap: 12px; }
+.mini-card { border: 3px solid var(--line); background: rgba(255,255,255,.72); padding: 12px; display: grid; gap: 8px; }
+.attack-card { grid-template-columns: 1.2fr .5fr 1fr; }
+.attack-card textarea, .spell-card textarea { grid-column: 1 / -1; }
+.spell-card { grid-template-columns: repeat(5, 1fr); }
+.full-label { margin-top: 14px; }
+.right-panel { display: grid; gap: 20px; align-content: start; }
+.dice-row { display: grid; grid-template-columns: 1fr 80px 80px; gap: 8px; margin: 12px 0; }
+.last-roll {
+  margin-top: 12px;
+  border: 3px dashed var(--line);
+  min-height: 70px;
+  display: grid;
+  place-items: center;
+  font-size: 1.5rem;
+  text-align: center;
+  background: rgba(255,255,255,.7);
+}
+.chat-box { min-height: 470px; display: grid; grid-template-rows: auto 1fr auto; }
+.chat-log { height: 340px; overflow-y: auto; display: grid; align-content: start; gap: 10px; padding: 10px; border: 3px solid var(--line); background: rgba(255,255,255,.6); font-family: Arial, sans-serif; }
+.chat-msg { border-left: 5px solid var(--ink); padding: 7px 9px; background: white; animation: pop .2s ease both; }
+.chat-msg.roll { border-color: var(--gold); font-weight: 700; }
+.chat-msg small { display: block; color: var(--muted); font-size: .72rem; }
+@keyframes pop { from { transform: scale(.97); opacity: 0; } to { transform: none; opacity: 1; } }
+.chat-form { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 10px; }
+.overlay-mode { display: none; min-height: 100vh; place-items: center; background: transparent; padding: 30px; }
+.overlay-mode.active { display: grid; }
+.overlay-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(0,0,0,.72);
+  color: white;
+  border: 3px solid white;
+  padding: 12px;
+  min-width: 390px;
+  box-shadow: 0 0 30px rgba(0,0,0,.5);
+}
+.overlay-card img { width: 92px; height: 92px; object-fit: cover; border: 3px solid white; }
+.overlay-info { flex: 1; display: grid; gap: 8px; }
+.overlay-info strong { font-size: 1.7rem; text-transform: uppercase; }
+.overlay-bar { display: grid; grid-template-columns: 28px 1fr 70px; gap: 8px; align-items: center; }
+.overlay-bar div { height: 14px; border: 1px solid white; background: #333; overflow: hidden; }
+.overlay-bar i { display: block; height: 100%; width: 100%; background: white; transition: width .4s ease; }
+.overlay-close { position: fixed; right: 20px; bottom: 20px; }
+.shake { animation: shake .25s ease; }
+@keyframes shake { 0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)} }
+@media (max-width: 1180px) { .app-grid { grid-template-columns: 220px 1fr; } .right-panel { grid-column: 1 / -1; grid-template-columns: 1fr 1fr; } }
+@media (max-width: 820px) {
+  .topbar, .sheet-header { grid-template-columns: 1fr; display: grid; }
+  .brand img { width: 110px; }
+  .app-grid { grid-template-columns: 1fr; padding: 14px; }
+  .right-panel { grid-template-columns: 1fr; }
+  .identity-grid, .magic-grid, .equipment-grid, .vitals-grid, .attributes-grid, .resistances-grid { grid-template-columns: 1fr 1fr; }
+  .attack-card, .spell-card { grid-template-columns: 1fr; }
+}
+@media (max-width: 520px) { .identity-grid, .magic-grid, .equipment-grid, .vitals-grid, .attributes-grid, .resistances-grid { grid-template-columns: 1fr; } .overlay-card { min-width: auto; width: 95vw; } }
+
+/* ===== Atualização visual v0.2 ===== */
+body[data-accent="black"] { --accent: #111; --accent-rgb: 17,17,17; }
+body[data-accent="green"] { --accent: #18b51f; --accent-rgb: 24,181,31; }
+body[data-accent="red"] { --accent: #b51e1e; --accent-rgb: 181,30,30; }
+body[data-accent="blue"] { --accent: #2f6fff; --accent-rgb: 47,111,255; }
+body[data-accent="gold"] { --accent: #b8923a; --accent-rgb: 184,146,58; }
+body[data-accent="purple"] { --accent: #7d4dff; --accent-rgb: 125,77,255; }
+body:not([data-accent]) { --accent: #111; --accent-rgb: 17,17,17; }
+body.dark-sheet {
+  --ink: #f1f1ee;
+  --paper: #080b08;
+  --panel: rgba(8, 12, 9, 0.94);
+  --line: var(--accent);
+  --muted: #9a9a9a;
+  --shadow: 0 0 0 1px rgba(var(--accent-rgb), .5), 8px 8px 0 rgba(var(--accent-rgb), .28);
+  color: #f1f1ee;
+  background: #030503;
+}
+body.dark-sheet .paper-bg { background: linear-gradient(rgba(0,0,0,.78), rgba(0,0,0,.82)), url("assets/folha.jpg") center/cover; }
+body.dark-sheet .topbar { background: rgba(3,5,3,.96); border-color: var(--accent); }
+body.dark-sheet input, body.dark-sheet textarea, body.dark-sheet select,
+body.dark-sheet .character-pill, body.dark-sheet .vital-card, body.dark-sheet .stat-card,
+body.dark-sheet .mini-card, body.dark-sheet .res-card, body.dark-sheet .attr-card-v2,
+body.dark-sheet .table-wrap, body.dark-sheet .last-roll, body.dark-sheet .chat-log {
+  background: rgba(0,0,0,.65);
+  color: #f7f7f2;
+  border-color: rgba(var(--accent-rgb), .85);
+}
+body.dark-sheet th { background: rgba(var(--accent-rgb), .45); }
+body.dark-sheet .ghost-btn, body.dark-sheet .tab-btn, body.dark-sheet .sheet-tab { background: #050705; color: #f7f7f2; border-color: var(--accent); }
+.primary-btn, .tab-btn.active, .sheet-tab.active { background: var(--accent) !important; color: white; border-color: var(--accent); }
+button:hover, input:focus, textarea:focus, select:focus { box-shadow: 0 0 18px rgba(var(--accent-rgb), .38), 4px 4px 0 var(--line); }
+.accent-select { width: auto; min-width: 130px; padding: 9px 12px; border-width: 3px; }
+.hidden-field { display: none !important; }
+.portrait-button { position: relative; padding: 0; border: 0; background: transparent; width: 100%; cursor: pointer; }
+.portrait-button:hover { box-shadow: none; transform: translateY(-2px) scale(1.01); }
+.portrait-button span {
+  position: absolute; left: 8px; right: 8px; bottom: 8px;
+  background: rgba(0,0,0,.75); color: white; border: 1px solid rgba(255,255,255,.7);
+  padding: 6px; text-transform: uppercase; letter-spacing: .08em; font-size: .72rem;
+  opacity: 0; transition: .18s ease;
+}
+.portrait-button:hover span { opacity: 1; }
+.portrait-modal { border: 0; background: transparent; padding: 0; width: min(520px, 92vw); }
+.portrait-modal::backdrop { background: rgba(0,0,0,.72); backdrop-filter: blur(4px); }
+.modal-card { padding: 24px; display: grid; gap: 14px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+.helper-text { margin: 3px 0 0; font-family: Arial, sans-serif; font-size: .82rem; color: var(--muted); }
+.character-pill { position: relative; text-align: left; padding-right: 54px; }
+.delete-character {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  width: 34px; height: 34px; display: grid; place-items: center;
+  border: 2px solid var(--red); background: rgba(157,27,27,.15); color: var(--red); cursor: pointer;
+}
+.delete-character:hover { transform: translateY(-50%) scale(1.05); box-shadow: 0 0 12px rgba(157,27,27,.35); }
+.attributes-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.attr-card { clip-path: none; }
+.attr-card-v2 {
+  border: 3px solid var(--line);
+  background: rgba(255,255,255,.72);
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 1fr 78px;
+  gap: 10px;
+  align-items: center;
+  min-height: 92px;
+  position: relative;
+  overflow: hidden;
+}
+.attr-card-v2::before { content:""; position:absolute; inset:auto -20px -40px auto; width:110px; height:110px; border:2px solid rgba(var(--accent-rgb), .25); transform: rotate(45deg); }
+.attr-name { font-size: .9rem; text-transform: uppercase; letter-spacing: .09em; }
+.attr-mod { font-size: 1.9rem; font-weight: 900; color: var(--accent); line-height: 1; }
+.attr-help { font-family: Arial, sans-serif; font-size: .72rem; color: var(--muted); }
+.attr-card-v2 input { text-align: center; font-size: 1.75rem; padding: 6px; }
+.attr-card-v2 .roll-attr { grid-column: 1 / -1; }
+.table-wrap.compact table { font-size: .82rem; }
+.table-wrap.compact th, .table-wrap.compact td { padding: 5px 7px; }
+#skills-table input[type="number"] { width: 72px; padding: 5px; text-align: center; }
+#skills-table input[type="checkbox"] { width: 18px; height: 18px; }
+#skills-table .skill-total { font-size: 1rem; font-weight: 900; color: var(--accent); }
+.attack-card { grid-template-columns: 1.15fr .45fr .9fr .9fr; }
+.attack-card .attack-desc { grid-column: 1 / -1; }
+.attack-card .roll-attack, .attack-card .remove-card { width: fit-content; }
+
+
+/* ===== Correções v0.3 ===== */
+body[data-font="impact"] { --main-font: Impact, Haettenschweiler, "Arial Narrow Bold", system-ui, sans-serif; --text-font: Arial, Helvetica, sans-serif; }
+body[data-font="medieval"] { --main-font: Georgia, "Times New Roman", serif; --text-font: Georgia, "Times New Roman", serif; }
+body[data-font="clean"] { --main-font: Arial, Helvetica, sans-serif; --text-font: Arial, Helvetica, sans-serif; }
+body[data-font="mono"] { --main-font: "Courier New", Courier, monospace; --text-font: "Courier New", Courier, monospace; }
+body { font-family: var(--main-font, Impact, Haettenschweiler, "Arial Narrow Bold", system-ui, sans-serif); }
+.subtitle, .demo-box, .brand span, .character-pill span, table, .helper-text, .attr-help, .chat-log { font-family: var(--text-font, Arial, Helvetica, sans-serif); }
+body.dark-sheet .manga-panel::before { opacity: .06; mix-blend-mode: screen; }
+body.dark-sheet .sheet, body.dark-sheet .sidebar, body.dark-sheet .dice-box, body.dark-sheet .chat-box, body.dark-sheet .manga-panel { color: #f6f6f0; }
+body.dark-sheet .chat-log { background: rgba(0,0,0,.78) !important; border-color: rgba(var(--accent-rgb), .95) !important; }
+body.dark-sheet .chat-msg { background: rgba(255,255,255,.08); color: #f7f7f2; border-left-color: var(--accent); box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+body.dark-sheet .chat-msg small { color: #c8c8c8; }
+body.dark-sheet .chat-msg.roll { background: rgba(var(--accent-rgb), .16); border-left-color: var(--gold); }
+body.dark-sheet .bar-shell { background: #050505; border-color: rgba(var(--accent-rgb), .9); }
+body.dark-sheet td { border-bottom-color: rgba(255,255,255,.13); }
+body.dark-sheet .tab-panel h3, body.dark-sheet h2, body.dark-sheet h3 { text-shadow: 0 0 10px rgba(var(--accent-rgb), .35); }
+body.dark-sheet .attr-card-v2 input, body.dark-sheet .res-card input, body.dark-sheet .stat-card input,
+body.dark-sheet .vital-card input, body.dark-sheet .mini-card input, body.dark-sheet .mini-card textarea,
+body.dark-sheet .equipment-grid input, body.dark-sheet .full-label textarea, body.dark-sheet .magic-grid input,
+body.dark-sheet #chat-input, body.dark-sheet #dice-type, body.dark-sheet #dice-qty, body.dark-sheet #dice-mod {
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  border-color: rgba(var(--accent-rgb), .75);
+}
+body.dark-sheet input::placeholder, body.dark-sheet textarea::placeholder { color: #aaa; }
+body.dark-sheet .sheet-tab.active, body.dark-sheet .primary-btn { color: #fff !important; text-shadow: 0 1px 0 rgba(0,0,0,.35); }
+
+#skills-table .col-attr, #skills-table .col-mod, #skills-table .col-roll { white-space: nowrap; }
+.table-wrap.compact #skills-table .col-attr,
+.table-wrap.compact #skills-table .col-mod,
+.table-wrap.compact #skills-table .col-roll { display: none; }
+.table-wrap.compact #skills-table .col-bonus input { width: 56px; }
+.table-wrap.compact #skills-table th, .table-wrap.compact #skills-table td { padding: 5px 6px; }
+
+/* =========================
+   BLOCK INVENTORY - V04
+========================= */
+.inventory-mode-panel { display: none; }
+.inventory-mode-panel.active { display: block; animation: fadeUp .25s ease both; }
+.inner-panel { padding: 16px; border-radius: 18px; }
+.block-inventory-toolbar { margin-bottom: 16px; }
+.block-form-grid { display: grid; grid-template-columns: minmax(180px, 1fr) repeat(3, minmax(90px, 120px)); gap: 12px; align-items: end; }
+.block-form-grid.two { grid-template-columns: repeat(2, 1fr); margin: 12px 0; }
+.block-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.block-inventory-layout { display: grid; grid-template-columns: minmax(360px, 1fr) 290px; gap: 16px; align-items: start; }
+.block-grid {
+  --cell: 54px;
+  --gap: 6px;
+  position: relative;
+  min-height: calc((var(--cell) * 6) + (var(--gap) * 5) + 24px);
+  padding: 12px;
+  border: 2px solid var(--ink);
+  border-radius: 20px;
+  background:
+    linear-gradient(90deg, rgba(0,0,0,.13) 1px, transparent 1px),
+    linear-gradient(rgba(0,0,0,.13) 1px, transparent 1px),
+    rgba(255,255,255,.5);
+  background-size: calc(var(--cell) + var(--gap)) calc(var(--cell) + var(--gap));
+  box-shadow: inset 0 0 24px rgba(0,0,0,.18);
+  overflow: auto;
+}
+.dark-sheet .block-grid {
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.10) 1px, transparent 1px),
+    linear-gradient(rgba(255,255,255,.10) 1px, transparent 1px),
+    rgba(7, 10, 14, .92);
+  border-color: rgba(255,255,255,.22);
+}
+.block-cell-guide {
+  width: calc((var(--cell) * 8) + (var(--gap) * 7));
+  height: calc((var(--cell) * 6) + (var(--gap) * 5));
+  pointer-events: none;
+}
+.block-item {
+  position: absolute;
+  left: calc(12px + ((var(--x) - 1) * (var(--cell) + var(--gap))));
+  top: calc(12px + ((var(--y) - 1) * (var(--cell) + var(--gap))));
+  width: calc((var(--w) * var(--cell)) + ((var(--w) - 1) * var(--gap)));
+  height: calc((var(--h) * var(--cell)) + ((var(--h) - 1) * var(--gap)));
+  border: 2px solid rgba(255,255,255,.55);
+  border-radius: 14px;
+  padding: 8px;
+  display: flex;
+  align-items: end;
+  justify-content: start;
+  font-weight: 900;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 2px 3px rgba(0,0,0,.7);
+  cursor: pointer;
+  box-shadow: 0 12px 24px rgba(0,0,0,.28), inset 0 0 16px rgba(255,255,255,.12);
+  transition: transform .18s ease, filter .18s ease, outline .18s ease;
+  overflow: hidden;
+}
+.block-item::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top left, rgba(255,255,255,.25), transparent 45%);
+  pointer-events: none;
+}
+.block-item:hover { transform: translateY(-3px) scale(1.015); filter: brightness(1.12); }
+.block-item.selected { outline: 3px solid var(--accent); outline-offset: 3px; }
+.block-item.green { background: linear-gradient(135deg, #0f7a35, #063915); }
+.block-item.blue { background: linear-gradient(135deg, #1364a8, #071c45); }
+.block-item.gold { background: linear-gradient(135deg, #c59a2c, #50370b); }
+.block-item.red { background: linear-gradient(135deg, #a82121, #420808); }
+.block-item.purple { background: linear-gradient(135deg, #7531a7, #29103e); }
+.block-editor h4 { margin: 0 0 10px; font-size: 1.1rem; }
+.block-editor label { display: grid; gap: 6px; margin-bottom: 10px; font-weight: 800; text-transform: uppercase; font-size: .78rem; }
+.block-editor button { width: 100%; margin-top: 8px; }
+.block-editor .hidden-field { display: none; }
+.block-editor .hidden-field.active { display: block; }
+.block-inventory-toolbar label, .block-form-grid label { display: grid; gap: 6px; font-size: .75rem; font-weight: 900; text-transform: uppercase; }
+.block-inventory-toolbar input, .block-inventory-toolbar select,
+.block-editor input {
+  width: 100%;
+  border: 1px solid rgba(0,0,0,.35);
+  border-radius: 10px;
+  padding: 10px;
+  background: rgba(255,255,255,.85);
+  color: #111;
+}
+.dark-sheet .block-inventory-toolbar input,
+.dark-sheet .block-inventory-toolbar select,
+.dark-sheet .block-editor input {
+  background: rgba(0,0,0,.75);
+  color: #fff;
+  border-color: rgba(255,255,255,.25);
+}
+
+@media (max-width: 900px) {
+  .block-form-grid { grid-template-columns: 1fr 1fr; }
+  .block-inventory-layout { grid-template-columns: 1fr; }
+  .block-grid { --cell: 44px; }
+}
+.block-editor .hidden-field.active { display: block !important; }
+
+
+/* v05 - Block Inventory avançado integrado */
+.advanced-inventory-shell {
+  margin: 18px 0;
+  padding: 14px;
+  overflow: hidden;
+}
+.advanced-inventory-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.advanced-inventory-head h4 {
+  margin: 0 0 4px;
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.iframe-open-link {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.advanced-inventory-frame {
+  width: 100%;
+  min-height: 880px;
+  border: 1px solid var(--panel-border, rgba(0,0,0,.22));
+  border-radius: 18px;
+  background: #0b0f14;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.04), 0 14px 34px rgba(0,0,0,.18);
+}
+body.dark-sheet .advanced-inventory-frame {
+  border-color: rgba(255,255,255,.14);
+}
+@media (max-width: 900px) {
+  .advanced-inventory-head { align-items: flex-start; flex-direction: column; }
+  .advanced-inventory-frame { min-height: 980px; }
+}
+
+
+/* =========================
+   V06 - Inventário modular formalizado
+========================= */
+#tab-equipamentos.block-inventory-active .equipment-grid .weight-field {
+  display: none;
+}
+#tab-equipamentos.block-inventory-active .equipment-grid {
+  grid-template-columns: minmax(220px, 1fr);
+  max-width: 420px;
+}
+#tab-equipamentos.block-inventory-active .section-title-row {
+  align-items: flex-start;
+}
+#block-inventory-panel .advanced-inventory-shell {
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 22px;
+}
+#block-inventory-panel .advanced-inventory-head {
+  padding: 10px 10px 12px;
+  border-bottom: 1px solid rgba(0,0,0,.18);
+}
+.dark-sheet #block-inventory-panel .advanced-inventory-head {
+  border-bottom-color: rgba(255,255,255,.12);
+}
+#block-inventory-panel .advanced-inventory-head h4 {
+  font-size: 1.22rem;
+  letter-spacing: .08em;
+}
+#block-inventory-panel .advanced-inventory-frame {
+  min-height: 1040px;
+  border-radius: 20px;
+}
+@media (max-width: 900px) {
+  #block-inventory-panel .advanced-inventory-frame { min-height: 1180px; }
+}
+
+
+/* V08 - Block Inventory integrado dentro da ficha, sem iframe/site separado */
+.integrated-block-shell {
+  padding: 0;
+  overflow: hidden;
+  background: var(--panel-bg, rgba(255,255,255,.8));
+}
+.integrated-block-shell .app {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+.integrated-block-shell .topbar {
+  border-radius: 18px 18px 0 0;
+  margin: 0;
+  box-shadow: none;
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+}
+.integrated-block-shell .brand h1 {
+  font-family: inherit;
+  letter-spacing: .04em;
+}
+.integrated-block-shell .brand p,
+.integrated-block-shell .logged-user-text,
+.integrated-block-shell .save-status {
+  display: none;
+}
+.integrated-block-shell .layout {
+  display: grid;
+  grid-template-columns: minmax(245px, .72fr) minmax(420px, 1.25fr) minmax(310px, .95fr);
+  gap: 14px;
+  padding: 14px;
+  align-items: start;
+}
+.integrated-block-shell .panel {
+  border-radius: 18px;
+  box-shadow: none;
+}
+.integrated-block-shell .center-panel {
+  display: grid;
+  grid-template-columns: minmax(360px, 1fr) minmax(260px, .7fr);
+  gap: 14px;
+}
+.integrated-block-shell .center-panel > .section-head:first-child,
+.integrated-block-shell .center-panel > .inventory-stage {
+  grid-column: 1;
+}
+.integrated-block-shell .center-panel > .section-head:nth-of-type(2),
+.integrated-block-shell .center-panel > .shelf-stage {
+  grid-column: 2;
+}
+.integrated-block-shell .center-panel > .section-head:nth-of-type(2) {
+  grid-row: 1;
+}
+.integrated-block-shell .center-panel > .shelf-stage {
+  grid-row: 2;
+  min-height: 430px;
+}
+.integrated-block-shell .right-panel {
+  min-width: 0;
+}
+.integrated-block-shell .inventory-command-bar {
+  justify-content: flex-end;
+}
+.integrated-block-shell .icon-btn {
+  color: currentColor;
+  background: transparent;
+  border: 1px solid currentColor;
+}
+.dark-sheet .integrated-block-shell,
+.dark-sheet .integrated-block-shell .topbar,
+.dark-sheet .integrated-block-shell .panel,
+.dark-sheet .integrated-block-shell .card,
+.dark-sheet .integrated-block-shell .inventory-stage,
+.dark-sheet .integrated-block-shell .shelf-stage,
+.dark-sheet .integrated-block-shell .body-stage {
+  color: var(--text);
+}
+body[data-accent="green"] .integrated-block-shell { --accent: #2fbf71; --accent-hover: #44d685; }
+body[data-accent="red"] .integrated-block-shell { --accent: #d94a4a; --accent-hover: #ee5c5c; }
+body[data-accent="blue"] .integrated-block-shell { --accent: #2b6cf0; --accent-hover: #4e86ff; }
+body[data-accent="gold"] .integrated-block-shell { --accent: #c99a2e; --accent-hover: #e0b84c; }
+body[data-accent="purple"] .integrated-block-shell { --accent: #8b5cf6; --accent-hover: #9c71ff; }
+body[data-accent="black"] .integrated-block-shell { --accent: #111827; --accent-hover: #1f2937; }
+body[data-font="impact"] .integrated-block-shell,
+body[data-font="medieval"] .integrated-block-shell,
+body[data-font="clean"] .integrated-block-shell,
+body[data-font="mono"] .integrated-block-shell {
+  font-family: inherit;
+}
+@media (max-width: 1180px) {
+  .integrated-block-shell .layout {
+    grid-template-columns: 1fr;
+  }
+  .integrated-block-shell .center-panel {
+    grid-template-columns: 1fr;
+  }
+  .integrated-block-shell .center-panel > .section-head,
+  .integrated-block-shell .center-panel > .inventory-stage,
+  .integrated-block-shell .center-panel > .shelf-stage {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+  }
+}
+
+/* =========================
+   V10 - Integração real do Block Inventory
+   Ajustes de layout, popup e tema escuro
+========================= */
+.integrated-block-shell .layout {
+  display: grid !important;
+  grid-template-columns: minmax(245px, 0.74fr) minmax(430px, 1.25fr) minmax(330px, 0.95fr) !important;
+  grid-template-areas:
+    "tools slots body"
+    "tools shelf body" !important;
+  gap: 16px !important;
+  align-items: start !important;
+  padding: 14px !important;
+}
+
+.integrated-block-shell .left-panel { grid-area: tools !important; }
+.integrated-block-shell .center-panel { grid-area: slots !important; display: block !important; }
+.integrated-block-shell .right-panel { grid-area: body !important; }
+.integrated-block-shell .shelf-panel { grid-area: shelf !important; width: 100% !important; min-width: 0 !important; }
+
+.integrated-block-shell .shelf-stage {
+  min-height: 170px !important;
+}
+.integrated-block-shell .shelf-area {
+  min-height: 140px !important;
+}
+
+/* Popups modulares para + Item e + Mochila */
+.integrated-block-shell .tool-drawer {
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 99950 !important;
+  width: min(520px, calc(100vw - 34px)) !important;
+  max-height: min(86vh, 760px) !important;
+  overflow: auto !important;
+  background: var(--panel, #111714) !important;
+  border: 2px solid var(--accent, #111827) !important;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, .68), 0 24px 70px rgba(0,0,0,.62) !important;
+  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px)) !important;
+  padding: 18px !important;
+}
+.integrated-block-shell .tool-drawer.hidden { display: none !important; }
+.integrated-block-shell .tool-drawer .dock-card-head {
+  border-bottom: 1px solid color-mix(in srgb, var(--accent, #fff), transparent 60%);
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+}
+.integrated-block-shell .tool-drawer .card-move-btn,
+.integrated-block-shell .tool-drawer .card-toggle-btn { display: none !important; }
+.integrated-block-shell .drawer-close-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 0;
+  border: 1px solid currentColor;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+/* Slots fixos visíveis no tema escuro */
+.dark-sheet .integrated-block-shell .grid-cell.fixed-slot-base,
+.integrated-block-shell .grid-cell.fixed-slot-base {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--accent, #fff), transparent 42%), rgba(255,255,255,.08)),
+    repeating-linear-gradient(45deg, rgba(255,255,255,.10) 0 6px, rgba(0,0,0,.16) 6px 12px) !important;
+  border: 2px solid color-mix(in srgb, var(--accent, #fff), white 35%) !important;
+  box-shadow: inset 0 0 0 2px rgba(0,0,0,.35), 0 0 14px color-mix(in srgb, var(--accent, #fff), transparent 60%) !important;
+}
+.dark-sheet .integrated-block-shell .grid-cell {
+  border-color: rgba(255,255,255,.28) !important;
+  background: linear-gradient(145deg, #1b1e1d, #0c0e0d) !important;
+}
+
+/* Melhor espaçamento do corpo */
+.integrated-block-shell .body-silhouette {
+  min-height: 690px !important;
+}
+.integrated-block-shell .slot-torso { top: 285px !important; }
+.integrated-block-shell .slot-legs { top: 470px !important; }
+
+/* Botões principais mais claros */
+.integrated-block-shell #openAddItemDrawerBtn,
+.integrated-block-shell #openBackpackDrawerBtn {
+  background: var(--accent, #111827) !important;
+  color: var(--accent-contrast, #fff) !important;
+  border: 1px solid color-mix(in srgb, var(--accent, #fff), white 25%) !important;
+}
+
+@media (max-width: 1180px) {
+  .integrated-block-shell .layout {
+    grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "tools"
+      "slots"
+      "body"
+      "shelf" !important;
+  }
+}
+
+/* V11 - inventário em texto por blocos */
+.inventory-text-head { margin-bottom: 14px; }
+.simple-inventory-list {
+  display: grid;
+  gap: 12px;
+}
+.simple-inventory-empty {
+  border: 2px dashed var(--line);
+  background: rgba(255,255,255,.45);
+  padding: 18px;
+  color: var(--muted);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.dark-sheet .simple-inventory-empty {
+  background: rgba(0,0,0,.35);
+  color: #d7d7d7;
+}
+.simple-inventory-card {
+  border: 2px solid var(--line);
+  background: rgba(255,255,255,.72);
+  padding: 12px;
+  box-shadow: 6px 6px 0 rgba(0,0,0,.12);
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+}
+.dark-sheet .simple-inventory-card {
+  background: rgba(8,10,9,.88);
+  border-color: #d8d8d8;
+  color: #f1f1f1;
+}
+.simple-inventory-card-top {
+  display: grid;
+  grid-template-columns: minmax(160px, 1fr) 120px 36px;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.simple-inventory-name,
+.simple-inventory-weight input,
+.simple-inventory-desc {
+  width: 100%;
+  border: 2px solid var(--line);
+  background: rgba(255,255,255,.86);
+  color: var(--text);
+  padding: 10px;
+  font-family: inherit;
+  font-weight: 800;
+}
+.dark-sheet .simple-inventory-name,
+.dark-sheet .simple-inventory-weight input,
+.dark-sheet .simple-inventory-desc {
+  background: #050605;
+  color: #f4f4f4;
+  border-color: #d8d8d8;
+}
+.simple-inventory-weight {
+  display: grid;
+  gap: 4px;
+  font-size: .75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.simple-inventory-desc { resize: vertical; min-height: 58px; }
+.mini-danger-btn {
+  height: 38px;
+  width: 38px;
+  border: 2px solid var(--line);
+  background: #b93333;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 1000;
+  cursor: pointer;
+}
+@media (max-width: 760px) {
+  .simple-inventory-card-top { grid-template-columns: 1fr; }
+  .mini-danger-btn { width: 100%; }
+}
+
+/* =========================
+   V13 - correções definitivas do inventário integrado
+========================= */
+body.dark-sheet #tab-equipamentos,
+body.dark-sheet #block-inventory-panel,
+body.dark-sheet .integrated-block-shell,
+body.dark-sheet .advanced-inventory-shell,
+body.dark-sheet .integrated-block-shell .topbar,
+body.dark-sheet .integrated-block-shell .layout,
+body.dark-sheet .integrated-block-shell .panel,
+body.dark-sheet .integrated-block-shell .inventory-stage,
+body.dark-sheet .integrated-block-shell .shelf-stage,
+body.dark-sheet .integrated-block-shell .body-stage,
+body.dark-sheet .integrated-block-shell .inventory-grid,
+body.dark-sheet .integrated-block-shell .inventory-items-layer {
+  background-color: #050706 !important;
+  color: #f2f2ef !important;
+}
+
+body.dark-sheet .integrated-block-shell {
+  background:
+    linear-gradient(rgba(5,7,6,.90), rgba(5,7,6,.94)),
+    var(--paper-texture, none) !important;
+  border-color: var(--accent, #8b5cf6) !important;
+}
+
+body.dark-sheet .integrated-block-shell .panel,
+body.dark-sheet .integrated-block-shell .topbar {
+  background: #0b0f0d !important;
+  border-color: color-mix(in srgb, var(--accent, #8b5cf6), #ffffff 25%) !important;
+}
+
+body.dark-sheet .integrated-block-shell .inventory-stage,
+body.dark-sheet .integrated-block-shell .shelf-stage,
+body.dark-sheet .integrated-block-shell .body-stage {
+  background: #030403 !important;
+  border: 2px solid color-mix(in srgb, var(--accent, #8b5cf6), #ffffff 18%) !important;
+}
+
+body.dark-sheet .integrated-block-shell .grid-cell {
+  background: linear-gradient(145deg, #1a1d1b, #070807) !important;
+  border-color: rgba(255,255,255,.32) !important;
+}
+
+body.dark-sheet .integrated-block-shell .grid-cell.fixed-slot-base {
+  background:
+    repeating-linear-gradient(45deg,
+      color-mix(in srgb, var(--accent, #8b5cf6), #111 35%) 0 8px,
+      color-mix(in srgb, var(--accent, #8b5cf6), #050605 72%) 8px 16px) !important;
+  border: 2px solid color-mix(in srgb, var(--accent, #8b5cf6), #ffffff 45%) !important;
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.10), 0 0 18px color-mix(in srgb, var(--accent, #8b5cf6), transparent 55%) !important;
+}
+
+body.dark-sheet .v12-modal-card {
+  background: #090b0a !important;
+  color: #f2f2ef !important;
+}
+
+/* =========================
+   V14 - microcorreções do inventário integrado
+   - textos com respiro
+   - controles dos cards dentro da aba
+   - grid dos slots sempre visível
+========================= */
+
+/* Respiro geral: evita textos colados na borda esquerda */
+#tab-equipamentos .section-title-row,
+#tab-equipamentos > h3,
+#tab-equipamentos > p,
+#block-inventory-panel,
+.integrated-block-shell .section-head,
+.integrated-block-shell .panel-topline,
+.integrated-block-shell .dock-card-head,
+.integrated-block-shell .dock-card-body,
+.integrated-block-shell .brand {
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+}
+
+.integrated-block-shell .panel,
+.integrated-block-shell .inventory-stage,
+.integrated-block-shell .shelf-stage,
+.integrated-block-shell .body-stage {
+  overflow: hidden !important;
+}
+
+/* Ajustes: deixa os botões de recolher dentro dos cards e fáceis de clicar */
+.integrated-block-shell .left-panel .dock-card {
+  overflow: hidden !important;
+}
+
+.integrated-block-shell .left-panel .dock-card-head {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.integrated-block-shell .left-panel .dock-card-head h3 {
+  min-width: 0 !important;
+  overflow-wrap: anywhere !important;
+  line-height: 1.18 !important;
+}
+
+.integrated-block-shell .left-panel .dock-card-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 5px !important;
+  flex: 0 0 auto !important;
+  max-width: 92px !important;
+  overflow: visible !important;
+}
+
+/* Os botões de mover estavam apertando e saindo da aba. Ficam ocultos na ficha integrada. */
+.integrated-block-shell .left-panel .dock-card:not(.tool-drawer) .card-move-btn {
+  display: none !important;
+}
+
+.integrated-block-shell .left-panel .dock-card:not(.tool-drawer) .card-toggle-btn,
+.integrated-block-shell .drawer-close-btn {
+  width: 38px !important;
+  min-width: 38px !important;
+  height: 38px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+  z-index: 20 !important;
+  pointer-events: auto !important;
+  border: 2px solid color-mix(in srgb, var(--accent, #8b5cf6), #ffffff 45%) !important;
+  background: rgba(0,0,0,.26) !important;
+  color: inherit !important;
+  cursor: pointer !important;
+}
+
+.integrated-block-shell .left-panel .dock-card:not(.tool-drawer) .card-toggle-btn:hover,
+.integrated-block-shell .drawer-close-btn:hover {
+  filter: brightness(1.25) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* O painel de edição estava estreito; aumenta um pouco a coluna de Ajustes */
+@media (min-width: 1181px) {
+  .integrated-block-shell .layout {
+    grid-template-columns: minmax(285px, 0.78fr) minmax(430px, 1.22fr) minmax(330px, 0.95fr) !important;
+  }
+}
+
+/* Grid dos slots: força a grade completa aparecer, mesmo no tema escuro */
+.integrated-block-shell {
+  --cell-size: 64px;
+  --cell-gap: 4px;
+  --cols: 6;
+  --rows: 6;
+}
+
+.integrated-block-shell .inventory-stage {
+  padding: 18px !important;
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--accent, #8b5cf6), transparent 78%), transparent 34%),
+    #050706 !important;
+}
+
+.integrated-block-shell .inventory-board {
+  position: relative !important;
+  width: calc(var(--cols) * var(--cell-size) + (var(--cols) - 1) * var(--cell-gap)) !important;
+  height: calc(var(--rows) * var(--cell-size) + (var(--rows) - 1) * var(--cell-gap)) !important;
+  margin: 0 auto !important;
+  background: #050605 !important;
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.12), 0 0 22px rgba(0,0,0,.55) !important;
+}
+
+.integrated-block-shell .inventory-grid {
+  position: absolute !important;
+  inset: 0 !important;
+  display: grid !important;
+  grid-template-columns: repeat(var(--cols), var(--cell-size)) !important;
+  grid-template-rows: repeat(var(--rows), var(--cell-size)) !important;
+  gap: var(--cell-gap) !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: rgba(255,255,255,.10) !important;
+  z-index: 1 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.integrated-block-shell .inventory-items-layer {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 5 !important;
+  pointer-events: auto !important;
+  background: transparent !important;
+}
+
+.integrated-block-shell .grid-cell,
+body.dark-sheet .integrated-block-shell .grid-cell {
+  display: block !important;
+  width: var(--cell-size) !important;
+  height: var(--cell-size) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  border-radius: 0 !important;
+  border: 1px solid rgba(255,255,255,.36) !important;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.08), rgba(0,0,0,.40)),
+    #151716 !important;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.54) !important;
+}
+
+.integrated-block-shell .grid-cell:nth-child(odd),
+body.dark-sheet .integrated-block-shell .grid-cell:nth-child(odd) {
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.11), rgba(0,0,0,.36)),
+    #191b1a !important;
+}
+
+.integrated-block-shell .grid-cell.fixed-slot-base,
+body.dark-sheet .integrated-block-shell .grid-cell.fixed-slot-base {
+  background:
+    repeating-linear-gradient(45deg,
+      color-mix(in srgb, var(--accent, #8b5cf6), #151515 54%) 0 8px,
+      color-mix(in srgb, var(--accent, #8b5cf6), #050605 74%) 8px 16px) !important;
+  border: 2px solid color-mix(in srgb, var(--accent, #8b5cf6), #ffffff 60%) !important;
+  box-shadow:
+    inset 0 0 0 2px rgba(255,255,255,.12),
+    0 0 14px color-mix(in srgb, var(--accent, #8b5cf6), transparent 35%) !important;
+}
+
+/* Deixa os grupos e mochilas por cima da grade, mas sem apagar totalmente as linhas */
+.integrated-block-shell .slot-group,
+.integrated-block-shell .backpack-module {
+  z-index: 8 !important;
+  opacity: .88 !important;
+}
+
+.integrated-block-shell .item {
+  z-index: 12 !important;
+}
+
+/* Prateleira alinhada exatamente abaixo dos Slots, entre Ajustes e Corpo */
+.integrated-block-shell .shelf-panel {
+  grid-area: shelf !important;
+  align-self: stretch !important;
+  margin-top: 0 !important;
+}
+
+.integrated-block-shell .shelf-stage {
+  min-height: 150px !important;
+}
+
+
+/* =========================
+   V15 - Correção fina dos slots
+   Centraliza o tabuleiro e força a grade 6x6 a aparecer em cima do fundo.
+========================= */
+.integrated-block-shell .inventory-stage {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  overflow: visible !important;
+  padding-left: 18px !important;
+  padding-right: 18px !important;
+}
+
+.integrated-block-shell .inventory-board {
+  position: relative !important;
+  flex: 0 0 auto !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  width: calc(var(--cols) * var(--cell-size) + (var(--cols) - 1) * var(--cell-gap)) !important;
+  height: calc(var(--rows) * var(--cell-size) + (var(--rows) - 1) * var(--cell-gap)) !important;
+  transform: none !important;
+  background: rgba(0, 0, 0, .22) !important;
+  outline: 1px solid color-mix(in srgb, var(--accent, #8b5cf6), transparent 40%) !important;
+}
+
+/* Grade visual independente: mesmo que os módulos fiquem por cima, o tabuleiro não some. */
+.integrated-block-shell .inventory-board::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 2 !important;
+  pointer-events: none !important;
+  background:
+    repeating-linear-gradient(
+      to right,
+      rgba(255,255,255,.26) 0 1px,
+      transparent 1px calc(var(--cell-size) + var(--cell-gap))
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,.26) 0 1px,
+      transparent 1px calc(var(--cell-size) + var(--cell-gap))
+    ) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.22) !important;
+}
+
+.integrated-block-shell .inventory-grid {
+  z-index: 1 !important;
+  background: rgba(0,0,0,.18) !important;
+}
+
+.integrated-block-shell .inventory-items-layer {
+  z-index: 5 !important;
+}
+
+.integrated-block-shell .grid-cell,
+body.dark-sheet .integrated-block-shell .grid-cell {
+  border: 1px solid rgba(255,255,255,.30) !important;
+  background: linear-gradient(145deg, rgba(255,255,255,.08), rgba(0,0,0,.44)) !important;
+}
+
+.integrated-block-shell .slot-group,
+.integrated-block-shell .backpack-module {
+  z-index: 8 !important;
+  opacity: .72 !important;
+}
+
+.integrated-block-shell .slot-group::before,
+.integrated-block-shell .backpack-module::before {
+  opacity: .95 !important;
+}
+
+@media (max-width: 700px) {
+  .integrated-block-shell .inventory-board {
+    transform: scale(.86) !important;
+    transform-origin: top center !important;
+    margin-bottom: -42px !important;
+  }
+}
+
+
+/* =========================
+   V16 - Correção real do tabuleiro do Block Inventory
+   - JS e CSS agora usam célula 58px para caber no painel
+   - grade desenhada por cima como linhas reais 6x6
+   - tabuleiro centralizado e sem estouro lateral
+========================= */
+.integrated-block-shell {
+  --cell-size: 58px !important;
+  --cell-gap: 4px !important;
+  --cols: 6 !important;
+  --rows: 6 !important;
+}
+
+.integrated-block-shell .center-panel,
+.integrated-block-shell .inventory-stage,
+.integrated-block-shell .inventory-board {
+  box-sizing: border-box !important;
+}
+
+.integrated-block-shell .center-panel {
+  min-width: 0 !important;
+  width: 100% !important;
+}
+
+.integrated-block-shell .inventory-stage {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  padding: 16px !important;
+  overflow: hidden !important;
+}
+
+.integrated-block-shell .inventory-board {
+  position: relative !important;
+  width: 368px !important; /* 6*58 + 5*4 */
+  height: 368px !important;
+  max-width: 100% !important;
+  margin: 14px auto 0 auto !important;
+  flex: none !important;
+  transform: none !important;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.045), rgba(0,0,0,.42)),
+    #050605 !important;
+  border: 2px solid color-mix(in srgb, var(--accent, #8b5cf6), #ffffff 18%) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.10),
+    inset 0 0 26px rgba(0,0,0,.75),
+    0 0 18px rgba(0,0,0,.35) !important;
+  outline: none !important;
+}
+
+.integrated-block-shell .inventory-grid {
+  position: absolute !important;
+  inset: 0 !important;
+  display: grid !important;
+  grid-template-columns: repeat(6, 58px) !important;
+  grid-template-rows: repeat(6, 58px) !important;
+  gap: 4px !important;
+  width: 368px !important;
+  height: 368px !important;
+  z-index: 1 !important;
+  background: transparent !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: none !important;
+}
+
+.integrated-block-shell .inventory-items-layer {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 368px !important;
+  height: 368px !important;
+  z-index: 5 !important;
+  background: transparent !important;
+  pointer-events: auto !important;
+}
+
+.integrated-block-shell .grid-cell,
+body.dark-sheet .integrated-block-shell .grid-cell {
+  display: block !important;
+  width: 58px !important;
+  height: 58px !important;
+  border-radius: 0 !important;
+  border: 1px solid rgba(255,255,255,.24) !important;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.055), rgba(0,0,0,.22)),
+    rgba(255,255,255,.025) !important;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.48) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Linhas mestras 6x6 por cima: não depende dos elementos .grid-cell */
+.integrated-block-shell .inventory-board::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 20 !important;
+  pointer-events: none !important;
+  background:
+    repeating-linear-gradient(
+      to right,
+      rgba(255,255,255,.34) 0 1px,
+      transparent 1px 58px,
+      rgba(0,0,0,0) 58px 62px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,.34) 0 1px,
+      transparent 1px 58px,
+      rgba(0,0,0,0) 58px 62px
+    ) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.36) !important;
+}
+
+/* Mantém itens clicáveis abaixo da grade visual, mas acima das células */
+.integrated-block-shell .slot-group,
+.integrated-block-shell .backpack-module {
+  z-index: 8 !important;
+  opacity: .62 !important;
+  border-width: 2px !important;
+}
+
+.integrated-block-shell .item,
+.integrated-block-shell .shelf-item {
+  z-index: 12 !important;
+  opacity: 1 !important;
+}
+
+.integrated-block-shell .grid-cell.fixed-slot-base,
+body.dark-sheet .integrated-block-shell .grid-cell.fixed-slot-base {
+  background:
+    repeating-linear-gradient(45deg,
+      color-mix(in srgb, var(--accent, #8b5cf6), #2a2a2a 50%) 0 7px,
+      color-mix(in srgb, var(--accent, #8b5cf6), #050605 78%) 7px 14px) !important;
+  border: 2px solid color-mix(in srgb, var(--accent, #8b5cf6), #ffffff 62%) !important;
+  box-shadow:
+    inset 0 0 0 2px rgba(255,255,255,.12),
+    0 0 12px color-mix(in srgb, var(--accent, #8b5cf6), transparent 45%) !important;
+}
+
+/* Ajusta texto do cabeçalho dos slots para não colar na borda */
+.integrated-block-shell .section-head {
+  padding: 0 8px !important;
+}
+.integrated-block-shell .section-head h2,
+.integrated-block-shell .section-head p {
+  margin-left: 0 !important;
+}
+
+/* Se a janela ficar estreita, reduz visualmente sem quebrar o JS */
+@media (max-width: 560px) {
+  .integrated-block-shell .inventory-board {
+    transform: scale(.86) !important;
+    transform-origin: top center !important;
+    margin-bottom: -48px !important;
+  }
+}
+
+/* =========================
+   v17 - Correção definitiva do tabuleiro do Block Inventory
+   Mantém CSS e JS com o mesmo tamanho: 6 colunas, 58px, gap 4px.
+========================= */
+:root {
+  --bi-cell: 58px;
+  --bi-gap: 4px;
+  --bi-board-inner: calc((var(--bi-cell) * 6) + (var(--bi-gap) * 5)); /* 368px */
+  --bi-board-frame: calc(var(--bi-board-inner) + 4px); /* borda de 2px de cada lado */
+}
+
+.integrated-block-shell .inventory-stage {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  width: 100% !important;
+  padding: 16px 14px 18px !important;
+  overflow: visible !important;
+}
+
+.integrated-block-shell .inventory-board {
+  position: relative !important;
+  box-sizing: border-box !important;
+  width: var(--bi-board-frame) !important;
+  height: var(--bi-board-frame) !important;
+  max-width: 100% !important;
+  margin: 14px auto 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  border: 2px solid color-mix(in srgb, var(--accent), #ffffff 26%) !important;
+  border-radius: 0 !important;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.62), rgba(220,220,220,.94)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,.16),
+    0 0 18px rgba(0,0,0,.16) !important;
+}
+
+body.dark-sheet .integrated-block-shell .inventory-board {
+  background:
+    linear-gradient(145deg, rgba(32,35,34,.92), rgba(5,6,6,.98)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.09),
+    inset 0 0 28px rgba(0,0,0,.72),
+    0 0 18px rgba(0,0,0,.42) !important;
+}
+
+.integrated-block-shell .inventory-grid,
+.integrated-block-shell .inventory-items-layer {
+  position: absolute !important;
+  left: 2px !important;
+  top: 2px !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: var(--bi-board-inner) !important;
+  height: var(--bi-board-inner) !important;
+  box-sizing: content-box !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  transform: none !important;
+}
+
+.integrated-block-shell .inventory-grid {
+  z-index: 1 !important;
+  display: grid !important;
+  grid-template-columns: repeat(6, var(--bi-cell)) !important;
+  grid-template-rows: repeat(6, var(--bi-cell)) !important;
+  gap: var(--bi-gap) !important;
+  background: transparent !important;
+  pointer-events: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.integrated-block-shell .inventory-items-layer {
+  z-index: 5 !important;
+  background: transparent !important;
+  pointer-events: auto !important;
+}
+
+.integrated-block-shell .grid-cell,
+body.dark-sheet .integrated-block-shell .grid-cell {
+  box-sizing: border-box !important;
+  width: var(--bi-cell) !important;
+  height: var(--bi-cell) !important;
+  min-width: var(--bi-cell) !important;
+  min-height: var(--bi-cell) !important;
+  border-radius: 0 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.integrated-block-shell .grid-cell {
+  border: 1px solid rgba(20,20,20,.55) !important;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.40), rgba(205,205,205,.70)) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.18) !important;
+}
+
+body.dark-sheet .integrated-block-shell .grid-cell {
+  border: 1px solid rgba(255,255,255,.24) !important;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.055), rgba(0,0,0,.30)),
+    rgba(8,9,9,.92) !important;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.52) !important;
+}
+
+/* Linha visual contínua exatamente em cima da grade 6x6 */
+.integrated-block-shell .inventory-board::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 2px !important;
+  top: 2px !important;
+  width: var(--bi-board-inner) !important;
+  height: var(--bi-board-inner) !important;
+  z-index: 30 !important;
+  pointer-events: none !important;
+  border: 1px solid rgba(0,0,0,.42) !important;
+  background-image:
+    linear-gradient(to right, rgba(0,0,0,.38) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0,0,0,.38) 1px, transparent 1px) !important;
+  background-size: calc(var(--bi-cell) + var(--bi-gap)) calc(var(--bi-cell) + var(--bi-gap)) !important;
+  background-position: 0 0 !important;
+  box-shadow: none !important;
+}
+
+body.dark-sheet .integrated-block-shell .inventory-board::before {
+  border-color: rgba(255,255,255,.20) !important;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,.28) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.28) 1px, transparent 1px) !important;
+}
+
+/* Slots fixos sempre visíveis nos dois temas */
+.integrated-block-shell .grid-cell.fixed-slot-base,
+body.dark-sheet .integrated-block-shell .grid-cell.fixed-slot-base {
+  border: 2px solid color-mix(in srgb, var(--accent), #ffffff 55%) !important;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      color-mix(in srgb, var(--accent), #111 22%) 0 8px,
+      color-mix(in srgb, var(--accent), #000 68%) 8px 16px
+    ) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.18),
+    0 0 12px color-mix(in srgb, var(--accent), transparent 38%) !important;
+}
+
+/* Grupos e mochilas alinhados à mesma medida do JS, sem inflar largura */
+.integrated-block-shell .slot-group,
+.integrated-block-shell .backpack-module {
+  box-sizing: border-box !important;
+  z-index: 8 !important;
+  opacity: .72 !important;
+  border-width: 2px !important;
+  margin: 0 !important;
+  transform-origin: center center !important;
+}
+
+.integrated-block-shell .item {
+  box-sizing: border-box !important;
+  z-index: 14 !important;
+  margin: 0 !important;
+}
+
+@media (max-width: 560px) {
+  :root {
+    --bi-cell: 46px;
+    --bi-gap: 3px;
+    --bi-board-inner: calc((var(--bi-cell) * 6) + (var(--bi-gap) * 5));
+    --bi-board-frame: calc(var(--bi-board-inner) + 4px);
+  }
+}
+
+/* =========================
+   v18 - Refeito visualmente o tabuleiro do Block Inventory
+   Objetivo: grade limpa, proporcional, sem corte lateral e combinando com tema claro/escuro.
+========================= */
+:root {
+  --bi-cell: 58px;
+  --bi-gap: 4px;
+  --bi-step: 62px;
+  --bi-inner: 368px;
+}
+
+.integrated-block-shell .center-panel,
+.integrated-block-shell .inventory-stage {
+  overflow: visible !important;
+}
+
+.integrated-block-shell .inventory-stage {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 22px !important;
+  min-height: auto !important;
+  border-radius: 0 !important;
+  border: 2px solid color-mix(in srgb, var(--accent, #d94a4a), #2a1a1a 36%) !important;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.72), rgba(229,226,218,.96)),
+    var(--paper-texture, none) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,.10),
+    0 10px 22px rgba(0,0,0,.10) !important;
+}
+
+body.dark-sheet .integrated-block-shell .inventory-stage {
+  background:
+    linear-gradient(145deg, rgba(18,22,20,.96), rgba(4,5,5,.98)) !important;
+  border-color: color-mix(in srgb, var(--accent, #d94a4a), #ffffff 18%) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.06),
+    inset 0 0 34px rgba(0,0,0,.62),
+    0 10px 26px rgba(0,0,0,.42) !important;
+}
+
+.integrated-block-shell .inventory-board {
+  position: relative !important;
+  box-sizing: content-box !important;
+  width: var(--bi-inner) !important;
+  height: var(--bi-inner) !important;
+  min-width: var(--bi-inner) !important;
+  min-height: var(--bi-inner) !important;
+  max-width: none !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  border: 3px solid color-mix(in srgb, var(--accent, #d94a4a), #ffffff 34%) !important;
+  border-radius: 0 !important;
+  background:
+    linear-gradient(145deg, rgba(245,242,233,.98), rgba(216,212,201,.98)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.70),
+    inset 0 0 30px rgba(0,0,0,.12),
+    0 0 0 1px rgba(0,0,0,.14) !important;
+}
+
+body.dark-sheet .integrated-block-shell .inventory-board {
+  background:
+    linear-gradient(145deg, rgba(18,22,20,.98), rgba(4,5,5,.99)) !important;
+  border-color: color-mix(in srgb, var(--accent, #d94a4a), #ffffff 45%) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.08),
+    inset 0 0 30px rgba(0,0,0,.78),
+    0 0 0 1px rgba(0,0,0,.75) !important;
+}
+
+.integrated-block-shell .inventory-grid,
+.integrated-block-shell .inventory-items-layer {
+  position: absolute !important;
+  inset: auto !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: var(--bi-inner) !important;
+  height: var(--bi-inner) !important;
+  min-width: var(--bi-inner) !important;
+  min-height: var(--bi-inner) !important;
+  max-width: none !important;
+  max-height: none !important;
+  box-sizing: border-box !important;
+  transform: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.integrated-block-shell .inventory-grid {
+  z-index: 1 !important;
+  display: grid !important;
+  grid-template-columns: repeat(6, var(--bi-cell)) !important;
+  grid-template-rows: repeat(6, var(--bi-cell)) !important;
+  gap: var(--bi-gap) !important;
+  pointer-events: none !important;
+}
+
+.integrated-block-shell .inventory-items-layer {
+  z-index: 6 !important;
+  pointer-events: auto !important;
+}
+
+.integrated-block-shell .grid-cell,
+.integrated-block-shell .grid-cell:nth-child(odd),
+body.dark-sheet .integrated-block-shell .grid-cell,
+body.dark-sheet .integrated-block-shell .grid-cell:nth-child(odd) {
+  box-sizing: border-box !important;
+  width: var(--bi-cell) !important;
+  height: var(--bi-cell) !important;
+  min-width: var(--bi-cell) !important;
+  min-height: var(--bi-cell) !important;
+  border-radius: 0 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.integrated-block-shell .grid-cell,
+.integrated-block-shell .grid-cell:nth-child(odd) {
+  border: 1px solid rgba(30,30,28,.38) !important;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.50), rgba(221,218,208,.48)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.24),
+    inset 0 0 18px rgba(0,0,0,.045) !important;
+}
+
+body.dark-sheet .integrated-block-shell .grid-cell,
+body.dark-sheet .integrated-block-shell .grid-cell:nth-child(odd) {
+  border: 1px solid rgba(255,255,255,.18) !important;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.05), rgba(0,0,0,.32)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,.45),
+    inset 0 0 18px rgba(0,0,0,.25) !important;
+}
+
+/* linhas limpas da grade, exatamente no mesmo passo do JS: 58 + 4 */
+.integrated-block-shell .inventory-board::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: var(--bi-inner) !important;
+  height: var(--bi-inner) !important;
+  z-index: 40 !important;
+  pointer-events: none !important;
+  border: 1px solid rgba(0,0,0,.30) !important;
+  background-image:
+    linear-gradient(to right, rgba(0,0,0,.28) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0,0,0,.28) 1px, transparent 1px) !important;
+  background-size: var(--bi-step) var(--bi-step) !important;
+  background-position: 0 0 !important;
+  box-shadow: none !important;
+}
+
+body.dark-sheet .integrated-block-shell .inventory-board::before {
+  border-color: rgba(255,255,255,.18) !important;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,.22) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.22) 1px, transparent 1px) !important;
+}
+
+.integrated-block-shell .grid-cell.fixed-slot-base,
+body.dark-sheet .integrated-block-shell .grid-cell.fixed-slot-base {
+  position: relative !important;
+  border: 2px solid color-mix(in srgb, var(--accent, #d94a4a), #ffffff 45%) !important;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      color-mix(in srgb, var(--accent, #d94a4a), #0c0c0c 18%) 0 8px,
+      color-mix(in srgb, var(--accent, #d94a4a), #000000 74%) 8px 16px
+    ) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.18),
+    0 0 12px color-mix(in srgb, var(--accent, #d94a4a), transparent 45%) !important;
+}
+
+.integrated-block-shell .slot-group,
+.integrated-block-shell .backpack-module {
+  box-sizing: border-box !important;
+  z-index: 10 !important;
+  margin: 0 !important;
+  border: 2px solid color-mix(in srgb, var(--accent, #d94a4a), #ffffff 35%) !important;
+  border-radius: 0 !important;
+  background: color-mix(in srgb, var(--accent, #d94a4a), transparent 78%) !important;
+  opacity: .42 !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.12),
+    inset 0 0 18px color-mix(in srgb, var(--accent, #d94a4a), transparent 72%) !important;
+}
+
+body.dark-sheet .integrated-block-shell .slot-group,
+body.dark-sheet .integrated-block-shell .backpack-module {
+  background: color-mix(in srgb, var(--accent, #d94a4a), transparent 84%) !important;
+  opacity: .36 !important;
+}
+
+.integrated-block-shell .slot-group.selected,
+.integrated-block-shell .backpack-module.selected {
+  opacity: .62 !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.20),
+    0 0 0 2px color-mix(in srgb, var(--accent, #d94a4a), #ffffff 48%) !important;
+}
+
+.integrated-block-shell .item,
+.integrated-block-shell .shelf-item {
+  border-radius: 0 !important;
+  border: 2px solid color-mix(in srgb, var(--accent, #d94a4a), #ffffff 44%) !important;
+  background:
+    linear-gradient(145deg, rgba(92,67,43,.92), rgba(46,32,22,.96)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.12),
+    0 8px 18px rgba(0,0,0,.32) !important;
+}
+
+.integrated-block-shell .item-image,
+.integrated-block-shell .shelf-item-image {
+  padding: 5px !important;
+  object-fit: contain !important;
+}
+
+/* Responsivo: reduz visualmente o conjunto sem alterar a matemática do JS. */
+@media (max-width: 520px) {
+  .integrated-block-shell .inventory-board {
+    transform: scale(.84) !important;
+    transform-origin: top center !important;
+    margin-bottom: -58px !important;
+  }
+}
+
+/* =========================
+   v0.19 — correção final da grade do Block Inventory
+   Objetivo: grade 6x6 consistente no tema claro e escuro.
+========================= */
+.integrated-block-shell {
+  --bi-cell: 58px !important;
+  --bi-gap: 4px !important;
+  --bi-step: 62px !important;
+  --bi-inner: 368px !important;
+  --bi-grid-line-light: rgba(20, 20, 18, .45) !important;
+  --bi-grid-line-dark: rgba(255, 255, 255, .22) !important;
+  --bi-cell-light-a: rgba(250, 248, 239, .92) !important;
+  --bi-cell-light-b: rgba(218, 214, 201, .88) !important;
+  --bi-cell-dark-a: rgba(14, 17, 16, .98) !important;
+  --bi-cell-dark-b: rgba(4, 5, 5, .98) !important;
+}
+
+.integrated-block-shell .inventory-stage {
+  overflow: hidden !important;
+}
+
+.integrated-block-shell .inventory-board {
+  position: relative !important;
+  box-sizing: content-box !important;
+  width: var(--bi-inner) !important;
+  height: var(--bi-inner) !important;
+  min-width: var(--bi-inner) !important;
+  min-height: var(--bi-inner) !important;
+  max-width: var(--bi-inner) !important;
+  max-height: var(--bi-inner) !important;
+  padding: 0 !important;
+  margin: 0 auto !important;
+  overflow: visible !important;
+  border: 2px solid color-mix(in srgb, var(--accent, #d94a4a), #ffffff 38%) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.16), inset 0 0 18px rgba(0,0,0,.08) !important;
+}
+
+body.dark-sheet .integrated-block-shell .inventory-board {
+  border-color: color-mix(in srgb, var(--accent, #d94a4a), #ffffff 48%) !important;
+  background: #030505 !important;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.09), inset 0 0 22px rgba(0,0,0,.72) !important;
+}
+
+/* Removemos a grade desenhada por pseudo-elemento; ela gerava deslocamento visual no tema escuro. */
+.integrated-block-shell .inventory-board::before,
+body.dark-sheet .integrated-block-shell .inventory-board::before {
+  content: none !important;
+  display: none !important;
+}
+
+.integrated-block-shell .inventory-grid,
+.integrated-block-shell .inventory-items-layer {
+  position: absolute !important;
+  inset: 0 auto auto 0 !important;
+  width: var(--bi-inner) !important;
+  height: var(--bi-inner) !important;
+  min-width: var(--bi-inner) !important;
+  min-height: var(--bi-inner) !important;
+  max-width: var(--bi-inner) !important;
+  max-height: var(--bi-inner) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transform: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+
+.integrated-block-shell .inventory-grid {
+  z-index: 1 !important;
+  display: grid !important;
+  grid-template-columns: repeat(6, var(--bi-cell)) !important;
+  grid-template-rows: repeat(6, var(--bi-cell)) !important;
+  gap: var(--bi-gap) !important;
+  background: transparent !important;
+  pointer-events: none !important;
+}
+
+.integrated-block-shell .inventory-items-layer {
+  z-index: 2 !important;
+  pointer-events: auto !important;
+}
+
+.integrated-block-shell .grid-cell,
+.integrated-block-shell .grid-cell:nth-child(odd),
+body.dark-sheet .integrated-block-shell .grid-cell,
+body.dark-sheet .integrated-block-shell .grid-cell:nth-child(odd) {
+  position: relative !important;
+  box-sizing: border-box !important;
+  width: var(--bi-cell) !important;
+  height: var(--bi-cell) !important;
+  min-width: var(--bi-cell) !important;
+  min-height: var(--bi-cell) !important;
+  max-width: var(--bi-cell) !important;
+  max-height: var(--bi-cell) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.integrated-block-shell .grid-cell,
+.integrated-block-shell .grid-cell:nth-child(odd) {
+  border: 1px solid var(--bi-grid-line-light) !important;
+  background: linear-gradient(145deg, var(--bi-cell-light-a), var(--bi-cell-light-b)) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.34), inset 0 0 14px rgba(0,0,0,.05) !important;
+}
+
+body.dark-sheet .integrated-block-shell .grid-cell,
+body.dark-sheet .integrated-block-shell .grid-cell:nth-child(odd) {
+  border: 1px solid var(--bi-grid-line-dark) !important;
+  background: linear-gradient(145deg, var(--bi-cell-dark-a), var(--bi-cell-dark-b)) !important;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.46), inset 0 0 13px rgba(255,255,255,.025) !important;
+}
+
+.integrated-block-shell .grid-cell.fixed-slot-base,
+body.dark-sheet .integrated-block-shell .grid-cell.fixed-slot-base {
+  border: 2px solid color-mix(in srgb, var(--accent, #d94a4a), #ffffff 42%) !important;
+  background:
+    repeating-linear-gradient(45deg,
+      color-mix(in srgb, var(--accent, #d94a4a), #000000 12%) 0 8px,
+      color-mix(in srgb, var(--accent, #d94a4a), #000000 72%) 8px 16px
+    ) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.18), 0 0 10px color-mix(in srgb, var(--accent, #d94a4a), transparent 55%) !important;
+}
+
+body.dark-sheet .integrated-block-shell .grid-cell.fixed-slot-base {
+  border-color: color-mix(in srgb, var(--accent, #d94a4a), #ffffff 56%) !important;
+  background:
+    repeating-linear-gradient(45deg,
+      color-mix(in srgb, var(--accent, #d94a4a), #111111 4%) 0 8px,
+      color-mix(in srgb, var(--accent, #d94a4a), #000000 58%) 8px 16px
+    ) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.20), 0 0 14px color-mix(in srgb, var(--accent, #d94a4a), transparent 48%) !important;
+}
+
+.integrated-block-shell .grid-cell.fixed-slot-base::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 5px !important;
+  border: 1px dashed rgba(255,255,255,.32) !important;
+  pointer-events: none !important;
+}
+
+/* Os módulos agora usam exatamente a mesma matemática do JS: célula 58 + gap 4. */
+.integrated-block-shell .slot-group,
+.integrated-block-shell .backpack-module {
+  box-sizing: border-box !important;
+  z-index: 3 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 2px solid color-mix(in srgb, var(--accent, #d94a4a), #ffffff 38%) !important;
+  border-radius: 0 !important;
+  background: color-mix(in srgb, var(--accent, #d94a4a), transparent 82%) !important;
+  opacity: .50 !important;
+  transform: none !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08), inset 0 0 16px color-mix(in srgb, var(--accent, #d94a4a), transparent 74%) !important;
+}
+
+body.dark-sheet .integrated-block-shell .slot-group,
+body.dark-sheet .integrated-block-shell .backpack-module {
+  border-color: color-mix(in srgb, var(--accent, #d94a4a), #ffffff 46%) !important;
+  background: color-mix(in srgb, var(--accent, #d94a4a), transparent 88%) !important;
+  opacity: .54 !important;
+}
+
+.integrated-block-shell .slot-group.selected,
+.integrated-block-shell .backpack-module.selected {
+  opacity: .72 !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent, #d94a4a), #ffffff 60%), inset 0 0 0 1px rgba(255,255,255,.18) !important;
+}
+
+.integrated-block-shell .item {
+  box-sizing: border-box !important;
+  z-index: 6 !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  border: 2px solid color-mix(in srgb, var(--accent, #d94a4a), #ffffff 46%) !important;
+  background: linear-gradient(145deg, rgba(113,82,51,.96), rgba(51,34,21,.98)) !important;
+}
+
+body.dark-sheet .integrated-block-shell .item {
+  border-color: color-mix(in srgb, var(--accent, #d94a4a), #ffffff 58%) !important;
+}
+
+/* =========================
+   v20 - Correção SOMENTE do tema escuro do Block Inventory
+   Não altera o tema claro. Remove a grade artificial desalinhada no escuro
+   e usa apenas a grade real 6x6, com marcadores fixos desenhados por cima.
+========================= */
+body.dark-sheet .integrated-block-shell {
+  --bi-cell: 58px !important;
+  --bi-gap: 4px !important;
+  --bi-step: 62px !important;
+  --bi-inner: 368px !important;
+}
+
+body.dark-sheet .integrated-block-shell .inventory-stage {
+  background:
+    linear-gradient(145deg, rgba(16,18,17,.98), rgba(2,3,3,.99)) !important;
+  border-color: color-mix(in srgb, var(--accent, #d94a4a), #ffffff 20%) !important;
+}
+
+body.dark-sheet .integrated-block-shell .inventory-board {
+  position: relative !important;
+  box-sizing: content-box !important;
+  width: var(--bi-inner) !important;
+  height: var(--bi-inner) !important;
+  min-width: var(--bi-inner) !important;
+  min-height: var(--bi-inner) !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  background:
+    linear-gradient(145deg, rgba(12,14,13,.98), rgba(0,0,0,.99)) !important;
+  border: 3px solid color-mix(in srgb, var(--accent, #d94a4a), #ffffff 42%) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.08),
+    inset 0 0 30px rgba(0,0,0,.86),
+    0 0 0 1px rgba(0,0,0,.75) !important;
+}
+
+/* No tema escuro a grade desenhada por pseudo-elemento desalinhava.
+   A grade real fica responsável pelo encaixe visual. */
+body.dark-sheet .integrated-block-shell .inventory-board::before {
+  content: none !important;
+  display: none !important;
+}
+
+body.dark-sheet .integrated-block-shell .inventory-grid,
+body.dark-sheet .integrated-block-shell .inventory-items-layer {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: var(--bi-inner) !important;
+  height: var(--bi-inner) !important;
+  min-width: var(--bi-inner) !important;
+  min-height: var(--bi-inner) !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  transform: none !important;
+  box-sizing: border-box !important;
+}
+
+body.dark-sheet .integrated-block-shell .inventory-grid {
+  z-index: 1 !important;
+  display: grid !important;
+  grid-template-columns: repeat(6, var(--bi-cell)) !important;
+  grid-template-rows: repeat(6, var(--bi-cell)) !important;
+  gap: var(--bi-gap) !important;
+  background: transparent !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+body.dark-sheet .integrated-block-shell .inventory-items-layer {
+  z-index: 6 !important;
+  background: transparent !important;
+}
+
+body.dark-sheet .integrated-block-shell .grid-cell,
+body.dark-sheet .integrated-block-shell .grid-cell:nth-child(odd) {
+  width: var(--bi-cell) !important;
+  height: var(--bi-cell) !important;
+  min-width: var(--bi-cell) !important;
+  min-height: var(--bi-cell) !important;
+  border-radius: 0 !important;
+  box-sizing: border-box !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  border: 1px solid rgba(255,255,255,.24) !important;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.07), rgba(0,0,0,.42)),
+    rgba(10,12,11,.96) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,.62),
+    inset 0 0 14px rgba(255,255,255,.025) !important;
+}
+
+/* Marcadores fixos desenhados acima da grade no escuro, sem depender do z-index das células. */
+body.dark-sheet .integrated-block-shell .inventory-board::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: var(--bi-cell) !important;
+  height: calc((var(--bi-cell) * 2) + var(--bi-gap)) !important;
+  z-index: 9 !important;
+  pointer-events: none !important;
+  background-image:
+    repeating-linear-gradient(45deg,
+      color-mix(in srgb, var(--accent, #d94a4a), #1b0b0b 20%) 0 8px,
+      rgba(0,0,0,.18) 8px 16px),
+    repeating-linear-gradient(45deg,
+      color-mix(in srgb, var(--accent, #d94a4a), #1b0b0b 20%) 0 8px,
+      rgba(0,0,0,.18) 8px 16px) !important;
+  background-size: var(--bi-cell) var(--bi-cell), var(--bi-cell) var(--bi-cell) !important;
+  background-position: 0 0, 0 var(--bi-step) !important;
+  background-repeat: no-repeat !important;
+  filter: drop-shadow(0 0 7px color-mix(in srgb, var(--accent, #d94a4a), transparent 45%));
+  opacity: .92 !important;
+}
+
+body.dark-sheet .integrated-block-shell .grid-cell.fixed-slot-base {
+  border: 2px solid color-mix(in srgb, var(--accent, #d94a4a), #ffffff 52%) !important;
+  background:
+    repeating-linear-gradient(45deg,
+      color-mix(in srgb, var(--accent, #d94a4a), #111 22%) 0 8px,
+      color-mix(in srgb, var(--accent, #d94a4a), #000 72%) 8px 16px) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.16),
+    0 0 10px color-mix(in srgb, var(--accent, #d94a4a), transparent 44%) !important;
+}
+
+body.dark-sheet .integrated-block-shell .slot-group,
+body.dark-sheet .integrated-block-shell .backpack-module {
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  z-index: 10 !important;
+  border: 2px solid color-mix(in srgb, var(--accent, #d94a4a), #ffffff 38%) !important;
+  background: color-mix(in srgb, var(--accent, #d94a4a), transparent 87%) !important;
+  opacity: .44 !important;
+}
+
+body.dark-sheet .integrated-block-shell .item {
+  z-index: 14 !important;
+}
+
+/* =========================
+   V22 - inventário em texto por cartinhas
+========================= */
+#tab-equipamentos {
+  overflow: visible;
+}
+.inventory-summary-grid {
+  padding: 0 18px;
+  gap: 16px !important;
+  align-items: end;
+}
+.inventory-summary-grid label {
+  min-width: 0;
+}
+.inventory-summary-grid input {
+  width: 100%;
+}
+#simple-inventory-panel {
+  margin-top: 28px;
+  padding: 0 18px 12px;
+}
+.inventory-text-head {
+  margin-top: 22px !important;
+  margin-bottom: 18px !important;
+  padding-top: 20px;
+  border-top: 2px solid color-mix(in srgb, var(--line), transparent 55%);
+  align-items: end;
+}
+.inventory-text-head h3 {
+  margin-bottom: 4px;
+}
+.inventory-text-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.simple-inventory-list {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  align-items: stretch;
+}
+.simple-inventory-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  min-height: 74px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.simple-inventory-card {
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border: 2px solid var(--line);
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.88), rgba(255,255,255,.58)),
+    var(--paper-texture, none);
+  box-shadow: 5px 5px 0 rgba(0,0,0,.14);
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+}
+.dark-sheet .simple-inventory-card {
+  background:
+    linear-gradient(135deg, rgba(8,10,9,.96), rgba(12,15,13,.88)),
+    var(--paper-texture, none);
+  border-color: color-mix(in srgb, var(--accent), white 45%);
+  box-shadow: 5px 5px 0 rgba(0,0,0,.45);
+}
+.simple-inventory-name-row {
+  width: 100%;
+}
+.simple-inventory-card-top {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr 34px;
+  gap: 8px;
+  align-items: end;
+  margin-bottom: 0 !important;
+}
+.simple-inventory-name,
+.simple-inventory-stepper input,
+.simple-inventory-desc {
+  width: 100%;
+  border: 2px solid var(--line);
+  background: rgba(255,255,255,.82);
+  color: var(--text);
+  padding: 9px 10px;
+  font-family: inherit;
+  font-weight: 800;
+  outline: none;
+}
+.simple-inventory-name {
+  min-height: 42px;
+}
+.simple-inventory-name:focus,
+.simple-inventory-stepper input:focus,
+.simple-inventory-desc:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent), transparent 78%);
+}
+.dark-sheet .simple-inventory-name,
+.dark-sheet .simple-inventory-stepper input,
+.dark-sheet .simple-inventory-desc {
+  background: #030403;
+  color: #f4f4f4;
+  border-color: color-mix(in srgb, var(--accent), white 42%);
+}
+.simple-inventory-stepper {
+  display: grid;
+  gap: 5px;
+  font-size: .72rem;
+  font-weight: 1000;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.stepper-control {
+  display: grid;
+  grid-template-columns: 30px minmax(40px, 1fr) 30px;
+  gap: 4px;
+  align-items: stretch;
+}
+.stepper-control input {
+  text-align: center;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+.stepper-btn {
+  border: 2px solid var(--line);
+  background: var(--accent);
+  color: #fff;
+  font-weight: 1000;
+  cursor: pointer;
+  font-family: inherit;
+  min-height: 38px;
+}
+.stepper-btn:hover {
+  filter: brightness(1.12);
+}
+.simple-inventory-desc {
+  flex: 1;
+  resize: vertical;
+  min-height: 98px;
+  line-height: 1.35;
+}
+.mini-danger-btn {
+  height: 40px;
+  width: 34px;
+  align-self: end;
+}
+.simple-inventory-list.compact .simple-inventory-card {
+  min-height: 142px;
+}
+.simple-inventory-list.compact .simple-inventory-card-top {
+  grid-template-columns: 1fr 1fr 32px;
+}
+.simple-inventory-list.compact .simple-inventory-desc {
+  display: none;
+}
+.simple-inventory-list.compact .simple-inventory-card {
+  justify-content: center;
+}
+@media (max-width: 1200px) {
+  .simple-inventory-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 900px) {
+  .simple-inventory-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .inventory-summary-grid { padding: 0; }
+  #simple-inventory-panel { padding: 0; }
+}
+@media (max-width: 620px) {
+  .simple-inventory-list { grid-template-columns: 1fr; }
+  .simple-inventory-card-top { grid-template-columns: 1fr; }
+  .mini-danger-btn { width: 100%; }
+}
+
+/* ===== Magias em cards v0.23 ===== */
+#tab-magias .section-title-row {
+  margin-top: 18px;
+  padding-top: 12px;
+  border-top: 3px solid var(--line);
+}
+
+#spells-list.cards-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(280px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.spell-card-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding: 14px;
+  background: rgba(var(--paper-rgb, 255,255,255), .78);
+  border: 3px solid var(--line);
+  box-shadow: 8px 8px 0 rgba(0,0,0,.16);
+}
+
+.spell-name-full {
+  width: 100%;
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  border-width: 3px;
+  background: rgba(255,255,255,.82);
+}
+
+.spell-fields-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(90px, 1fr));
+  gap: 10px;
+}
+
+.spell-fields-grid label,
+.spell-text-label {
+  display: grid;
+  gap: 5px;
+  font-size: .78rem;
+  font-weight: 900;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.spell-fields-grid input {
+  width: 100%;
+}
+
+.spell-text-label textarea {
+  min-height: 92px;
+  resize: vertical;
+}
+
+.spell-text-label:last-of-type textarea {
+  min-height: 72px;
+}
+
+.spell-card-layout .remove-card {
+  justify-self: end;
+}
+
+body.theme-dark .spell-card-layout,
+body[data-theme="dark"] .spell-card-layout,
+.dark .spell-card-layout {
+  background: rgba(4, 8, 7, .92);
+}
+
+body.theme-dark .spell-name-full,
+body[data-theme="dark"] .spell-name-full,
+.dark .spell-name-full,
+body.theme-dark .spell-fields-grid input,
+body[data-theme="dark"] .spell-fields-grid input,
+.dark .spell-fields-grid input,
+body.theme-dark .spell-text-label textarea,
+body[data-theme="dark"] .spell-text-label textarea,
+.dark .spell-text-label textarea {
+  background: #050706;
+  color: var(--text);
+}
+
+@media (max-width: 1180px) {
+  #spells-list.cards-list { grid-template-columns: 1fr; }
+  .spell-fields-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .spell-fields-grid { grid-template-columns: 1fr; }
+}
+
+
+/* ===== v0.24 - Perícias treinadas no modo compacto ===== */
+.empty-trained-skills {
+  padding: 18px !important;
+  text-align: center;
+  color: var(--muted);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.table-wrap.compact #skills-table .empty-trained-skills {
+  display: table-cell !important;
+}
+
+
+/* v25 - Sobrepeso */
+.derived-note {
+  display: block;
+  margin-top: 8px;
+  font-size: .78rem;
+  line-height: 1.2;
+  color: var(--muted);
+  letter-spacing: .03em;
+}
+.derived-note.danger,
+.weight-status-line.danger,
+.skill-penalty,
+.skill-total.penalized {
+  color: #d94a4a;
+}
+.weight-status-line {
+  margin: 8px 12px 18px;
+  padding: 10px 12px;
+  border: 2px solid rgba(0,0,0,.22);
+  background: rgba(255,255,255,.55);
+  font-size: .85rem;
+  line-height: 1.35;
+}
+body.dark-sheet .weight-status-line {
+  border-color: rgba(255,255,255,.18);
+  background: rgba(0,0,0,.35);
+}
+.weight-status-line.danger {
+  border-color: #d94a4a;
+  background: rgba(217,74,74,.10);
+  font-weight: 700;
+}
+.skill-penalty {
+  display: block;
+  margin-top: 2px;
+  font-size: .68rem;
+  white-space: nowrap;
+  font-weight: 700;
+}
+body.is-overweight #defense-effective-note {
+  font-weight: 800;
+}
+
+/* ===== v0.26 - Habilidades em cards ===== */
+#tab-habilidades .section-title-row {
+  margin-top: 6px;
+  padding-top: 10px;
+}
+
+.ability-tools {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 0 14px;
+}
+
+#abilities-list.cards-list,
+.ability-cards-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(280px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.ability-card-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  padding: 14px;
+  background: rgba(var(--paper-rgb, 255,255,255), .78);
+  border: 3px solid var(--line);
+  box-shadow: 8px 8px 0 rgba(0,0,0,.16);
+}
+
+.ability-name-full {
+  width: 100%;
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  border-width: 3px;
+  background: rgba(255,255,255,.82);
+}
+
+.ability-fields-grid {
+  display: grid;
+  grid-template-columns: minmax(120px, .65fr) minmax(160px, 1fr);
+  gap: 10px;
+}
+
+.ability-fields-grid label,
+.ability-text-label {
+  display: grid;
+  gap: 5px;
+  font-size: .78rem;
+  font-weight: 900;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.ability-fields-grid input,
+.ability-fields-grid select {
+  width: 100%;
+}
+
+.ability-text-label textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.ability-card-layout .remove-card {
+  justify-self: end;
+}
+
+.ability-cards-list.hide-descriptions .ability-description-wrap {
+  display: none;
+}
+
+body.dark-sheet .ability-card-layout,
+body.theme-dark .ability-card-layout,
+body[data-theme="dark"] .ability-card-layout,
+.dark .ability-card-layout {
+  background: rgba(4, 8, 7, .92);
+}
+
+body.dark-sheet .ability-name-full,
+body.theme-dark .ability-name-full,
+body[data-theme="dark"] .ability-name-full,
+.dark .ability-name-full,
+body.dark-sheet .ability-fields-grid input,
+body.theme-dark .ability-fields-grid input,
+body[data-theme="dark"] .ability-fields-grid input,
+.dark .ability-fields-grid input,
+body.dark-sheet .ability-fields-grid select,
+body.theme-dark .ability-fields-grid select,
+body[data-theme="dark"] .ability-fields-grid select,
+.dark .ability-fields-grid select,
+body.dark-sheet .ability-text-label textarea,
+body.theme-dark .ability-text-label textarea,
+body[data-theme="dark"] .ability-text-label textarea,
+.dark .ability-text-label textarea {
+  background: #050706;
+  color: var(--text);
+}
+
+@media (max-width: 1180px) {
+  #abilities-list.cards-list,
+  .ability-cards-list { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .ability-fields-grid { grid-template-columns: 1fr; }
+}
+
+/* ===== v0.27 - Custo PV/PE, bônus e botão usar nas habilidades ===== */
+.ability-fields-grid-v27 {
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  align-items: end;
+}
+.ability-cost-row {
+  display: grid;
+  grid-template-columns: 36px minmax(56px, 1fr) 36px;
+  gap: 6px;
+  align-items: center;
+}
+.ability-cost-row .ghost-btn {
+  min-height: 38px;
+  padding: 0;
+  font-size: 1.05rem;
+  line-height: 1;
+}
+.ability-cost-amount {
+  text-align: center;
+  font-weight: 900;
+}
+.ability-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.use-ability {
+  min-width: 92px;
+}
+body.dark-sheet .ability-cost-row .ghost-btn,
+body.theme-dark .ability-cost-row .ghost-btn,
+body[data-theme="dark"] .ability-cost-row .ghost-btn,
+.dark .ability-cost-row .ghost-btn {
+  background: rgba(255,255,255,.08);
+  color: var(--text);
+  border-color: rgba(255,255,255,.16);
+}
+@media (max-width: 980px) {
+  .ability-fields-grid-v27 { grid-template-columns: repeat(2, minmax(120px, 1fr)); }
+}
+@media (max-width: 640px) {
+  .ability-fields-grid-v27 { grid-template-columns: 1fr; }
+  .ability-card-actions { justify-content: stretch; }
+  .ability-card-actions > button { flex: 1; }
+}
+
+.stat-card input[readonly] { opacity: 0.9; cursor: default; background: color-mix(in srgb, var(--panel) 88%, transparent); }
+
+/* v30: menu superior retrátil da ficha principal */
+#main-topbar.topbar {
+  position: fixed !important;
+  top: 14px !important;
+  right: 14px !important;
+  left: auto !important;
+  width: min(760px, calc(100vw - 28px)) !important;
+  z-index: 9990 !important;
+  display: grid !important;
+  grid-template-columns: auto 1fr !important;
+  align-items: start !important;
+  gap: 10px !important;
+  padding: 10px !important;
+  border: 3px solid var(--line) !important;
+  border-radius: 18px !important;
+  background: color-mix(in srgb, var(--paper), transparent 4%) !important;
+  box-shadow: 8px 8px 0 rgba(0,0,0,.28), 0 18px 45px rgba(0,0,0,.18) !important;
+  backdrop-filter: blur(10px) !important;
+  transition: width .18s ease, background .18s ease, box-shadow .18s ease, border-color .18s ease !important;
+}
+
+#main-topbar.topbar.collapsed {
+  width: 56px !important;
+  min-width: 56px !important;
+  padding: 8px !important;
+  grid-template-columns: 1fr !important;
+  background: color-mix(in srgb, var(--paper), transparent 2%) !important;
+}
+
+#main-topbar .topbar-menu-toggle {
+  appearance: none;
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--line);
+  border-radius: 14px;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  box-shadow: 4px 4px 0 rgba(0,0,0,.22);
+  transition: transform .14s ease, filter .14s ease;
+}
+
+#main-topbar .topbar-menu-toggle:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+#main-topbar .topbar-content {
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  gap: 12px;
+  align-items: center;
+  min-width: 0;
+}
+
+#main-topbar.collapsed .topbar-content {
+  display: none !important;
+}
+
+#main-topbar .brand {
+  min-width: 0;
+  overflow: hidden;
+}
+
+#main-topbar .brand img {
+  width: 96px !important;
+  max-width: 96px !important;
+}
+
+#main-topbar .brand strong {
+  display: block;
+  line-height: 1;
+}
+
+#main-topbar .brand span {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 130px;
+}
+
+#main-topbar .top-actions {
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px !important;
+}
+
+#main-topbar .ghost-btn,
+#main-topbar .danger-btn,
+#main-topbar .accent-select {
+  min-height: 38px;
+}
+
+body.dark-sheet #main-topbar.topbar {
+  background: rgba(10, 12, 14, .96) !important;
+  border-color: color-mix(in srgb, var(--accent), #ffffff 16%) !important;
+  box-shadow: 8px 8px 0 rgba(0,0,0,.45), 0 18px 50px rgba(0,0,0,.42) !important;
+}
+
+body.dark-sheet #main-topbar .topbar-menu-toggle {
+  border-color: color-mix(in srgb, var(--accent), #ffffff 18%);
+}
+
+@media (max-width: 820px) {
+  #main-topbar.topbar {
+    width: min(360px, calc(100vw - 28px)) !important;
+  }
+
+  #main-topbar .topbar-content {
+    grid-template-columns: 1fr;
+  }
+
+  #main-topbar .brand img {
+    width: 78px !important;
+  }
+
+  #main-topbar .top-actions {
+    display: grid !important;
+    grid-template-columns: 1fr;
+  }
+
+  #main-topbar .top-actions > * {
+    width: 100%;
+  }
+}
+
+/* =========================
+   V31 - Mesas / Campanhas
+========================= */
+#sessions-screen.screen.active {
+  display: block;
+}
+.sessions-shell {
+  width: min(1180px, calc(100% - 32px));
+  margin: 32px auto;
+  display: grid;
+  gap: 18px;
+}
+.sessions-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 24px;
+}
+.sessions-logo {
+  width: 92px;
+  height: 92px;
+  object-fit: contain;
+  border-radius: 18px;
+  float: left;
+  margin-right: 18px;
+  background: var(--panel-soft, rgba(255,255,255,.65));
+  border: 1px solid var(--line, rgba(0,0,0,.15));
+}
+.eyebrow {
+  margin: 0 0 4px;
+  font-size: 12px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--accent, #111);
+  font-weight: 900;
+}
+.sessions-head h1,
+.sessions-list-panel h2,
+.session-action-box h2 {
+  margin-top: 0;
+}
+.sessions-actions {
+  padding: 18px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.session-action-box {
+  border: 1px solid var(--line, rgba(0,0,0,.14));
+  background: rgba(255,255,255,.35);
+  border-radius: 18px;
+  padding: 16px;
+}
+.dark-sheet .session-action-box {
+  background: rgba(0,0,0,.22);
+}
+.session-action-box.locked {
+  opacity: .55;
+  filter: grayscale(.2);
+}
+.session-inline-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+}
+.session-inline-form input {
+  min-width: 0;
+}
+.campaign-list,
+.choose-character-list {
+  display: grid;
+  gap: 12px;
+}
+.sessions-list-panel {
+  padding: 20px;
+}
+.campaign-card {
+  border: 1px solid var(--line, rgba(0,0,0,.14));
+  border-radius: 18px;
+  padding: 14px;
+  background: rgba(255,255,255,.45);
+  display: grid;
+  gap: 12px;
+}
+.dark-sheet .campaign-card {
+  background: rgba(0,0,0,.22);
+}
+.campaign-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+}
+.campaign-main strong {
+  display: block;
+  font-size: 1.15rem;
+}
+.campaign-main span,
+.campaign-main small,
+.campaign-info-box span,
+.campaign-info-box small {
+  display: block;
+  opacity: .78;
+  margin-top: 3px;
+}
+.campaign-character-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 190px;
+  justify-content: flex-end;
+}
+.campaign-character-preview img,
+.choose-character-card img,
+.session-character img {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  object-fit: cover;
+  border: 1px solid var(--line, rgba(0,0,0,.14));
+  background: rgba(255,255,255,.5);
+}
+.campaign-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.campaign-empty {
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px dashed var(--line, rgba(0,0,0,.18));
+  opacity: .75;
+}
+.od-modal::backdrop {
+  background: rgba(0,0,0,.62);
+  backdrop-filter: blur(4px);
+}
+.od-modal {
+  border: 0;
+  border-radius: 22px;
+  padding: 0;
+  background: transparent;
+  width: min(720px, calc(100% - 24px));
+}
+.modal-card {
+  padding: 22px;
+  border-radius: 22px;
+  background: var(--paper, #f7f0df);
+  color: var(--ink, #16120d);
+  border: 2px solid var(--line, rgba(0,0,0,.18));
+  box-shadow: 0 24px 80px rgba(0,0,0,.4);
+}
+.dark-sheet .modal-card {
+  background: #16120f;
+  color: #f4ead7;
+}
+.modal-hint {
+  opacity: .72;
+  margin-top: -6px;
+}
+.choose-character-card {
+  text-align: left;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 12px;
+  align-items: center;
+  border: 1px solid var(--line, rgba(0,0,0,.14));
+  border-radius: 16px;
+  padding: 12px;
+  background: rgba(255,255,255,.45);
+  color: inherit;
+  cursor: pointer;
+}
+.choose-character-card:hover {
+  transform: translateY(-1px);
+  border-color: var(--accent, #111);
+}
+.choose-character-card img {
+  grid-row: 1 / span 2;
+}
+.choose-character-card strong,
+.choose-character-card span {
+  display: block;
+}
+.choose-character-card span {
+  opacity: .72;
+  font-size: .9rem;
+}
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+.campaign-info-box {
+  margin: 0 0 14px;
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.42);
+  border: 1px solid var(--line, rgba(0,0,0,.12));
+}
+.dark-sheet .campaign-info-box {
+  background: rgba(0,0,0,.22);
+}
+.session-character {
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+}
+.character-pill.session-character img {
+  width: 42px;
+  height: 42px;
+}
+.character-pill.session-character.readonly {
+  cursor: default;
+  opacity: .75;
+}
+.character-pill.session-character.readonly::after {
+  content: "Público";
+  font-size: 11px;
+  opacity: .65;
+}
+.readonly-character .sheet input,
+.readonly-character .sheet textarea,
+.readonly-character .sheet select,
+.readonly-character .sheet button:not(.sheet-tab):not(#topbar-menu-toggle):not(#back-to-sessions-btn):not(#campaign-character-btn):not(#theme-toggle):not(#overlay-btn) {
+  pointer-events: none;
+}
+.readonly-character .sheet::before {
+  content: "Visualização pública: você só pode editar sua própria ficha.";
+  display: block;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(180, 120, 20, .14);
+  border: 1px solid rgba(180, 120, 20, .28);
+  font-weight: 700;
+}
+@media (max-width: 800px) {
+  .sessions-actions { grid-template-columns: 1fr; }
+  .session-inline-form { grid-template-columns: 1fr; }
+  .campaign-main { align-items: flex-start; flex-direction: column; }
+  .campaign-character-preview { justify-content: flex-start; }
+}
+
+/* V32 - Biblioteca de fichas no início da conta */
+.account-sheets-panel {
+  margin: 18px 0;
+  padding: 20px;
+}
+.account-sheets-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 16px;
+}
+.account-sheets-head h2 { margin: 0 0 6px; }
+.account-sheets-head .subtitle { max-width: 720px; margin: 0; }
+.account-character-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 12px;
+}
+.account-character-card {
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border: 2px solid var(--ink);
+  border-radius: 16px;
+  background: rgba(255,255,255,.66);
+  box-shadow: 4px 4px 0 rgba(0,0,0,.16);
+}
+.account-character-card img {
+  width: 58px;
+  height: 58px;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 2px solid var(--ink);
+  background: #fff;
+}
+.account-character-card strong {
+  display: block;
+  line-height: 1.05;
+  margin-bottom: 4px;
+  font-size: 1.02rem;
+  text-transform: uppercase;
+}
+.account-character-card span {
+  display: block;
+  opacity: .75;
+  font-family: var(--text-font, Arial, sans-serif);
+  font-size: .82rem;
+  margin-bottom: 10px;
+}
+.account-character-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.account-character-actions .ghost-btn,
+.account-character-actions .danger-btn {
+  padding: 8px 10px;
+  font-size: .78rem;
+}
+.account-character-empty {
+  padding: 14px;
+  border: 2px dashed var(--ink);
+  border-radius: 16px;
+  color: rgba(0,0,0,.7);
+  font-family: var(--text-font, Arial, sans-serif);
+}
+body.dark-sheet .account-character-card {
+  background: rgba(0,0,0,.62);
+  border-color: var(--accent);
+  box-shadow: 4px 4px 0 rgba(var(--accent-rgb), .25);
+}
+body.dark-sheet .account-character-empty {
+  border-color: var(--accent);
+  color: #ddd;
+}
+@media (max-width: 720px) {
+  .account-sheets-head { flex-direction: column; }
+  .account-sheets-head .primary-btn { width: 100%; }
+}
+
+
+/* V33 - sessão: manter logado e saída da mesa */
+.remember-login-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--panel-bg, #fff) 82%, var(--accent, #111) 8%);
+  border: 1px solid color-mix(in srgb, var(--border, #222) 65%, transparent);
+  cursor: pointer;
+  user-select: none;
+}
+.remember-login-line input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent, #111);
+}
+.remember-login-line span {
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+body.dark-sheet .remember-login-line {
+  background: rgba(255,255,255,.06);
+  border-color: rgba(255,255,255,.14);
+}
+
+/* =========================
+   V35 - Painel de mesa, visão pública, chats e iniciativa
+========================= */
+.sessions-shell {
+  gap: 18px;
+}
+.account-tools-panel .account-tools-actions,
+.dashboard-actions,
+.master-card-actions,
+.initiative-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.table-dashboard {
+  grid-column: 2 / 4;
+  padding: 20px;
+  margin-bottom: 0;
+}
+.table-dashboard.hidden,
+.hidden { display: none !important; }
+.dashboard-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line, rgba(0,0,0,.12));
+}
+.dashboard-head h2 { margin: 0 0 4px; }
+.master-characters-grid,
+.public-party-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+.master-character-card,
+.public-character-card {
+  border: 1px solid var(--line, rgba(0,0,0,.14));
+  border-radius: 18px;
+  padding: 14px;
+  background: rgba(255,255,255,.68);
+  box-shadow: 0 10px 26px rgba(0,0,0,.08);
+  overflow: hidden;
+}
+body.dark-sheet .master-character-card,
+body.dark-sheet .public-character-card {
+  background: rgba(20,22,28,.88);
+  border-color: rgba(255,255,255,.12);
+  box-shadow: 0 10px 26px rgba(0,0,0,.32);
+}
+.master-card-top,
+.public-card-top {
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.master-card-top img,
+.public-card-top img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 16px;
+  border: 2px solid var(--accent, #111);
+  background: rgba(0,0,0,.08);
+}
+.master-card-top strong,
+.public-card-top strong {
+  display: block;
+  font-size: 1.08rem;
+  line-height: 1.1;
+}
+.master-card-top small,
+.public-card-top small,
+.master-card-top span,
+.public-card-top span {
+  display: block;
+  color: var(--muted, #666);
+  margin-top: 3px;
+}
+.master-quick-grid,
+.public-vitals-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.quick-vital,
+.public-vital {
+  border: 1px solid var(--line, rgba(0,0,0,.12));
+  border-radius: 14px;
+  padding: 10px;
+  background: rgba(255,255,255,.5);
+}
+body.dark-sheet .quick-vital,
+body.dark-sheet .public-vital {
+  background: rgba(255,255,255,.05);
+  border-color: rgba(255,255,255,.1);
+}
+.quick-vital label,
+.public-vital label {
+  display: block;
+  font-size: .75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted, #666);
+  margin-bottom: 6px;
+}
+.quick-vital-row {
+  display: grid;
+  grid-template-columns: 28px 1fr 28px;
+  gap: 6px;
+  align-items: center;
+}
+.quick-vital-row input,
+.master-condition-input,
+.initiative-row input,
+.initiative-row select,
+.import-export-area textarea {
+  width: 100%;
+  min-width: 0;
+  border-radius: 10px;
+  border: 1px solid var(--line, rgba(0,0,0,.18));
+  background: rgba(255,255,255,.8);
+  color: var(--text, #111);
+  padding: 9px 10px;
+}
+body.dark-sheet .quick-vital-row input,
+body.dark-sheet .master-condition-input,
+body.dark-sheet .initiative-row input,
+body.dark-sheet .initiative-row select,
+body.dark-sheet .import-export-area textarea {
+  background: rgba(0,0,0,.28);
+  border-color: rgba(255,255,255,.16);
+  color: var(--text, #f2f2f2);
+}
+.quick-vital-row button {
+  border: 0;
+  border-radius: 10px;
+  height: 34px;
+  cursor: pointer;
+  font-weight: 900;
+  background: var(--accent, #111);
+  color: #fff;
+}
+.master-condition-box { margin: 10px 0 12px; }
+.master-condition-box label {
+  display: block;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+.condition-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(0,0,0,.08);
+  border: 1px solid rgba(0,0,0,.08);
+  font-size: .84rem;
+  font-weight: 800;
+}
+body.dark-sheet .condition-chip { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.1); }
+.master-dashboard-mode:not(.master-sheet-open) .sheet-area,
+.master-dashboard-mode:not(.master-sheet-open) .right-panel {
+  display: none !important;
+}
+.master-dashboard-mode.master-sheet-open #master-dashboard {
+  grid-column: 2 / 4;
+}
+.master-dashboard-mode.master-sheet-open .sheet-area {
+  grid-column: 2 / 3;
+}
+.master-dashboard-mode.master-sheet-open .right-panel {
+  grid-column: 3 / 4;
+}
+.initiative-panel {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line, rgba(0,0,0,.12));
+}
+.initiative-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.initiative-row {
+  display: grid;
+  grid-template-columns: 70px 1fr 92px auto;
+  gap: 10px;
+  align-items: center;
+  border: 1px solid var(--line, rgba(0,0,0,.12));
+  border-radius: 14px;
+  padding: 10px;
+  background: rgba(255,255,255,.52);
+}
+body.dark-sheet .initiative-row { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.1); }
+.initiative-rank {
+  font-size: 1.25rem;
+  font-weight: 1000;
+  text-align: center;
+  color: var(--accent, #111);
+}
+.initiative-name strong { display: block; }
+.initiative-name small { color: var(--muted, #666); }
+.public-character-card.is-mine { outline: 2px solid var(--accent, #111); }
+.split-chat-box { min-height: 260px; }
+.roll-chat-box .chat-msg { border-left-color: var(--accent, #111); }
+.roll-log { max-height: 280px; }
+.conversation-log { max-height: 280px; }
+.account-tools-panel { padding: 16px; }
+.import-export-area { display: none; margin-top: 12px; }
+.import-export-area.active { display: block; }
+.import-export-area textarea { min-height: 120px; resize: vertical; font-family: monospace; font-size: .85rem; }
+.app-grid { align-items: start; }
+.sheet-area, .right-panel, .sidebar, .table-dashboard { min-width: 0; }
+@media (max-width: 1100px) {
+  .table-dashboard { grid-column: 1 / -1; }
+  .master-dashboard-mode.master-sheet-open .sheet-area,
+  .master-dashboard-mode.master-sheet-open .right-panel { grid-column: 1 / -1; }
+  .initiative-row { grid-template-columns: 52px 1fr; }
+  .initiative-actions { grid-column: 1 / -1; }
+}
+
+
+/* =========================
+   V39 - comércio, drops, imagens e transformações
+========================= */
+.item-image-zone,
+.card-image-zone {
+  display: grid;
+  gap: 8px;
+  margin: 10px 0 12px;
+}
+.item-image-preview,
+.spell-image-preview {
+  width: 100%;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 16px;
+  border: 1px solid var(--line, rgba(0,0,0,.14));
+  background: rgba(0,0,0,.08);
+}
+.item-image-preview[src=""],
+.spell-image-preview[src=""] {
+  display: none;
+}
+.simple-inventory-list.compact .item-image-zone,
+.spell-card.hide-card-image .spell-image-preview,
+.spell-card.hide-card-image .spell-image-url {
+  display: none;
+}
+.inline-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted, #666);
+}
+.item-card-actions,
+.transformation-actions,
+.commerce-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.form-banner {
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--accent, #111) 35%, transparent);
+  background: color-mix(in srgb, var(--accent, #111) 12%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.transformation-card-top {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+.transformation-card-top img {
+  width: 72px;
+  height: 72px;
+  border-radius: 16px;
+  object-fit: cover;
+  border: 1px solid var(--line, rgba(0,0,0,.16));
+}
+.transformation-card.active {
+  outline: 2px solid var(--accent, #111);
+}
+.commerce-panel {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line, rgba(0,0,0,.14));
+}
+.commerce-grid {
+  display: grid;
+  grid-template-columns: minmax(240px, .85fr) 1fr 1fr;
+  gap: 14px;
+  align-items: start;
+}
+.commerce-create,
+.commerce-list {
+  min-width: 0;
+}
+.commerce-create input,
+.commerce-create textarea,
+.commerce-item-row select {
+  width: 100%;
+  margin-bottom: 8px;
+}
+.commerce-create textarea {
+  min-height: 82px;
+  resize: vertical;
+}
+.commerce-item-row {
+  display: grid;
+  grid-template-columns: 54px 1fr;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  border-radius: 16px;
+  border: 1px solid var(--line, rgba(0,0,0,.14));
+  margin-bottom: 10px;
+  background: rgba(255,255,255,.04);
+}
+.commerce-item-row img {
+  width: 54px;
+  height: 54px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+.commerce-item-row select,
+.commerce-item-row button {
+  grid-column: span 2;
+}
+.commerce-item-row small,
+.transformation-card small {
+  display: block;
+  color: var(--muted, #666);
+  margin-top: 4px;
+}
+body.dark-sheet .item-image-preview,
+body.dark-sheet .spell-image-preview,
+body.dark-sheet .commerce-item-row,
+body.dark-sheet .transformation-card-top img {
+  border-color: rgba(255,255,255,.14);
+  background: rgba(255,255,255,.05);
+}
+@media (max-width: 1100px) {
+  .commerce-grid { grid-template-columns: 1fr; }
+}
+
+
+/* =========================
+   V40 - Ajustes pedidos: menu limpo, mesa em card flutuante, sem imagens em equipamento/magia
+========================= */
+.topbar-create-sheet-hidden {
+  display: none !important;
+}
+#main-topbar.topbar {
+  overflow: visible !important;
+}
+#main-topbar.topbar.collapsed {
+  width: 56px !important;
+}
+.campaign-mini-card {
+  position: absolute;
+  top: 62px;
+  right: 0;
+  width: 245px;
+  padding: 13px 14px;
+  border: 2px solid var(--accent, #111);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--paper, #fff) 92%, transparent);
+  box-shadow: 6px 6px 0 rgba(0,0,0,.22), 0 14px 34px rgba(0,0,0,.16);
+  z-index: 9991;
+}
+.campaign-mini-card strong,
+.campaign-mini-card span,
+.campaign-mini-card small {
+  display: block;
+  line-height: 1.15;
+}
+.campaign-mini-card strong {
+  font-size: 1rem;
+  letter-spacing: .04em;
+}
+.campaign-mini-card span,
+.campaign-mini-card small {
+  margin-top: 4px;
+  opacity: .8;
+  font-size: .82rem;
+}
+body.dark-sheet .campaign-mini-card {
+  background: rgba(0,0,0,.92);
+  border-color: var(--accent, #fff);
+  color: var(--text, #f2f2f2);
+  box-shadow: 6px 6px 0 rgba(0,0,0,.42), 0 14px 34px rgba(0,0,0,.4);
+}
+.sidebar .campaign-info-box {
+  display: none !important;
+}
+.campaign-actions .danger-btn.small {
+  padding: 8px 10px;
+  min-height: 34px;
+}
+/* remove visual blocks de imagem dos cards antigos caso existam salvos no DOM */
+.item-image-zone,
+.card-image-zone,
+.item-image-preview,
+.spell-image-preview,
+.simple-inventory-image,
+.spell-image-url,
+.spell-hide-image {
+  display: none !important;
+}
+.commerce-item-row {
+  grid-template-columns: 1fr auto auto auto auto !important;
+}
+@media (max-width: 720px) {
+  .campaign-mini-card {
+    right: 0;
+    width: min(250px, calc(100vw - 30px));
+  }
+}
