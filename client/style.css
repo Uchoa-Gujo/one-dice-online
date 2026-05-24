@@ -4313,3 +4313,319 @@ body.dark-sheet .sessions-sheet-toggle {
   .account-character-card { grid-template-columns: 60px minmax(0, 1fr) !important; }
   .table-wrap.compact #skills-table tbody { grid-template-columns: 1fr; }
 }
+
+
+/* =========================
+   V53 - ícones temáticos, minhas fichas e sons refinados
+========================= */
+:root {
+  --sidebar-fab-size: 42px;
+}
+
+#main-topbar.topbar {
+  overflow: visible !important;
+}
+
+#main-topbar .topbar-menu-toggle {
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  display: grid;
+  place-items: center;
+}
+
+#main-topbar.collapsed .topbar-menu-toggle {
+  color: transparent !important;
+  text-indent: -9999px;
+}
+
+#main-topbar.collapsed .topbar-menu-toggle::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 18px;
+  height: 14px;
+  background:
+    linear-gradient(currentColor 0 0) top center / 18px 3px no-repeat,
+    linear-gradient(currentColor 0 0) center center / 18px 3px no-repeat,
+    linear-gradient(currentColor 0 0) bottom center / 18px 3px no-repeat;
+  color: #fff;
+}
+
+#main-topbar:not(.collapsed) .topbar-menu-toggle {
+  text-indent: 0;
+  font-size: 24px;
+}
+
+.paper-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  vertical-align: middle;
+  color: currentColor;
+}
+
+.paper-icon svg,
+.paper-icon path,
+.paper-icon polyline,
+.paper-icon line {
+  stroke: currentColor;
+}
+
+.sessions-sheet-toggle,
+#sidebar-dock-btn {
+  display: grid;
+  place-items: center;
+}
+
+.sessions-sheet-toggle .paper-icon,
+#sidebar-dock-btn .paper-icon {
+  width: 20px;
+  height: 20px;
+}
+
+#sidebar-dock-btn {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: var(--sidebar-fab-size);
+  height: var(--sidebar-fab-size);
+  border-width: 3px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--accent) 92%, #000 8%);
+  color: #fff;
+  z-index: 9993;
+  transition: transform .16s ease, filter .16s ease, background .18s ease;
+}
+
+#sidebar-dock-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+}
+
+#sidebar-dock-btn.is-open {
+  background: color-mix(in srgb, var(--paper, #fff) 92%, transparent);
+  color: var(--accent);
+}
+
+body.dark-sheet #sidebar-dock-btn.is-open,
+body[data-theme="dark"] #sidebar-dock-btn.is-open,
+.dark #sidebar-dock-btn.is-open {
+  background: rgba(0,0,0,.78);
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent), #fff 18%);
+}
+
+#players-sidebar {
+  margin-top: 74px;
+}
+
+.sidebar-title-row {
+  align-items: flex-start;
+}
+
+#players-sidebar .sidebar-title-row {
+  margin-bottom: 14px;
+}
+
+#players-sidebar .sidebar-title-row .sidebar-toggle-btn {
+  display: none !important;
+}
+
+#players-sidebar h2#sidebar-title {
+  margin: 0;
+  line-height: .95;
+}
+
+.character-list {
+  display: grid;
+  gap: 12px;
+}
+
+.character-pill.session-character {
+  grid-template-columns: 1fr !important;
+  align-items: stretch;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 18px;
+}
+
+.character-pill.session-character .session-char-top {
+  display: grid;
+  grid-template-columns: 62px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.character-pill.session-character .session-char-top img {
+  width: 62px;
+  height: 62px;
+  border-radius: 16px;
+  object-fit: cover;
+}
+
+.character-pill.session-character .session-char-info {
+  min-width: 0;
+}
+
+.character-pill.session-character .session-char-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+}
+
+.character-pill.session-character .session-char-badges span {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  background: color-mix(in srgb, var(--paper, #fff) 82%, transparent);
+  font-size: .76rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+body.dark-sheet .character-pill.session-character .session-char-badges span,
+body[data-theme="dark"] .character-pill.session-character .session-char-badges span,
+.dark .character-pill.session-character .session-char-badges span {
+  background: rgba(255,255,255,.06);
+}
+
+.character-pill.session-character .session-char-name {
+  display: block;
+  margin-top: 8px;
+  font-size: 1.05rem;
+  line-height: 1.05;
+}
+
+.character-pill.session-character .session-char-footer,
+.character-pill.session-character .session-char-owner {
+  display: block;
+  line-height: 1.2;
+}
+
+.character-pill.session-character .session-char-footer {
+  opacity: .82;
+  font-size: .84rem;
+}
+
+.character-pill.session-character .session-char-owner {
+  opacity: .66;
+  font-size: .78rem;
+}
+
+.character-pill.session-character.readonly::after {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  content: "Público";
+  font-size: 11px;
+  opacity: .7;
+}
+
+.dice-row {
+  grid-template-columns: auto minmax(90px, 1fr) 76px 76px;
+  align-items: center;
+}
+
+.dice-select-visual {
+  width: 38px;
+  height: 38px;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--paper, #fff) 90%, transparent);
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+}
+
+body.dark-sheet .dice-select-visual,
+body[data-theme="dark"] .dice-select-visual,
+.dark .dice-select-visual {
+  background: rgba(0,0,0,.45);
+  border-color: rgba(255,255,255,.16);
+}
+
+.dice-icon {
+  --dice-mask: none;
+  width: 1.18em;
+  height: 1.18em;
+  display: inline-block;
+  background: currentColor;
+  -webkit-mask: var(--dice-mask) center / contain no-repeat;
+  mask: var(--dice-mask) center / contain no-repeat;
+  flex: 0 0 auto;
+}
+
+.dice-icon.d4 { --dice-mask: url('assets/dice-d4.png'); }
+.dice-icon.d6 { --dice-mask: url('assets/dice-d6.png'); }
+.dice-icon.d8 { --dice-mask: url('assets/dice-d8.png'); }
+.dice-icon.d10 { --dice-mask: url('assets/dice-d10.png'); }
+.dice-icon.d12 { --dice-mask: url('assets/dice-d12.png'); }
+.dice-icon.d20 { --dice-mask: url('assets/dice-d20.png'); }
+.dice-icon.d100 { --dice-mask: url('assets/dice-d10.png'); }
+
+.dice-button-inline,
+.dice-notation,
+.dice-chip-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dice-button-inline span:last-child,
+.dice-chip-inline span:last-child {
+  line-height: 1;
+}
+
+.roll-skill {
+  min-width: 70px;
+}
+
+.roll-skill .dice-icon {
+  width: 1.05em;
+  height: 1.05em;
+}
+
+.roll-result-main .dice-notation {
+  font-size: 1.08rem;
+  font-weight: 800;
+}
+
+.roll-result-main .dice-notation .dice-icon {
+  width: 1.2em;
+  height: 1.2em;
+}
+
+.sessions-sheet-toggle.icon-only,
+#sidebar-dock-btn.icon-only {
+  font-size: 0;
+}
+
+@media (max-width: 1180px) {
+  #players-sidebar {
+    margin-top: 74px;
+  }
+}
+
+@media (max-width: 860px) {
+  #players-sidebar {
+    margin-top: 0;
+  }
+
+  #sidebar-dock-btn {
+    display: none !important;
+  }
+
+  .dice-row {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .dice-select-visual {
+    display: none;
+  }
+}

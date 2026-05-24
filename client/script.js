@@ -4087,3 +4087,313 @@ setTimeout(od46SyncSidebarDockButton, 120);
     applySettings();
   }, 120);
 })();
+
+
+/* =========================
+   V53 - redesign de Minhas Fichas, ícones temáticos e sons dedicados
+========================= */
+(function od53Patch(){
+  const DICE_ICON_CLASS = { 4: 'd4', 6: 'd6', 8: 'd8', 10: 'd10', 12: 'd12', 20: 'd20', 100: 'd100' };
+  const ROLL_SOUND_SRC = 'assets/dice-roll.mp3';
+  let rollAudioReady = false;
+  let rollAudio = null;
+  let audioCtx = null;
+
+  function od53PaperIcon() {
+    return `<span class="paper-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 3.5h7l4.5 4.5V20a1.5 1.5 0 0 1-1.5 1.5h-10A1.5 1.5 0 0 1 5.5 20V5A1.5 1.5 0 0 1 7 3.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M14 3.5V8h4.5" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8.5 11.5h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M8.5 15h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M8.5 18.5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>`;
+  }
+
+  function od53DiceIconHtml(sides, withLabel = true) {
+    const num = Number(sides || 20);
+    const cls = DICE_ICON_CLASS[num] || 'd20';
+    return `<span class="dice-chip-inline"><span class="dice-icon ${cls}" aria-hidden="true"></span>${withLabel ? `<span>D${escapeHtml(num)}</span>` : ''}</span>`;
+  }
+
+  function od53ResumeAudioCtx() {
+    try {
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx?.state === 'suspended') audioCtx.resume().catch(() => {});
+      return audioCtx;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function od53PlayTone(kind = 'up') {
+    const st = get(STORAGE.settings, { sound: true });
+    if (st.sound === false) return;
+    const ctx = od53ResumeAudioCtx();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = kind === 'down' ? 'sawtooth' : 'triangle';
+    osc.frequency.setValueAtTime(kind === 'down' ? 360 : 420, now);
+    osc.frequency.exponentialRampToValueAtTime(kind === 'down' ? 240 : 620, now + 0.12);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.035, now + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.14);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.15);
+  }
+
+  function od53PrepareRollAudio() {
+    if (rollAudioReady) return;
+    rollAudioReady = true;
+    try {
+      rollAudio = new Audio(ROLL_SOUND_SRC);
+      rollAudio.preload = 'auto';
+      rollAudio.volume = 0.78;
+    } catch (_) {
+      rollAudio = null;
+    }
+  }
+
+  function od53PlayRollSound() {
+    const st = get(STORAGE.settings, { sound: true });
+    if (st.sound === false) return;
+    od53PrepareRollAudio();
+    if (rollAudio) {
+      try {
+        const instance = rollAudio.cloneNode();
+        instance.volume = rollAudio.volume;
+        instance.play().catch(() => od53PlayTone('up'));
+        return;
+      } catch (_) {}
+    }
+    od53PlayTone('up');
+  }
+
+  function od53NormalizeQuickResource(char, resource) {
+    if (!char) return 0;
+    return Number(resource === 'pe' ? char.peCurrent : char.pvCurrent || 0);
+  }
+
+  function od53PlayResourceDelta(beforeValue, afterValue) {
+    const before = Number(beforeValue || 0);
+    const after = Number(afterValue || 0);
+    if (after > before) od53PlayTone('up');
+    else if (after < before) od53PlayTone('down');
+  }
+
+  function od53InjectDiceVisual() {
+    const row = document.querySelector('.dice-row');
+    const select = document.getElementById('dice-type');
+    if (!row || !select) return;
+    let visual = document.getElementById('dice-type-visual');
+    if (!visual) {
+      visual = document.createElement('div');
+      visual.id = 'dice-type-visual';
+      visual.className = 'dice-select-visual';
+      visual.setAttribute('aria-hidden', 'true');
+      row.insertBefore(visual, select);
+    }
+    visual.innerHTML = od53DiceIconHtml(select.value, false);
+    select.querySelectorAll('option').forEach(opt => { opt.textContent = `D${opt.value}`; });
+  }
+
+  function od53UpdateDiceVisual() {
+    const visual = document.getElementById('dice-type-visual');
+    const select = document.getElementById('dice-type');
+    if (!visual || !select) return;
+    visual.innerHTML = od53DiceIconHtml(select.value, false);
+  }
+
+  function od53ApplyButtonIcons() {
+    const accountToggle = document.getElementById('toggle-account-panel-btn');
+    if (accountToggle) {
+      accountToggle.classList.add('icon-only');
+      accountToggle.innerHTML = od53PaperIcon();
+      accountToggle.setAttribute('aria-label', 'Abrir ou fechar minhas fichas');
+      accountToggle.title = 'Abrir ou fechar minhas fichas';
+    }
+
+    const sidebarDock = document.getElementById('sidebar-dock-btn');
+    if (sidebarDock) {
+      sidebarDock.classList.add('icon-only');
+      sidebarDock.innerHTML = od53PaperIcon();
+      sidebarDock.setAttribute('aria-label', document.body.classList.contains('sidebar-collapsed') ? 'Abrir minhas fichas' : 'Fechar minhas fichas');
+      sidebarDock.title = document.body.classList.contains('sidebar-collapsed') ? 'Abrir minhas fichas' : 'Fechar minhas fichas';
+      sidebarDock.classList.toggle('is-open', !document.body.classList.contains('sidebar-collapsed'));
+    }
+
+    const sidebarTitle = document.getElementById('sidebar-title');
+    if (sidebarTitle) sidebarTitle.textContent = 'Minhas Fichas';
+  }
+
+  const od53SyncSidebarDockBase = typeof od46SyncSidebarDockButton === 'function' ? od46SyncSidebarDockButton : null;
+  od46SyncSidebarDockButton = function() {
+    if (od53SyncSidebarDockBase) od53SyncSidebarDockBase();
+    const dock = document.getElementById('sidebar-dock-btn');
+    if (!dock) return;
+    const mobile = window.innerWidth <= 860;
+    dock.classList.toggle('hidden', mobile);
+    dock.classList.toggle('is-open', !document.body.classList.contains('sidebar-collapsed'));
+    dock.setAttribute('aria-expanded', String(!document.body.classList.contains('sidebar-collapsed')));
+    dock.setAttribute('aria-label', document.body.classList.contains('sidebar-collapsed') ? 'Abrir minhas fichas' : 'Fechar minhas fichas');
+    dock.title = document.body.classList.contains('sidebar-collapsed') ? 'Abrir minhas fichas' : 'Fechar minhas fichas';
+    od53ApplyButtonIcons();
+  };
+
+  document.addEventListener('click', event => {
+    const dock = event.target.closest('#sidebar-dock-btn');
+    if (dock) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const isCollapsed = document.body.classList.contains('sidebar-collapsed');
+      od46SetSidebarCollapsed(!isCollapsed);
+      if (isCollapsed) document.getElementById('players-sidebar')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      od46SyncSidebarDockButton();
+      return;
+    }
+
+    const accountToggle = event.target.closest('#toggle-account-panel-btn');
+    if (accountToggle) {
+      setTimeout(od53ApplyButtonIcons, 0);
+    }
+  }, true);
+
+  document.addEventListener('change', event => {
+    if (event.target.closest('#dice-type')) {
+      od53UpdateDiceVisual();
+    }
+  }, true);
+
+  document.addEventListener('pointerdown', () => {
+    od53PrepareRollAudio();
+    od53ResumeAudioCtx();
+  }, { capture: true, once: true });
+
+  const od53RenderSkillsBase = renderSkills;
+  renderSkills = function(char) {
+    od53RenderSkillsBase(char);
+    document.querySelectorAll('.roll-skill').forEach(btn => {
+      btn.innerHTML = `<span class="dice-button-inline">${od53DiceIconHtml(20, false)}<span>D20</span></span>`;
+    });
+    od53InjectDiceVisual();
+  };
+
+  const od53DoRollBase = doRoll;
+  doRoll = function(label, qty, sides, mod = 0) {
+    od53PlayRollSound();
+    const r = roll(qty, sides, mod);
+    const notationText = `${Number(qty || 1)}d${Number(sides || 20)}${Number(mod) ? formatMod(Number(mod)) : ''}`;
+    const resultList = r.results.join(', ');
+    const last = byId('last-roll');
+    if (last) {
+      last.innerHTML = `
+        <div class="roll-result-card">
+          <div class="roll-result-title">${escapeHtml(label)}</div>
+          <div class="roll-result-main">
+            <span class="dice-notation"><span>${escapeHtml(Number(qty || 1))}</span>${od53DiceIconHtml(sides, false)}${Number(mod) ? `<span>${escapeHtml(formatMod(Number(mod)))}</span>` : ''}</span>
+            <strong class="roll-result-total">${escapeHtml(r.total)}</strong>
+          </div>
+          <div class="roll-result-detail">${escapeHtml(notationText)} • Resultado dos dados: [${escapeHtml(resultList)}]</div>
+        </div>`;
+      last.classList.remove('shake');
+      void last.offsetWidth;
+      last.classList.add('shake');
+    }
+    addChat(`${label}: ${notationText} → [${resultList}] = ${r.total}`, 'roll');
+    if (String(label).toLowerCase().includes('iniciativa')) v35RecordInitiativeFromRoll(r.total);
+    return r;
+  };
+
+  renderCharacterList = function() {
+    const list = document.getElementById('character-list');
+    if (!list) return;
+    const chars = charactersInCurrentCampaign();
+    const members = getMembers().filter(m => m.campaignId === currentCampaignId);
+    const users = get(STORAGE.users, []);
+    list.innerHTML = '';
+    if (!chars.length) {
+      list.innerHTML = `<div class="campaign-empty">Nenhuma ficha escolhida nesta mesa.</div>`;
+      od53ApplyButtonIcons();
+      return;
+    }
+    chars.forEach(char => {
+      const member = members.find(m => m.characterId === char.id);
+      const user = users.find(u => u.id === member?.userId);
+      const editable = canOpenCharacter(char);
+      const el = document.createElement('div');
+      el.className = `character-pill session-character ${char.id === currentCharacterId ? 'active' : ''} ${editable ? '' : 'readonly'}`;
+      const race = char.race || 'Raça';
+      const cls = char.className || 'Classe';
+      const lvl = `Nv. ${char.level || 1}`;
+      el.innerHTML = `
+        <div class="session-char-top">
+          <img src="${escapeHtml(char.portrait || 'assets/logo.jpg')}" alt="" />
+          <div class="session-char-info">
+            <div class="session-char-badges">
+              <span>${escapeHtml(race)}</span>
+              <span>${escapeHtml(cls)}</span>
+              <span>${escapeHtml(lvl)}</span>
+            </div>
+            <strong class="session-char-name">${escapeHtml(char.name || 'Personagem')}</strong>
+          </div>
+        </div>
+        <span class="session-char-footer">PV ${escapeHtml(v35ResourceText(char.pvCurrent, char.pvMax))} • PE ${escapeHtml(v35ResourceText(char.peCurrent, char.peMax))}</span>
+        <small class="session-char-owner">${escapeHtml(userDisplayName(user))} • ${escapeHtml(v35CharCondition(char))}</small>`;
+      if (editable) {
+        el.onclick = () => {
+          saveCurrentCharacter();
+          currentCharacterId = char.id;
+          loadCharacter(char.id);
+          if (v35IsMaster()) document.body.classList.add('master-sheet-open');
+          renderTableExperience();
+        };
+      }
+      list.appendChild(el);
+    });
+    od53ApplyButtonIcons();
+  };
+
+  const od53V35UpdateCharacterBase = v35UpdateCharacter;
+  v35UpdateCharacter = function(charId, mutator, logText = '') {
+    const beforeChar = get(STORAGE.characters, []).find(c => c.id === charId);
+    const beforePv = Number(beforeChar?.pvCurrent || 0);
+    const beforePe = Number(beforeChar?.peCurrent || 0);
+    od53V35UpdateCharacterBase(charId, mutator, logText);
+    const afterChar = get(STORAGE.characters, []).find(c => c.id === charId);
+    od53PlayResourceDelta(beforePv, Number(afterChar?.pvCurrent || 0));
+    od53PlayResourceDelta(beforePe, Number(afterChar?.peCurrent || 0));
+  };
+
+  const od53UseAbilityCardBase = useAbilityCard;
+  useAbilityCard = function(card) {
+    const before = currentChar() ? { pv: Number(currentChar().pvCurrent || 0), pe: Number(currentChar().peCurrent || 0) } : { pv: 0, pe: 0 };
+    od53UseAbilityCardBase(card);
+    const after = currentChar() ? { pv: Number(currentChar().pvCurrent || 0), pe: Number(currentChar().peCurrent || 0) } : { pv: 0, pe: 0 };
+    od53PlayResourceDelta(before.pv, after.pv);
+    od53PlayResourceDelta(before.pe, after.pe);
+  };
+
+  const od53SaveCurrentCharacterBase = saveCurrentCharacter;
+  saveCurrentCharacter = function() {
+    const before = currentChar() ? { pv: Number(currentChar().pvCurrent || 0), pe: Number(currentChar().peCurrent || 0) } : { pv: 0, pe: 0 };
+    od53SaveCurrentCharacterBase();
+    const after = currentChar() ? { pv: Number(currentChar().pvCurrent || 0), pe: Number(currentChar().peCurrent || 0) } : { pv: 0, pe: 0 };
+    od53PlayResourceDelta(before.pv, after.pv);
+    od53PlayResourceDelta(before.pe, after.pe);
+  };
+
+  const od53ApplySettingsBase = applySettings;
+  applySettings = function() {
+    od53ApplySettingsBase();
+    od53ApplyButtonIcons();
+    od53InjectDiceVisual();
+    od53UpdateDiceVisual();
+  };
+
+  setTimeout(() => {
+    od53ApplyButtonIcons();
+    od53InjectDiceVisual();
+    od53UpdateDiceVisual();
+    document.getElementById('sidebar-title')?.setAttribute('title', 'Minhas Fichas');
+    od46SyncSidebarDockButton();
+    if (currentChar()) renderSkills(currentChar());
+    renderCharacterList();
+  }, 160);
+})();
