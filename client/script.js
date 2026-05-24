@@ -931,7 +931,8 @@ function events() {
   document.querySelectorAll(".tab-btn").forEach(btn => btn.onclick = () => {
     document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
     document.querySelectorAll(".auth-form").forEach(f => f.classList.remove("active"));
-    btn.classList.add("active"); byId(`${btn.dataset.auth}-form`).classList.add("active");
+    btn.classList.add("active");
+    byId(`${btn.dataset.auth}-form`)?.classList.add("active");
   });
   byId("login-form").onsubmit = e => { e.preventDefault(); login(byId("login-nick").value, byId("login-password").value); };
   byId("register-form").onsubmit = e => {
@@ -953,31 +954,41 @@ function events() {
     setSessionValue(user.id);
     showSessions();
   };
-  byId("logout-btn").onclick = () => { saveCurrentCharacter(); showSessions(); };
-  byId("theme-toggle").onclick = () => updateSettings(st => st.theme = st.theme === "dark" ? "light" : "dark");
-  byId("accent-select").onchange = e => updateSettings(st => st.accent = e.target.value);
-  byId("font-select").onchange = e => updateSettings(st => st.font = e.target.value);
-  byId("compact-skills-toggle").onclick = () => {
+  const logoutBtn = byId("logout-btn");
+  if (logoutBtn) logoutBtn.onclick = () => { saveCurrentCharacter(); showSessions(); };
+  const themeBtn = byId("theme-toggle");
+  if (themeBtn) themeBtn.onclick = () => updateSettings(st => st.theme = st.theme === "dark" ? "light" : "dark");
+  const accentSelect = byId("accent-select");
+  if (accentSelect) accentSelect.onchange = e => updateSettings(st => st.accent = e.target.value);
+  const fontSelect = byId("font-select");
+  if (fontSelect) fontSelect.onchange = e => updateSettings(st => st.font = e.target.value);
+  const compactSkillsToggle = byId("compact-skills-toggle");
+  if (compactSkillsToggle) compactSkillsToggle.onclick = () => {
     updateSettings(st => st.skillsCompact = !st.skillsCompact);
     const char = currentChar();
     if (char) renderSkills(char);
   };
-  byId("portrait-button").onclick = () => {
+  const portraitButton = byId("portrait-button");
+  if (portraitButton) portraitButton.onclick = () => {
     byId("portrait-modal-url").value = byId("portrait-url").value;
     byId("portrait-modal").showModal();
   };
-  byId("save-portrait-url").onclick = () => {
+  const savePortraitUrlBtn = byId("save-portrait-url");
+  if (savePortraitUrlBtn) savePortraitUrlBtn.onclick = () => {
     byId("portrait-url").value = byId("portrait-modal-url").value.trim();
     saveCurrentCharacter();
     byId("portrait-modal").close();
   };
   setupTopbarMenu();
-  byId("new-character-btn").onclick = () => { saveCurrentCharacter(); const chars = get(STORAGE.characters, []); const char = createCharacter(currentUser.id); chars.push(char); set(STORAGE.characters, chars); currentCharacterId = char.id; initApp(); };
-  byId("overlay-btn").onclick = () => { saveCurrentCharacter(); document.getElementById("app-screen").classList.remove("active"); document.getElementById("overlay-screen").classList.add("active"); updateOverlay(currentChar()); };
-  byId("close-overlay").onclick = showApp;
-  document.addEventListener("input", e => { if (document.getElementById("app-screen").classList.contains("active")) queueSave(); });
+  const newCharacterBtn = byId("new-character-btn");
+  if (newCharacterBtn) newCharacterBtn.onclick = () => { saveCurrentCharacter(); const chars = get(STORAGE.characters, []); const char = createCharacter(currentUser.id); chars.push(char); set(STORAGE.characters, chars); currentCharacterId = char.id; initApp(); };
+  const overlayBtn = byId("overlay-btn");
+  if (overlayBtn) overlayBtn.onclick = () => { saveCurrentCharacter(); document.getElementById("app-screen")?.classList.remove("active"); document.getElementById("overlay-screen")?.classList.add("active"); updateOverlay(currentChar()); };
+  const closeOverlayBtn = byId("close-overlay");
+  if (closeOverlayBtn) closeOverlayBtn.onclick = showApp;
+  document.addEventListener("input", e => { if (document.getElementById("app-screen")?.classList.contains("active")) queueSave(); });
   document.addEventListener("change", e => {
-    if (!document.getElementById("app-screen").classList.contains("active")) return;
+    if (!document.getElementById("app-screen")?.classList.contains("active")) return;
     saveCurrentCharacter();
     const char = currentChar();
     if (char) { renderAttributes(char); renderSkills(char); updateBars(char); updateOverlay(char); updateDerivedStatsDisplay(char); applySettings(); }
@@ -985,10 +996,12 @@ function events() {
   document.querySelectorAll(".sheet-tab").forEach(btn => btn.onclick = () => {
     document.querySelectorAll(".sheet-tab").forEach(b => b.classList.remove("active"));
     document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
-    btn.classList.add("active"); byId(`tab-${btn.dataset.tab}`).classList.add("active");
+    btn.classList.add("active"); byId(`tab-${btn.dataset.tab}`)?.classList.add("active");
   });
-  byId("add-attack").onclick = () => { addAttackCard(); queueSave(); };
-  byId("add-spell").onclick = () => { addSpellCard(); queueSave(); };
+  const addAttackBtn = byId("add-attack");
+  if (addAttackBtn) addAttackBtn.onclick = () => { addAttackCard(); queueSave(); };
+  const addSpellBtn = byId("add-spell");
+  if (addSpellBtn) addSpellBtn.onclick = () => { addSpellCard(); queueSave(); };
   if (byId("add-ability")) byId("add-ability").onclick = () => { addAbilityCard(); queueSave(); };
   if (byId("toggle-ability-desc")) byId("toggle-ability-desc").onclick = () => {
     saveCurrentCharacter();
@@ -1033,7 +1046,8 @@ function events() {
     renderSimpleInventory(currentChar());
     saveCurrentCharacter();
   });
-  byId("block-inventory-toggle").onclick = () => {
+  const blockInventoryToggle = byId("block-inventory-toggle");
+  if (blockInventoryToggle) blockInventoryToggle.onclick = () => {
     saveCurrentCharacter();
     updateChar(char => char.blockInventoryMode = !char.blockInventoryMode);
     applyInventoryMode(currentChar());
@@ -1124,8 +1138,10 @@ function events() {
       if (critExpr) addChat(`Crítico de ${card.querySelector(".attack-name").value || "Ataque"}: ${critExpr}`, "roll");
     }
   });
-  byId("roll-dice").onclick = () => doRoll("Rolagem livre", Number(byId("dice-qty").value || 1), Number(byId("dice-type").value), Number(byId("dice-mod").value || 0));
-  byId("chat-form").onsubmit = e => { e.preventDefault(); const input = byId("chat-input"); if (!input.value.trim()) return; addChat(input.value.trim()); input.value = ""; };
+  const rollDiceBtn = byId("roll-dice");
+  if (rollDiceBtn) rollDiceBtn.onclick = () => doRoll("Rolagem livre", Number(byId("dice-qty")?.value || 1), Number(byId("dice-type")?.value || 20), Number(byId("dice-mod")?.value || 0));
+  const chatForm = byId("chat-form");
+  if (chatForm) chatForm.onsubmit = e => { e.preventDefault(); const input = byId("chat-input"); if (!input?.value.trim()) return; addChat(input.value.trim()); input.value = ""; };
 }
 
 /* =========================
