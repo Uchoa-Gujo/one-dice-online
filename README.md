@@ -1,4 +1,4 @@
-# One Dice Online v0.41
+# One Dice Online v0.51
 
 Esta versão é a primeira base preparada para servidor.
 
