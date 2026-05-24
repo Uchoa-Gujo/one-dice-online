@@ -203,11 +203,12 @@
 
       <section class="sheet-area reveal">
         <div class="sheet manga-panel">
-          <button id="mobile-identity-toggle" class="mobile-identity-toggle" type="button">
-            <span>Identidade do Personagem</span>
-            <strong>+</strong>
-          </button>
-          <div class="sheet-header" id="mobile-identity-panel">
+          <details class="mobile-identity-details" open>
+            <summary class="mobile-identity-summary">
+              <span>Identidade do Personagem</span>
+              <strong>abrir / fechar</strong>
+            </summary>
+            <div class="sheet-header" id="mobile-identity-panel">
             <div class="portrait-wrap">
               <button id="portrait-button" class="portrait-button" title="Clique para trocar o retrato" type="button">
                 <img id="char-portrait-preview" src="" alt="Retrato" />
@@ -226,6 +227,7 @@
               <label>Deslocamento<input id="char-speed" type="text" /></label>
             </div>
           </div>
+          </details>
 
           <div class="vitals-grid">
             <div class="vital-card pv-card">
