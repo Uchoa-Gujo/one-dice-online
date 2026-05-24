@@ -4397,3 +4397,103 @@ setTimeout(od46SyncSidebarDockButton, 120);
     renderCharacterList();
   }, 160);
 })();
+
+/* =========================
+   V54 - persistência dos ícones, minimizar fichas e loading visual
+========================= */
+(function od54Patch(){
+  function paperIconSvg() {
+    return `<span class="paper-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 3.5h7l4.5 4.5V20a1.5 1.5 0 0 1-1.5 1.5h-10A1.5 1.5 0 0 1 5.5 20V5A1.5 1.5 0 0 1 7 3.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M14 3.5V8h4.5" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M8.5 11.5h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M8.5 15h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M8.5 18.5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>`;
+  }
+
+  function restorePaperButtons() {
+    const accountBtn = document.getElementById('toggle-account-panel-btn');
+    if (accountBtn && !accountBtn.querySelector('svg')) {
+      accountBtn.classList.add('icon-only');
+      accountBtn.innerHTML = paperIconSvg();
+      accountBtn.title = 'Abrir ou fechar Minhas Fichas';
+      accountBtn.setAttribute('aria-label', 'Abrir ou fechar Minhas Fichas');
+    }
+    const dockBtn = document.getElementById('sidebar-dock-btn');
+    if (dockBtn && !dockBtn.querySelector('svg')) {
+      dockBtn.classList.add('icon-only');
+      dockBtn.innerHTML = paperIconSvg();
+    }
+    if (dockBtn) {
+      dockBtn.classList.toggle('is-open', !document.body.classList.contains('sidebar-collapsed'));
+      dockBtn.classList.toggle('hidden', window.innerWidth <= 860);
+      dockBtn.title = document.body.classList.contains('sidebar-collapsed') ? 'Abrir Minhas Fichas' : 'Fechar Minhas Fichas';
+      dockBtn.setAttribute('aria-label', dockBtn.title);
+    }
+    const sessionsBtn = document.getElementById('sessions-menu-btn');
+    if (sessionsBtn) {
+      if (sessionsBtn.textContent.trim() !== '☰') sessionsBtn.textContent = '☰';
+      if (sessionsBtn.getAttribute('aria-label') !== 'Abrir menu') sessionsBtn.setAttribute('aria-label', 'Abrir menu');
+    }
+    const sideTitle = document.getElementById('sidebar-title');
+    if (sideTitle) sideTitle.textContent = 'Minhas Fichas';
+  }
+
+  const originalRenderCharacterList = renderCharacterList;
+  renderCharacterList = function() {
+    originalRenderCharacterList();
+    restorePaperButtons();
+  };
+
+  const originalRenderAccountCharacterMenu = renderAccountCharacterMenu;
+  renderAccountCharacterMenu = function() {
+    originalRenderAccountCharacterMenu();
+    restorePaperButtons();
+  };
+
+  const originalApplySettings = applySettings;
+  applySettings = function() {
+    originalApplySettings();
+    restorePaperButtons();
+  };
+
+  const originalOd46Set = typeof od46SetSidebarCollapsed === 'function' ? od46SetSidebarCollapsed : null;
+  od46SetSidebarCollapsed = function(nextState) {
+    if (originalOd46Set) originalOd46Set(nextState);
+    document.body.classList.toggle('sidebar-collapsed', !!nextState && window.innerWidth > 860);
+    restorePaperButtons();
+  };
+
+  document.addEventListener('click', event => {
+    const sidebarToggle = event.target.closest('#sidebar-toggle-btn');
+    if (sidebarToggle) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      od46SetSidebarCollapsed(true);
+      return;
+    }
+    const dockBtn = event.target.closest('#sidebar-dock-btn');
+    if (dockBtn) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      od46SetSidebarCollapsed(document.body.classList.contains('sidebar-collapsed') ? false : true);
+      return;
+    }
+  }, true);
+
+  function withLoading(button, ms = 450) {
+    if (!button) return;
+    button.classList.add('is-loading');
+    setTimeout(() => button.classList.remove('is-loading'), ms);
+  }
+
+  document.addEventListener('click', event => {
+    const action = event.target.closest('#create-campaign-btn, #join-campaign-btn, [data-enter-campaign], [data-choose-character], #create-character-for-campaign, #confirm-create-first-sheet');
+    if (action) withLoading(action, 520);
+  }, true);
+
+  const observer = new MutationObserver(() => restorePaperButtons());
+  ['toggle-account-panel-btn', 'sidebar-dock-btn', 'sessions-menu-btn'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el, { childList: true, characterData: true, subtree: true, attributes: true });
+  });
+
+  setInterval(restorePaperButtons, 900);
+  setTimeout(restorePaperButtons, 80);
+  setTimeout(restorePaperButtons, 250);
+})();

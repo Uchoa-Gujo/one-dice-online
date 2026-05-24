@@ -4629,3 +4629,321 @@ body[data-theme="dark"] .dice-select-visual,
     display: none;
   }
 }
+
+/* =========================
+   V54 - acabamento: menu, fichas, perícias e microanimações
+========================= */
+@keyframes od54FadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes od54PulseBorder {
+  0%, 100% { box-shadow: 6px 6px 0 rgba(0,0,0,.22), 0 0 0 rgba(var(--accent-rgb, 190 32 42), 0); }
+  50% { box-shadow: 6px 6px 0 rgba(0,0,0,.22), 0 0 18px rgba(var(--accent-rgb, 190 32 42), .16); }
+}
+@keyframes od54LoadingSweep {
+  0% { transform: translateX(-120%); opacity: 0; }
+  35% { opacity: .45; }
+  100% { transform: translateX(120%); opacity: 0; }
+}
+
+.manga-panel,
+.session-action-box,
+.campaign-card,
+.account-character-card,
+.master-character-card,
+.public-character-card,
+.sheet,
+.dice-box,
+.chat-box {
+  animation: od54FadeUp .22s ease both;
+}
+
+.manga-panel {
+  position: relative;
+}
+.manga-panel::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(110deg, transparent 0 42%, rgba(255,255,255,.11) 50%, transparent 58%);
+  transform: translateX(-120%);
+  opacity: 0;
+}
+.manga-panel:hover::after {
+  animation: od54LoadingSweep 1.2s ease;
+}
+
+/* Botões quadrados sem quina cortada e com ícone centralizado */
+.sessions-menu-btn,
+.sessions-sheet-toggle,
+#main-topbar .topbar-menu-toggle,
+.sidebar-toggle-btn,
+.sidebar-dock-btn,
+#sidebar-dock-btn {
+  border-radius: 14px !important;
+  clip-path: none !important;
+  overflow: hidden !important;
+  position: relative;
+  display: grid !important;
+  place-items: center !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  box-sizing: border-box !important;
+}
+
+.sessions-menu-btn {
+  text-indent: -9999px !important;
+  color: #fff !important;
+  background: color-mix(in srgb, var(--accent) 92%, #000 8%) !important;
+  border: 3px solid color-mix(in srgb, var(--accent), #fff 14%) !important;
+  box-shadow: 4px 4px 0 rgba(0,0,0,.22) !important;
+}
+.sessions-menu-btn::before,
+#main-topbar.collapsed .topbar-menu-toggle::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  margin: auto !important;
+  width: 20px !important;
+  height: 16px !important;
+  background:
+    linear-gradient(#fff 0 0) top center / 20px 3px no-repeat,
+    linear-gradient(#fff 0 0) center center / 20px 3px no-repeat,
+    linear-gradient(#fff 0 0) bottom center / 20px 3px no-repeat !important;
+  transform: none !important;
+}
+.sessions-menu-btn::after,
+.sessions-sheet-toggle::after,
+#main-topbar .topbar-menu-toggle::after,
+.sidebar-dock-btn::after,
+#sidebar-dock-btn::after {
+  display: none !important;
+}
+#main-topbar:not(.collapsed) .topbar-menu-toggle {
+  color: #fff !important;
+  text-indent: 0 !important;
+}
+#main-topbar.collapsed .topbar-menu-toggle {
+  color: transparent !important;
+  text-indent: -9999px !important;
+}
+
+.paper-icon,
+.paper-icon svg {
+  width: 22px !important;
+  height: 22px !important;
+  display: block !important;
+  color: currentColor !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+.paper-icon svg { overflow: visible; }
+
+.sessions-sheet-toggle {
+  background: color-mix(in srgb, var(--paper, #fff) 88%, transparent) !important;
+  color: var(--accent) !important;
+  border: 3px solid var(--accent) !important;
+  box-shadow: 4px 4px 0 rgba(0,0,0,.2) !important;
+}
+body.dark-sheet .sessions-sheet-toggle {
+  background: rgba(0,0,0,.58) !important;
+  color: #fff !important;
+}
+
+/* Minhas fichas do menu inicial sempre abaixo dos botões e alinhado */
+.sessions-head-actions {
+  display: grid !important;
+  grid-template-columns: 56px !important;
+  grid-auto-rows: 50px !important;
+  gap: 10px !important;
+  align-items: start !important;
+  justify-items: center !important;
+}
+.sessions-head-actions > button {
+  width: 56px !important;
+  height: 50px !important;
+}
+.sessions-menu-panel {
+  grid-row: 1 / span 2 !important;
+  align-self: start !important;
+}
+
+/* Minhas Fichas interno: painel abaixo do botão e com botão de minimizar visível */
+#players-sidebar {
+  margin-top: 82px !important;
+  border-radius: 22px !important;
+  animation: od54FadeUp .24s ease both, od54PulseBorder 3.8s ease-in-out infinite;
+}
+#players-sidebar .sidebar-toggle-btn {
+  display: grid !important;
+  width: 38px !important;
+  height: 38px !important;
+  background: color-mix(in srgb, var(--paper, #fff) 88%, transparent) !important;
+  color: var(--accent) !important;
+  border: 2px solid var(--accent) !important;
+}
+body.dark-sheet #players-sidebar .sidebar-toggle-btn {
+  background: rgba(0,0,0,.5) !important;
+  color: #fff !important;
+}
+#players-sidebar .sidebar-toggle-btn::before {
+  content: "—";
+  font-size: 22px;
+  line-height: 1;
+  color: currentColor;
+}
+#players-sidebar .sidebar-toggle-btn { font-size: 0 !important; }
+body.sidebar-collapsed #players-sidebar { display: none !important; }
+body.sidebar-collapsed #sidebar-dock-btn,
+#sidebar-dock-btn:not(.hidden) {
+  display: grid !important;
+}
+#sidebar-dock-btn {
+  top: calc(100% + 12px) !important;
+  right: 0 !important;
+  background: color-mix(in srgb, var(--accent) 92%, #000 8%) !important;
+  color: #fff !important;
+  border: 3px solid color-mix(in srgb, var(--accent), #fff 14%) !important;
+  box-shadow: 4px 4px 0 rgba(0,0,0,.22) !important;
+}
+#sidebar-dock-btn.is-open {
+  background: color-mix(in srgb, var(--paper, #fff) 90%, transparent) !important;
+  color: var(--accent) !important;
+}
+
+/* Card interno de personagem em minhas fichas */
+.character-pill.session-character {
+  border: 2px solid var(--accent) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.04), 4px 4px 0 rgba(0,0,0,.18);
+}
+.character-pill.session-character:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.04);
+}
+.character-pill.session-character .session-char-top {
+  grid-template-columns: 58px minmax(0, 1fr) !important;
+}
+.character-pill.session-character .session-char-name {
+  overflow-wrap: anywhere;
+}
+
+/* Perícias em cards sempre, tanto treinadas quanto mostrar todas */
+#skills-wrap {
+  border: none !important;
+  background: transparent !important;
+  overflow: visible !important;
+}
+#skills-wrap #skills-table,
+#skills-wrap #skills-table tbody,
+#skills-wrap #skills-table tr,
+#skills-wrap #skills-table td {
+  display: block !important;
+  border: 0 !important;
+}
+#skills-wrap #skills-table thead { display: none !important; }
+#skills-wrap #skills-table tbody {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(250px, 1fr)) !important;
+  gap: 10px !important;
+}
+#skills-wrap #skills-table tr {
+  display: grid !important;
+  grid-template-columns: 28px minmax(0, 1fr) 58px 72px !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 10px 12px !important;
+  border: 2px solid color-mix(in srgb, var(--accent) 62%, transparent) !important;
+  border-radius: 14px !important;
+  background: color-mix(in srgb, var(--paper, #fff) 84%, var(--accent) 5%) !important;
+  box-shadow: 3px 3px 0 rgba(0,0,0,.14);
+}
+body.dark-sheet #skills-wrap #skills-table tr {
+  background: rgba(0,0,0,.32) !important;
+}
+#skills-wrap #skills-table .col-attr,
+#skills-wrap #skills-table .col-mod,
+#skills-wrap #skills-table .col-bonus { display: none !important; }
+#skills-wrap #skills-table .skill-total {
+  text-align: center !important;
+  font-size: 1rem !important;
+  color: var(--accent) !important;
+  font-weight: 900 !important;
+}
+#skills-wrap #skills-table .col-roll { display: block !important; }
+#skills-wrap #skills-table .col-roll button {
+  width: 100% !important;
+  min-width: 60px !important;
+  padding: 7px 8px !important;
+}
+#skills-wrap #skills-table input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+#skills-wrap #skills-table .empty-trained-skills {
+  grid-column: 1 / -1 !important;
+}
+
+/* Ficha um pouco mais organizada */
+.sheet-header {
+  border-bottom: 2px solid color-mix(in srgb, var(--accent) 70%, transparent);
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+}
+.identity-grid label,
+.status-card,
+.attr-card,
+.res-card {
+  border-radius: 14px !important;
+}
+.tabs {
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+}
+.sheet-tab {
+  border-radius: 12px !important;
+  transition: transform .14s ease, filter .14s ease, background .18s ease;
+}
+.sheet-tab:hover,
+.primary-btn:hover,
+.ghost-btn:hover,
+.danger-btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+}
+.sheet-tab.active {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 34%, transparent), 4px 4px 0 rgba(0,0,0,.16);
+}
+
+/* Loading visual para ações rápidas */
+button.is-loading,
+.primary-btn.is-loading,
+.ghost-btn.is-loading {
+  pointer-events: none;
+  position: relative;
+  color: transparent !important;
+}
+button.is-loading::before,
+.primary-btn.is-loading::before,
+.ghost-btn.is-loading::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 18px;
+  height: 18px;
+  border: 3px solid rgba(255,255,255,.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .75s linear infinite;
+}
+
+@media (max-width: 860px) {
+  #players-sidebar { margin-top: 0 !important; }
+  #skills-wrap #skills-table tbody { grid-template-columns: 1fr !important; }
+  .sessions-head-actions { grid-template-columns: 48px !important; grid-auto-rows: 44px !important; }
+  .sessions-head-actions > button { width: 48px !important; height: 44px !important; }
+}
