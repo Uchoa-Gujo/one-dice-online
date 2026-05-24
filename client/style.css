@@ -4083,3 +4083,233 @@ body.dark-sheet .session-history-item { background: rgba(255,255,255,.07); }
   .sessions-head .sessions-logo { width: 92px; }
   .sessions-menu-panel { right: 0; min-width: min(260px, calc(100vw - 30px)); }
 }
+
+
+/* =========================
+   V52 - alinhamentos, menu, dados, perícias e sons
+========================= */
+.auth-card .main-logo {
+  mix-blend-mode: normal !important;
+  filter: none !important;
+  background: transparent !important;
+  opacity: 1 !important;
+}
+.sessions-head {
+  overflow: visible !important;
+}
+.sessions-head > div:first-child {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  align-items: center;
+  gap: 18px;
+}
+.sessions-head > div:first-child .eyebrow,
+.sessions-head > div:first-child h1,
+.sessions-head > div:first-child .subtitle {
+  grid-column: 2;
+}
+.sessions-head .sessions-logo {
+  grid-row: 1 / span 3;
+  grid-column: 1;
+  width: 92px !important;
+  height: 92px !important;
+  padding: 12px;
+  object-fit: contain;
+  background: rgba(255,255,255,.96) !important;
+  border-radius: 16px;
+  mix-blend-mode: normal !important;
+}
+.sessions-head-actions {
+  position: absolute !important;
+  top: 28px;
+  right: 28px;
+  display: grid !important;
+  gap: 10px;
+  justify-items: end;
+  z-index: 60;
+}
+.sessions-menu-btn,
+.sessions-sheet-toggle {
+  width: 56px;
+  height: 50px;
+  min-width: 56px !important;
+  display: grid;
+  place-items: center;
+  border-color: var(--accent, #111) !important;
+  background: rgba(0,0,0,.08);
+  color: var(--accent, #111);
+  font-size: 1.35rem;
+}
+body.dark-sheet .sessions-menu-btn,
+body.dark-sheet .sessions-sheet-toggle {
+  background: rgba(0,0,0,.42);
+  color: #fff;
+}
+.sessions-menu-panel {
+  top: 0 !important;
+  right: calc(100% + 12px) !important;
+  min-width: 290px !important;
+  text-transform: none;
+}
+.menu-setting-label {
+  font-family: Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  font-size: .72rem;
+  display: grid;
+  gap: 6px;
+}
+.menu-setting-label .accent-select { width: 100% !important; }
+.sessions-actions {
+  align-items: stretch;
+}
+.campaign-card, .account-character-card, .master-character-card, .public-character-card {
+  overflow: hidden;
+}
+.campaign-main {
+  min-width: 0;
+}
+.campaign-character-preview {
+  min-width: 0;
+  max-width: 280px;
+}
+.campaign-character-preview span,
+.account-character-card strong,
+.character-pill strong {
+  overflow-wrap: anywhere;
+}
+.master-character-card.v51-master-card, .account-character-card {
+  align-items: stretch;
+}
+.account-character-card {
+  grid-template-columns: 74px minmax(0, 1fr) !important;
+}
+.account-character-card img {
+  width: 58px !important;
+  height: 58px !important;
+}
+.account-character-actions {
+  flex-wrap: wrap;
+}
+.session-history-box.hidden { display: none !important; }
+.dice-symbol {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.35em;
+  height: 1.35em;
+  padding: 0 .18em;
+  margin: 0 .08em;
+  border: 2px solid currentColor;
+  border-radius: .32em;
+  font-size: .78em;
+  line-height: 1;
+  font-weight: 900;
+  color: var(--accent, currentColor);
+  vertical-align: .08em;
+  background: color-mix(in srgb, var(--accent, #111) 10%, transparent);
+}
+.last-roll {
+  display: grid !important;
+  place-items: stretch !important;
+  padding: 12px;
+  text-align: left !important;
+  font-size: 1rem !important;
+}
+.roll-result-card {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+}
+.roll-result-title {
+  font-size: .82rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  opacity: .78;
+}
+.roll-result-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 1.1rem;
+  font-weight: 900;
+}
+.roll-result-total {
+  font-size: 1.75rem;
+  color: var(--accent, #111);
+}
+.roll-result-detail {
+  font-family: Arial, sans-serif;
+  font-size: .86rem;
+  opacity: .8;
+}
+.roll-chat-box .chat-msg-text, .chat-msg.roll .chat-msg-text {
+  font-weight: 900;
+}
+/* perícias compactas em duas colunas */
+.table-wrap.compact {
+  border: none;
+  background: transparent;
+  overflow: visible;
+}
+.table-wrap.compact #skills-table,
+.table-wrap.compact #skills-table tbody,
+.table-wrap.compact #skills-table tr,
+.table-wrap.compact #skills-table td {
+  display: block;
+  border: 0;
+}
+.table-wrap.compact #skills-table thead { display: none; }
+.table-wrap.compact #skills-table tbody {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(230px, 1fr));
+  gap: 10px;
+}
+.table-wrap.compact #skills-table tr {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) 58px 54px;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  border: 2px solid color-mix(in srgb, var(--accent, #111) 65%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--panel, #fff) 86%, var(--accent, #111) 5%);
+}
+.table-wrap.compact #skills-table .col-attr,
+.table-wrap.compact #skills-table .col-mod,
+.table-wrap.compact #skills-table .col-bonus { display: none !important; }
+.table-wrap.compact #skills-table .skill-total {
+  font-size: 1.05rem;
+  text-align: center;
+}
+.table-wrap.compact #skills-table .col-roll { display: block !important; }
+.table-wrap.compact #skills-table .col-roll button {
+  padding: 6px 8px;
+  min-width: 46px;
+}
+.table-wrap.compact #skills-table .empty-trained-skills {
+  grid-column: 1 / -1;
+}
+@media (max-width: 860px) {
+  .sessions-head {
+    grid-template-columns: 1fr !important;
+    padding-right: 92px !important;
+  }
+  .sessions-head > div:first-child {
+    grid-template-columns: 74px minmax(0, 1fr);
+    gap: 12px;
+  }
+  .sessions-head .sessions-logo {
+    width: 70px !important;
+    height: 70px !important;
+  }
+  .sessions-head-actions { top: 18px; right: 18px; }
+  .sessions-menu-btn, .sessions-sheet-toggle { width: 48px; height: 44px; min-width: 48px !important; }
+  .sessions-menu-panel {
+    top: calc(100% + 8px) !important;
+    right: 0 !important;
+    min-width: min(280px, calc(100vw - 36px)) !important;
+  }
+  .account-character-card { grid-template-columns: 60px minmax(0, 1fr) !important; }
+  .table-wrap.compact #skills-table tbody { grid-template-columns: 1fr; }
+}

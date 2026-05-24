@@ -62,8 +62,27 @@
         </div>
         <div class="sessions-head-actions">
           <button id="sessions-menu-btn" class="ghost-btn sessions-menu-btn" type="button" aria-expanded="false" aria-controls="sessions-menu-panel">☰</button>
+          <button id="toggle-account-panel-btn" class="ghost-btn sessions-sheet-toggle" type="button" title="Abrir Minhas Fichas">▣</button>
           <div id="sessions-menu-panel" class="sessions-menu-panel hidden">
-            <button id="toggle-account-panel-btn" class="ghost-btn menu-entry" type="button">Minhas Fichas</button>
+            <button id="sessions-theme-toggle" class="ghost-btn menu-entry" type="button">Tema Escuro</button>
+            <label class="menu-setting-label">Cor do tema
+              <select id="sessions-accent-select" class="accent-select">
+                <option value="black">Preto</option>
+                <option value="green">Verde</option>
+                <option value="red">Vermelho</option>
+                <option value="blue">Azul</option>
+                <option value="gold">Dourado</option>
+                <option value="purple">Roxo</option>
+              </select>
+            </label>
+            <label class="menu-setting-label">Fonte
+              <select id="sessions-font-select" class="accent-select">
+                <option value="impact">Fonte Manga</option>
+                <option value="medieval">Fonte Medieval</option>
+                <option value="clean">Fonte Limpa</option>
+                <option value="mono">Fonte Técnica</option>
+              </select>
+            </label>
             <button id="open-account-settings-btn" class="ghost-btn menu-entry" type="button">Configurações da Conta</button>
             <button id="sessions-logout" class="danger-btn menu-entry" type="button">Sair da Conta</button>
           </div>
@@ -191,6 +210,7 @@
             <option value="clean">Fonte Limpa</option>
             <option value="mono">Fonte Técnica</option>
           </select>
+          <button id="toggle-history-btn" class="ghost-btn" type="button">Histórico</button>
           <button id="overlay-btn" class="ghost-btn">Overlay OBS</button>
           <button id="logout-btn" class="danger-btn">Sair da Mesa</button>
         </nav>
@@ -723,7 +743,7 @@
           <div id="last-roll" class="last-roll">—</div>
         </section>
 
-        <section class="session-history-box manga-panel" id="session-history-box">
+        <section class="session-history-box manga-panel hidden" id="session-history-box">
           <div class="chat-title-row"><h2>Histórico Curto</h2><button class="chat-minimize-btn" data-toggle-chat="session-history-box" type="button" title="Minimizar histórico">—</button></div>
           <div id="session-history-list" class="session-history-list"></div>
         </section>

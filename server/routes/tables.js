@@ -161,6 +161,7 @@ router.put('/:id/member', async (req, res) => {
 
   let role = existing.rows[0].role;
   if (table.owner_id === req.user.id && role === 'master' && characterId) role = 'master_player';
+  if (table.owner_id === req.user.id && role === 'master_player' && !characterId) role = 'master';
 
   const updated = await query(`
     update table_members

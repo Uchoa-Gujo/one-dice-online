@@ -3923,3 +3923,167 @@ setTimeout(od46SyncSidebarDockButton, 120);
 
   setTimeout(od51RenderHistory, 150);
 })();
+
+
+/* =========================
+   V52 - ajustes finais: menu, sons, rolagens, perícias e remover ficha da mesa
+========================= */
+(function od52Patch(){
+  const DICE_SYMBOLS = { 4: '△4', 6: '□6', 8: '◇8', 10: '◆10', 12: '⬟12', 20: '⬢20', 100: '⬡100' };
+  let audioCtx = null;
+
+  function od52DiceSymbol(sides) { return DICE_SYMBOLS[Number(sides)] || `◇${Number(sides) || ''}`; }
+  function od52DiceText(qty, sides, mod = 0) {
+    return `${Number(qty || 1)}${od52DiceSymbol(sides)}${Number(mod) ? formatMod(Number(mod)) : ''}`;
+  }
+  function od52DiceHtml(qty, sides, mod = 0) {
+    return `${Number(qty || 1)}<span class="dice-symbol">${escapeHtml(od52DiceSymbol(sides))}</span>${Number(mod) ? formatMod(Number(mod)) : ''}`;
+  }
+  function od52PlaySound(kind = 'click') {
+    const st = get(STORAGE.settings, { sound: true });
+    if (st.sound === false) return;
+    try {
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = kind === 'roll' ? 'triangle' : 'sine';
+      osc.frequency.setValueAtTime(kind === 'roll' ? 170 : 520, now);
+      if (kind === 'roll') osc.frequency.exponentialRampToValueAtTime(95, now + 0.11);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(kind === 'roll' ? 0.045 : 0.025, now + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + (kind === 'roll' ? 0.16 : 0.055));
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(now); osc.stop(now + (kind === 'roll' ? 0.17 : 0.06));
+    } catch (_) {}
+  }
+
+  const od52ApplySettingsBase = applySettings;
+  applySettings = function() {
+    od52ApplySettingsBase();
+    const st = get(STORAGE.settings, { theme: 'light', accent: 'black', skillsCompact: true, font: 'impact', sound: true });
+    const sTheme = document.getElementById('sessions-theme-toggle');
+    const sAccent = document.getElementById('sessions-accent-select');
+    const sFont = document.getElementById('sessions-font-select');
+    if (sTheme) sTheme.textContent = st.theme === 'dark' ? 'Tema Claro' : 'Tema Escuro';
+    if (sAccent) sAccent.value = st.accent || 'black';
+    if (sFont) sFont.value = st.font || 'impact';
+  };
+
+  function od52ApplyDiceLabels() {
+    document.querySelectorAll('#dice-type option').forEach(opt => {
+      opt.textContent = od52DiceSymbol(opt.value);
+    });
+    document.querySelectorAll('.roll-skill').forEach(btn => { btn.textContent = od52DiceSymbol(20); });
+  }
+
+  const od52RenderSkillsBase = renderSkills;
+  renderSkills = function(char) {
+    od52RenderSkillsBase(char);
+    od52ApplyDiceLabels();
+  };
+
+  doRoll = function(label, qty, sides, mod = 0) {
+    od52PlaySound('roll');
+    const r = roll(qty, sides, mod);
+    const notation = od52DiceText(qty, sides, mod);
+    const resultList = r.results.join(', ');
+    const text = `${label}: ${notation} → [${resultList}] = ${r.total}`;
+    const last = byId('last-roll');
+    if (last) {
+      last.innerHTML = `
+        <div class="roll-result-card">
+          <div class="roll-result-title">${escapeHtml(label)}</div>
+          <div class="roll-result-main">
+            <span>${od52DiceHtml(qty, sides, mod)}</span>
+            <strong class="roll-result-total">${escapeHtml(r.total)}</strong>
+          </div>
+          <div class="roll-result-detail">Resultado dos dados: [${escapeHtml(resultList)}]${Number(mod) ? ` • Modificador: ${formatMod(Number(mod))}` : ''}</div>
+        </div>`;
+      last.classList.remove('shake'); void last.offsetWidth; last.classList.add('shake');
+    }
+    addChat(text, 'roll');
+    if (String(label).toLowerCase().includes('iniciativa')) v35RecordInitiativeFromRoll(r.total);
+    return r;
+  };
+
+  const od52RenderCampaignMenuBase = renderCampaignMenu;
+  renderCampaignMenu = function() {
+    od52RenderCampaignMenuBase();
+    document.querySelectorAll('#campaign-list .campaign-card').forEach(card => {
+      const enter = card.querySelector('[data-enter-campaign]');
+      if (!enter) return;
+      const campaignId = enter.dataset.enterCampaign;
+      const member = getMembers().find(m => m.campaignId === campaignId && m.userId === currentUser?.id);
+      const actions = card.querySelector('.campaign-actions');
+      if (actions && member?.characterId && !actions.querySelector('[data-remove-character-from-table]')) {
+        const btn = document.createElement('button');
+        btn.className = 'ghost-btn small';
+        btn.type = 'button';
+        btn.dataset.removeCharacterFromTable = campaignId;
+        btn.textContent = 'Remover Ficha da Mesa';
+        actions.insertBefore(btn, actions.children[1] || null);
+      }
+    });
+  };
+
+  async function od52RemoveCharacterFromTable(campaignId) {
+    if (!campaignId) return;
+    if (!confirm('Tem certeza que quer remover sua ficha desta mesa?')) return;
+    try {
+      if (typeof od42Token === 'function' && od42Token()) {
+        await od42Api(`/api/tables/${campaignId}/member`, { method: 'PUT', body: JSON.stringify({ characterId: null }) });
+        await od42RefreshTables();
+        await od42LoadTableState(campaignId).catch(() => {});
+      } else {
+        const members = getMembers().map(m => m.campaignId === campaignId && m.userId === currentUser?.id ? { ...m, characterId: null, role: m.role === 'mestre_jogador' ? 'mestre' : m.role } : m);
+        setMembers(members);
+      }
+      if (currentCampaignId === campaignId) renderTableExperience();
+      renderCampaignMenu();
+    } catch (error) {
+      alert(error.message || 'Erro ao remover ficha da mesa.');
+    }
+  }
+
+  document.addEventListener('click', event => {
+    const sessionTheme = event.target.closest('#sessions-theme-toggle');
+    if (sessionTheme) {
+      event.preventDefault();
+      updateSettings(st => st.theme = st.theme === 'dark' ? 'light' : 'dark');
+      return;
+    }
+    const historyBtn = event.target.closest('#toggle-history-btn');
+    if (historyBtn) {
+      event.preventDefault();
+      document.getElementById('session-history-box')?.classList.toggle('hidden');
+      if (typeof od51RenderHistory === 'function') od51RenderHistory();
+      return;
+    }
+    const removeChar = event.target.closest('[data-remove-character-from-table]');
+    if (removeChar) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      od52RemoveCharacterFromTable(removeChar.dataset.removeCharacterFromTable);
+      return;
+    }
+  }, true);
+
+  document.addEventListener('change', event => {
+    const sAccent = event.target.closest('#sessions-accent-select');
+    if (sAccent) { updateSettings(st => st.accent = sAccent.value); return; }
+    const sFont = event.target.closest('#sessions-font-select');
+    if (sFont) { updateSettings(st => st.font = sFont.value); return; }
+  }, true);
+
+  document.addEventListener('pointerdown', event => {
+    if (event.target.closest('button, .sheet-tab, select')) od52PlaySound('click');
+  }, true);
+
+  setTimeout(() => {
+    const panel = document.getElementById('account-sheets-panel');
+    if (panel) { panel.classList.add('hidden', 'collapsed-account-panel'); }
+    od52ApplyDiceLabels();
+    applySettings();
+  }, 120);
+})();
