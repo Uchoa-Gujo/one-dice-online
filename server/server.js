@@ -11,6 +11,7 @@ const authRoutes = require('./routes/auth');
 const characterRoutes = require('./routes/characters');
 const tableRoutes = require('./routes/tables');
 const { registerSockets } = require('./sockets');
+const { query } = require('./database');
 
 const app = express();
 const server = http.createServer(app);
@@ -46,6 +47,20 @@ app.get('*', (req, res) => {
 
 registerSockets(io);
 
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`One Dice Online rodando na porta ${PORT}`);
-});
+async function ensureServerSchema() {
+  await query("alter table users add column if not exists avatar_url text");
+}
+
+async function startServer() {
+  try {
+    await ensureServerSchema();
+    server.listen(PORT, '0.0.0.0', () => {
+      console.log(`One Dice Online rodando na porta ${PORT}`);
+    });
+  } catch (error) {
+    console.error('Falha ao iniciar servidor:', error);
+    process.exit(1);
+  }
+}
+
+startServer();

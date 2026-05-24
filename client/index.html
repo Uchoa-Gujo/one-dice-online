@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>One Dice Mesa Online</title>
   <link rel="stylesheet" href="block-inventory/style.css" />
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="shortcut icon" href="assets/favicon.png" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -12,7 +14,7 @@
 
   <section id="auth-screen" class="screen active">
     <div class="auth-card manga-panel reveal">
-      <img src="assets/logo.jpg" class="main-logo" alt="One Dice" />
+      <img src="assets/logo-completa.png" class="main-logo" alt="One Dice" />
       <h1>Mesa Online</h1>
       <p class="subtitle">Ficha digital, rolagens, chat da mesa e controle de PV/PE.</p>
 
@@ -53,16 +55,23 @@
     <div class="sessions-shell reveal">
       <div class="sessions-head manga-panel">
         <div>
-          <img src="assets/logo.jpg" class="sessions-logo" alt="One Dice" />
+          <img src="assets/logo-texto.png" class="sessions-logo" alt="One Dice" />
           <p class="eyebrow">Mesas e Campanhas</p>
           <h1>Escolha uma Mesa</h1>
           <p class="subtitle">Crie mesas, entre por código e escolha qual ficha vai usar em cada campanha. Seu papel é definido dentro de cada mesa.</p>
         </div>
-        <button id="sessions-logout" class="danger-btn" type="button">Sair</button>
+        <div class="sessions-head-actions">
+          <button id="sessions-menu-btn" class="ghost-btn sessions-menu-btn" type="button" aria-expanded="false" aria-controls="sessions-menu-panel">☰</button>
+          <div id="sessions-menu-panel" class="sessions-menu-panel hidden">
+            <button id="toggle-account-panel-btn" class="ghost-btn menu-entry" type="button">Minhas Fichas</button>
+            <button id="open-account-settings-btn" class="ghost-btn menu-entry" type="button">Configurações da Conta</button>
+            <button id="sessions-logout" class="danger-btn menu-entry" type="button">Sair da Conta</button>
+          </div>
+        </div>
       </div>
 
 
-      <div class="manga-panel account-sheets-panel">
+      <div id="account-sheets-panel" class="manga-panel account-sheets-panel collapsed-account-panel hidden">
         <div class="account-sheets-head">
           <div>
             <p class="eyebrow">Fichas da Conta</p>
@@ -114,16 +123,50 @@
   </dialog>
 
 
+  <dialog id="create-first-sheet-modal" class="od-modal">
+    <form method="dialog" class="modal-card">
+      <h2>Você ainda não tem uma ficha</h2>
+      <p class="modal-hint">Quer criar uma agora para entrar na mesa?</p>
+      <div class="modal-actions">
+        <button id="confirm-create-first-sheet" class="primary-btn" type="button">Sim, criar ficha</button>
+        <button id="cancel-create-first-sheet" class="ghost-btn" value="cancel" type="submit">Não nesse momento</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="account-settings-modal" class="od-modal">
+    <form method="dialog" class="modal-card account-settings-card">
+      <h2>Configurações da Conta</h2>
+      <div class="account-settings-grid">
+        <label>Nome da Conta<input id="account-settings-real-name" type="text" maxlength="60" /></label>
+        <label>Login<input id="account-settings-nick" type="text" maxlength="24" /></label>
+        <label>Nova Senha (6 dígitos)<input id="account-settings-password" type="password" inputmode="numeric" maxlength="6" /></label>
+        <label>Confirmar Nova Senha<input id="account-settings-password-confirm" type="password" inputmode="numeric" maxlength="6" /></label>
+        <label class="account-avatar-field">Foto da Conta
+          <input id="account-settings-avatar-file" type="file" accept="image/*" />
+        </label>
+        <div class="account-avatar-preview-wrap">
+          <img id="account-settings-avatar-preview" src="assets/logo.jpg" alt="Prévia da foto da conta" />
+          <small>Essa foto aparece ao lado do seu nome no chat.</small>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button id="save-account-settings-btn" class="primary-btn" type="button">Salvar</button>
+        <button class="ghost-btn" value="cancel" type="submit">Fechar</button>
+      </div>
+    </form>
+  </dialog>
+
   <section id="app-screen" class="screen">
     <header id="main-topbar" class="topbar collapsed">
       <button id="topbar-menu-toggle" class="topbar-menu-toggle" type="button" title="Abrir menu">☰</button>
       <button id="master-dashboard-dock-btn" class="master-dashboard-dock-btn hidden" type="button" title="Voltar ao painel do mestre">▣</button>
-      <button id="sidebar-dock-btn" class="sidebar-dock-btn hidden" type="button" title="Mostrar jogadores">👥</button>
+      <button id="sidebar-dock-btn" class="sidebar-dock-btn hidden" type="button" title="Mostrar jogadores" aria-label="Mostrar jogadores"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 11c1.66 0 2.99-1.57 2.99-3.5S17.66 4 16 4s-3 1.57-3 3.5S14.34 11 16 11Zm-8 0c1.66 0 2.99-1.57 2.99-3.5S9.66 4 8 4 5 5.57 5 7.5 6.34 11 8 11Zm0 2c-2.33 0-7 1.17-7 3.5V20h14v-3.5C15 14.17 10.33 13 8 13Zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.96 1.97 3.45V20h6v-3.5c0-2.33-4.67-3.5-7-3.5Z"/></svg></button>
       <div id="campaign-mini-card" class="campaign-mini-card hidden"></div>
 
       <div class="topbar-content">
         <div class="brand">
-          <img src="assets/logo.jpg" alt="One Dice" />
+          <img src="assets/logo-texto.png" alt="One Dice" />
           <div>
             <strong>One Dice</strong>
             <span id="current-user-label">Mesa Online</span>
@@ -680,6 +723,11 @@
           <div id="last-roll" class="last-roll">—</div>
         </section>
 
+        <section class="session-history-box manga-panel" id="session-history-box">
+          <div class="chat-title-row"><h2>Histórico Curto</h2><button class="chat-minimize-btn" data-toggle-chat="session-history-box" type="button" title="Minimizar histórico">—</button></div>
+          <div id="session-history-list" class="session-history-list"></div>
+        </section>
+
         <section class="chat-box manga-panel split-chat-box" id="conversation-chat-box">
           <div class="chat-title-row"><h2>Chat de Conversa</h2><button class="chat-minimize-btn" data-toggle-chat="conversation-chat-box" type="button" title="Minimizar chat">—</button></div>
           <div id="chat-log" class="chat-log conversation-log"></div>
@@ -695,6 +743,13 @@
         </section>
       </aside>
     </main>
+    <nav id="mobile-bottom-nav" class="mobile-bottom-nav" aria-label="Navegação mobile">
+      <button type="button" data-mobile-jump=".sheet-area">Ficha</button>
+      <button type="button" data-mobile-tab="pericias">Perícias</button>
+      <button type="button" data-mobile-jump=".right-panel.reveal">Dados</button>
+      <button type="button" data-mobile-jump="#conversation-chat-box">Chat</button>
+      <button type="button" data-mobile-jump="#players-sidebar">Mesa</button>
+    </nav>
   </section>
 
   <section id="overlay-screen" class="overlay-mode">

@@ -98,7 +98,7 @@ function createCharacter(ownerId, name = "Novo Personagem") {
     level: 1, xp: 0, speed: "9 m", portrait: "", profBonus: 2,
     pvCurrent: 20, pvMax: 20, peCurrent: 6, peMax: 6,
     defense: 10, dodge: 10,
-    attrs: { forca: 1, agilidade: 1, vigor: 1, intelecto: 1, presenca: 1 },
+    attrs: { forca: 10, agilidade: 10, vigor: 10, intelecto: 10, presenca: 10 },
     skills, resistances,
     money: "0", weightCurrent: 0, weightMax: 10,
     equipmentNotes: "", abilitiesNotes: "", inventoryItems: [],
@@ -2676,7 +2676,7 @@ async function od42LoadTableState(tableId) {
   const data = await od42Api(`/api/tables/${tableId}/state`);
   const table = od42TableFromRow(data.table);
   const members = (data.members || []).map(od42MemberFromRow);
-  const users = (data.members || []).map(row => od42User({ id: row.user_id, nick: row.nick, real_name: row.real_name })).filter(Boolean);
+  const users = (data.members || []).map(row => od42User({ id: row.user_id, nick: row.nick, real_name: row.real_name, avatar_url: row.avatar_url })).filter(Boolean);
   const chars = (data.members || [])
     .filter(row => row.character_id && row.character_data)
     .map(row => od42CharacterFromRow({ id: row.character_id, owner_id: row.user_id, name: row.character_name, data: row.character_data }));
@@ -3388,3 +3388,538 @@ document.addEventListener('click', event => {
 
 window.addEventListener('resize', od46SyncSidebarDockButton);
 setTimeout(od46SyncSidebarDockButton, 120);
+
+
+/* =========================
+   V50 - UX de sessões, conta, chat com avatar e ajustes pedidos
+========================= */
+(function od50Patch(){
+  let od50PendingNoSheetCampaignId = null;
+  let od50PendingAvatarDataUrl = '';
+
+  function od50DefaultAvatar() {
+    return (currentUser && (currentUser.avatar || currentUser.avatarUrl)) || 'assets/logo.jpg';
+  }
+
+  function od50MergeCurrentUser(nextUser) {
+    if (!nextUser) return;
+    currentUser = { ...(currentUser || {}), ...nextUser };
+    const users = get(STORAGE.users, []).map(user => user.id === currentUser.id ? { ...user, ...currentUser } : user);
+    if (!users.some(user => user.id === currentUser.id)) users.push(currentUser);
+    set(STORAGE.users, users);
+    if (typeof od42SetSession === 'function' && od42Token && od42Token()) {
+      const payload = od42GetSession() || {};
+      od42SetSession({ ...payload, user: currentUser });
+    }
+    renderCampaignMenu();
+    renderAccountCharacterMenu();
+    renderChat();
+    const label = document.getElementById('current-user-label');
+    if (label && (document.getElementById('sessions-screen')?.classList.contains('active') || document.getElementById('app-screen')?.classList.contains('active'))) {
+      label.textContent = label.textContent.includes('•') ? `${userDisplayName(currentUser)} • ${label.textContent.split('•').slice(1).join('•').trim()}` : userDisplayName(currentUser);
+    }
+  }
+
+  function od50CloseSessionsMenu() {
+    document.getElementById('sessions-menu-panel')?.classList.add('hidden');
+    const btn = document.getElementById('sessions-menu-btn');
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+  }
+
+  function od50ToggleAccountPanel(force = null) {
+    const panel = document.getElementById('account-sheets-panel');
+    if (!panel) return;
+    const nextOpen = force === null ? panel.classList.contains('hidden') : !!force;
+    panel.classList.toggle('hidden', !nextOpen);
+    panel.classList.toggle('collapsed-account-panel', !nextOpen);
+    const toggle = document.getElementById('toggle-account-panel-btn');
+    if (toggle) toggle.textContent = nextOpen ? 'Ocultar Minhas Fichas' : 'Minhas Fichas';
+  }
+
+  function od50OpenAccountSettings() {
+    if (!currentUser) return;
+    document.getElementById('account-settings-real-name').value = currentUser.realName || currentUser.name || '';
+    document.getElementById('account-settings-nick').value = currentUser.nick || '';
+    document.getElementById('account-settings-password').value = '';
+    document.getElementById('account-settings-password-confirm').value = '';
+    document.getElementById('account-settings-avatar-file').value = '';
+    od50PendingAvatarDataUrl = currentUser.avatar || currentUser.avatarUrl || '';
+    const preview = document.getElementById('account-settings-avatar-preview');
+    if (preview) preview.src = od50PendingAvatarDataUrl || 'assets/logo.jpg';
+    document.getElementById('account-settings-modal')?.showModal();
+    od50CloseSessionsMenu();
+  }
+
+  async function od50SaveAccountSettings() {
+    if (!currentUser) return;
+    const realName = document.getElementById('account-settings-real-name')?.value?.trim();
+    const nick = normalizeNick(document.getElementById('account-settings-nick')?.value);
+    const password = document.getElementById('account-settings-password')?.value?.trim() || '';
+    const confirmPassword = document.getElementById('account-settings-password-confirm')?.value?.trim() || '';
+    if (!realName) return alert('Digite o nome da conta.');
+    if (!nick) return alert('Digite o login da conta.');
+    if (password || confirmPassword) {
+      if (!validSixDigitPassword(password)) return alert('A nova senha precisa ter exatamente 6 dígitos.');
+      if (password !== confirmPassword) return alert('As senhas não conferem.');
+    }
+    const avatar = od50PendingAvatarDataUrl || currentUser.avatar || currentUser.avatarUrl || '';
+
+    if (typeof od42Token === 'function' && od42Token()) {
+      try {
+        const data = await od42Api('/api/auth/me', {
+          method: 'PUT',
+          body: JSON.stringify({ nick, realName, password: password || undefined, avatarUrl: avatar || '' })
+        });
+        const user = od42User(data.user);
+        od50MergeCurrentUser(user);
+      } catch (error) {
+        return alert(error.message || 'Erro ao salvar a conta.');
+      }
+    } else {
+      const users = get(STORAGE.users, []);
+      if (users.some(user => user.id !== currentUser.id && normalizeNick(user.nick || user.name) === nick)) return alert('Esse login já está em uso.');
+      const updated = { ...currentUser, realName, name: realName, nick, avatar, avatarUrl: avatar };
+      if (password) updated.password = password;
+      od50MergeCurrentUser(updated);
+    }
+
+    document.getElementById('account-settings-modal')?.close();
+  }
+
+  function od50OpenNoSheetPrompt(campaignId) {
+    od50PendingNoSheetCampaignId = campaignId;
+    document.getElementById('create-first-sheet-modal')?.showModal();
+  }
+
+  function od50ShouldPromptNoSheet(campaignId = pendingChooseCampaignId || currentCampaignId) {
+    const chars = userCharacters();
+    if (chars.length) return false;
+    od50OpenNoSheetPrompt(campaignId);
+    return true;
+  }
+
+  function od50AttachFirstCharacterToCampaign(campaignId, charId) {
+    if (!campaignId || !charId) return;
+    return attachCharacterToCampaign(campaignId, charId);
+  }
+
+  const od50OriginalShowSessions = showSessions;
+  showSessions = function() {
+    od50OriginalShowSessions();
+    od50CloseSessionsMenu();
+    od50ToggleAccountPanel(false);
+  };
+
+  const od50OriginalRenderCampaignMenu = renderCampaignMenu;
+  renderCampaignMenu = function() {
+    od50OriginalRenderCampaignMenu();
+    const cards = document.querySelectorAll('#campaign-list .campaign-card');
+    cards.forEach(card => {
+      const leaveBtn = card.querySelector('[data-leave-campaign]');
+      if (leaveBtn) leaveBtn.textContent = 'Sair da Mesa';
+    });
+  };
+
+  const od50OriginalOpenChooseCharacterModal = openChooseCharacterModal;
+  openChooseCharacterModal = function(campaignId = currentCampaignId) {
+    pendingChooseCampaignId = campaignId;
+    if (od50ShouldPromptNoSheet(campaignId)) return;
+    od50OriginalOpenChooseCharacterModal(campaignId);
+  };
+
+  const od50OriginalEnterCampaign = enterCampaign;
+  enterCampaign = async function(campaignId) {
+    const member = getMembers().find(m => m.campaignId === campaignId && m.userId === currentUser?.id);
+    if (member && !member.characterId && !userCharacters().length) {
+      od50OpenNoSheetPrompt(campaignId);
+      return;
+    }
+    return od50OriginalEnterCampaign(campaignId);
+  };
+
+  createCharacterForCampaign = async function() {
+    try {
+      const chars = userCharacters();
+      if (!chars.length && pendingChooseCampaignId) {
+        const char = (typeof od42Token === 'function' && od42Token()) ? await od42CreateCharacter('Novo Personagem') : createCharacter(currentUser.id, 'Novo Personagem');
+        if (!(typeof od42Token === 'function' && od42Token())) {
+          const all = get(STORAGE.characters, []); all.push(char); set(STORAGE.characters, all);
+        }
+        od50PendingNoSheetCampaignId = pendingChooseCampaignId;
+        return od50AttachFirstCharacterToCampaign(pendingChooseCampaignId, char.id);
+      }
+      if (typeof od42Token === 'function' && od42Token()) {
+        const char = await od42CreateCharacter('Novo Personagem');
+        await attachCharacterToCampaign(pendingChooseCampaignId, char.id);
+        return;
+      }
+      const list = get(STORAGE.characters, []);
+      const char = createCharacter(currentUser.id, 'Novo Personagem');
+      list.push(char);
+      set(STORAGE.characters, list);
+      attachCharacterToCampaign(pendingChooseCampaignId, char.id);
+    } catch (error) {
+      alert(error.message || 'Erro ao criar ficha.');
+    }
+  };
+
+  createCampaign = async function() {
+    if (typeof od42Token === 'function' && od42Token()) {
+      try {
+        const name = document.getElementById('new-campaign-name')?.value?.trim() || 'Nova Mesa';
+        await od42Api('/api/tables', { method: 'POST', body: JSON.stringify({ name }) });
+        document.getElementById('new-campaign-name').value = '';
+        await od42RefreshTables();
+        renderCampaignMenu();
+      } catch (error) {
+        alert(error.message || 'Erro ao criar mesa.');
+      }
+      return;
+    }
+    const name = document.getElementById('new-campaign-name')?.value?.trim() || 'Nova Mesa';
+    const campaigns = getCampaigns();
+    const campaign = { id: uid('camp'), name, code: generateInviteCode(), ownerId: currentUser.id, createdAt: Date.now() };
+    campaigns.push(campaign);
+    setCampaigns(campaigns);
+    const members = getMembers();
+    members.push({ id: uid('member'), campaignId: campaign.id, userId: currentUser.id, role: 'mestre', characterId: null });
+    setMembers(members);
+    document.getElementById('new-campaign-name').value = '';
+    renderCampaignMenu();
+  };
+
+  deleteAccountCharacter = function(id) {
+    const chars = get(STORAGE.characters, []);
+    const char = chars.find(c => c.id === id && c.ownerId === currentUser?.id);
+    if (!char) return;
+    if (!confirm(`Tem certeza que quer excluir a ficha "${char.name}"?`)) return;
+    set(STORAGE.characters, chars.filter(c => c.id !== id));
+    const members = getMembers().map(m => m.characterId === id ? { ...m, characterId: null } : m);
+    setMembers(members);
+    if (currentCharacterId === id) currentCharacterId = null;
+    renderAccountCharacterMenu();
+  };
+
+  deleteCampaign = function(campaignId) {
+    const campaigns = getCampaigns();
+    const campaign = campaigns.find(c => c.id === campaignId);
+    if (!campaign) return;
+    if (campaign.ownerId !== currentUser.id) return alert('Apenas o criador da mesa pode excluir esta mesa.');
+    if (!confirm(`Tem certeza que quer excluir a mesa "${campaign.name}"?`)) return;
+    if (typeof od42Token === 'function' && od42Token()) {
+      return od42Api(`/api/tables/${campaignId}`, { method: 'DELETE' })
+        .then(async () => { await od42RefreshTables(); if (currentCampaignId === campaignId) currentCampaignId = null; renderCampaignMenu(); })
+        .catch(error => alert(error.message || 'Erro ao excluir mesa.'));
+    }
+    setCampaigns(campaigns.filter(c => c.id !== campaignId));
+    setMembers(getMembers().filter(m => m.campaignId !== campaignId));
+    try {
+      localStorage.removeItem(`od_chat_${campaignId}`);
+      localStorage.removeItem(`od_chat_roll_${campaignId}`);
+      localStorage.removeItem(`od_initiative_${campaignId}`);
+      localStorage.removeItem(`od_combat_${campaignId}`);
+      localStorage.removeItem(`od_shop_${campaignId}`);
+      localStorage.removeItem(`od_drops_${campaignId}`);
+    } catch (err) {}
+    if (currentCampaignId === campaignId) {
+      currentCampaignId = null;
+      localStorage.removeItem(STORAGE.activeCampaign);
+    }
+    renderCampaignMenu();
+  };
+
+  leaveCampaign = function(campaignId) {
+    const campaign = getCampaigns().find(c => c.id === campaignId);
+    if (!campaign) return;
+    if (campaign.ownerId === currentUser.id) return deleteCampaign(campaignId);
+    if (!confirm(`Tem certeza que quer sair da mesa "${campaign.name}"?`)) return;
+    if (typeof od42Token === 'function' && od42Token()) {
+      return od42Api(`/api/tables/${campaignId}/leave`, { method: 'DELETE' })
+        .then(async () => { await od42RefreshTables(); if (currentCampaignId === campaignId) currentCampaignId = null; renderCampaignMenu(); })
+        .catch(error => alert(error.message || 'Erro ao sair da mesa.'));
+    }
+    const members = getMembers().filter(m => !(m.campaignId === campaignId && m.userId === currentUser.id));
+    setMembers(members);
+    if (currentCampaignId === campaignId) currentCampaignId = null;
+    renderCampaignMenu();
+  };
+
+  const od50OriginalOd42User = od42User;
+  od42User = function(apiUser) {
+    const user = od50OriginalOd42User(apiUser);
+    if (!user) return null;
+    user.avatar = apiUser.avatar_url || apiUser.avatarUrl || apiUser.avatar || user.avatar || '';
+    user.avatarUrl = user.avatar;
+    return user;
+  };
+
+  const od50OriginalApiMessageToLocal = od44ApiMessageToLocal;
+  od44ApiMessageToLocal = function(row) {
+    const local = od50OriginalApiMessageToLocal(row);
+    local.userId = row.user_id || row.userId || local.userId || null;
+    return local;
+  };
+
+  const od50OriginalAddChat = addChat;
+  addChat = function(text, type = 'msg') {
+    const key = type === 'roll' ? v35RollChatKey() : campaignChatKey();
+    const chat = get(key, []);
+    chat.push({
+      id: uid(type === 'roll' ? 'roll' : 'msg'),
+      user: userDisplayName(currentUser),
+      userId: currentUser?.id || null,
+      text,
+      type,
+      at: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+    });
+    set(key, chat.slice(-140));
+    renderChat();
+  };
+
+  renderChat = function() {
+    const renderList = (targetId, messages) => {
+      const log = document.getElementById(targetId);
+      if (!log) return;
+      log.innerHTML = '';
+      messages.forEach(msg => {
+        const user = get(STORAGE.users, []).find(entry => entry.id === msg.userId) || null;
+        const div = document.createElement('div');
+        div.className = `chat-msg ${msg.type === 'roll' ? 'roll' : ''}`;
+        div.innerHTML = `
+          <img class="chat-msg-avatar" src="${escapeHtml((user && (user.avatar || user.avatarUrl)) || 'assets/logo.jpg')}" alt="" />
+          <div class="chat-msg-main">
+            <small>${escapeHtml(msg.user)} • ${escapeHtml(msg.at)}</small>
+            <div class="chat-msg-text">${escapeHtml(msg.text)}</div>
+          </div>`;
+        log.appendChild(div);
+      });
+      log.scrollTop = log.scrollHeight;
+    };
+    renderList('chat-log', get(campaignChatKey(), []));
+    renderList('roll-chat-log', get(v35RollChatKey(), []));
+  };
+
+  document.addEventListener('click', async event => {
+    const menuBtn = event.target.closest('#sessions-menu-btn');
+    if (menuBtn) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const panel = document.getElementById('sessions-menu-panel');
+      const willOpen = panel?.classList.contains('hidden');
+      panel?.classList.toggle('hidden');
+      menuBtn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+      return;
+    }
+    if (!event.target.closest('#sessions-menu-panel')) od50CloseSessionsMenu();
+
+    const togglePanel = event.target.closest('#toggle-account-panel-btn');
+    if (togglePanel) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      od50ToggleAccountPanel();
+      return;
+    }
+
+    const accountSettingsBtn = event.target.closest('#open-account-settings-btn');
+    if (accountSettingsBtn) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      od50OpenAccountSettings();
+      return;
+    }
+
+    const saveSettingsBtn = event.target.closest('#save-account-settings-btn');
+    if (saveSettingsBtn) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      await od50SaveAccountSettings();
+      return;
+    }
+
+    const logoutBtn = event.target.closest('#sessions-logout');
+    if (logoutBtn) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      if (!confirm('Tem certeza que quer sair da conta?')) return;
+      if (typeof od42ClearSession === 'function' && od42Token && od42Token()) od42ClearSession();
+      clearSessionValue();
+      currentUser = null;
+      od50CloseSessionsMenu();
+      showAuth();
+      return;
+    }
+
+    const createFirst = event.target.closest('#confirm-create-first-sheet');
+    if (createFirst) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      pendingChooseCampaignId = od50PendingNoSheetCampaignId;
+      document.getElementById('create-first-sheet-modal')?.close();
+      await createCharacterForCampaign();
+      return;
+    }
+  }, true);
+
+  document.getElementById('cancel-create-first-sheet')?.addEventListener('click', () => {
+    od50PendingNoSheetCampaignId = null;
+  });
+
+  document.getElementById('account-settings-avatar-file')?.addEventListener('change', event => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      od50PendingAvatarDataUrl = String(reader.result || '');
+      const preview = document.getElementById('account-settings-avatar-preview');
+      if (preview) preview.src = od50PendingAvatarDataUrl || 'assets/logo.jpg';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  const od50OriginalWireForms = od42WireForms;
+  od42WireForms = function() {
+    od50OriginalWireForms();
+    const sessionsLogout = document.getElementById('sessions-logout');
+    if (sessionsLogout) sessionsLogout.onclick = null;
+  };
+
+  setTimeout(() => {
+    od50ToggleAccountPanel(false);
+    renderChat();
+  }, 60);
+})();
+
+
+/* =========================
+   V51 - painel mestre, histórico curto e navegação mobile
+========================= */
+(function od51Patch(){
+  function od51HistoryKey() { return currentCampaignId ? `od_session_history_${currentCampaignId}` : 'od_session_history'; }
+  function od51History(text, kind = 'info') {
+    if (!text || !currentCampaignId) return;
+    const list = get(od51HistoryKey(), []);
+    list.push({ id: uid('hist'), text: String(text), kind, at: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) });
+    set(od51HistoryKey(), list.slice(-25));
+    od51RenderHistory();
+  }
+  function od51RenderHistory() {
+    const box = document.getElementById('session-history-list');
+    if (!box) return;
+    const list = get(od51HistoryKey(), []).slice(-8).reverse();
+    if (!currentCampaignId) { box.innerHTML = '<div class="campaign-empty">Entre em uma mesa para ver o histórico.</div>'; return; }
+    if (!list.length) { box.innerHTML = '<div class="campaign-empty">Sem eventos recentes.</div>'; return; }
+    box.innerHTML = list.map(item => `<div class="session-history-item"><small>${escapeHtml(item.at)}</small>${escapeHtml(item.text)}</div>`).join('');
+  }
+  window.od51History = od51History;
+
+  const od51AddChatBase = addChat;
+  addChat = function(text, type = 'msg') {
+    od51AddChatBase(text, type);
+    if (type === 'roll') od51History(text, 'roll');
+  };
+
+  renderMasterDashboard = function() {
+    const panel = byId('master-dashboard');
+    const grid = byId('master-characters-grid');
+    if (!panel || !grid) return;
+    const master = v35IsMaster();
+    panel.classList.toggle('hidden', !master);
+    document.body.classList.toggle('master-dashboard-mode', master);
+    if (!master) return;
+
+    const chars = charactersInCurrentCampaign();
+    const users = get(STORAGE.users, []);
+    const members = getMembers().filter(m => m.campaignId === currentCampaignId);
+    grid.innerHTML = '';
+    if (!chars.length) grid.innerHTML = `<div class="campaign-empty">Nenhum jogador vinculou ficha nesta mesa ainda.</div>`;
+
+    chars.forEach(char => {
+      const member = members.find(m => m.characterId === char.id);
+      const user = users.find(u => u.id === member?.userId);
+      const card = document.createElement('article');
+      card.className = 'master-character-card v51-master-card';
+      card.innerHTML = `
+        <div class="master-card-top">
+          <img src="${escapeHtml(char.portrait || 'assets/favicon.png')}" alt="" />
+          <div>
+            <small>Jogador: ${escapeHtml(userDisplayName(user))}</small>
+            <strong>${escapeHtml(char.name || 'Personagem')}</strong>
+            <span>${escapeHtml(char.race || 'Raça')} • ${escapeHtml(char.className || 'Classe')} • Nv. ${escapeHtml(char.level || 1)}</span>
+          </div>
+          <span class="v51-online-chip">Na mesa</span>
+        </div>
+        <div class="master-quick-grid v51-quick-grid">
+          <div class="quick-vital">
+            <label>PV</label>
+            <div class="quick-vital-row">
+              <button type="button" data-quick-resource="pv" data-quick-delta="-5" data-char-id="${char.id}">−5</button>
+              <input data-quick-input="pv" data-char-id="${char.id}" value="${escapeHtml(char.pvCurrent ?? 0)}" type="number" />
+              <button type="button" data-quick-resource="pv" data-quick-delta="5" data-char-id="${char.id}">+5</button>
+            </div>
+            <small>Máx: ${escapeHtml(char.pvMax ?? 0)}</small>
+          </div>
+          <div class="quick-vital">
+            <label>PE</label>
+            <div class="quick-vital-row">
+              <button type="button" data-quick-resource="pe" data-quick-delta="-1" data-char-id="${char.id}">−1</button>
+              <input data-quick-input="pe" data-char-id="${char.id}" value="${escapeHtml(char.peCurrent ?? 0)}" type="number" />
+              <button type="button" data-quick-resource="pe" data-quick-delta="1" data-char-id="${char.id}">+1</button>
+            </div>
+            <small>Máx: ${escapeHtml(char.peMax ?? 0)}</small>
+          </div>
+        </div>
+        <div class="master-condition-box">
+          <label>Condição</label>
+          <input class="master-condition-input" data-condition-input="${char.id}" value="${escapeHtml(v35CharCondition(char) === 'Normal' ? '' : v35CharCondition(char))}" placeholder="Normal, Caído, Ferido..." />
+        </div>
+        <div class="master-card-actions">
+          <button class="primary-btn small" type="button" data-open-master-char="${char.id}">Abrir Ficha</button>
+          <button class="ghost-btn small" type="button" data-quick-resource="pv" data-quick-delta="-1" data-char-id="${char.id}">-1 PV</button>
+          <button class="ghost-btn small" type="button" data-quick-resource="pv" data-quick-delta="1" data-char-id="${char.id}">+1 PV</button>
+          <button class="ghost-btn small" type="button" data-condition-preset="Normal" data-char-id="${char.id}">Normal</button>
+        </div>`;
+      grid.appendChild(card);
+    });
+    renderInitiativePanel();
+    od51RenderHistory();
+  };
+
+  const od51TableExperienceBase = renderTableExperience;
+  renderTableExperience = function() {
+    od51TableExperienceBase();
+    od51RenderHistory();
+  };
+
+  document.addEventListener('click', event => {
+    const mobileTab = event.target.closest('[data-mobile-tab]');
+    if (mobileTab) {
+      event.preventDefault();
+      document.querySelector(`[data-tab="${mobileTab.dataset.mobileTab}"]`)?.click();
+      document.querySelector('.sheet-area')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+    const mobileJump = event.target.closest('[data-mobile-jump]');
+    if (mobileJump) {
+      event.preventDefault();
+      document.querySelector(mobileJump.dataset.mobileJump)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+    const preset = event.target.closest('[data-condition-preset]');
+    if (preset) {
+      event.preventDefault();
+      const charId = preset.dataset.charId;
+      v35UpdateCharacter(charId, char => {
+        char.condition = preset.dataset.conditionPreset || 'Normal';
+        char.conditionsText = char.condition;
+      }, `${preset.dataset.conditionPreset || 'Normal'} aplicado em personagem.`);
+    }
+  });
+
+  const od51QuickBase = v35UpdateCharacter;
+  v35UpdateCharacter = function(charId, mutator, logText = '') {
+    od51QuickBase(charId, mutator, logText);
+    if (logText) od51History(logText, 'resource');
+  };
+
+  setTimeout(od51RenderHistory, 150);
+})();

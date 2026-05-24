@@ -132,7 +132,7 @@ router.get('/:id/state', async (req, res) => {
   if (!tableResult.rowCount) return res.status(404).json({ error: 'Mesa não encontrada.' });
 
   const members = await query(`
-    select tm.*, u.nick, u.real_name, c.name as character_name, c.data as character_data
+    select tm.*, u.nick, u.real_name, u.avatar_url, c.name as character_name, c.data as character_data
     from table_members tm
     join users u on u.id = tm.user_id
     left join characters c on c.id = tm.character_id
