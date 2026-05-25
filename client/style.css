@@ -4316,251 +4316,210 @@ body.dark-sheet .sessions-sheet-toggle {
 
 
 /* =========================
-   V53 - ícones temáticos, minhas fichas e sons refinados
+   V62 - limpeza estrutural de menus/sidebar/resumos
 ========================= */
-:root {
-  --sidebar-fab-size: 42px;
+.hidden { display: none !important; }
+.sessions-head,
+#main-topbar.topbar,
+#players-sidebar,
+.simple-inventory-card,
+.spell-card,
+.ability-card { overflow: visible !important; }
+
+/* Botões flutuantes limpos */
+.od62-floating-btn,
+.sessions-head-actions > .od62-floating-btn,
+#main-topbar .od62-floating-btn {
+  width: 52px !important;
+  height: 52px !important;
+  min-width: 52px !important;
+  min-height: 52px !important;
+  padding: 0 !important;
+  border: 3px solid color-mix(in srgb, var(--accent, #111) 78%, #ffffff 16%) !important;
+  border-radius: 14px !important;
+  background: color-mix(in srgb, var(--accent, #111) 92%, #000 8%) !important;
+  color: #fff !important;
+  display: grid !important;
+  place-items: center !important;
+  line-height: 1 !important;
+  font-size: 24px !important;
+  text-indent: 0 !important;
+  box-shadow: 0 0 0 2px rgba(255,255,255,.12) inset, 5px 5px 0 rgba(0,0,0,.26) !important;
+  clip-path: none !important;
+  overflow: hidden !important;
+  z-index: 10050 !important;
+}
+.od62-floating-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.od62-floating-btn img {
+  width: 30px !important;
+  height: 30px !important;
+  object-fit: contain !important;
+  display: block !important;
+  filter: brightness(0) invert(1) drop-shadow(0 1px 0 rgba(0,0,0,.25));
+  pointer-events: none;
+}
+.od62-menu-btn span,
+.od62-app-menu-btn span {
+  display: block;
+  transform: translateY(-1px);
+  pointer-events: none;
 }
 
-#main-topbar.topbar {
+/* Menu inicial: stack fixo de dois botões, painel abre para esquerda */
+.sessions-head { position: relative !important; padding-right: 104px !important; }
+.sessions-head-actions {
+  position: absolute !important;
+  top: 28px !important;
+  right: 28px !important;
+  width: 56px !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  grid-auto-rows: 56px !important;
+  gap: 12px !important;
+  align-items: start !important;
+  justify-items: center !important;
+  z-index: 10040 !important;
+}
+.sessions-menu-panel {
+  position: absolute !important;
+  top: 0 !important;
+  right: 68px !important;
+  width: 290px !important;
+  min-width: 290px !important;
+  max-width: min(290px, calc(100vw - 120px)) !important;
+  display: grid !important;
+  gap: 10px !important;
+  padding: 14px !important;
+  border: 3px solid var(--accent, #111) !important;
+  border-radius: 16px !important;
+  background: color-mix(in srgb, var(--paper, #111) 92%, #000 8%) !important;
+  box-shadow: 8px 8px 0 rgba(0,0,0,.24), 0 20px 55px rgba(0,0,0,.34) !important;
+  z-index: 10060 !important;
+  clip-path: none !important;
+}
+.sessions-menu-panel.hidden { display: none !important; }
+.sessions-sheet-toggle { grid-row: 2 !important; }
+.sessions-menu-btn { grid-row: 1 !important; }
+
+/* Minhas fichas do menu inicial */
+.account-sheets-panel { position: relative !important; }
+.account-sheets-head { position: relative !important; padding-right: 72px !important; }
+.od62-account-close,
+#players-sidebar .sidebar-toggle-btn {
+  width: 42px !important;
+  height: 42px !important;
+  border: 3px solid var(--accent, #111) !important;
+  border-radius: 14px !important;
+  background: color-mix(in srgb, var(--paper, #fff) 90%, transparent) !important;
+  color: var(--accent, #111) !important;
+  display: grid !important;
+  place-items: center !important;
+  font-size: 24px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  clip-path: none !important;
+}
+.od62-account-close { position: absolute !important; right: 0 !important; top: 0 !important; }
+
+/* Topbar dentro da mesa: botão de fichas fora do painel do menu */
+#main-topbar.topbar { z-index: 10020 !important; clip-path: none !important; }
+#main-topbar .topbar-menu-toggle.od62-app-menu-btn {
+  position: absolute !important;
+  top: 10px !important;
+  left: 10px !important;
+}
+#sidebar-dock-btn.od62-app-sheet-btn {
+  position: absolute !important;
+  top: 74px !important;
+  left: 10px !important;
+}
+#main-topbar .topbar-content { margin-left: 74px !important; }
+#main-topbar.collapsed {
+  width: 72px !important;
+  min-width: 72px !important;
+  height: 136px !important;
+  padding: 8px !important;
   overflow: visible !important;
 }
+#main-topbar.collapsed .topbar-content,
+#main-topbar.collapsed #campaign-mini-card { display: none !important; }
+#main-topbar.collapsed #sidebar-dock-btn.od62-app-sheet-btn,
+#sidebar-dock-btn.od62-app-sheet-btn.hidden { display: grid !important; }
+#main-topbar:not(.collapsed) #sidebar-dock-btn.od62-app-sheet-btn { display: grid !important; }
 
-#main-topbar .topbar-menu-toggle {
-  position: relative;
-  overflow: hidden;
-  padding: 0;
-  display: grid;
-  place-items: center;
-}
-
-#main-topbar.collapsed .topbar-menu-toggle {
-  color: transparent !important;
-  text-indent: -9999px;
-}
-
-#main-topbar.collapsed .topbar-menu-toggle::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  width: 18px;
-  height: 14px;
-  background:
-    linear-gradient(currentColor 0 0) top center / 18px 3px no-repeat,
-    linear-gradient(currentColor 0 0) center center / 18px 3px no-repeat,
-    linear-gradient(currentColor 0 0) bottom center / 18px 3px no-repeat;
-  color: #fff;
-}
-
-#main-topbar:not(.collapsed) .topbar-menu-toggle {
-  text-indent: 0;
-  font-size: 24px;
-}
-
-.paper-icon {
-  width: 18px;
-  height: 18px;
-  display: inline-block;
-  vertical-align: middle;
-  color: currentColor;
-}
-
-.paper-icon svg,
-.paper-icon path,
-.paper-icon polyline,
-.paper-icon line {
-  stroke: currentColor;
-}
-
-.sessions-sheet-toggle,
-#sidebar-dock-btn {
-  display: grid;
-  place-items: center;
-}
-
-.sessions-sheet-toggle .paper-icon,
-#sidebar-dock-btn .paper-icon {
-  width: 20px;
-  height: 20px;
-}
-
-#sidebar-dock-btn {
-  position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
-  width: var(--sidebar-fab-size);
-  height: var(--sidebar-fab-size);
-  border-width: 3px;
-  border-radius: 14px;
-  background: color-mix(in srgb, var(--accent) 92%, #000 8%);
-  color: #fff;
-  z-index: 9993;
-  transition: transform .16s ease, filter .16s ease, background .18s ease;
-}
-
-#sidebar-dock-btn:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.06);
-}
-
-#sidebar-dock-btn.is-open {
-  background: color-mix(in srgb, var(--paper, #fff) 92%, transparent);
-  color: var(--accent);
-}
-
-body.dark-sheet #sidebar-dock-btn.is-open,
-body[data-theme="dark"] #sidebar-dock-btn.is-open,
-.dark #sidebar-dock-btn.is-open {
-  background: rgba(0,0,0,.78);
-  color: var(--accent);
-  border-color: color-mix(in srgb, var(--accent), #fff 18%);
-}
-
-#players-sidebar {
-  margin-top: 74px;
-}
-
-.sidebar-title-row {
-  align-items: flex-start;
-}
-
+/* Sidebar Minhas Fichas dentro da mesa */
 #players-sidebar .sidebar-title-row {
-  margin-bottom: 14px;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  gap: 12px !important;
 }
-
-#players-sidebar .sidebar-title-row .sidebar-toggle-btn {
-  display: none !important;
-}
-
-#players-sidebar h2#sidebar-title {
-  margin: 0;
-  line-height: .95;
-}
-
-.character-list {
-  display: grid;
-  gap: 12px;
-}
-
+#players-sidebar .sidebar-toggle-btn { flex: 0 0 42px !important; }
+body.sidebar-collapsed #players-sidebar { display: none !important; }
+body.sidebar-collapsed #sidebar-dock-btn.od62-app-sheet-btn { display: grid !important; }
 .character-pill.session-character {
-  grid-template-columns: 1fr !important;
-  align-items: stretch;
-  gap: 10px;
-  padding: 14px;
-  border-radius: 18px;
+  border-radius: 18px !important;
+  clip-path: none !important;
 }
 
-.character-pill.session-character .session-char-top {
-  display: grid;
-  grid-template-columns: 62px 1fr;
-  gap: 12px;
-  align-items: center;
+/* Resumos de magias/habilidades */
+.od62-summary-toggle { margin-left: auto !important; }
+.od62-summary-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(180px, 1fr)) !important;
+  gap: 12px !important;
+  margin-top: 12px !important;
 }
-
-.character-pill.session-character .session-char-top img {
-  width: 62px;
-  height: 62px;
-  border-radius: 16px;
-  object-fit: cover;
+.od62-summary-grid.hidden { display: none !important; }
+.od62-summary-card {
+  min-height: 142px !important;
+  padding: 14px !important;
+  border: 3px solid var(--accent, #111) !important;
+  border-radius: 0 !important;
+  background: rgba(0,0,0,.18) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  overflow: hidden !important;
 }
-
-.character-pill.session-character .session-char-info {
-  min-width: 0;
+.od62-summary-card h4 {
+  margin: 0 !important;
+  color: var(--accent, #111) !important;
+  letter-spacing: .08em !important;
+  text-transform: uppercase !important;
 }
-
-.character-pill.session-character .session-char-badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 0;
+.od62-chip-row { display: flex !important; flex-wrap: wrap !important; gap: 6px !important; align-items: flex-start !important; }
+.od62-chip {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  max-width: 100% !important;
+  padding: 5px 8px !important;
+  border: 1px solid color-mix(in srgb, var(--accent, #111) 70%, #fff 12%) !important;
+  border-radius: 999px !important;
+  background: rgba(255,255,255,.05) !important;
+  font-size: .82rem !important;
+  line-height: 1.1 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
 }
+.od62-summary-card p,
+.od62-upgrades span { margin: 0 !important; opacity: .9 !important; line-height: 1.35 !important; word-break: break-word !important; }
+.od62-upgrades { display: grid !important; gap: 4px !important; margin-top: auto !important; }
+.od62-upgrades strong { color: var(--accent, #111) !important; font-size: .8rem !important; text-transform: uppercase !important; letter-spacing: .08em !important; }
 
-.character-pill.session-character .session-char-badges span {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 8px;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
-  background: color-mix(in srgb, var(--paper, #fff) 82%, transparent);
-  font-size: .76rem;
-  font-weight: 800;
-  line-height: 1;
-}
-
-body.dark-sheet .character-pill.session-character .session-char-badges span,
-body[data-theme="dark"] .character-pill.session-character .session-char-badges span,
-.dark .character-pill.session-character .session-char-badges span {
-  background: rgba(255,255,255,.06);
-}
-
-.character-pill.session-character .session-char-name {
-  display: block;
-  margin-top: 8px;
-  font-size: 1.05rem;
-  line-height: 1.05;
-}
-
-.character-pill.session-character .session-char-footer,
-.character-pill.session-character .session-char-owner {
-  display: block;
-  line-height: 1.2;
-}
-
-.character-pill.session-character .session-char-footer {
-  opacity: .82;
-  font-size: .84rem;
-}
-
-.character-pill.session-character .session-char-owner {
-  opacity: .66;
-  font-size: .78rem;
-}
-
-.character-pill.session-character.readonly::after {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  content: "Público";
-  font-size: 11px;
-  opacity: .7;
-}
-
-.dice-row {
-  grid-template-columns: auto minmax(90px, 1fr) 76px 76px;
-  align-items: center;
-}
-
-.dice-select-visual {
-  width: 38px;
-  height: 38px;
-  border: 2px solid var(--line);
-  border-radius: 12px;
-  display: grid;
-  place-items: center;
-  background: color-mix(in srgb, var(--paper, #fff) 90%, transparent);
-  color: var(--accent);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
-}
-
-body.dark-sheet .dice-select-visual,
-body[data-theme="dark"] .dice-select-visual,
-.dark .dice-select-visual {
-  background: rgba(0,0,0,.45);
-  border-color: rgba(255,255,255,.16);
-}
-
+/* Perícias/dados */
+.dice-visual-inline { display: inline-flex !important; align-items: center !important; gap: 6px !important; vertical-align: middle !important; }
 .dice-icon {
   --dice-mask: none;
-  width: 1.18em;
-  height: 1.18em;
+  width: 1.25em;
+  height: 1.25em;
   display: inline-block;
   background: currentColor;
   -webkit-mask: var(--dice-mask) center / contain no-repeat;
   mask: var(--dice-mask) center / contain no-repeat;
-  flex: 0 0 auto;
 }
-
 .dice-icon.d4 { --dice-mask: url('assets/dice-d4.png'); }
 .dice-icon.d6 { --dice-mask: url('assets/dice-d6.png'); }
 .dice-icon.d8 { --dice-mask: url('assets/dice-d8.png'); }
@@ -4568,382 +4527,49 @@ body[data-theme="dark"] .dice-select-visual,
 .dice-icon.d12 { --dice-mask: url('assets/dice-d12.png'); }
 .dice-icon.d20 { --dice-mask: url('assets/dice-d20.png'); }
 .dice-icon.d100 { --dice-mask: url('assets/dice-d10.png'); }
-
-.dice-button-inline,
-.dice-notation,
-.dice-chip-inline {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.dice-button-inline span:last-child,
-.dice-chip-inline span:last-child {
-  line-height: 1;
-}
-
 .roll-skill {
-  min-width: 70px;
+  min-width: 78px !important;
+  min-height: 42px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
 }
 
-.roll-skill .dice-icon {
-  width: 1.05em;
-  height: 1.05em;
-}
-
-.roll-result-main .dice-notation {
-  font-size: 1.08rem;
-  font-weight: 800;
-}
-
-.roll-result-main .dice-notation .dice-icon {
-  width: 1.2em;
-  height: 1.2em;
-}
-
-.sessions-sheet-toggle.icon-only,
-#sidebar-dock-btn.icon-only {
-  font-size: 0;
-}
-
-@media (max-width: 1180px) {
-  #players-sidebar {
-    margin-top: 74px;
-  }
-}
-
-@media (max-width: 860px) {
-  #players-sidebar {
-    margin-top: 0;
-  }
-
-  #sidebar-dock-btn {
-    display: none !important;
-  }
-
-  .dice-row {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-
-  .dice-select-visual {
-    display: none;
-  }
-}
-
-/* =========================
-   V54 - acabamento: menu, fichas, perícias e microanimações
-========================= */
-@keyframes od54FadeUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes od54PulseBorder {
-  0%, 100% { box-shadow: 6px 6px 0 rgba(0,0,0,.22), 0 0 0 rgba(var(--accent-rgb, 190 32 42), 0); }
-  50% { box-shadow: 6px 6px 0 rgba(0,0,0,.22), 0 0 18px rgba(var(--accent-rgb, 190 32 42), .16); }
-}
-@keyframes od54LoadingSweep {
-  0% { transform: translateX(-120%); opacity: 0; }
-  35% { opacity: .45; }
-  100% { transform: translateX(120%); opacity: 0; }
-}
-
-.manga-panel,
-.session-action-box,
-.campaign-card,
-.account-character-card,
-.master-character-card,
-.public-character-card,
-.sheet,
-.dice-box,
-.chat-box {
-  animation: od54FadeUp .22s ease both;
-}
-
-.manga-panel {
-  position: relative;
-}
-.manga-panel::after {
-  content: "";
-  pointer-events: none;
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(110deg, transparent 0 42%, rgba(255,255,255,.11) 50%, transparent 58%);
-  transform: translateX(-120%);
-  opacity: 0;
-}
-.manga-panel:hover::after {
-  animation: od54LoadingSweep 1.2s ease;
-}
-
-/* Botões quadrados sem quina cortada e com ícone centralizado */
-.sessions-menu-btn,
-.sessions-sheet-toggle,
-#main-topbar .topbar-menu-toggle,
-.sidebar-toggle-btn,
-.sidebar-dock-btn,
-#sidebar-dock-btn {
-  border-radius: 14px !important;
-  clip-path: none !important;
-  overflow: hidden !important;
-  position: relative;
+/* Inventário compacto visual e X */
+.simple-inventory-card { position: relative !important; padding-bottom: 92px !important; }
+.simple-inventory-card .mini-danger-btn,
+.simple-inventory-card [data-remove-simple-item] {
+  position: absolute !important;
+  right: 16px !important;
+  bottom: 74px !important;
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
   display: grid !important;
   place-items: center !important;
   padding: 0 !important;
+  border-radius: 0 !important;
+  font-size: 20px !important;
   line-height: 1 !important;
-  box-sizing: border-box !important;
 }
+.simple-inventory-list.compact .simple-inventory-name-row,
+.simple-inventory-list.compact .simple-inventory-card-top,
+.simple-inventory-list.compact .simple-inventory-desc { display: none !important; }
+.simple-inventory-list.compact .simple-inventory-card { padding: 14px !important; min-height: 138px !important; }
+.simple-inventory-list.compact .od62-item-summary { display: grid !important; }
+.od62-item-summary { display: none; gap: 8px; }
+.od62-item-summary h4 { margin: 0; color: var(--accent); letter-spacing: .04em; }
+.od62-item-summary p { margin: 0; opacity: .86; line-height: 1.32; }
 
-.sessions-menu-btn {
-  text-indent: -9999px !important;
-  color: #fff !important;
-  background: color-mix(in srgb, var(--accent) 92%, #000 8%) !important;
-  border: 3px solid color-mix(in srgb, var(--accent), #fff 14%) !important;
-  box-shadow: 4px 4px 0 rgba(0,0,0,.22) !important;
+@media (max-width: 1120px) {
+  .od62-summary-grid { grid-template-columns: repeat(2, minmax(180px, 1fr)) !important; }
 }
-.sessions-menu-btn::before,
-#main-topbar.collapsed .topbar-menu-toggle::before {
-  content: "" !important;
-  position: absolute !important;
-  inset: 0 !important;
-  margin: auto !important;
-  width: 20px !important;
-  height: 16px !important;
-  background:
-    linear-gradient(#fff 0 0) top center / 20px 3px no-repeat,
-    linear-gradient(#fff 0 0) center center / 20px 3px no-repeat,
-    linear-gradient(#fff 0 0) bottom center / 20px 3px no-repeat !important;
-  transform: none !important;
-}
-.sessions-menu-btn::after,
-.sessions-sheet-toggle::after,
-#main-topbar .topbar-menu-toggle::after,
-.sidebar-dock-btn::after,
-#sidebar-dock-btn::after {
-  display: none !important;
-}
-#main-topbar:not(.collapsed) .topbar-menu-toggle {
-  color: #fff !important;
-  text-indent: 0 !important;
-}
-#main-topbar.collapsed .topbar-menu-toggle {
-  color: transparent !important;
-  text-indent: -9999px !important;
-}
-
-.paper-icon,
-.paper-icon svg {
-  width: 22px !important;
-  height: 22px !important;
-  display: block !important;
-  color: currentColor !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-.paper-icon svg { overflow: visible; }
-
-.sessions-sheet-toggle {
-  background: color-mix(in srgb, var(--paper, #fff) 88%, transparent) !important;
-  color: var(--accent) !important;
-  border: 3px solid var(--accent) !important;
-  box-shadow: 4px 4px 0 rgba(0,0,0,.2) !important;
-}
-body.dark-sheet .sessions-sheet-toggle {
-  background: rgba(0,0,0,.58) !important;
-  color: #fff !important;
-}
-
-/* Minhas fichas do menu inicial sempre abaixo dos botões e alinhado */
-.sessions-head-actions {
-  display: grid !important;
-  grid-template-columns: 56px !important;
-  grid-auto-rows: 50px !important;
-  gap: 10px !important;
-  align-items: start !important;
-  justify-items: center !important;
-}
-.sessions-head-actions > button {
-  width: 56px !important;
-  height: 50px !important;
-}
-.sessions-menu-panel {
-  grid-row: 1 / span 2 !important;
-  align-self: start !important;
-}
-
-/* Minhas Fichas interno: painel abaixo do botão e com botão de minimizar visível */
-#players-sidebar {
-  margin-top: 82px !important;
-  border-radius: 22px !important;
-  animation: od54FadeUp .24s ease both, od54PulseBorder 3.8s ease-in-out infinite;
-}
-#players-sidebar .sidebar-toggle-btn {
-  display: grid !important;
-  width: 38px !important;
-  height: 38px !important;
-  background: color-mix(in srgb, var(--paper, #fff) 88%, transparent) !important;
-  color: var(--accent) !important;
-  border: 2px solid var(--accent) !important;
-}
-body.dark-sheet #players-sidebar .sidebar-toggle-btn {
-  background: rgba(0,0,0,.5) !important;
-  color: #fff !important;
-}
-#players-sidebar .sidebar-toggle-btn::before {
-  content: "—";
-  font-size: 22px;
-  line-height: 1;
-  color: currentColor;
-}
-#players-sidebar .sidebar-toggle-btn { font-size: 0 !important; }
-body.sidebar-collapsed #players-sidebar { display: none !important; }
-body.sidebar-collapsed #sidebar-dock-btn,
-#sidebar-dock-btn:not(.hidden) {
-  display: grid !important;
-}
-#sidebar-dock-btn {
-  top: calc(100% + 12px) !important;
-  right: 0 !important;
-  background: color-mix(in srgb, var(--accent) 92%, #000 8%) !important;
-  color: #fff !important;
-  border: 3px solid color-mix(in srgb, var(--accent), #fff 14%) !important;
-  box-shadow: 4px 4px 0 rgba(0,0,0,.22) !important;
-}
-#sidebar-dock-btn.is-open {
-  background: color-mix(in srgb, var(--paper, #fff) 90%, transparent) !important;
-  color: var(--accent) !important;
-}
-
-/* Card interno de personagem em minhas fichas */
-.character-pill.session-character {
-  border: 2px solid var(--accent) !important;
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.04), 4px 4px 0 rgba(0,0,0,.18);
-}
-.character-pill.session-character:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.04);
-}
-.character-pill.session-character .session-char-top {
-  grid-template-columns: 58px minmax(0, 1fr) !important;
-}
-.character-pill.session-character .session-char-name {
-  overflow-wrap: anywhere;
-}
-
-/* Perícias em cards sempre, tanto treinadas quanto mostrar todas */
-#skills-wrap {
-  border: none !important;
-  background: transparent !important;
-  overflow: visible !important;
-}
-#skills-wrap #skills-table,
-#skills-wrap #skills-table tbody,
-#skills-wrap #skills-table tr,
-#skills-wrap #skills-table td {
-  display: block !important;
-  border: 0 !important;
-}
-#skills-wrap #skills-table thead { display: none !important; }
-#skills-wrap #skills-table tbody {
-  display: grid !important;
-  grid-template-columns: repeat(2, minmax(250px, 1fr)) !important;
-  gap: 10px !important;
-}
-#skills-wrap #skills-table tr {
-  display: grid !important;
-  grid-template-columns: 28px minmax(0, 1fr) 58px 72px !important;
-  align-items: center !important;
-  gap: 8px !important;
-  padding: 10px 12px !important;
-  border: 2px solid color-mix(in srgb, var(--accent) 62%, transparent) !important;
-  border-radius: 14px !important;
-  background: color-mix(in srgb, var(--paper, #fff) 84%, var(--accent) 5%) !important;
-  box-shadow: 3px 3px 0 rgba(0,0,0,.14);
-}
-body.dark-sheet #skills-wrap #skills-table tr {
-  background: rgba(0,0,0,.32) !important;
-}
-#skills-wrap #skills-table .col-attr,
-#skills-wrap #skills-table .col-mod,
-#skills-wrap #skills-table .col-bonus { display: none !important; }
-#skills-wrap #skills-table .skill-total {
-  text-align: center !important;
-  font-size: 1rem !important;
-  color: var(--accent) !important;
-  font-weight: 900 !important;
-}
-#skills-wrap #skills-table .col-roll { display: block !important; }
-#skills-wrap #skills-table .col-roll button {
-  width: 100% !important;
-  min-width: 60px !important;
-  padding: 7px 8px !important;
-}
-#skills-wrap #skills-table input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  accent-color: var(--accent);
-}
-#skills-wrap #skills-table .empty-trained-skills {
-  grid-column: 1 / -1 !important;
-}
-
-/* Ficha um pouco mais organizada */
-.sheet-header {
-  border-bottom: 2px solid color-mix(in srgb, var(--accent) 70%, transparent);
-  padding-bottom: 14px;
-  margin-bottom: 14px;
-}
-.identity-grid label,
-.status-card,
-.attr-card,
-.res-card {
-  border-radius: 14px !important;
-}
-.tabs {
-  gap: 8px !important;
-  flex-wrap: wrap !important;
-}
-.sheet-tab {
-  border-radius: 12px !important;
-  transition: transform .14s ease, filter .14s ease, background .18s ease;
-}
-.sheet-tab:hover,
-.primary-btn:hover,
-.ghost-btn:hover,
-.danger-btn:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.06);
-}
-.sheet-tab.active {
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 34%, transparent), 4px 4px 0 rgba(0,0,0,.16);
-}
-
-/* Loading visual para ações rápidas */
-button.is-loading,
-.primary-btn.is-loading,
-.ghost-btn.is-loading {
-  pointer-events: none;
-  position: relative;
-  color: transparent !important;
-}
-button.is-loading::before,
-.primary-btn.is-loading::before,
-.ghost-btn.is-loading::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  width: 18px;
-  height: 18px;
-  border: 3px solid rgba(255,255,255,.35);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: spin .75s linear infinite;
-}
-
-@media (max-width: 860px) {
-  #players-sidebar { margin-top: 0 !important; }
-  #skills-wrap #skills-table tbody { grid-template-columns: 1fr !important; }
-  .sessions-head-actions { grid-template-columns: 48px !important; grid-auto-rows: 44px !important; }
-  .sessions-head-actions > button { width: 48px !important; height: 44px !important; }
+@media (max-width: 760px) {
+  .sessions-head { padding-right: 84px !important; }
+  .sessions-head-actions { top: 18px !important; right: 18px !important; }
+  .sessions-menu-panel { right: 0 !important; top: 124px !important; width: min(290px, calc(100vw - 42px)) !important; }
+  .od62-summary-grid { grid-template-columns: 1fr !important; }
+  #main-topbar .topbar-content { margin-left: 0 !important; padding-top: 132px !important; }
 }

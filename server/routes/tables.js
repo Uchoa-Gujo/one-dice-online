@@ -179,7 +179,7 @@ router.put('/:id/member', async (req, res) => {
 router.get('/:id/messages', requireTableMember, async (req, res) => {
   const tableId = req.params.id;
   const result = await query(`
-    select cm.*, u.nick, u.real_name, c.name as character_name
+    select cm.*, u.nick, u.real_name, u.avatar_url, c.name as character_name, c.data as character_data
     from chat_messages cm
     left join users u on u.id = cm.user_id
     left join characters c on c.id = cm.character_id
@@ -206,6 +206,60 @@ router.post('/:id/messages', requireTableMember, async (req, res) => {
   const msg = created.rows[0];
   emitTable(req, tableId, 'message:created', { message: msg });
   res.json({ message: msg });
+});
+
+
+router.post('/:id/transfer-item', requireTableMember, async (req, res) => {
+  const tableId = req.params.id;
+  const fromCharacterId = req.body.fromCharacterId || null;
+  const toCharacterId = req.body.toCharacterId || null;
+  const itemId = req.body.itemId || null;
+  if (!fromCharacterId || !toCharacterId || !itemId) {
+    return res.status(400).json({ error: 'Dados da transferência incompletos.' });
+  }
+  if (fromCharacterId === toCharacterId) {
+    return res.status(400).json({ error: 'Escolha outro personagem para receber.' });
+  }
+
+  const links = await query(`
+    select tm.character_id, tm.user_id, tm.role, c.owner_id, c.name, c.data
+    from table_members tm
+    join characters c on c.id = tm.character_id
+    where tm.table_id = $1 and tm.character_id in ($2, $3)
+  `, [tableId, fromCharacterId, toCharacterId]);
+
+  const from = links.rows.find(row => String(row.character_id) === String(fromCharacterId));
+  const to = links.rows.find(row => String(row.character_id) === String(toCharacterId));
+  if (!from || !to) return res.status(404).json({ error: 'Uma das fichas não está vinculada à mesa.' });
+
+  const isMaster = isMasterRole(req.tableMember.role);
+  if (String(from.owner_id) !== String(req.user.id) && !isMaster) {
+    return res.status(403).json({ error: 'Você só pode transferir itens da sua própria ficha.' });
+  }
+
+  const fromData = from.data || {};
+  const toData = to.data || {};
+  const fromItems = Array.isArray(fromData.inventoryItems) ? fromData.inventoryItems : [];
+  const index = fromItems.findIndex(item => String(item.id) === String(itemId));
+  if (index < 0) return res.status(404).json({ error: 'Item não encontrado na ficha de origem.' });
+
+  const [item] = fromItems.splice(index, 1);
+  const toItems = Array.isArray(toData.inventoryItems) ? toData.inventoryItems : [];
+  toItems.push({ ...item, id: item.id || `${Date.now()}_${Math.random().toString(36).slice(2, 8)}` });
+
+  fromData.inventoryItems = fromItems;
+  toData.inventoryItems = toItems;
+  fromData.weightCurrent = fromItems.reduce((sum, entry) => sum + (Number(entry.weight) || 0), 0);
+  toData.weightCurrent = toItems.reduce((sum, entry) => sum + (Number(entry.weight) || 0), 0);
+
+  const updatedFrom = await query('update characters set data = $1, updated_at = now() where id = $2 returning *', [fromData, fromCharacterId]);
+  const updatedTo = await query('update characters set data = $1, updated_at = now() where id = $2 returning *', [toData, toCharacterId]);
+
+  emitTable(req, tableId, 'character:updated', { character: updatedFrom.rows[0] });
+  emitTable(req, tableId, 'character:updated', { character: updatedTo.rows[0] });
+  emitTable(req, tableId, 'inventory:updated', { reason: 'transfer-item', fromCharacterId, toCharacterId, itemName: item.name || 'Item' });
+
+  res.json({ ok: true, item, from: updatedFrom.rows[0], to: updatedTo.rows[0] });
 });
 
 router.get('/:id/initiative', requireTableMember, async (req, res) => {
