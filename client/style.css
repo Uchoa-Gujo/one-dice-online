@@ -4664,3 +4664,138 @@ body.sidebar-collapsed #sidebar-dock-btn.od62-app-sheet-btn { display: grid !imp
   .group-drop-row { grid-template-columns: 1fr !important; }
   .group-drop-row .danger-btn, .group-drop-row [data-delete-drop-item] { justify-self: stretch; }
 }
+
+
+/* =========================
+   V66 - correção final Minhas Fichas compacto e legível
+========================= */
+#players-sidebar {
+  width: 260px !important;
+  max-width: 260px !important;
+}
+#players-sidebar .character-list {
+  display: grid !important;
+  gap: 10px !important;
+}
+#players-sidebar .character-pill.session-character {
+  display: grid !important;
+  grid-template-columns: 54px minmax(0, 1fr) !important;
+  grid-auto-rows: auto !important;
+  gap: 8px 10px !important;
+  align-items: center !important;
+  min-height: auto !important;
+  padding: 10px !important;
+  overflow: hidden !important;
+  border-radius: 14px !important;
+}
+#players-sidebar .character-pill.session-character img,
+#players-sidebar .session-char-top img {
+  width: 54px !important;
+  height: 54px !important;
+  grid-row: 1 / span 3 !important;
+  object-fit: cover !important;
+  border-radius: 12px !important;
+}
+#players-sidebar .character-pill.session-character strong,
+#players-sidebar .session-char-name {
+  display: block !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  word-break: normal !important;
+  line-height: 1.1 !important;
+  font-size: .98rem !important;
+  margin: 0 !important;
+  grid-column: 2 !important;
+}
+#players-sidebar .character-pill.session-character span,
+#players-sidebar .character-pill.session-character small,
+#players-sidebar .session-char-footer,
+#players-sidebar .session-char-owner {
+  display: block !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  line-height: 1.15 !important;
+  font-size: .78rem !important;
+  opacity: .85 !important;
+  grid-column: 2 !important;
+  margin: 0 !important;
+}
+#players-sidebar .session-char-top,
+#players-sidebar .session-char-info,
+#players-sidebar .session-char-badges {
+  display: contents !important;
+}
+#players-sidebar .session-char-badges span {
+  display: inline !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  font-size: .72rem !important;
+}
+@media (max-width: 860px) {
+  #players-sidebar {
+    width: 100% !important;
+    max-width: none !important;
+  }
+}
+
+/* =========================
+   V67-V69 - Rotas internas, foco mobile e estabilidade de render
+========================= */
+.route-hint-chip {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 9999;
+  padding: 8px 12px;
+  border: 1px solid var(--line, currentColor);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--paper, #101010) 92%, transparent);
+  color: var(--ink, #fff);
+  font-size: 12px;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity .18s ease, transform .18s ease;
+}
+.route-hint-chip.active {
+  opacity: .86;
+  transform: translateY(0);
+}
+.route-active-section {
+  scroll-margin-top: 96px;
+  animation: odRouteFocusPulse .42s ease-out;
+}
+@keyframes odRouteFocusPulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent, #20c020) 30%, transparent); }
+  100% { box-shadow: inherit; }
+}
+.mobile-route-title {
+  display: none;
+}
+@media (max-width: 860px) {
+  body.route-mobile-focus .app-grid > * {
+    scroll-margin-top: 76px;
+  }
+  .mobile-route-title {
+    display: block;
+    margin: 8px 0 14px;
+    padding: 10px 12px;
+    border: 1px solid var(--line, currentColor);
+    border-radius: 14px;
+    font-weight: 800;
+    letter-spacing: .06em;
+    background: rgba(0,0,0,.18);
+  }
+  body.route-chat-focus #conversation-chat-box,
+  body.route-dados-focus .dice-box,
+  body.route-drops-focus #group-drops-panel,
+  body.route-fichas-focus #players-sidebar,
+  body.route-ficha-focus .sheet-area {
+    position: relative;
+  }
+}

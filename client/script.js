@@ -4394,6 +4394,28 @@ setTimeout(od46SyncSidebarDockButton, 120);
   setTimeout(initCleanUI, 500);
 })();
 
+
+/* =========================
+   V66 - trava de inventário online contra autosave antigo
+========================= */
+let od66InventoryMutationActive = false;
+function od66ClearSaveTimers() {
+  try { if (typeof saveTimer !== 'undefined') clearTimeout(saveTimer); } catch (_) {}
+  try { if (typeof od42SaveTimer !== 'undefined') clearTimeout(od42SaveTimer); } catch (_) {}
+}
+function od66InventoryMutationLock(active = true) {
+  od66InventoryMutationActive = !!active;
+  od66ClearSaveTimers();
+  if (!active) return;
+  window.clearTimeout(window.__od66InventoryUnlockTimer);
+  window.__od66InventoryUnlockTimer = window.setTimeout(() => { od66InventoryMutationActive = false; }, 2500);
+}
+function od66InventoryMutationUnlockSoon() {
+  od66ClearSaveTimers();
+  window.clearTimeout(window.__od66InventoryUnlockTimer);
+  window.__od66InventoryUnlockTimer = window.setTimeout(() => { od66InventoryMutationActive = false; }, 900);
+}
+
 /* =========================
    V63 - estabilidade multiplayer, chat online e transferência entre jogadores
 ========================= */
@@ -4590,9 +4612,7 @@ setTimeout(od46SyncSidebarDockButton, 120);
 
   async function od63TransferItemOnline(itemId) {
     if (!od63HasOnlineTable()) return false;
-    clearTimeout(saveTimer);
-    saveCurrentCharacter();
-    clearTimeout(saveTimer);
+    od66InventoryMutationLock(true);
     const from = currentChar();
     if (!from) return false;
     const targets = v39CampaignCharacters().filter(c => c.id !== from.id);
@@ -4620,7 +4640,9 @@ setTimeout(od46SyncSidebarDockButton, 120);
       await od63SoftReloadTableState(true);
       if (currentCharacterId === from.id || currentCharacterId === target.id) loadCharacter(currentCharacterId);
       renderTableExperience();
+      od66InventoryMutationUnlockSoon();
     } catch (error) {
+      od66InventoryMutationUnlockSoon();
       alert(error.message || 'Erro ao transferir item.');
     }
     return true;
@@ -4932,7 +4954,9 @@ setTimeout(od46SyncSidebarDockButton, 120);
       loadCharacter(from.id);
       renderGroupDrops();
       renderTableExperience();
+      od66InventoryMutationUnlockSoon();
     } catch (error) {
+      od66InventoryMutationUnlockSoon();
       alert(error.message || 'Erro ao enviar item para drop.');
     }
     return true;
@@ -4978,9 +5002,7 @@ setTimeout(od46SyncSidebarDockButton, 120);
     if (dropBtn && currentCampaignId && od42Token && od42Token()) {
       event.preventDefault();
       event.stopImmediatePropagation();
-      clearTimeout(saveTimer);
-      saveCurrentCharacter();
-      clearTimeout(saveTimer);
+      od66InventoryMutationLock(true);
       dropItemOnline(dropBtn.dataset.dropSimpleItem);
       return;
     }
@@ -5048,4 +5070,288 @@ setTimeout(od46SyncSidebarDockButton, 120);
   }, 5000);
 
   setTimeout(() => { restoreCollapsedState(); loadDrops(); renderChat(true); }, 500);
+})();
+
+
+/* =========================
+   V66 - wrapper final: não salvar ficha antiga durante transferência/drop
+========================= */
+(function od66FinalGuards(){
+  const baseSave = saveCurrentCharacter;
+  saveCurrentCharacter = function() {
+    if (od66InventoryMutationActive) return;
+    return baseSave.apply(this, arguments);
+  };
+})();
+
+
+/* =========================
+   V67 - URLs internas por tela/aba
+   V68 - guardas de inventário em rota
+   V69 - navegação mobile por URL
+========================= */
+(function od67to69Routes(){
+  const ROUTE_VERSION = 'v69';
+  let applyingRoute = false;
+  let routeReady = false;
+  let routeNoticeTimer = null;
+  let lastRoutePath = '';
+
+  function pathParts() {
+    return location.pathname.split('/').filter(Boolean).map(decodeURIComponent);
+  }
+
+  function qs() { return new URLSearchParams(location.search); }
+
+  function currentTabName() {
+    return document.querySelector('.sheet-tab.active')?.dataset?.tab || 'resumo';
+  }
+
+  function isOnlineReady() {
+    return !!(currentUser && (typeof od42Token !== 'function' || !od42Token || od42Token() || currentUser.id));
+  }
+
+  function routePathForCurrent(extraSection = '') {
+    if (accountSheetMode) {
+      return currentCharacterId ? `/ficha/${encodeURIComponent(currentCharacterId)}?tab=${encodeURIComponent(currentTabName())}` : '/fichas';
+    }
+    if (currentCampaignId) {
+      if (extraSection) return `/mesa/${encodeURIComponent(currentCampaignId)}/${extraSection}`;
+      if (currentCharacterId) return `/mesa/${encodeURIComponent(currentCampaignId)}/ficha/${encodeURIComponent(currentCharacterId)}?tab=${encodeURIComponent(currentTabName())}`;
+      return `/mesa/${encodeURIComponent(currentCampaignId)}`;
+    }
+    if (document.getElementById('sessions-screen')?.classList.contains('active')) return '/mesas';
+    return '/login';
+  }
+
+  function safeReplace(path) { return safeNavigate(path, true); }
+
+  function safeNavigate(path, replace = false) {
+    if (!path || applyingRoute) return;
+    const next = path;
+    const current = location.pathname + location.search;
+    if (next === current || next === lastRoutePath) return;
+    lastRoutePath = next;
+    try {
+      history[replace ? 'replaceState' : 'pushState']({ odRoute: ROUTE_VERSION, path: next }, '', next);
+    } catch (_) {}
+  }
+
+  function setMobileRoute(section = '') {
+    const body = document.body;
+    body.classList.remove('route-mobile-focus', 'route-chat-focus', 'route-dados-focus', 'route-drops-focus', 'route-fichas-focus', 'route-ficha-focus');
+    if (!section) return;
+    body.classList.add('route-mobile-focus', `route-${section}-focus`);
+  }
+
+  function showRouteNotice(text) {
+    let chip = document.getElementById('route-hint-chip');
+    if (!chip) {
+      chip = document.createElement('div');
+      chip.id = 'route-hint-chip';
+      chip.className = 'route-hint-chip';
+      document.body.appendChild(chip);
+    }
+    chip.textContent = text;
+    chip.classList.add('active');
+    clearTimeout(routeNoticeTimer);
+    routeNoticeTimer = setTimeout(() => chip.classList.remove('active'), 1200);
+  }
+
+  function focusElement(selector, sectionName = '') {
+    const el = document.querySelector(selector);
+    if (!el) return;
+    document.querySelectorAll('.route-active-section').forEach(node => node.classList.remove('route-active-section'));
+    el.classList.add('route-active-section');
+    setMobileRoute(sectionName);
+    setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 40);
+  }
+
+  function activateSheetTab(tab) {
+    if (!tab) return;
+    const btn = document.querySelector(`.sheet-tab[data-tab="${CSS.escape(tab)}"]`);
+    if (btn) btn.click();
+  }
+
+  function findCampaignIdFromRoute(parts) {
+    if (parts[0] !== 'mesa') return null;
+    return parts[1] || null;
+  }
+
+  async function ensureTableLoaded(tableId) {
+    if (!tableId) return false;
+    if (currentCampaignId === tableId && document.getElementById('app-screen')?.classList.contains('active')) return true;
+    const isMember = getMembers().some(m => String(m.campaignId) === String(tableId) && String(m.userId) === String(currentUser?.id));
+    if (!isMember) {
+      showSessions();
+      showRouteNotice('Você não faz parte dessa mesa.');
+      return false;
+    }
+    await enterCampaign(tableId);
+    return true;
+  }
+
+  async function applyRouteFromLocation() {
+    if (applyingRoute) return;
+    applyingRoute = true;
+    try {
+      const parts = pathParts();
+      const query = qs();
+      if (!parts.length) {
+        if (currentUser) showSessions(); else showAuth();
+        return;
+      }
+      if (!currentUser && parts[0] !== 'login') {
+        showAuth();
+        sessionStorage.setItem('od_pending_route', location.pathname + location.search);
+        return;
+      }
+      if (parts[0] === 'login') {
+        showAuth();
+        return;
+      }
+      if (parts[0] === 'mesas' || parts[0] === 'campanhas') {
+        showSessions();
+        return;
+      }
+      if (parts[0] === 'fichas') {
+        initAccountCharacterEditor();
+        setMobileRoute('fichas');
+        return;
+      }
+      if (parts[0] === 'ficha') {
+        const charId = parts[1] || currentCharacterId;
+        initAccountCharacterEditor(charId);
+        activateSheetTab(query.get('tab') || 'resumo');
+        setMobileRoute('ficha');
+        return;
+      }
+      if (parts[0] === 'mesa') {
+        const tableId = parts[1];
+        const ok = await ensureTableLoaded(tableId);
+        if (!ok) return;
+        const section = parts[2] || '';
+        if (section === 'ficha') {
+          const charId = parts[3] || currentCharacterId;
+          if (charId && get(STORAGE.characters, []).some(c => String(c.id) === String(charId))) {
+            currentCharacterId = charId;
+            loadCharacter(charId);
+          }
+          activateSheetTab(query.get('tab') || 'resumo');
+          focusElement('.sheet-area', 'ficha');
+          return;
+        }
+        if (section === 'chat') { focusElement('#conversation-chat-box', 'chat'); return; }
+        if (section === 'dados') { focusElement('.dice-box', 'dados'); return; }
+        if (section === 'drops') { focusElement('#group-drops-panel', 'drops'); return; }
+        if (section === 'fichas') { focusElement('#players-sidebar', 'fichas'); return; }
+        setMobileRoute('');
+        return;
+      }
+      showSessions();
+    } finally {
+      setTimeout(() => { applyingRoute = false; }, 60);
+    }
+  }
+
+  const baseShowAuth67 = showAuth;
+  showAuth = function() {
+    const result = baseShowAuth67.apply(this, arguments);
+    safeReplace('/login');
+    setMobileRoute('');
+    return result;
+  };
+
+  const baseShowSessions67 = showSessions;
+  showSessions = function() {
+    const result = baseShowSessions67.apply(this, arguments);
+    safeNavigate('/mesas');
+    setMobileRoute('');
+    return result;
+  };
+
+  const baseInitApp67 = initApp;
+  initApp = function(campaignId = currentCampaignId) {
+    const result = baseInitApp67.apply(this, arguments);
+    const path = routePathForCurrent();
+    safeNavigate(path, !routeReady);
+    return result;
+  };
+
+  const baseEnterCampaign67 = enterCampaign;
+  enterCampaign = async function(campaignId) {
+    const result = await baseEnterCampaign67.apply(this, arguments);
+    safeNavigate(`/mesa/${encodeURIComponent(campaignId)}`);
+    return result;
+  };
+
+  const baseInitAccount67 = initAccountCharacterEditor;
+  initAccountCharacterEditor = function(charId = null) {
+    const result = baseInitAccount67.apply(this, arguments);
+    safeNavigate(charId ? `/ficha/${encodeURIComponent(charId)}?tab=${encodeURIComponent(currentTabName())}` : '/fichas');
+    return result;
+  };
+
+  const baseLoadCharacter67 = loadCharacter;
+  loadCharacter = function(id) {
+    const result = baseLoadCharacter67.apply(this, arguments);
+    if (document.getElementById('app-screen')?.classList.contains('active')) {
+      safeNavigate(routePathForCurrent());
+    }
+    return result;
+  };
+
+  // V68: após operações de inventário online, preferir o estado do servidor e não reabrir autosave antigo.
+  if (typeof od66InventoryMutationLock === 'function') {
+    const baseSave67 = saveCurrentCharacter;
+    saveCurrentCharacter = function() {
+      if (window.__odInventoryOnlineBusy) return;
+      return baseSave67.apply(this, arguments);
+    };
+    document.addEventListener('click', event => {
+      if (event.target.closest('[data-transfer-simple-item], [data-drop-simple-item], [data-take-drop-item], [data-delete-drop-item]')) {
+        window.__odInventoryOnlineBusy = true;
+        clearTimeout(saveTimer);
+        setTimeout(() => { window.__odInventoryOnlineBusy = false; }, 1400);
+      }
+    }, true);
+  }
+
+  document.addEventListener('click', event => {
+    const tabBtn = event.target.closest('.sheet-tab');
+    if (tabBtn) {
+      setTimeout(() => safeNavigate(routePathForCurrent()), 0);
+      return;
+    }
+    const mobileTab = event.target.closest('[data-mobile-tab]');
+    if (mobileTab && currentCampaignId) {
+      setTimeout(() => safeNavigate(`/mesa/${encodeURIComponent(currentCampaignId)}/ficha/${encodeURIComponent(currentCharacterId || '')}?tab=${encodeURIComponent(mobileTab.dataset.mobileTab)}`), 0);
+      return;
+    }
+    const mobileJump = event.target.closest('[data-mobile-jump]');
+    if (mobileJump && currentCampaignId) {
+      const sel = mobileJump.dataset.mobileJump || '';
+      const section = sel.includes('chat') ? 'chat' : sel.includes('players') ? 'fichas' : sel.includes('right-panel') ? 'dados' : 'ficha';
+      setTimeout(() => safeNavigate(`/mesa/${encodeURIComponent(currentCampaignId)}/${section}`), 0);
+    }
+  }, true);
+
+  window.addEventListener('popstate', () => applyRouteFromLocation());
+
+  async function bootRoute() {
+    if (routeReady) return;
+    routeReady = true;
+    const pending = sessionStorage.getItem('od_pending_route');
+    if (pending && currentUser) {
+      sessionStorage.removeItem('od_pending_route');
+      history.replaceState({ odRoute: ROUTE_VERSION, path: pending }, '', pending);
+    }
+    await applyRouteFromLocation();
+  }
+
+  // Dá tempo para sessão online, personagens e mesas carregarem antes de interpretar a URL.
+  setTimeout(bootRoute, 550);
+  setTimeout(() => {
+    if (!routeReady) bootRoute();
+  }, 1400);
 })();
