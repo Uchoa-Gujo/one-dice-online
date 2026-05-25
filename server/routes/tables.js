@@ -83,7 +83,8 @@ function apiRole(role) {
 
 router.get('/', async (req, res) => {
   const result = await query(`
-    select t.*, tm.role, tm.character_id
+    select t.*, tm.role, tm.character_id,
+      (select count(*)::int from table_members where table_id = t.id) as player_count
     from table_members tm
     join tables t on t.id = tm.table_id
     where tm.user_id = $1
@@ -96,11 +97,13 @@ router.post('/', async (req, res) => {
   const limit = await query('select count(*)::int as total from tables where owner_id = $1', [req.user.id]);
   if ((limit.rows[0]?.total || 0) >= 5) return res.status(403).json({ error: 'Limite de 5 campanhas por conta atingido.' });
   const name = String(req.body.name || 'Nova Mesa').trim().slice(0, 80) || 'Nova Mesa';
+  const description = String(req.body.description || '').trim().slice(0, 200);
+  const logoUrl = String(req.body.logoUrl || req.body.logo_url || '').trim().slice(0, 200000);
   const code = await uniqueInviteCode();
 
   const created = await query(
-    'insert into tables (name, owner_id, invite_code) values ($1, $2, $3) returning *',
-    [name, req.user.id, code]
+    'insert into tables (name, owner_id, invite_code, description, logo_url) values ($1, $2, $3, $4, $5) returning *',
+    [name, req.user.id, code, description, logoUrl]
   );
   const table = created.rows[0];
 
@@ -164,6 +167,25 @@ router.get('/:id/state', async (req, res) => {
   `, [tableId]);
 
   res.json({ table: tableResult.rows[0], members: members.rows });
+});
+
+
+router.put('/:id', requireTableMaster, async (req, res) => {
+  const tableId = req.params.id;
+  const name = String(req.body.name || 'Campanha').trim().slice(0, 80) || 'Campanha';
+  const description = String(req.body.description || '').trim().slice(0, 200);
+  const logoUrl = String(req.body.logoUrl || req.body.logo_url || '').trim().slice(0, 200000);
+
+  const result = await query(`
+    update tables
+    set name = $1, description = $2, logo_url = $3, updated_at = now()
+    where id = $4 and owner_id = $5
+    returning *
+  `, [name, description, logoUrl, tableId, req.user.id]);
+
+  if (!result.rowCount) return res.status(403).json({ error: 'Somente o mestre dono pode editar esta campanha.' });
+  emitTable(req, tableId, 'table:updated', { reason: 'metadata-updated', table: result.rows[0] });
+  res.json({ table: result.rows[0] });
 });
 
 router.put('/:id/member', async (req, res) => {

@@ -6794,3 +6794,332 @@ function od66InventoryMutationUnlockSoon() {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 })();
+
+/* =========================
+   V86 - Menu Campanhas mestre: descrição, logo e jogadores
+   - Redesenha apenas a aba Campanhas do dashboard
+   - Criação/edição com descrição de até 200 caracteres
+   - Logo por URL ou arquivo convertido em Data URL
+   - Mostra total de jogadores/membros
+========================= */
+(function od86CampaignDashboardPatch(){
+  const LIMIT = 5;
+  let rendering = false;
+  let editorMode = null;
+  let editorCampaignId = null;
+  let pendingLogoData = '';
+
+  function od86CurrentTab() {
+    const path = location.pathname.replace(/\/$/, '') || '/inicio';
+    if (path.includes('campanhas')) return 'campaigns';
+    return localStorage.getItem('od71_tab') || 'home';
+  }
+
+  function od86IsCampaignTab() {
+    return document.getElementById('sessions-screen')?.classList.contains('active') && od86CurrentTab() === 'campaigns';
+  }
+
+  function od86Safe(value, fallback = '') {
+    return String(value ?? fallback);
+  }
+
+  function od86CampaignLogo(campaign) {
+    return campaign?.logoUrl || campaign?.logo_url || campaign?.logo || campaign?.settings?.logoUrl || campaign?.settings?.logo || 'assets/logo.jpg';
+  }
+
+  function od86CampaignDescription(campaign) {
+    return (campaign?.description || campaign?.settings?.description || '').trim();
+  }
+
+  function od86CampaignCount(campaignId, campaign) {
+    const direct = Number(campaign?.playerCount ?? campaign?.player_count ?? campaign?.membersCount ?? 0);
+    if (direct > 0) return direct;
+    return (typeof getMembers === 'function' ? getMembers() : []).filter(member => String(member.campaignId) === String(campaignId)).length;
+  }
+
+  function od86RoleLabel(role) {
+    if (role === 'mestre' || role === 'master') return 'Mestre';
+    if (role === 'mestre_jogador' || role === 'master_player') return 'Mestre + Jogador';
+    return 'Jogador';
+  }
+
+  function od86SyncNav() {
+    document.querySelectorAll('.od71-nav-btn').forEach(btn => {
+      const target = btn.dataset.od71Tab || btn.dataset.od75Tab;
+      btn.classList.toggle('active', target === 'campaigns');
+    });
+  }
+
+  function od86EnsureEditor() {
+    let dialog = document.getElementById('od86-campaign-editor');
+    if (dialog) return dialog;
+    dialog = document.createElement('dialog');
+    dialog.id = 'od86-campaign-editor';
+    dialog.className = 'od86-campaign-editor od-modal';
+    dialog.innerHTML = `
+      <form method="dialog" class="modal-card od86-editor-card">
+        <div class="modal-head">
+          <h3 id="od86-editor-title">Nova Campanha</h3>
+          <button class="icon-btn" type="button" id="od86-editor-close">×</button>
+        </div>
+        <div class="od86-editor-grid">
+          <label>Nome da campanha
+            <input id="od86-campaign-name" type="text" maxlength="80" placeholder="Nome da campanha" />
+          </label>
+          <label>Descrição breve <span id="od86-desc-count">0/200</span>
+            <textarea id="od86-campaign-description" maxlength="200" placeholder="Resumo curto para jogadores entenderem a proposta"></textarea>
+          </label>
+          <label>Logo por URL
+            <input id="od86-campaign-logo-url" type="url" placeholder="https://..." />
+          </label>
+          <label>Ou enviar logo
+            <input id="od86-campaign-logo-file" type="file" accept="image/*" />
+          </label>
+          <div class="od86-logo-preview-box">
+            <span>Prévia</span>
+            <img id="od86-campaign-logo-preview" src="assets/logo.jpg" alt="Prévia da campanha" />
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="ghost-btn" type="button" id="od86-editor-cancel">Cancelar</button>
+          <button class="primary-btn" type="button" id="od86-editor-save">Salvar Campanha</button>
+        </div>
+      </form>`;
+    document.body.appendChild(dialog);
+    return dialog;
+  }
+
+  function od86SetPreview(src) {
+    const preview = document.getElementById('od86-campaign-logo-preview');
+    if (preview) preview.src = src || 'assets/logo.jpg';
+  }
+
+  function od86OpenEditor(mode, campaignId = null) {
+    editorMode = mode;
+    editorCampaignId = campaignId;
+    const dialog = od86EnsureEditor();
+    const campaign = campaignId ? (getCampaigns ? getCampaigns() : []).find(c => String(c.id) === String(campaignId)) : null;
+    pendingLogoData = campaign ? od86CampaignLogo(campaign) : '';
+    document.getElementById('od86-editor-title').textContent = mode === 'edit' ? 'Editar Campanha' : 'Nova Campanha';
+    document.getElementById('od86-campaign-name').value = campaign?.name || '';
+    document.getElementById('od86-campaign-description').value = od86CampaignDescription(campaign);
+    document.getElementById('od86-campaign-logo-url').value = campaign && !String(pendingLogoData).startsWith('data:') ? pendingLogoData : '';
+    document.getElementById('od86-campaign-logo-file').value = '';
+    document.getElementById('od86-desc-count').textContent = `${document.getElementById('od86-campaign-description').value.length}/200`;
+    od86SetPreview(pendingLogoData || 'assets/logo.jpg');
+    dialog.showModal();
+    setTimeout(() => document.getElementById('od86-campaign-name')?.focus(), 30);
+  }
+
+  async function od86SaveEditor() {
+    const name = document.getElementById('od86-campaign-name')?.value?.trim() || 'Nova Campanha';
+    const description = (document.getElementById('od86-campaign-description')?.value || '').trim().slice(0, 200);
+    const logoUrlInput = document.getElementById('od86-campaign-logo-url')?.value?.trim() || '';
+    const logoUrl = pendingLogoData || logoUrlInput;
+
+    try {
+      if (editorMode === 'edit' && editorCampaignId) {
+        await od42Api(`/api/tables/${editorCampaignId}`, {
+          method: 'PUT',
+          body: JSON.stringify({ name, description, logoUrl })
+        });
+      } else {
+        await od42Api('/api/tables', {
+          method: 'POST',
+          body: JSON.stringify({ name, description, logoUrl })
+        });
+      }
+      await od42RefreshTables();
+      document.getElementById('od86-campaign-editor')?.close();
+      od86RenderCampaigns(true);
+    } catch (error) {
+      alert(error.message || 'Erro ao salvar campanha.');
+    }
+  }
+
+  function od86RenderCampaigns(force = false) {
+    if (rendering || !od86IsCampaignTab()) return;
+    const content = document.getElementById('od71-content');
+    if (!content) return;
+    if (!force && content.classList.contains('od86-campaigns-ready')) return;
+    rendering = true;
+    try {
+      const campaigns = typeof getCampaigns === 'function' ? getCampaigns() : [];
+      const members = (typeof getMembers === 'function' ? getMembers() : []).filter(m => String(m.userId) === String(currentUser?.id));
+      const userCampaigns = members
+        .map(member => ({ member, campaign: campaigns.find(c => String(c.id) === String(member.campaignId)) }))
+        .filter(x => x.campaign)
+        .slice(0, LIMIT);
+
+      content.classList.add('od86-campaigns-ready');
+      content.innerHTML = `
+        <section class="od71-page-head od86-page-head">
+          <div>
+            <h1>Suas Campanhas</h1>
+            <div class="od71-count">${userCampaigns.length}/${LIMIT} campanhas</div>
+          </div>
+          <div class="od71-actions od86-actions">
+            <button class="od71-action" type="button" id="od86-open-join">↪ Entrar por Código</button>
+            <button class="od71-action primary" type="button" id="od86-new-campaign">+ Nova Campanha</button>
+          </div>
+        </section>
+        <div class="od71-mini-form od86-join-form" id="od86-join-form">
+          <input id="od86-join-code" maxlength="5" placeholder="Código da campanha" />
+          <button class="od71-action primary" type="button" id="od86-join-confirm">Entrar</button>
+        </div>
+        <section class="od86-campaign-list" id="od86-campaign-list"></section>`;
+
+      const list = document.getElementById('od86-campaign-list');
+      if (!userCampaigns.length) {
+        list.innerHTML = `<div class="od71-empty od86-empty">Você ainda não criou ou entrou em nenhuma campanha.</div>`;
+        od86SyncNav();
+        return;
+      }
+
+      const chars = get(STORAGE.characters, []);
+      list.innerHTML = userCampaigns.map(({ member, campaign }) => {
+        const char = chars.find(c => String(c.id) === String(member.characterId));
+        const isOwner = String(campaign.ownerId) === String(currentUser?.id);
+        const playerCount = od86CampaignCount(campaign.id, campaign);
+        const description = od86CampaignDescription(campaign) || 'Sem descrição breve. O mestre ainda não definiu o resumo desta campanha.';
+        return `
+          <article class="od86-campaign-card">
+            <div class="od86-campaign-logo-wrap">
+              <img src="${escapeHtml(od86CampaignLogo(campaign))}" alt="" />
+            </div>
+            <div class="od86-campaign-info">
+              <div class="od86-campaign-title-row">
+                <h3>${escapeHtml(campaign.name || 'Campanha')}</h3>
+                <span class="od86-role-chip">${escapeHtml(od86RoleLabel(member.role))}</span>
+              </div>
+              <p class="od86-campaign-desc">${escapeHtml(description)}</p>
+              <div class="od86-campaign-stats">
+                <span>👥 ${escapeHtml(playerCount)} jogador${playerCount === 1 ? '' : 'es'}</span>
+                <span>🔑 ${escapeHtml(campaign.code || '-----')}</span>
+                <span>${char ? '🎭 ' + escapeHtml(char.name) : '🎭 Sem ficha escolhida'}</span>
+              </div>
+            </div>
+            <div class="od86-campaign-actions">
+              <button class="od71-card-btn primary" type="button" data-enter-campaign="${escapeHtml(campaign.id)}">Acessar</button>
+              <button class="od71-card-btn" type="button" data-choose-campaign-char="${escapeHtml(campaign.id)}">Escolher Ficha</button>
+              ${isOwner ? `<button class="od71-card-btn" type="button" data-od86-edit-campaign="${escapeHtml(campaign.id)}">Editar</button><button class="od71-card-btn" type="button" data-copy-code="${escapeHtml(campaign.code)}">Copiar Código</button><button class="od71-card-btn danger" type="button" data-delete-campaign="${escapeHtml(campaign.id)}">Excluir</button>` : `<button class="od71-card-btn danger" type="button" data-leave-campaign="${escapeHtml(campaign.id)}">Sair</button>`}
+            </div>
+          </article>`;
+      }).join('');
+      od86SyncNav();
+    } finally {
+      rendering = false;
+    }
+  }
+
+  function od86Schedule(force = false) {
+    setTimeout(() => od86RenderCampaigns(force), 0);
+    setTimeout(() => od86RenderCampaigns(force), 120);
+  }
+
+  if (typeof od42TableFromRow === 'function' && !od42TableFromRow.__od86Wrapped) {
+    const base = od42TableFromRow;
+    od42TableFromRow = function(row) {
+      const table = base(row);
+      table.description = row?.description || row?.settings?.description || table.description || '';
+      table.logoUrl = row?.logo_url || row?.logoUrl || row?.settings?.logoUrl || table.logoUrl || '';
+      table.playerCount = Number(row?.player_count ?? row?.playerCount ?? table.playerCount ?? 0);
+      return table;
+    };
+    od42TableFromRow.__od86Wrapped = true;
+  }
+
+  const baseRenderCampaignMenu86 = typeof renderCampaignMenu === 'function' ? renderCampaignMenu : null;
+  if (baseRenderCampaignMenu86 && !baseRenderCampaignMenu86.__od86Wrapped) {
+    renderCampaignMenu = function(...args) {
+      const result = baseRenderCampaignMenu86.apply(this, args);
+      od86Schedule(true);
+      return result;
+    };
+    renderCampaignMenu.__od86Wrapped = true;
+  }
+
+  document.addEventListener('input', event => {
+    if (event.target?.id === 'od86-campaign-description') {
+      const count = document.getElementById('od86-desc-count');
+      if (count) count.textContent = `${event.target.value.length}/200`;
+    }
+    if (event.target?.id === 'od86-campaign-logo-url') {
+      pendingLogoData = '';
+      od86SetPreview(event.target.value.trim() || 'assets/logo.jpg');
+    }
+  }, true);
+
+  document.addEventListener('change', event => {
+    if (event.target?.id !== 'od86-campaign-logo-file') return;
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      pendingLogoData = String(reader.result || '');
+      const urlInput = document.getElementById('od86-campaign-logo-url');
+      if (urlInput) urlInput.value = '';
+      od86SetPreview(pendingLogoData);
+    };
+    reader.readAsDataURL(file);
+  }, true);
+
+  document.addEventListener('click', async event => {
+    const tab = event.target.closest('[data-od71-tab="campaigns"], [data-od75-tab="campaigns"]');
+    if (tab) od86Schedule(true);
+
+    if (event.target.closest('#od86-new-campaign')) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      od86OpenEditor('new');
+      return;
+    }
+
+    const edit = event.target.closest('[data-od86-edit-campaign]');
+    if (edit) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      od86OpenEditor('edit', edit.dataset.od86EditCampaign);
+      return;
+    }
+
+    if (event.target.closest('#od86-open-join')) {
+      event.preventDefault();
+      document.getElementById('od86-join-form')?.classList.toggle('active');
+      document.getElementById('od86-join-code')?.focus();
+      return;
+    }
+
+    if (event.target.closest('#od86-join-confirm')) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const src = document.getElementById('od86-join-code');
+      const dst = document.getElementById('join-campaign-code');
+      if (src && dst) dst.value = src.value;
+      if (typeof joinCampaignByCode === 'function') await joinCampaignByCode();
+      od86Schedule(true);
+      return;
+    }
+
+    if (event.target.closest('#od86-editor-close, #od86-editor-cancel')) {
+      event.preventDefault();
+      document.getElementById('od86-campaign-editor')?.close();
+      return;
+    }
+
+    if (event.target.closest('#od86-editor-save')) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      await od86SaveEditor();
+      return;
+    }
+  }, true);
+
+  const observer = new MutationObserver(() => {
+    if (od86IsCampaignTab()) od86Schedule(false);
+  });
+  observer.observe(document.documentElement, { childList: true, subtree: true });
+
+  window.addEventListener('popstate', () => od86Schedule(true));
+  setTimeout(() => od86Schedule(true), 300);
+})();

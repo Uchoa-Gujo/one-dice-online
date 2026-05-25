@@ -31,7 +31,7 @@ app.use(express.json({ limit: '15mb' }));
 app.use('/uploads', express.static(uploadDir));
 
 app.get('/api/health', (req, res) => {
-  res.json({ ok: true, app: 'One Dice Online', version: '0.85.0' });
+  res.json({ ok: true, app: 'One Dice Online', version: '0.86.0' });
 });
 
 app.use('/api/auth', authRoutes);
@@ -50,6 +50,8 @@ registerSockets(io);
 
 async function ensureServerSchema() {
   await query("alter table users add column if not exists avatar_url text");
+  await query("alter table tables add column if not exists description varchar(200) default ''");
+  await query("alter table tables add column if not exists logo_url text default ''");
 }
 
 async function startServer() {
