@@ -5576,6 +5576,18 @@ function od66InventoryMutationUnlockSoon() {
       </section>`;
   }
 
+  function od85CampaignNameForCharacter(char) {
+    if (!char) return 'Fora de Campanha';
+    const campaigns = typeof getCampaigns === 'function' ? getCampaigns() : [];
+    const members = typeof getMembers === 'function' ? getMembers() : [];
+    const linked = members
+      .filter(member => String(member.characterId || '') === String(char.id || ''))
+      .map(member => campaigns.find(campaign => String(campaign.id || '') === String(member.campaignId || '')))
+      .filter(Boolean);
+    const uniqueNames = [...new Set(linked.map(campaign => campaign.name || 'Campanha'))];
+    return uniqueNames.length ? uniqueNames.join(', ') : 'Fora de Campanha';
+  }
+
   function od71RenderCharacters(content) {
     const chars = userCharacters ? userCharacters() : [];
     content.innerHTML = `
@@ -5585,29 +5597,32 @@ function od66InventoryMutationUnlockSoon() {
           <div class="od71-count">${chars.length}/${OD71_LIMITS.characters} personagens</div>
         </div>
         <div class="od71-actions">
-          <button class="od71-action" type="button" id="od71-new-folder">▣ Nova Pasta</button>
           <button class="od71-action primary" type="button" id="od71-new-character">+ Novo Personagem</button>
         </div>
       </section>
-      <section class="od71-list" id="od71-character-list"></section>`;
+      <section class="od71-list od85-character-list" id="od71-character-list"></section>`;
     const list = document.getElementById('od71-character-list');
     if (!list) return;
     if (!chars.length) {
       list.innerHTML = `<div class="od71-empty">Você ainda não tem personagens. Crie o primeiro para começar.</div>`;
       return;
     }
-    list.innerHTML = chars.slice(0, OD71_LIMITS.characters).map(char => `
-      <article class="od71-character-card">
+    list.innerHTML = chars.slice(0, OD71_LIMITS.characters).map(char => {
+      const campaignName = od85CampaignNameForCharacter(char);
+      return `
+      <article class="od71-character-card od85-character-card">
         <img src="${escapeHtml(char.portrait || 'assets/logo.jpg')}" alt="" />
         <div class="od71-card-body">
           <h3>${escapeHtml(char.name || 'Novo Personagem')}</h3>
           <div class="od71-card-meta">${escapeHtml(char.race || 'Raça')} • ${escapeHtml(char.className || 'Classe')} • Nv. ${escapeHtml(char.level || 1)}</div>
-          <div class="od71-card-row"><small>Ficha Modelo Sistema One Dice</small></div>
-          <div class="od71-card-row end">
-            <button class="od71-card-btn" type="button" data-od71-open-character="${char.id}">Acessar Ficha</button>
+          <div class="od71-card-row od85-campaign-row"><small>${escapeHtml(campaignName)}</small></div>
+          <div class="od71-card-row end od85-card-actions">
+            <button class="od71-card-btn" type="button" data-od71-open-character="${escapeHtml(char.id)}">Acessar Ficha</button>
+            <button class="od71-card-btn danger od85-delete-character" type="button" data-od71-delete-character="${escapeHtml(char.id)}">Excluir</button>
           </div>
         </div>
-      </article>`).join('');
+      </article>`;
+    }).join('');
   }
 
   function od71RenderCampaigns(content) {
@@ -5701,6 +5716,17 @@ function od66InventoryMutationUnlockSoon() {
     if (event.target.closest('#od71-create-campaign-home') || event.target.closest('#od71-new-campaign')) {
       event.preventDefault();
       await od71CreateCampaign();
+      return;
+    }
+    const deleteChar = event.target.closest('[data-od71-delete-character]');
+    if (deleteChar) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const id = deleteChar.dataset.od71DeleteCharacter;
+      if (typeof deleteAccountCharacter === 'function') {
+        await Promise.resolve(deleteAccountCharacter(id));
+        od71SetTab('characters');
+      }
       return;
     }
     const openChar = event.target.closest('[data-od71-open-character]');

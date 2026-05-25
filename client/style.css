@@ -6633,3 +6633,53 @@ body.od84-session-home #sessions-screen.active .od71-shell {
     grid-template-columns: 1fr !important;
   }
 }
+
+
+/* =========================
+   V85 - Personagens: sem pastas, campanha vinculada e excluir real
+========================= */
+#od71-new-folder {
+  display: none !important;
+}
+
+.od85-character-list .od85-character-card {
+  min-height: 190px;
+}
+
+.od85-campaign-row small {
+  color: color-mix(in srgb, var(--od-text-main, #f4f4f4) 82%, transparent);
+  font-weight: 800;
+  letter-spacing: .035em;
+  text-transform: uppercase;
+}
+
+.od85-card-actions {
+  display: flex !important;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.od71-card-btn.danger,
+.od85-delete-character {
+  border-color: rgba(255, 72, 72, .72) !important;
+  color: #ff7777 !important;
+  background: rgba(70, 0, 0, .28) !important;
+}
+
+.od71-card-btn.danger:hover,
+.od85-delete-character:hover {
+  border-color: rgba(255, 100, 100, .95) !important;
+  background: rgba(145, 12, 12, .52) !important;
+  color: #fff !important;
+}
+
+@media (max-width: 720px) {
+  .od85-card-actions {
+    justify-content: stretch;
+  }
+  .od85-card-actions .od71-card-btn {
+    flex: 1 1 130px;
+  }
+}
