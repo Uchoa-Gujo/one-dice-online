@@ -5516,3 +5516,446 @@ function od66InventoryMutationUnlockSoon() {
   purgeDeletedLocal();
   setTimeout(() => { purgeDeletedLocal(); od70RenderCounts(); if (currentChar()) updateBars(currentChar()); }, 300);
 })();
+
+/* =========================
+   V71 - Dashboard por abas inspirado no Lich RPG, mantendo One Dice
+========================= */
+(function od71Dashboard(){
+  const OD71_LIMITS = { characters: 10, campaigns: 5 };
+  let od71Tab = localStorage.getItem('od71_tab') || 'home';
+
+  function od71LogoSrc() {
+    return 'assets/logo-texto.png';
+  }
+
+  function od71UserInitials() {
+    const name = userDisplayName(currentUser || {}) || 'GU';
+    return name.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join('').toUpperCase() || 'GU';
+  }
+
+  function od71EnsureShell() {
+    const screen = document.getElementById('sessions-screen');
+    if (!screen) return null;
+    let shell = document.getElementById('od71-shell');
+    if (shell) return shell;
+    shell = document.createElement('div');
+    shell.id = 'od71-shell';
+    shell.className = 'od71-shell';
+    screen.prepend(shell);
+    return shell;
+  }
+
+  function od71NavButton(tab, icon, label) {
+    return `<button class="od71-nav-btn ${od71Tab === tab ? 'active' : ''}" type="button" data-od71-tab="${tab}"><span>${icon}</span>${label}</button>`;
+  }
+
+  function od71RenderShell() {
+    const shell = od71EnsureShell();
+    if (!shell) return;
+    shell.innerHTML = `
+      <header class="od71-topbar">
+        <button class="od71-logo od71-icon-btn" type="button" data-od71-tab="home" title="Início">
+          <img src="${od71LogoSrc()}" alt="One Dice" />
+        </button>
+        <nav class="od71-main-nav" aria-label="Menu principal">
+          ${od71NavButton('characters', '♙', 'Personagens')}
+          ${od71NavButton('campaigns', '⚔', 'Campanhas')}
+          ${od71NavButton('bestiary', '▣', 'Bestiário')}
+          ${od71NavButton('community', '☏', 'Comunidade')}
+          ${od71NavButton('map', '◇', 'Mapa 2D')}
+        </nav>
+        <div class="od71-user-area">
+          <button class="od71-icon-btn" type="button" id="od71-settings-btn" title="Configurações">⚙</button>
+          <button class="od71-user-pill" type="button" id="od71-account-btn" title="Conta">${escapeHtml(od71UserInitials())}</button>
+        </div>
+      </header>
+      <main class="od71-content" id="od71-content"></main>`;
+    od71RenderContent();
+  }
+
+  function od71SetTab(tab) {
+    od71Tab = tab || 'home';
+    localStorage.setItem('od71_tab', od71Tab);
+    od71RenderShell();
+    try {
+      const route = od71Tab === 'home' ? '/mesas' : `/app?tab=${od71Tab}`;
+      history.replaceState({ od71Tab }, '', route);
+    } catch (_) {}
+  }
+
+  function od71RenderContent() {
+    const content = document.getElementById('od71-content');
+    if (!content) return;
+    if (od71Tab === 'characters') return od71RenderCharacters(content);
+    if (od71Tab === 'campaigns') return od71RenderCampaigns(content);
+    if (od71Tab === 'bestiary') return od71RenderPlaceholder(content, 'Bestiário', 'Área preparada para criaturas, inimigos e fichas de monstros.');
+    if (od71Tab === 'community') return od71RenderPlaceholder(content, 'Comunidade', 'Área futura para recados, notícias e avisos da mesa.');
+    if (od71Tab === 'map') return od71RenderPlaceholder(content, 'Mapa 2D', 'Área futura para mapa, posição de jogadores e cenas.');
+    return od71RenderHome(content);
+  }
+
+  function od71RenderHome(content) {
+    content.innerHTML = `
+      <section class="od71-home-hero">
+        <div class="od71-hero-inner">
+          <img class="od71-hero-logo" src="${od71LogoSrc()}" alt="One Dice" />
+          <div class="od71-divider"></div>
+          <p class="od71-eyebrow">A aventura começa</p>
+          <div class="od71-home-grid">
+            <button class="od71-home-card" type="button" id="od71-create-character">
+              <span class="od71-card-icon">＋</span>
+              <strong>Criar Personagem</strong>
+              <small>Dê vida a um novo herói</small>
+            </button>
+            <button class="od71-home-card" type="button" id="od71-create-campaign-home">
+              <span class="od71-card-icon">♜</span>
+              <strong>Criar Campanha</strong>
+              <small>Forje uma nova aventura</small>
+            </button>
+            <button class="od71-home-card" type="button" data-od71-tab="characters">
+              <span class="od71-card-icon">▱</span>
+              <strong>Meus Personagens</strong>
+              <small>Acesse suas fichas</small>
+            </button>
+            <button class="od71-home-card" type="button" data-od71-tab="campaigns">
+              <span class="od71-card-icon">⚔</span>
+              <strong>Minhas Campanhas</strong>
+              <small>Continue sua jornada</small>
+            </button>
+          </div>
+        </div>
+      </section>`;
+  }
+
+  function od71RenderCharacters(content) {
+    const chars = userCharacters ? userCharacters() : [];
+    content.innerHTML = `
+      <section class="od71-page-head">
+        <div>
+          <h1>Seus Personagens</h1>
+          <div class="od71-count">${chars.length}/${OD71_LIMITS.characters} personagens</div>
+        </div>
+        <div class="od71-actions">
+          <button class="od71-action" type="button" id="od71-new-folder">▣ Nova Pasta</button>
+          <button class="od71-action primary" type="button" id="od71-new-character">+ Novo Personagem</button>
+        </div>
+      </section>
+      <section class="od71-list" id="od71-character-list"></section>`;
+    const list = document.getElementById('od71-character-list');
+    if (!list) return;
+    if (!chars.length) {
+      list.innerHTML = `<div class="od71-empty">Você ainda não tem personagens. Crie o primeiro para começar.</div>`;
+      return;
+    }
+    list.innerHTML = chars.slice(0, OD71_LIMITS.characters).map(char => `
+      <article class="od71-character-card">
+        <img src="${escapeHtml(char.portrait || 'assets/logo.jpg')}" alt="" />
+        <div class="od71-card-body">
+          <h3>${escapeHtml(char.name || 'Novo Personagem')}</h3>
+          <div class="od71-card-meta">${escapeHtml(char.race || 'Raça')} • ${escapeHtml(char.className || 'Classe')} • Nv. ${escapeHtml(char.level || 1)}</div>
+          <div class="od71-card-row"><small>Ficha Modelo Sistema One Dice</small></div>
+          <div class="od71-card-row end">
+            <button class="od71-card-btn" type="button" data-od71-open-character="${char.id}">Acessar Ficha</button>
+          </div>
+        </div>
+      </article>`).join('');
+  }
+
+  function od71RenderCampaigns(content) {
+    const campaigns = getCampaigns ? getCampaigns() : [];
+    const members = (getMembers ? getMembers() : []).filter(m => m.userId === currentUser?.id);
+    const userCampaigns = members.map(member => ({ member, campaign: campaigns.find(c => c.id === member.campaignId) })).filter(x => x.campaign).slice(0, OD71_LIMITS.campaigns);
+    content.innerHTML = `
+      <section class="od71-page-head">
+        <div>
+          <h1>Suas Campanhas</h1>
+          <div class="od71-count">${userCampaigns.length}/${OD71_LIMITS.campaigns} campanhas</div>
+        </div>
+        <div class="od71-actions">
+          <button class="od71-action" type="button" id="od71-open-join">↪ Entrar</button>
+          <button class="od71-action primary" type="button" id="od71-new-campaign">+ Nova Campanha</button>
+        </div>
+      </section>
+      <div class="od71-mini-form" id="od71-join-form">
+        <input id="od71-join-code" maxlength="5" placeholder="Código da campanha" />
+        <button class="od71-action primary" type="button" id="od71-join-confirm">Entrar</button>
+      </div>
+      <section class="od71-list" id="od71-campaign-list"></section>`;
+    const list = document.getElementById('od71-campaign-list');
+    if (!list) return;
+    if (!userCampaigns.length) {
+      list.innerHTML = `<div class="od71-empty">Você ainda não criou ou entrou em nenhuma campanha.</div>`;
+      return;
+    }
+    const chars = get(STORAGE.characters, []);
+    list.innerHTML = userCampaigns.map(({ member, campaign }) => {
+      const char = chars.find(c => c.id === member.characterId);
+      return `
+        <article class="od71-campaign-card">
+          <div class="od71-campaign-top">
+            <div class="od71-card-body">
+              <h3>${escapeHtml(campaign.name || 'Campanha')}</h3>
+              <div class="od71-card-meta">Código: <b>${escapeHtml(campaign.code)}</b> • Papel: ${escapeHtml(member.role || 'jogador')}</div>
+            </div>
+            <div class="od71-campaign-preview">
+              <img src="${escapeHtml(char?.portrait || 'assets/logo.jpg')}" alt="" />
+              <span>${char ? escapeHtml(char.name) : 'Sem ficha escolhida'}</span>
+            </div>
+          </div>
+          <div class="od71-card-row end">
+            <button class="od71-card-btn primary" type="button" data-enter-campaign="${campaign.id}">Acessar</button>
+            <button class="od71-card-btn" type="button" data-choose-campaign-char="${campaign.id}">Escolher Ficha</button>
+            ${campaign.ownerId === currentUser?.id ? `<button class="od71-card-btn" type="button" data-copy-code="${campaign.code}">Copiar Código</button><button class="od71-card-btn" type="button" data-delete-campaign="${campaign.id}">Excluir</button>` : `<button class="od71-card-btn" type="button" data-leave-campaign="${campaign.id}">Sair</button>`}
+          </div>
+        </article>`;
+    }).join('');
+  }
+
+  function od71RenderPlaceholder(content, title, text) {
+    content.innerHTML = `
+      <section class="od71-page-head"><div><h1>${escapeHtml(title)}</h1><div class="od71-count">Em desenvolvimento</div></div></section>
+      <div class="od71-placeholder">${escapeHtml(text)}</div>`;
+  }
+
+  async function od71CreateCharacter() {
+    const chars = userCharacters ? userCharacters() : [];
+    if (chars.length >= OD71_LIMITS.characters) return alert('Limite de 10 personagens atingido.');
+    const btn = document.getElementById('create-account-character-btn');
+    if (btn) btn.click();
+    else if (typeof createAccountCharacter === 'function') createAccountCharacter(false);
+    od71SetTab('characters');
+  }
+
+  async function od71CreateCampaign() {
+    const owned = (getCampaigns ? getCampaigns() : []).filter(c => c.ownerId === currentUser?.id);
+    if (owned.length >= OD71_LIMITS.campaigns) return alert('Limite de 5 campanhas criadas atingido.');
+    const name = prompt('Nome da campanha:');
+    if (!name) return;
+    const input = document.getElementById('new-campaign-name');
+    if (input) input.value = name;
+    if (typeof createCampaign === 'function') await createCampaign();
+    od71SetTab('campaigns');
+  }
+
+  document.addEventListener('click', async event => {
+    const tab = event.target.closest('[data-od71-tab]');
+    if (tab) {
+      event.preventDefault();
+      od71SetTab(tab.dataset.od71Tab);
+      return;
+    }
+    if (event.target.closest('#od71-create-character') || event.target.closest('#od71-new-character')) {
+      event.preventDefault();
+      await od71CreateCharacter();
+      return;
+    }
+    if (event.target.closest('#od71-create-campaign-home') || event.target.closest('#od71-new-campaign')) {
+      event.preventDefault();
+      await od71CreateCampaign();
+      return;
+    }
+    const openChar = event.target.closest('[data-od71-open-character]');
+    if (openChar) {
+      event.preventDefault();
+      if (typeof initAccountCharacterEditor === 'function') initAccountCharacterEditor(openChar.dataset.od71OpenCharacter);
+      return;
+    }
+    if (event.target.closest('#od71-open-join')) {
+      event.preventDefault();
+      document.getElementById('od71-join-form')?.classList.toggle('active');
+      document.getElementById('od71-join-code')?.focus();
+      return;
+    }
+    if (event.target.closest('#od71-join-confirm')) {
+      event.preventDefault();
+      const src = document.getElementById('od71-join-code');
+      const dst = document.getElementById('join-campaign-code');
+      if (src && dst) dst.value = src.value;
+      if (typeof joinCampaignByCode === 'function') await joinCampaignByCode();
+      od71SetTab('campaigns');
+      return;
+    }
+    if (event.target.closest('#od71-settings-btn')) {
+      event.preventDefault();
+      document.getElementById('sessions-menu-btn')?.click();
+      return;
+    }
+    if (event.target.closest('#od71-account-btn')) {
+      event.preventDefault();
+      document.getElementById('open-account-settings-btn')?.click();
+      return;
+    }
+  }, true);
+
+  const od71BaseShowSessions = showSessions;
+  showSessions = function() {
+    od71BaseShowSessions();
+    const params = new URLSearchParams(location.search);
+    const tab = params.get('tab');
+    if (tab) od71Tab = tab;
+    od71RenderShell();
+  };
+
+  const od71BaseRenderAccountCharacterMenu = renderAccountCharacterMenu;
+  renderAccountCharacterMenu = function() {
+    od71BaseRenderAccountCharacterMenu();
+    if (document.getElementById('sessions-screen')?.classList.contains('active')) od71RenderContent();
+  };
+
+  const od71BaseRenderCampaignMenu = renderCampaignMenu;
+  renderCampaignMenu = function() {
+    od71BaseRenderCampaignMenu();
+    if (document.getElementById('sessions-screen')?.classList.contains('active')) od71RenderContent();
+  };
+
+  window.addEventListener('popstate', () => {
+    const params = new URLSearchParams(location.search);
+    od71Tab = params.get('tab') || 'home';
+    if (document.getElementById('sessions-screen')?.classList.contains('active')) od71RenderShell();
+  });
+})();
+
+/* =========================
+   V72-V74 - organização manual, OBS e micro-otimizações
+========================= */
+(function od74QualityPatch(){
+  const OD74_SORTABLE = [
+    { list: 'spells-list', card: '.spell-card', type: 'spell' },
+    { list: 'abilities-list', card: '.ability-card', type: 'ability' },
+    { list: 'attacks-list', card: '.attack-card', type: 'attack' },
+    { list: 'simple-inventory-list', card: '.simple-inventory-card', type: 'item' }
+  ];
+
+  function od74Toast(text) {
+    try { console.info('[One Dice]', text); } catch (_) {}
+  }
+
+  function od74Renumber(list) {
+    [...list.children].forEach((el, index) => { if (el.dataset) el.dataset.index = index; });
+  }
+
+  function od74SaveAfterMove() {
+    try {
+      saveCurrentCharacter();
+      const char = currentChar();
+      if (typeof od42ScheduleCharacterSave === 'function' && char) od42ScheduleCharacterSave(char);
+    } catch (error) {
+      console.warn('Falha ao salvar ordem:', error);
+    }
+  }
+
+  function od74MoveCard(button, dir) {
+    const card = button.closest('.spell-card, .ability-card, .attack-card, .simple-inventory-card');
+    const list = card?.parentElement;
+    if (!card || !list) return;
+    const sibling = dir < 0 ? card.previousElementSibling : card.nextElementSibling;
+    if (!sibling) return;
+    if (dir < 0) list.insertBefore(card, sibling);
+    else list.insertBefore(sibling, card);
+    od74Renumber(list);
+    od74SaveAfterMove();
+  }
+
+  function od74EnhanceSortableList(listId) {
+    const list = document.getElementById(listId);
+    if (!list) return;
+    [...list.children].forEach((card, index) => {
+      card.classList.add('sortable-card');
+      card.dataset.index = index;
+      if (card.querySelector('.card-sort-tools')) return;
+      const tools = document.createElement('div');
+      tools.className = 'card-sort-tools';
+      tools.innerHTML = `
+        <button type="button" data-card-move="up" title="Mover para cima">↑</button>
+        <button type="button" data-card-move="down" title="Mover para baixo">↓</button>`;
+      card.appendChild(tools);
+    });
+  }
+
+  function od74EnhanceAllSortable() {
+    OD74_SORTABLE.forEach(item => od74EnhanceSortableList(item.list));
+    od74InjectObsButton();
+  }
+
+  document.addEventListener('click', event => {
+    const up = event.target.closest('[data-card-move="up"]');
+    const down = event.target.closest('[data-card-move="down"]');
+    if (up || down) {
+      event.preventDefault();
+      event.stopPropagation();
+      od74MoveCard(up || down, up ? -1 : 1);
+    }
+
+    const obsBtn = event.target.closest('[data-copy-obs-link]');
+    if (obsBtn) {
+      event.preventDefault();
+      const char = currentChar();
+      if (!char?.id) return alert('Abra uma ficha antes de copiar o link OBS.');
+      const mode = obsBtn.dataset.copyObsLink || 'card';
+      const url = `${location.origin}/obs/personagem/${encodeURIComponent(char.id)}?modo=${encodeURIComponent(mode)}`;
+      navigator.clipboard?.writeText(url).then(() => alert('Link OBS copiado.')).catch(() => prompt('Copie o link OBS:', url));
+    }
+  }, true);
+
+  function od74WrapRender(name) {
+    const original = window[name] || globalThis[name];
+    if (typeof original !== 'function' || original.__od74Wrapped) return;
+    const wrapped = function(...args) {
+      const result = original.apply(this, args);
+      setTimeout(od74EnhanceAllSortable, 0);
+      return result;
+    };
+    wrapped.__od74Wrapped = true;
+    try { window[name] = wrapped; } catch (_) {}
+    try { globalThis[name] = wrapped; } catch (_) {}
+  }
+
+  ['renderSpells','renderAbilities','renderAttacks','renderSimpleInventory','loadCharacter','initApp'].forEach(od74WrapRender);
+
+  function od74InjectObsButton() {
+    const portraitBtn = document.getElementById('portrait-button');
+    if (!portraitBtn || document.getElementById('obs-copy-link-btn')) return;
+    const btn = document.createElement('button');
+    btn.id = 'obs-copy-link-btn';
+    btn.type = 'button';
+    btn.className = 'obs-copy-link-btn';
+    btn.dataset.copyObsLink = 'card';
+    btn.textContent = 'OBS';
+    btn.title = 'Copiar link OBS desta ficha';
+    portraitBtn.insertAdjacentElement('afterend', btn);
+  }
+
+  function od74AddCounters() {
+    const sections = [
+      ['account-character-list', 10, 'personagens'],
+      ['campaign-list', 5, 'campanhas']
+    ];
+    sections.forEach(([id, limit, label]) => {
+      const list = document.getElementById(id);
+      if (!list) return;
+      const title = list.closest('.manga-panel')?.querySelector('h2, h3');
+      if (!title || title.querySelector('.list-section-count')) return;
+      const count = document.createElement('span');
+      count.className = 'list-section-count';
+      const update = () => { count.textContent = ` ${list.children.length}/${limit} ${label}`; };
+      title.appendChild(count);
+      update();
+      new MutationObserver(update).observe(list, { childList: true });
+    });
+  }
+
+  function od74ThrottleInputSave() {
+    let pending = false;
+    document.addEventListener('input', () => {
+      if (pending) return;
+      pending = true;
+      requestAnimationFrame(() => { pending = false; });
+    }, { passive: true });
+  }
+
+  setTimeout(() => {
+    od74EnhanceAllSortable();
+    od74AddCounters();
+    od74ThrottleInputSave();
+  }, 250);
+})();

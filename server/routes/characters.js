@@ -3,6 +3,16 @@ const { query } = require('../database');
 const { authRequired } = require('../middleware');
 
 const router = express.Router();
+
+router.get('/public/:id', async (req, res) => {
+  const id = req.params.id;
+  const result = await query('select id, owner_id, name, data, updated_at from characters where id = $1', [id]);
+  if (!result.rowCount) return res.status(404).json({ error: 'Ficha não encontrada.' });
+  const row = result.rows[0];
+  const data = row.data || {};
+  res.json({ character: { id: row.id, ownerId: row.owner_id, name: row.name, updatedAt: row.updated_at, ...data } });
+});
+
 router.use(authRequired);
 
 router.get('/', async (req, res) => {

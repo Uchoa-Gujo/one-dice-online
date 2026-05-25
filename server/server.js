@@ -33,13 +33,16 @@ app.use(express.json({ limit: '15mb' }));
 app.use('/uploads', express.static(uploadDir));
 
 app.get('/api/health', (req, res) => {
-  res.json({ ok: true, app: 'One Dice Online', version: '0.44.0' });
+  res.json({ ok: true, app: 'One Dice Online', version: '0.74.0' });
 });
 
 app.use('/api/auth', authRoutes);
 app.use('/api/characters', characterRoutes);
 app.use('/api/tables', tableRoutes);
 
+app.get('/obs/personagem/:id', (req, res) => {
+  res.sendFile(path.join(clientDir, 'obs.html'));
+});
 app.use(express.static(clientDir));
 app.get('*', (req, res) => {
   res.sendFile(path.join(clientDir, 'index.html'));

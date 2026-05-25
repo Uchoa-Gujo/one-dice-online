@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>One Dice OBS</title>
+  <link rel="stylesheet" href="/obs.css" />
+</head>
+<body>
+  <main id="obs-root" class="obs-root obs-card-mode">
+    <section class="obs-card" id="obs-card">
+      <img id="obs-portrait" class="obs-portrait" src="/assets/logo.jpg" alt="" />
+      <div class="obs-info">
+        <h1 id="obs-name">Carregando...</h1>
+        <p id="obs-meta">One Dice</p>
+        <div class="obs-bars">
+          <div class="obs-bar-wrap" data-kind="pv">
+            <div class="obs-bar-label"><span>PV</span><strong id="obs-pv-text">0/0</strong></div>
+            <div class="obs-bar"><span id="obs-pv-fill"></span><span id="obs-pv-over"></span></div>
+          </div>
+          <div class="obs-bar-wrap" data-kind="pe">
+            <div class="obs-bar-label"><span>PE</span><strong id="obs-pe-text">0/0</strong></div>
+            <div class="obs-bar"><span id="obs-pe-fill"></span><span id="obs-pe-over"></span></div>
+          </div>
+        </div>
+        <div id="obs-condition" class="obs-condition">Normal</div>
+      </div>
+    </section>
+  </main>
+  <script src="/obs.js"></script>
+</body>
+</html>
