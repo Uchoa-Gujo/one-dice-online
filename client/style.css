@@ -4799,3 +4799,119 @@ body.sidebar-collapsed #sidebar-dock-btn.od62-app-sheet-btn { display: grid !imp
     position: relative;
   }
 }
+
+
+/* =========================
+   V70 - Hub inspirado em dashboard, mantendo estética One Dice
+========================= */
+.od70-hub-mode #sessions-screen.active {
+  align-items: start;
+  padding-top: 28px;
+}
+.od70-hub-mode .sessions-shell {
+  max-width: 1380px;
+  width: min(1380px, calc(100vw - 48px));
+  display: grid;
+  gap: 22px;
+}
+.od70-hub-mode .sessions-head {
+  display: grid;
+  grid-template-columns: 110px 1fr auto;
+  align-items: center;
+  min-height: 150px;
+  padding: 24px 30px;
+  overflow: visible;
+}
+.od70-hub-mode .sessions-head > div:first-child {
+  display: contents;
+}
+.od70-hub-mode .sessions-logo {
+  grid-column: 1;
+  width: 86px;
+  height: 86px;
+  object-fit: contain;
+  border-radius: 18px;
+  background: rgba(255,255,255,.92);
+  padding: 12px;
+}
+.od70-hub-mode .sessions-head .eyebrow,
+.od70-hub-mode .sessions-head h1,
+.od70-hub-mode .sessions-head .subtitle {
+  grid-column: 2;
+  margin-left: 0;
+}
+.od70-hub-mode .sessions-head .sessions-head-actions {
+  grid-column: 3;
+  grid-row: 1 / span 3;
+  position: relative;
+  align-self: start;
+  justify-self: end;
+  display: grid;
+  gap: 12px;
+  z-index: 500;
+}
+.od70-hub-mode .sessions-menu-panel {
+  position: absolute !important;
+  top: 0 !important;
+  right: 62px !important;
+  z-index: 9999 !important;
+  width: 300px;
+}
+.od70-hub-mode .sessions-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.od70-hub-mode .account-sheets-panel,
+.od70-hub-mode .campaign-list-panel {
+  padding: 24px;
+}
+.od70-hub-mode .account-character-list,
+.od70-hub-mode #campaign-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(280px, 1fr));
+  gap: 16px;
+}
+.od70-hub-mode .account-character-card,
+.od70-hub-mode .campaign-card {
+  min-height: 118px;
+  border-radius: 18px !important;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--paper, #0d1110) 82%, transparent);
+}
+.od70-hub-mode .account-character-card img,
+.od70-hub-mode .campaign-card img {
+  width: 86px !important;
+  height: 86px !important;
+  object-fit: cover;
+  border-radius: 14px;
+}
+.od70-hub-mode .account-character-card strong,
+.od70-hub-mode .campaign-card strong,
+.character-pill.session-character strong {
+  word-break: normal !important;
+  overflow-wrap: anywhere;
+  line-height: 1.1;
+  max-width: 100%;
+}
+.od70-hub-mode .account-character-actions,
+.od70-hub-mode .campaign-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.bar-fill.has-extra {
+  box-shadow: 0 0 12px rgba(255, 224, 55, .35);
+}
+.pe-card .bar-fill.has-extra {
+  box-shadow: 0 0 12px rgba(86, 228, 108, .35);
+}
+@media (max-width: 900px) {
+  .od70-hub-mode .sessions-head { grid-template-columns: 82px 1fr auto; padding: 18px; }
+  .od70-hub-mode .sessions-logo { width: 66px; height: 66px; }
+  .od70-hub-mode .sessions-actions,
+  .od70-hub-mode .account-character-list,
+  .od70-hub-mode #campaign-list { grid-template-columns: 1fr; }
+  .od70-hub-mode .sessions-menu-panel { right: 0 !important; top: 112px !important; width: min(300px, 82vw); }
+}

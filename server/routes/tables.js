@@ -93,6 +93,8 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
+  const limit = await query('select count(*)::int as total from tables where owner_id = $1', [req.user.id]);
+  if ((limit.rows[0]?.total || 0) >= 5) return res.status(403).json({ error: 'Limite de 5 campanhas por conta atingido.' });
   const name = String(req.body.name || 'Nova Mesa').trim().slice(0, 80) || 'Nova Mesa';
   const code = await uniqueInviteCode();
 

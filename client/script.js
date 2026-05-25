@@ -5355,3 +5355,164 @@ function od66InventoryMutationUnlockSoon() {
     if (!routeReady) bootRoute();
   }, 1400);
 })();
+
+
+/* =========================
+   V70 - Correções de persistência + layout tipo hub
+   Base: mantém a estética One Dice, mas organiza início/fichas/campanhas.
+========================= */
+(function od70Patch(){
+  const DELETED_KEY = 'od_deleted_characters_v70';
+  const getDeleted = () => new Set(get(DELETED_KEY, []));
+  const setDeleted = ids => set(DELETED_KEY, [...ids]);
+  const markDeleted = id => { const ids = getDeleted(); ids.add(String(id)); setDeleted(ids); };
+  const isDeleted = id => getDeleted().has(String(id));
+
+  function purgeDeletedLocal() {
+    const ids = getDeleted();
+    if (!ids.size) return;
+    set(STORAGE.characters, get(STORAGE.characters, []).filter(c => !ids.has(String(c.id))));
+    setMembers(getMembers().map(m => ids.has(String(m.characterId)) ? { ...m, characterId: null } : m));
+    if (ids.has(String(currentCharacterId))) currentCharacterId = null;
+  }
+
+  const baseMergeById70 = od42MergeById;
+  od42MergeById = function(storageKey, items) {
+    if (storageKey === STORAGE.characters) {
+      items = (items || []).filter(item => item && !isDeleted(item.id));
+    }
+    baseMergeById70(storageKey, items);
+    if (storageKey === STORAGE.characters) purgeDeletedLocal();
+  };
+
+  const baseScheduleSave70 = od42ScheduleCharacterSave;
+  od42ScheduleCharacterSave = function(char) {
+    if (!char || isDeleted(char.id)) return;
+    return baseScheduleSave70(char);
+  };
+
+  const baseRefreshOwn70 = od42RefreshOwnCharacters;
+  od42RefreshOwnCharacters = async function() {
+    const owned = await baseRefreshOwn70();
+    purgeDeletedLocal();
+    return owned.filter(c => !isDeleted(c.id));
+  };
+
+  deleteAccountCharacter = async function(id) {
+    const char = get(STORAGE.characters, []).find(c => String(c.id) === String(id) && c.ownerId === currentUser?.id);
+    if (!char) return;
+    if (!confirm(`Apagar a ficha "${char.name}"?`)) return;
+    try {
+      clearTimeout(typeof od42SaveTimer !== 'undefined' ? od42SaveTimer : null);
+      clearTimeout(typeof saveTimer !== 'undefined' ? saveTimer : null);
+      markDeleted(id);
+      purgeDeletedLocal();
+      renderAccountCharacterMenu();
+      renderCampaignMenu();
+      renderCharacterList();
+      await od42Api(`/api/characters/${id}`, { method: 'DELETE' });
+      await od42RefreshOwnCharacters().catch(() => {});
+      await od42RefreshTables().catch(() => {});
+      purgeDeletedLocal();
+      renderAccountCharacterMenu();
+      renderCampaignMenu();
+      renderCharacterList();
+    } catch (error) {
+      alert(error.message || 'Erro ao apagar ficha.');
+    }
+  };
+
+  const baseCreateAccount70 = createAccountCharacter;
+  createAccountCharacter = function(openAfterCreate = true) {
+    if (userCharacters().length >= 10) return alert('Você atingiu o limite de 10 personagens. Apague uma ficha para criar outra.');
+    return baseCreateAccount70(openAfterCreate);
+  };
+
+  const baseCreateCampaign70 = createCampaign;
+  createCampaign = function() {
+    const owned = getCampaigns().filter(c => c.ownerId === currentUser?.id).length;
+    if (owned >= 5) return alert('Você atingiu o limite de 5 campanhas. Apague uma campanha para criar outra.');
+    return baseCreateCampaign70();
+  };
+
+  function percent(value, max) {
+    return Math.max(0, Math.min(100, (Number(value || 0) / Math.max(1, Number(max || 1))) * 100));
+  }
+  function extraGradient(current, max, baseA, baseB, extraA, extraB) {
+    current = Number(current || 0); max = Math.max(1, Number(max || 1));
+    if (current <= max) return `linear-gradient(90deg, ${baseA}, ${baseB})`;
+    const baseCut = Math.max(0, Math.min(100, (max / current) * 100));
+    return `linear-gradient(90deg, ${baseA} 0%, ${baseB} ${baseCut}%, ${extraA} ${baseCut}%, ${extraB} 100%)`;
+  }
+  updateBars = function(char) {
+    const pv = byId('pv-bar');
+    const pe = byId('pe-bar');
+    if (pv) {
+      pv.style.width = `${Number(char.pvCurrent || 0) > Number(char.pvMax || 0) ? 100 : percent(char.pvCurrent, char.pvMax)}%`;
+      pv.style.background = extraGradient(char.pvCurrent, char.pvMax, '#5c0f0f', '#d31e1e', '#e4b91a', '#fff06a');
+      pv.classList.toggle('has-extra', Number(char.pvCurrent || 0) > Number(char.pvMax || 0));
+    }
+    if (pe) {
+      pe.style.width = `${Number(char.peCurrent || 0) > Number(char.peMax || 0) ? 100 : percent(char.peCurrent, char.peMax)}%`;
+      pe.style.background = extraGradient(char.peCurrent, char.peMax, '#143a76', '#4f8cff', '#156d30', '#57e46c');
+      pe.classList.toggle('has-extra', Number(char.peCurrent || 0) > Number(char.peMax || 0));
+    }
+  };
+  updateOverlay = function(char) {
+    byId('overlay-portrait').src = char.portrait || 'assets/logo.jpg';
+    byId('overlay-name').textContent = char.name;
+    const opv = byId('overlay-pv');
+    const ope = byId('overlay-pe');
+    if (opv) { opv.style.width = `${Number(char.pvCurrent || 0) > Number(char.pvMax || 0) ? 100 : percent(char.pvCurrent, char.pvMax)}%`; opv.style.background = extraGradient(char.pvCurrent, char.pvMax, '#5c0f0f', '#d31e1e', '#e4b91a', '#fff06a'); }
+    if (ope) { ope.style.width = `${Number(char.peCurrent || 0) > Number(char.peMax || 0) ? 100 : percent(char.peCurrent, char.peMax)}%`; ope.style.background = extraGradient(char.peCurrent, char.peMax, '#143a76', '#4f8cff', '#156d30', '#57e46c'); }
+    byId('overlay-pv-text').textContent = `${char.pvCurrent}/${char.pvMax}`;
+    byId('overlay-pe-text').textContent = `${char.peCurrent}/${char.peMax}`;
+  };
+
+  const baseShowSessions70 = showSessions;
+  showSessions = function() {
+    baseShowSessions70();
+    document.body.classList.add('od70-hub-mode');
+    try { od70RenderCounts(); } catch(_) {}
+  };
+
+  const baseShowApp70 = showApp;
+  showApp = function() {
+    baseShowApp70();
+    document.body.classList.remove('od70-hub-mode');
+  };
+
+  function od70RenderCounts() {
+    const charHead = document.querySelector('#account-sheets-panel .account-sheets-head .subtitle');
+    if (charHead) charHead.textContent = `${userCharacters().length}/10 personagens. Crie e edite suas fichas antes de entrar em uma mesa.`;
+    const campaignTitle = document.querySelector('.campaign-list-panel h2');
+    const campaignEmpty = document.querySelector('#campaign-list .campaign-empty');
+    const owned = getCampaigns().filter(c => c.ownerId === currentUser?.id).length;
+    if (campaignTitle && !campaignTitle.dataset.v70) { campaignTitle.dataset.v70 = '1'; campaignTitle.textContent = 'Minhas Campanhas'; }
+    if (campaignEmpty) campaignEmpty.textContent = `${owned}/5 campanhas. Crie uma campanha ou use o código de convite do mestre.`;
+  }
+
+  const baseRenderAccount70 = renderAccountCharacterMenu;
+  renderAccountCharacterMenu = function() {
+    baseRenderAccount70();
+    od70RenderCounts();
+  };
+
+  const baseRenderCampaign70 = renderCampaignMenu;
+  renderCampaignMenu = function() {
+    baseRenderCampaign70();
+    od70RenderCounts();
+  };
+
+  document.addEventListener('click', event => {
+    const del = event.target.closest('[data-delete-account-character]');
+    if (del) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      deleteAccountCharacter(del.dataset.deleteAccountCharacter);
+    }
+  }, true);
+
+  purgeDeletedLocal();
+  setTimeout(() => { purgeDeletedLocal(); od70RenderCounts(); if (currentChar()) updateBars(currentChar()); }, 300);
+})();
