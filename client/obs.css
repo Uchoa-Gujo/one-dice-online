@@ -107,3 +107,15 @@ html, body {
 .obs-bars-mode .obs-info h1, .obs-bars-mode .obs-info p { text-align: center; }
 @keyframes obsEnter { from { opacity: 0; transform: translateY(12px) scale(.97); } to { opacity: 1; transform: none; } }
 @keyframes obsPulse { 0% { filter: brightness(1); transform: scale(1); } 50% { filter: brightness(1.55); transform: scale(1.012); } 100% { filter: brightness(1); transform: scale(1); } }
+
+/* V75 - transparência real para OBS */
+html, body, .obs-root {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+.obs-root { pointer-events: none; }
+.obs-card {
+  background: linear-gradient(135deg, rgba(0,0,0,.52), rgba(0,0,0,.18)) !important;
+  box-shadow: 0 0 24px color-mix(in srgb, var(--accent), transparent 55%) !important;
+}
+body::before, body::after, html::before, html::after { display: none !important; }

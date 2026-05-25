@@ -5386,3 +5386,277 @@ body.sidebar-collapsed #sidebar-dock-btn.od62-app-sheet-btn { display: grid !imp
   .attack-card > input:first-child,
   .simple-inventory-card > input:first-child { padding-right: 12px; }
 }
+
+/* =========================
+   V75 - Layout limpo, topo simplificado, sidebar e OBS
+========================= */
+body:not(.dark-sheet), body:not(.dark-sheet) .od71-shell {
+  --od-text-main: #101010;
+  --od-text-soft: rgba(0,0,0,.68);
+}
+body.dark-sheet, body.dark-sheet .od71-shell,
+body[data-theme="dark"], body[data-theme="dark"] .od71-shell {
+  --od-text-main: #f8f8f8;
+  --od-text-soft: rgba(255,255,255,.76);
+}
+
+.od71-shell {
+  max-width: 1480px;
+  margin: 0 auto;
+  color: var(--od-text-main);
+}
+
+.od71-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 7000;
+  width: min(1480px, calc(100vw - 32px));
+  margin: 18px auto 0;
+  padding: 12px 22px;
+  display: grid;
+  grid-template-columns: 230px 1fr auto;
+  align-items: center;
+  gap: 18px;
+  background: color-mix(in srgb, var(--panel-bg, #101412) 92%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent, #c5222c), transparent 45%);
+  border-radius: 22px;
+  box-shadow: 0 18px 48px rgba(0,0,0,.28);
+  backdrop-filter: blur(5px);
+}
+
+.od71-logo {
+  width: 210px !important;
+  height: 56px !important;
+  padding: 4px 18px !important;
+  border-radius: 16px !important;
+  justify-content: center;
+}
+.od71-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: none !important;
+}
+
+.od71-main-nav {
+  justify-content: center !important;
+  gap: 10px !important;
+}
+.od71-nav-btn,
+.od71-action,
+.od71-card-btn {
+  color: var(--od-text-main) !important;
+  border-color: color-mix(in srgb, var(--accent, #c5222c), transparent 36%) !important;
+  background: color-mix(in srgb, var(--panel-bg, #111) 82%, transparent) !important;
+  border-radius: 14px !important;
+}
+.od71-nav-btn.active,
+.od71-action.primary,
+.od71-card-btn.primary {
+  background: var(--accent, #c5222c) !important;
+  color: #fff !important;
+}
+.od71-nav-btn span { display: grid; place-items: center; min-width: 18px; }
+.od71-user-area { gap: 10px !important; }
+#od71-settings-btn { display: none !important; }
+.od71-user-pill {
+  width: 52px !important;
+  height: 52px !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  color: transparent !important;
+  border-color: var(--accent, #c5222c) !important;
+}
+.od71-user-pill img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.od71-content {
+  width: min(1180px, calc(100vw - 36px));
+  margin: 64px auto 0;
+}
+.od71-home-hero {
+  min-height: calc(100vh - 180px);
+  display: grid;
+  place-items: start center;
+  padding-top: 48px;
+}
+.od71-hero-logo { width: min(360px, 70vw) !important; max-height: 170px; object-fit: contain; }
+.od71-eyebrow, .od71-page-head h1, .od71-card-body h3, .od71-home-card strong { color: var(--od-text-main) !important; }
+.od71-home-card small, .od71-count, .od71-card-meta, .od71-card-row small { color: var(--od-text-soft) !important; }
+.od71-home-card, .od71-character-card, .od71-campaign-card, .od71-empty, .od71-mini-form {
+  background: color-mix(in srgb, var(--panel-bg, #0b0f0d) 82%, transparent) !important;
+  border-color: color-mix(in srgb, var(--accent, #c5222c), transparent 58%) !important;
+  color: var(--od-text-main) !important;
+}
+.od71-page-head { align-items: center; }
+.od71-list { grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)) !important; }
+.od71-character-card, .od71-campaign-card { min-height: 146px; }
+
+/* menu dos três traços */
+.sessions-menu-panel {
+  z-index: 9000 !important;
+  min-width: 310px;
+  color: var(--od-text-main) !important;
+}
+.od75-account-menu-card {
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--accent, #c5222c), transparent 35%);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--panel-bg, #111) 86%, transparent);
+  margin-bottom: 6px;
+}
+.od75-account-menu-card img {
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  object-fit: cover;
+  border: 2px solid var(--accent, #c5222c);
+}
+.od75-account-menu-card strong { color: var(--od-text-main); display: block; line-height: 1.05; }
+.od75-account-menu-card small { color: var(--od-text-soft); display: block; margin-top: 4px; }
+
+/* botões flutuantes alinhados */
+.sessions-head-actions, #main-topbar { overflow: visible !important; }
+.sessions-menu-btn, .sessions-sheet-toggle, #sidebar-dock-btn, .topbar-menu-toggle {
+  display: grid !important;
+  place-items: center !important;
+  width: 54px !important;
+  height: 54px !important;
+  min-width: 54px !important;
+  padding: 0 !important;
+  border-radius: 16px !important;
+  line-height: 1 !important;
+  overflow: hidden !important;
+}
+.sessions-sheet-toggle img, #sidebar-dock-btn img, .sessions-sheet-toggle .paper-icon, #sidebar-dock-btn .paper-icon {
+  width: 30px !important;
+  height: 30px !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+.sessions-sheet-toggle { position: absolute; right: 0; top: calc(100% + 10px); }
+
+/* sidebar minhas fichas compacto */
+#players-sidebar {
+  max-width: 320px;
+}
+#players-sidebar .character-list { gap: 12px; }
+#players-sidebar .session-character {
+  min-height: 0 !important;
+  padding: 12px !important;
+  display: grid !important;
+  grid-template-columns: 58px 1fr !important;
+  gap: 12px !important;
+  align-items: center !important;
+  border-radius: 18px !important;
+}
+#players-sidebar .session-character img,
+#players-sidebar .session-char-top img {
+  width: 58px !important;
+  height: 58px !important;
+  border-radius: 14px !important;
+  object-fit: cover;
+}
+#players-sidebar .session-char-top { display: contents !important; }
+#players-sidebar .session-char-info { min-width: 0; }
+#players-sidebar .session-char-name,
+#players-sidebar .session-character strong {
+  font-size: .98rem !important;
+  line-height: 1.08 !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  word-break: normal !important;
+  writing-mode: horizontal-tb !important;
+}
+#players-sidebar .session-char-badges { display: none !important; }
+#players-sidebar .session-char-footer,
+#players-sidebar .session-char-owner,
+#players-sidebar small {
+  font-size: .76rem !important;
+  line-height: 1.18 !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+}
+#sidebar-dock-btn { right: 0 !important; }
+
+/* perícias v75 */
+#skills-wrap.od75-skills-wrap { overflow: visible; }
+.od75-skills-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(320px, 1fr));
+  gap: 16px;
+}
+.od75-skill-block {
+  border: 2px solid var(--accent, #c5222c);
+  border-radius: 18px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--panel-bg, #111) 82%, transparent);
+}
+.od75-skill-block h4 {
+  margin: 0;
+  padding: 10px 14px;
+  background: color-mix(in srgb, var(--accent, #c5222c), #000 45%);
+  color: #fff;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.od75-skill-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--od-text-main);
+}
+.od75-skill-table th, .od75-skill-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  vertical-align: middle;
+}
+body:not(.dark-sheet) .od75-skill-table th,
+body:not(.dark-sheet) .od75-skill-table td { border-bottom-color: rgba(0,0,0,.10); }
+.od75-skill-table th { font-size: .76rem; text-align: left; color: var(--od-text-soft); }
+.od75-skill-name { min-width: 130px; font-weight: 800; }
+.od75-skill-attr { width: 62px; font-weight: 900; color: var(--accent, #c5222c); }
+.od75-skill-mod, .od75-skill-total { width: 58px; font-weight: 800; }
+.od75-skill-bonus { width: 78px; }
+.od75-skill-bonus input { width: 62px; text-align: center; }
+.od75-skill-roll { width: 82px; }
+.od75-skill-roll button { width: 72px; min-width: 72px; padding: 8px 10px; }
+
+/* organizadores */
+.od75-card-order {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+  margin: 0 0 8px;
+}
+.od75-card-order button {
+  width: 34px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--accent, #c5222c);
+  background: color-mix(in srgb, var(--panel-bg, #111) 80%, transparent);
+  color: var(--od-text-main);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* OBS transparent guarantee */
+body.obs-page, html.obs-page {
+  background: transparent !important;
+}
+
+@media (max-width: 920px) {
+  .od71-topbar { grid-template-columns: 1fr; gap: 12px; }
+  .od71-main-nav { justify-content: start !important; overflow-x: auto; }
+  .od71-user-area { position: absolute; right: 14px; top: 14px; }
+  .od75-skills-grid { grid-template-columns: 1fr; }
+}

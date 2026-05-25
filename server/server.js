@@ -33,7 +33,7 @@ app.use(express.json({ limit: '15mb' }));
 app.use('/uploads', express.static(uploadDir));
 
 app.get('/api/health', (req, res) => {
-  res.json({ ok: true, app: 'One Dice Online', version: '0.74.0' });
+  res.json({ ok: true, app: 'One Dice Online', version: '0.75.0' });
 });
 
 app.use('/api/auth', authRoutes);

@@ -5959,3 +5959,284 @@ function od66InventoryMutationUnlockSoon() {
     od74ThrottleInputSave();
   }, 250);
 })();
+
+/* =========================
+   V75 - limpeza de layout, rotas simples, sidebar e perícias compactas
+========================= */
+(function od75LayoutPatch(){
+  const TAB_TO_PATH = { home: '/inicio', characters: '/personagens', campaigns: '/campanhas' };
+  const PATH_TO_TAB = { '/inicio': 'home', '/mesas': 'home', '/personagens': 'characters', '/campanhas': 'campaigns' };
+
+  function od75AvatarSrc() {
+    return currentUser?.avatar || currentUser?.avatarUrl || currentUser?.portrait || 'assets/logo.jpg';
+  }
+
+  function od75CurrentRole() {
+    if (!currentCampaignId || !currentUser) return 'Conta One Dice';
+    const member = getMembers().find(m => m.campaignId === currentCampaignId && m.userId === currentUser.id);
+    return member?.role === 'mestre' ? 'Mestre da mesa' : member?.role === 'jogador' ? 'Jogador da mesa' : 'Conta One Dice';
+  }
+
+  function od75TabFromLocation() {
+    const path = location.pathname.replace(/\/$/, '') || '/inicio';
+    if (PATH_TO_TAB[path]) return PATH_TO_TAB[path];
+    const params = new URLSearchParams(location.search);
+    const legacy = params.get('tab');
+    if (legacy === 'characters') return 'characters';
+    if (legacy === 'campaigns') return 'campaigns';
+    return localStorage.getItem('od71_tab') || 'home';
+  }
+
+  function od75CleanPathForTab(tab) {
+    const path = TAB_TO_PATH[tab] || '/inicio';
+    try {
+      if (location.pathname !== path) history.replaceState({ od75Tab: tab }, '', path);
+    } catch (_) {}
+  }
+
+  function od75NavButton(tab, icon, label) {
+    const active = (localStorage.getItem('od71_tab') || od75TabFromLocation()) === tab;
+    return `<button class="od71-nav-btn ${active ? 'active' : ''}" type="button" data-od75-tab="${tab}" data-od71-tab="${tab}"><span>${icon}</span>${label}</button>`;
+  }
+
+  function od75EnhanceDashboardShell() {
+    const shell = document.getElementById('od71-shell');
+    if (!shell) return;
+    const tab = od75TabFromLocation();
+    localStorage.setItem('od71_tab', tab);
+
+    const logo = shell.querySelector('.od71-logo img');
+    if (logo) logo.src = 'assets/logo-completa.png';
+
+    const nav = shell.querySelector('.od71-main-nav');
+    if (nav) {
+      nav.innerHTML = `
+        ${od75NavButton('home', '◆', 'Início')}
+        ${od75NavButton('characters', '♙', 'Personagens')}
+        ${od75NavButton('campaigns', '⚔', 'Campanhas')}`;
+    }
+
+    const settings = document.getElementById('od71-settings-btn');
+    if (settings) settings.remove();
+
+    const user = document.getElementById('od71-account-btn');
+    if (user) {
+      user.innerHTML = `<img src="${escapeHtml(od75AvatarSrc())}" alt="Perfil" />`;
+      user.title = 'Configurações da conta';
+    }
+
+    const content = document.getElementById('od71-content');
+    if (content && !['home','characters','campaigns'].includes(tab)) {
+      localStorage.setItem('od71_tab', 'home');
+      od75CleanPathForTab('home');
+    } else {
+      od75CleanPathForTab(tab);
+    }
+  }
+
+  function od75EnhanceMenuPanel() {
+    const panel = document.getElementById('sessions-menu-panel');
+    if (!panel || panel.querySelector('.od75-account-menu-card')) return;
+    const card = document.createElement('div');
+    card.className = 'od75-account-menu-card';
+    card.innerHTML = `
+      <img src="${escapeHtml(od75AvatarSrc())}" alt="Perfil" />
+      <div>
+        <strong>${escapeHtml(userDisplayName(currentUser || {}))}</strong>
+        <small>${escapeHtml(currentUser?.nick ? '@' + currentUser.nick : 'Conta One Dice')}</small>
+        <small>${escapeHtml(od75CurrentRole())}</small>
+      </div>`;
+    panel.prepend(card);
+  }
+
+  function od75ReplaceSheetButtons() {
+    const sheetButtons = [document.getElementById('toggle-account-panel-btn'), document.getElementById('sidebar-dock-btn')].filter(Boolean);
+    sheetButtons.forEach(btn => {
+      btn.innerHTML = `<img src="assets/folha.jpg" alt="Fichas" />`;
+      btn.classList.add('od75-sheet-fab');
+      btn.title = 'Minhas Fichas';
+      btn.setAttribute('aria-label', 'Minhas Fichas');
+    });
+  }
+
+  function od75UserCampaignCharacters() {
+    const allChars = get(STORAGE.characters, []);
+    if (!currentUser) return [];
+    if (!currentCampaignId) return allChars.filter(c => c.ownerId === currentUser.id);
+    const myMembers = getMembers().filter(m => m.campaignId === currentCampaignId && m.userId === currentUser.id);
+    const linked = myMembers.map(m => allChars.find(c => c.id === m.characterId)).filter(Boolean);
+    const extras = allChars.filter(c => c.ownerId === currentUser.id && !linked.some(x => x.id === c.id));
+    return [...linked, ...extras].filter((char, index, arr) => arr.findIndex(c => c.id === char.id) === index);
+  }
+
+  renderCharacterList = function() {
+    const list = document.getElementById('character-list');
+    if (!list) return;
+    const chars = od75UserCampaignCharacters();
+    list.innerHTML = '';
+    if (!chars.length) {
+      list.innerHTML = `<div class="campaign-empty">Você ainda não tem ficha nesta conta.</div>`;
+      od75ReplaceSheetButtons();
+      return;
+    }
+    chars.forEach(char => {
+      const active = char.id === currentCharacterId;
+      const el = document.createElement('div');
+      el.className = `character-pill session-character ${active ? 'active' : ''}`;
+      el.innerHTML = `
+        <div class="session-char-top">
+          <img src="${escapeHtml(char.portrait || 'assets/logo.jpg')}" alt="" />
+          <div class="session-char-info">
+            <strong class="session-char-name">${escapeHtml(char.name || 'Personagem')}</strong>
+            <span class="session-char-footer">${escapeHtml(char.race || 'Raça')} • ${escapeHtml(char.className || 'Classe')} • Nv. ${escapeHtml(char.level || 1)}</span>
+            <small class="session-char-owner">PV ${escapeHtml(v35ResourceText(char.pvCurrent, char.pvMax))} • PE ${escapeHtml(v35ResourceText(char.peCurrent, char.peMax))}</small>
+          </div>
+        </div>`;
+      el.onclick = () => {
+        saveCurrentCharacter();
+        currentCharacterId = char.id;
+        loadCharacter(char.id);
+        if (v35IsMaster()) document.body.classList.add('master-sheet-open');
+        renderTableExperience();
+      };
+      list.appendChild(el);
+    });
+    od75ReplaceSheetButtons();
+  };
+
+  function od75AttrShort(attrKey) {
+    const map = { forca: 'FOR', agilidade: 'AGI', vigor: 'VIG', intelecto: 'INT', presenca: 'PRE' };
+    return map[attrKey] || String(attrKey || '').slice(0, 3).toUpperCase();
+  }
+
+  function od75SkillRow(char, skillName, attrKey) {
+    char.skills = char.skills || {};
+    const skill = char.skills[skillName] || { trained: false, bonus: 0 };
+    return `
+      <tr>
+        <td class="od75-skill-name">${escapeHtml(skillName)}</td>
+        <td class="od75-skill-attr">${escapeHtml(od75AttrShort(attrKey))}</td>
+        <td class="od75-skill-mod">${escapeHtml(formatMod(attrMod(char.attrs?.[attrKey] ?? 1)))}${agilityOverweightPenalty(char, attrKey) ? ' <small class="skill-penalty">-5</small>' : ''}</td>
+        <td class="od75-skill-bonus"><input data-skill-bonus="${escapeHtml(skillName)}" type="number" value="${escapeHtml(skill.bonus || 0)}"></td>
+        <td class="od75-skill-total ${agilityOverweightPenalty(char, attrKey) ? 'penalized' : ''}">${escapeHtml(formatMod(skillTotal(char, skillName, attrKey)))}</td>
+        <td class="od75-skill-roll"><button class="primary-btn small roll-skill" data-skill="${escapeHtml(skillName)}" data-skill-attr="${escapeHtml(attrKey)}">D20</button></td>
+      </tr>`;
+  }
+
+  renderSkills = function(char) {
+    const wrap = document.getElementById('skills-wrap');
+    if (!wrap || !char) return;
+    wrap.className = 'table-wrap od75-skills-wrap';
+    const trained = SKILLS.filter(([name]) => !!char.skills?.[name]?.trained);
+    const untrained = SKILLS.filter(([name]) => !char.skills?.[name]?.trained);
+    const tableHead = `<thead><tr><th>Nome</th><th>Atr.</th><th>Mod</th><th>Bônus</th><th>Total</th><th>Rolar</th></tr></thead>`;
+    const build = (title, rows, empty) => `
+      <section class="od75-skill-block">
+        <h4>${title}</h4>
+        <table class="od75-skill-table">${tableHead}<tbody>${rows.length ? rows.map(([n,a]) => od75SkillRow(char,n,a)).join('') : `<tr><td colspan="6">${empty}</td></tr>`}</tbody></table>
+      </section>`;
+    wrap.innerHTML = `<div class="od75-skills-grid">
+      ${build('Treinadas', trained, 'Nenhuma perícia treinada marcada.')}
+      ${build('Não treinadas', untrained, 'Todas as perícias estão treinadas.')}
+    </div>`;
+    wrap.querySelectorAll('[data-skill-bonus]').forEach(input => {
+      input.addEventListener('change', () => {
+        const name = input.dataset.skillBonus;
+        updateChar(saved => {
+          saved.skills = saved.skills || {};
+          saved.skills[name] = saved.skills[name] || { trained: false, bonus: 0, disadvantage: false };
+          saved.skills[name].bonus = Number(input.value || 0);
+        });
+        const updated = currentChar();
+        if (updated) { renderSkills(updated); updateDerivedStatsDisplay(updated); }
+      });
+    });
+  };
+
+  function od75ReorderArray(type, index, dir) {
+    const map = { spell: 'spells', ability: 'abilities', attack: 'attacks' };
+    const key = map[type];
+    if (!key) return;
+    updateChar(char => {
+      char[key] = Array.isArray(char[key]) ? char[key] : [];
+      const nextIndex = index + dir;
+      if (nextIndex < 0 || nextIndex >= char[key].length) return;
+      [char[key][index], char[key][nextIndex]] = [char[key][nextIndex], char[key][index]];
+    });
+    const c = currentChar();
+    if (!c) return;
+    if (type === 'spell') renderSpells(c);
+    if (type === 'ability') renderAbilities(c);
+    if (type === 'attack') renderAttacks(c);
+    od75AddOrderControls();
+  }
+
+  function od75AddOrderControls() {
+    document.querySelectorAll('#spells-list .spell-card, #abilities-list .ability-card, #attacks-list .attack-card').forEach(card => {
+      if (card.querySelector('.od75-card-order')) return;
+      const index = Number(card.dataset.index || 0);
+      const type = card.classList.contains('spell-card') ? 'spell' : card.classList.contains('ability-card') ? 'ability' : 'attack';
+      const controls = document.createElement('div');
+      controls.className = 'od75-card-order';
+      controls.innerHTML = `<button type="button" data-od75-reorder="${type}" data-index="${index}" data-dir="-1">↑</button><button type="button" data-od75-reorder="${type}" data-index="${index}" data-dir="1">↓</button>`;
+      card.prepend(controls);
+    });
+  }
+
+  const baseRenderSpells = renderSpells;
+  renderSpells = function(char) { baseRenderSpells(char); od75AddOrderControls(); };
+  const baseRenderAbilities = renderAbilities;
+  renderAbilities = function(char) { baseRenderAbilities(char); od75AddOrderControls(); };
+  const baseRenderAttacks = renderAttacks;
+  renderAttacks = function(char) { baseRenderAttacks(char); od75AddOrderControls(); };
+
+  document.addEventListener('click', event => {
+    const tab = event.target.closest('[data-od75-tab]');
+    if (tab) {
+      const next = tab.dataset.od75Tab;
+      localStorage.setItem('od71_tab', next);
+      setTimeout(() => { od75CleanPathForTab(next); od75EnhanceDashboardShell(); }, 0);
+    }
+
+    const reorder = event.target.closest('[data-od75-reorder]');
+    if (reorder) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      od75ReorderArray(reorder.dataset.od75Reorder, Number(reorder.dataset.index || 0), Number(reorder.dataset.dir || 0));
+      return;
+    }
+
+    if (event.target.closest('#sessions-menu-btn, .topbar-menu-toggle')) {
+      setTimeout(() => { od75EnhanceMenuPanel(); od75ReplaceSheetButtons(); }, 0);
+    }
+  }, true);
+
+  const baseShowSessions75 = showSessions;
+  showSessions = function() {
+    const tab = od75TabFromLocation();
+    localStorage.setItem('od71_tab', tab);
+    baseShowSessions75();
+    setTimeout(() => { od75EnhanceDashboardShell(); od75EnhanceMenuPanel(); od75ReplaceSheetButtons(); }, 0);
+  };
+
+  const baseRenderCampaignMenu75 = renderCampaignMenu;
+  renderCampaignMenu = function() {
+    baseRenderCampaignMenu75();
+    setTimeout(() => { od75EnhanceDashboardShell(); od75ReplaceSheetButtons(); }, 0);
+  };
+
+  const baseRenderAccountCharacterMenu75 = renderAccountCharacterMenu;
+  renderAccountCharacterMenu = function() {
+    baseRenderAccountCharacterMenu75();
+    setTimeout(() => { od75EnhanceDashboardShell(); od75ReplaceSheetButtons(); }, 0);
+  };
+
+  window.addEventListener('popstate', () => setTimeout(od75EnhanceDashboardShell, 0));
+
+  setTimeout(() => {
+    od75EnhanceDashboardShell();
+    od75EnhanceMenuPanel();
+    od75ReplaceSheetButtons();
+    if (currentChar()) { renderSkills(currentChar()); od75AddOrderControls(); }
+  }, 250);
+})();

@@ -64,3 +64,11 @@
   refresh();
   setInterval(refresh, Math.max(600, Number(params.get('intervalo') || 1000)));
 })();
+
+/* V75 - marca página como OBS transparente */
+try {
+  document.documentElement.classList.add('obs-page');
+  document.body.classList.add('obs-page');
+  document.documentElement.style.background = 'transparent';
+  document.body.style.background = 'transparent';
+} catch (_) {}
