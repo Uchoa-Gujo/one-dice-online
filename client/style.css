@@ -6924,3 +6924,250 @@ body.od84-session-home #sessions-screen.active .od71-shell {
     flex: 1 1 140px;
   }
 }
+
+
+/* =========================
+   V87 - Logout no painel da engrenagem
+========================= */
+.od87-logout-action {
+  margin-top: 8px;
+  border-color: rgba(199, 31, 31, 0.75) !important;
+  background: rgba(120, 16, 18, 0.82) !important;
+  color: #fff !important;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.od87-logout-action:hover {
+  background: rgba(199, 31, 31, 0.92) !important;
+  box-shadow: 0 10px 24px rgba(199, 31, 31, 0.25);
+}
+
+/* =========================
+   V88 - Polimento da ficha, menu lateral e perícias
+========================= */
+#overlay-btn {
+  display: none !important;
+}
+
+#copy-sheet-obs-btn {
+  min-width: 92px;
+}
+
+#main-topbar {
+  overflow: hidden !important;
+  max-width: min(1460px, calc(100vw - 34px)) !important;
+}
+
+#main-topbar:not(.collapsed) {
+  min-height: 338px !important;
+  padding: 22px 24px !important;
+}
+
+#main-topbar .topbar-content {
+  max-width: 100% !important;
+  min-width: 0 !important;
+  margin-left: 74px !important;
+  margin-right: 34px !important;
+  display: grid !important;
+  grid-template-columns: minmax(220px, 1fr) minmax(280px, 1fr) !important;
+  gap: 18px !important;
+  align-items: center !important;
+}
+
+#main-topbar .top-actions {
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  align-items: stretch !important;
+  justify-self: end !important;
+  max-width: 430px !important;
+}
+
+#main-topbar .top-actions > * {
+  width: 100% !important;
+  min-width: 0 !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+}
+
+#main-topbar .brand {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+#main-topbar.collapsed .topbar-content {
+  pointer-events: none !important;
+}
+
+#main-topbar .topbar-menu-toggle.od62-app-menu-btn,
+#main-topbar .topbar-menu-toggle {
+  z-index: 180 !important;
+}
+
+#sidebar-dock-btn.od62-app-sheet-btn,
+#sidebar-dock-btn {
+  z-index: 178 !important;
+}
+
+.od88-skills-wrap {
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.od88-skills-shell {
+  gap: 16px !important;
+}
+
+.od88-skills-tabs {
+  justify-content: flex-start !important;
+  gap: 12px !important;
+  margin-bottom: 2px !important;
+}
+
+.od88-skill-tab {
+  border-radius: 12px !important;
+  min-height: 44px !important;
+}
+
+.od88-skill-panel {
+  border-radius: 20px !important;
+  overflow: visible !important;
+  background: rgba(0, 0, 0, .22) !important;
+}
+
+.od88-skill-panel-head {
+  border-radius: 16px 16px 0 0 !important;
+}
+
+.od88-skills-card-grid {
+  grid-template-columns: repeat(auto-fill, minmax(285px, 1fr)) !important;
+  gap: 14px !important;
+  padding: 16px !important;
+}
+
+.od88-skill-card {
+  position: relative !important;
+  min-height: 154px !important;
+  padding: 14px !important;
+  border-radius: 16px !important;
+  border: 1px solid color-mix(in srgb, var(--accent, #c5222c) 78%, transparent) !important;
+  background: color-mix(in srgb, #050707 86%, var(--accent, #c5222c) 14%) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.035), 0 10px 24px rgba(0,0,0,.24) !important;
+}
+
+.od88-skill-card.is-trained {
+  border-width: 2px !important;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent, #c5222c) 34%, transparent), 0 12px 28px rgba(0,0,0,.28) !important;
+}
+
+.od88-skill-top {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+}
+
+.od88-skill-check {
+  min-height: 32px !important;
+  padding: 5px 9px !important;
+  border: 1px solid rgba(255,255,255,.18) !important;
+  border-radius: 999px !important;
+  background: rgba(255,255,255,.045) !important;
+  opacity: 1 !important;
+}
+
+.od88-skill-check input {
+  width: 18px !important;
+  height: 18px !important;
+  accent-color: var(--accent, #c5222c) !important;
+}
+
+.od88-skill-attr {
+  font-size: .92rem !important;
+  padding: 5px 10px !important;
+}
+
+.od88-skill-name {
+  font-size: 1.16rem !important;
+  letter-spacing: .03em !important;
+  line-height: 1.15 !important;
+  margin-top: 2px !important;
+}
+
+.od88-skill-math {
+  display: grid !important;
+  grid-template-columns: 54px 58px 72px 64px !important;
+  gap: 8px !important;
+  align-items: end !important;
+}
+
+.od88-skill-math span,
+.od88-skill-math label {
+  display: grid !important;
+  gap: 4px !important;
+  min-width: 0 !important;
+}
+
+.od88-skill-math small {
+  font-size: .66rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: .06em !important;
+  opacity: .72 !important;
+}
+
+.od88-skill-math b {
+  min-height: 34px !important;
+  display: grid !important;
+  place-items: center !important;
+  border: 1px solid rgba(255,255,255,.18) !important;
+  background: rgba(0,0,0,.18) !important;
+}
+
+.od88-skill-math input {
+  width: 70px !important;
+  height: 34px !important;
+  text-align: center !important;
+  padding: 4px !important;
+}
+
+.od88-skill-total {
+  color: #fff !important;
+  background: color-mix(in srgb, var(--accent, #c5222c) 76%, #000 24%) !important;
+  border-color: color-mix(in srgb, var(--accent, #c5222c) 86%, #fff 14%) !important;
+}
+
+.od88-skill-roll {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 38px !important;
+  margin-top: 2px !important;
+}
+
+@media (max-width: 900px) {
+  #main-topbar:not(.collapsed) {
+    min-height: 420px !important;
+  }
+  #main-topbar .topbar-content {
+    grid-template-columns: 1fr !important;
+    margin-left: 64px !important;
+    margin-right: 14px !important;
+  }
+  #main-topbar .top-actions {
+    max-width: none !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .od88-skills-card-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .od88-skill-math {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  .od88-skill-math input {
+    width: 100% !important;
+  }
+}

@@ -255,6 +255,14 @@ router.post('/:id/messages', requireTableMember, async (req, res) => {
 
 
 
+router.delete('/:id/messages', requireTableMember, async (req, res) => {
+  const tableId = req.params.id;
+  await query('delete from chat_messages where table_id = $1', [tableId]);
+  emitTable(req, tableId, 'messages:cleared', { reason: 'reset-chat' });
+  res.json({ ok: true });
+});
+
+
 router.get('/:id/drops', requireTableMember, async (req, res) => {
   const tableId = req.params.id;
   const result = await query('select settings from tables where id = $1', [tableId]);
@@ -477,11 +485,17 @@ router.delete('/:id/leave', async (req, res) => {
     return res.status(400).json({ error: 'O dono deve excluir a mesa em vez de sair.' });
   }
   await query('delete from table_members where table_id = $1 and user_id = $2', [tableId, req.user.id]);
+  const remaining = await query('select count(*)::int as total from table_members where table_id = $1', [tableId]);
+  if ((remaining.rows[0]?.total || 0) <= 1) {
+    await query('delete from chat_messages where table_id = $1', [tableId]);
+    emitTable(req, tableId, 'messages:cleared', { reason: 'last-player-left' });
+  }
   emitTable(req, tableId, 'member:updated', { reason: 'leave' });
   res.json({ ok: true });
 });
 
 router.delete('/:id', async (req, res) => {
+  await query('delete from chat_messages where table_id = $1', [req.params.id]);
   const result = await query('delete from tables where id = $1 and owner_id = $2 returning id', [req.params.id, req.user.id]);
   if (!result.rowCount) return res.status(403).json({ error: 'Somente o dono pode excluir a mesa.' });
   emitTable(req, req.params.id, 'table:deleted', { reason: 'deleted' });

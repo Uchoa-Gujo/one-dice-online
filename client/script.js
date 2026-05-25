@@ -6621,7 +6621,8 @@ function od66InventoryMutationUnlockSoon() {
           <option value="clean">Fonte Limpa</option>
           <option value="mono">Fonte Técnica</option>
         </select>
-      </label>`;
+      </label>
+      <button id="od87-logout-btn" class="od84-theme-action od87-logout-action" type="button">Sair da Conta</button>`;
     document.body.appendChild(panel);
     return panel;
   }
@@ -6741,6 +6742,26 @@ function od66InventoryMutationUnlockSoon() {
     }
 
     if (!event.target.closest('#' + PANEL_ID)) togglePanel(false);
+
+    const logoutBtn = event.target.closest('#od87-logout-btn');
+    if (logoutBtn) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      if (!confirm('Tem certeza que quer sair da conta?')) return;
+      try {
+        const oldLogout = document.getElementById('sessions-logout');
+        if (oldLogout && oldLogout !== logoutBtn) {
+          oldLogout.click();
+          return;
+        }
+      } catch (_) {}
+      try { if (typeof od42ClearSession === 'function') od42ClearSession(); } catch (_) {}
+      try { if (typeof clearSessionValue === 'function') clearSessionValue(); } catch (_) {}
+      try { currentUser = null; } catch (_) {}
+      try { if (typeof showAuth === 'function') showAuth(); } catch (_) {}
+      return;
+    }
 
     const themeToggle = event.target.closest('#od84-theme-toggle');
     if (themeToggle) {
@@ -7122,4 +7143,263 @@ function od66InventoryMutationUnlockSoon() {
 
   window.addEventListener('popstate', () => od86Schedule(true));
   setTimeout(() => od86Schedule(true), 300);
+})();
+
+
+/* V87 - adiciona logout direto no painel da engrenagem do menu inicial. */
+
+/* =========================
+   V88 - Ajustes da ficha, perícias, OBS e reset de chats
+   - Remove Overlay OBS do menu antigo
+   - Mantém botão OBS como cópia de link dentro do menu das três linhas
+   - Corrige salvamento das perícias em abas para não desmarcar as ocultas
+   - Melhora comportamento de marcar/desmarcar treinadas
+   - Limpa chat de conversa e rolagens ao sair da ficha/mesa
+========================= */
+(function od88SheetAndChatFixes(){
+  function od88CurrentTableId() {
+    return currentCampaignId || localStorage.getItem(STORAGE.activeCampaign) || null;
+  }
+
+  function od88ChatKeys(tableId = od88CurrentTableId()) {
+    const keys = [];
+    if (tableId) {
+      keys.push(`${STORAGE.chat}_${tableId}`);
+      keys.push(`${STORAGE.chat}_${tableId}_rolls`);
+      keys.push(`od_chat_${tableId}`);
+      keys.push(`od_chat_${tableId}_rolls`);
+      keys.push(`od_chat_roll_${tableId}`);
+    }
+    keys.push(STORAGE.chat);
+    keys.push(`${STORAGE.chat}_rolls`);
+    return [...new Set(keys.filter(Boolean))];
+  }
+
+  function od88ClearLocalChats(tableId = od88CurrentTableId()) {
+    od88ChatKeys(tableId).forEach(key => {
+      try { localStorage.removeItem(key); } catch (_) {}
+    });
+    ['chat-log', 'roll-chat-log'].forEach(id => {
+      const log = document.getElementById(id);
+      if (log) log.innerHTML = '';
+    });
+    const last = document.getElementById('last-roll');
+    if (last) last.textContent = '—';
+    try { if (typeof renderChat === 'function') renderChat(true); } catch (_) {}
+  }
+
+  async function od88ResetTableChats(tableId = od88CurrentTableId()) {
+    od88ClearLocalChats(tableId);
+    if (!tableId || typeof od42Token !== 'function' || !od42Token() || typeof od42Api !== 'function') return;
+    try {
+      await od42Api(`/api/tables/${encodeURIComponent(tableId)}/messages`, { method: 'DELETE' });
+    } catch (error) {
+      console.warn('[One Dice v88] Não foi possível limpar chat online:', error);
+    }
+  }
+
+  window.od88ResetTableChats = od88ResetTableChats;
+  window.od88ClearLocalChats = od88ClearLocalChats;
+
+  function od88CopyObsLink() {
+    const char = typeof currentChar === 'function' ? currentChar() : null;
+    if (!char?.id) return alert('Abra uma ficha antes de copiar o link OBS.');
+    const url = `${location.origin}/obs/personagem/${encodeURIComponent(char.id)}?modo=card`;
+    navigator.clipboard?.writeText(url)
+      .then(() => alert('Link OBS copiado.'))
+      .catch(() => prompt('Copie o link OBS:', url));
+  }
+
+  function od88TidyObsButtons() {
+    const oldOverlay = document.getElementById('overlay-btn');
+    if (oldOverlay) oldOverlay.remove();
+
+    let btn = document.getElementById('copy-sheet-obs-btn');
+    const nav = document.querySelector('#main-topbar .top-actions');
+    if (!btn && nav) {
+      btn = document.createElement('button');
+      btn.id = 'copy-sheet-obs-btn';
+      btn.className = 'ghost-btn';
+      btn.type = 'button';
+      btn.textContent = 'OBS';
+      const logout = document.getElementById('logout-btn');
+      nav.insertBefore(btn, logout || null);
+    }
+    if (btn && btn.dataset.od88Ready !== '1') {
+      btn.dataset.od88Ready = '1';
+      btn.title = 'Copiar link OBS desta ficha';
+      btn.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        od88CopyObsLink();
+      });
+    }
+  }
+
+  function od88AttrShort(attrKey) {
+    const map = { forca: 'FOR', agilidade: 'AGI', vigor: 'VIG', intelecto: 'INT', presenca: 'PRE' };
+    return map[attrKey] || String(attrKey || '').slice(0, 3).toUpperCase();
+  }
+
+  function od88SkillCard(char, skillName, attrKey, trainedTab) {
+    char.skills = char.skills || {};
+    const skill = char.skills[skillName] || { trained: false, bonus: 0, disadvantage: false };
+    const checked = !!skill.trained;
+    const baseMod = attrMod(char.attrs?.[attrKey] ?? 1) + agilityOverweightPenalty(char, attrKey);
+    const prof = checked ? Number(char.profBonus || 0) : 0;
+    const bonus = Number(skill.bonus || 0);
+    const total = baseMod + bonus + prof;
+    return `
+      <article class="od88-skill-card od79-skill-card ${checked ? 'is-trained' : 'is-untrained'}" data-od88-skill-card="${escapeHtml(skillName)}">
+        <div class="od88-skill-top">
+          <label class="od88-skill-check od79-skill-check" title="Marcar como treinada">
+            <input data-skill-trained="${escapeHtml(skillName)}" type="checkbox" ${checked ? 'checked' : ''}>
+            <span>${checked ? 'Treinada' : 'Treinar'}</span>
+          </label>
+          <span class="od88-skill-attr od79-skill-attr">${escapeHtml(od88AttrShort(attrKey))}</span>
+        </div>
+        <strong class="od88-skill-name od79-skill-name">${escapeHtml(skillName)}</strong>
+        <div class="od88-skill-math">
+          <span><small>Mod</small><b>${escapeHtml(formatMod(baseMod))}</b></span>
+          <span><small>Prof.</small><b>${escapeHtml(formatMod(prof))}</b></span>
+          <label><small>Bônus</small><input data-skill-bonus="${escapeHtml(skillName)}" type="number" value="${escapeHtml(bonus)}"></label>
+          <span><small>Total</small><b class="od88-skill-total od79-skill-total">${escapeHtml(formatMod(total))}</b></span>
+        </div>
+        <button class="primary-btn small roll-skill od88-skill-roll od79-skill-roll" data-skill="${escapeHtml(skillName)}" data-skill-attr="${escapeHtml(attrKey)}">D20</button>
+      </article>`;
+  }
+
+  function od88SetCompactButtonText() {
+    const btn = document.getElementById('compact-skills-toggle');
+    if (btn) btn.textContent = window.od79SkillTab === 'trained' ? 'Mostrar Não Treinadas' : 'Mostrar Treinadas';
+  }
+
+  if (typeof renderSkills === 'function') {
+    renderSkills = function(char) {
+      const wrap = document.getElementById('skills-wrap');
+      if (!wrap || !char) return;
+      char.skills = char.skills || {};
+      window.od79SkillTab = window.od79SkillTab === 'untrained' ? 'untrained' : 'trained';
+      const trained = SKILLS.filter(([name]) => !!char.skills?.[name]?.trained);
+      const untrained = SKILLS.filter(([name]) => !char.skills?.[name]?.trained);
+      const active = window.od79SkillTab;
+      const rows = active === 'trained' ? trained : untrained;
+      const title = active === 'trained' ? 'Perícias Treinadas' : 'Perícias Não Treinadas';
+      const empty = active === 'trained' ? 'Nenhuma perícia treinada marcada.' : 'Todas as perícias estão treinadas.';
+      wrap.className = 'table-wrap od79-skills-wrap od88-skills-wrap';
+      wrap.innerHTML = `
+        <div class="od88-skills-shell od79-skills-shell">
+          <div class="od88-skills-tabs od79-skills-tabs" role="tablist" aria-label="Filtro de perícias">
+            <button type="button" class="od88-skill-tab od79-skill-tab ${active === 'trained' ? 'active' : ''}" data-od79-skill-tab="trained">Treinadas <span>${trained.length}</span></button>
+            <button type="button" class="od88-skill-tab od79-skill-tab ${active === 'untrained' ? 'active' : ''}" data-od79-skill-tab="untrained">Não Treinadas <span>${untrained.length}</span></button>
+          </div>
+          <section class="od88-skill-panel od79-skill-panel">
+            <header class="od88-skill-panel-head od79-skill-panel-head">
+              <h4>${title}</h4>
+              <small>Marque Treinar para somar proficiência; o total só recebe proficiência nas treinadas.</small>
+            </header>
+            <div class="od88-skills-card-grid od79-skills-card-grid">
+              ${rows.length ? rows.map(([n,a]) => od88SkillCard(char, n, a, active === 'trained')).join('') : `<div class="od88-skill-empty od79-skill-empty">${empty}</div>`}
+            </div>
+          </section>
+        </div>`;
+      od88SetCompactButtonText();
+    };
+  }
+
+  const od88OldSaveCurrentCharacter = typeof saveCurrentCharacter === 'function' ? saveCurrentCharacter : null;
+  if (od88OldSaveCurrentCharacter && !saveCurrentCharacter.__od88SkillSafe) {
+    saveCurrentCharacter = function() {
+      const beforeChar = typeof currentChar === 'function' ? currentChar() : null;
+      const beforeSkills = beforeChar?.skills ? JSON.parse(JSON.stringify(beforeChar.skills)) : {};
+      const present = new Set([...document.querySelectorAll('[data-skill-trained], [data-skill-bonus]')].map(el => el.dataset.skillTrained || el.dataset.skillBonus).filter(Boolean));
+      od88OldSaveCurrentCharacter.apply(this, arguments);
+      if (!beforeChar || !present.size) return;
+      updateChar(char => {
+        char.skills = char.skills || {};
+        SKILLS.forEach(([skillName]) => {
+          if (!present.has(skillName) && beforeSkills[skillName]) {
+            char.skills[skillName] = beforeSkills[skillName];
+          }
+        });
+      });
+    };
+    saveCurrentCharacter.__od88SkillSafe = true;
+  }
+
+  document.addEventListener('click', event => {
+    const tab = event.target.closest('[data-od79-skill-tab]');
+    if (tab) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      window.od79SkillTab = tab.dataset.od79SkillTab === 'untrained' ? 'untrained' : 'trained';
+      const char = currentChar && currentChar();
+      if (char) renderSkills(char);
+      return;
+    }
+
+    const logout = event.target.closest('#logout-btn');
+    if (logout) {
+      const tableId = od88CurrentTableId();
+      setTimeout(() => od88ResetTableChats(tableId), 0);
+    }
+
+    const back = event.target.closest('#back-to-sessions-btn');
+    if (back) {
+      const tableId = od88CurrentTableId();
+      setTimeout(() => od88ResetTableChats(tableId), 0);
+    }
+  }, true);
+
+  document.addEventListener('change', event => {
+    const trained = event.target.closest('[data-skill-trained]');
+    const bonus = event.target.closest('[data-skill-bonus]');
+    if (!trained && !bonus) return;
+
+    event.stopImmediatePropagation();
+    const name = (trained || bonus).dataset.skillTrained || (trained || bonus).dataset.skillBonus;
+    if (!name) return;
+
+    updateChar(char => {
+      char.skills = char.skills || {};
+      char.skills[name] = char.skills[name] || { trained: false, bonus: 0, disadvantage: false };
+      if (trained) char.skills[name].trained = !!trained.checked;
+      if (bonus) char.skills[name].bonus = Number(bonus.value || 0);
+    });
+    try { saveCurrentCharacter(); } catch (_) {}
+    const updated = currentChar && currentChar();
+    if (updated) {
+      if (trained) window.od79SkillTab = trained.checked ? 'trained' : 'untrained';
+      renderSkills(updated);
+      updateDerivedStatsDisplay(updated);
+    }
+  }, true);
+
+  function od88PatchSocketClear() {
+    try {
+      const socket = typeof od44EnsureSocket === 'function' ? od44EnsureSocket() : null;
+      if (!socket || socket.__od88MessagesClear) return;
+      socket.__od88MessagesClear = true;
+      socket.on('messages:cleared', payload => {
+        if (!payload?.tableId || String(payload.tableId) === String(od88CurrentTableId())) {
+          od88ClearLocalChats(payload?.tableId || od88CurrentTableId());
+        }
+      });
+    } catch (_) {}
+  }
+
+  const boot = () => {
+    od88TidyObsButtons();
+    od88SetCompactButtonText();
+    const char = currentChar && currentChar();
+    if (char && document.getElementById('skills-wrap')) renderSkills(char);
+    od88PatchSocketClear();
+  };
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+  setTimeout(boot, 250);
+  setTimeout(boot, 1000);
+
+  new MutationObserver(() => od88TidyObsButtons()).observe(document.documentElement, { childList: true, subtree: true });
 })();
