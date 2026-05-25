@@ -5498,10 +5498,11 @@ function od66InventoryMutationUnlockSoon() {
     if (!shell) return;
     shell.innerHTML = `
       <header class="od71-topbar">
-        <button class="od71-logo od71-icon-btn" type="button" data-od71-tab="home" title="Início">
+        <div class="od71-logo od82-logo-static" aria-label="One Dice">
           <img src="${od71LogoSrc()}" alt="One Dice" />
-        </button>
+        </div>
         <nav class="od71-main-nav" aria-label="Menu principal">
+          ${od71NavButton('home', '◆', 'Início')}
           ${od71NavButton('characters', '♙', 'Personagens')}
           ${od71NavButton('campaigns', '⚔', 'Campanhas')}
         </nav>
@@ -5516,8 +5517,17 @@ function od66InventoryMutationUnlockSoon() {
 
   function od71SetTab(tab) {
     od71Tab = tab || 'home';
+    if (!['home', 'characters', 'campaigns'].includes(od71Tab)) od71Tab = 'home';
     localStorage.setItem('od71_tab', od71Tab);
-    od71RenderShell();
+
+    // V82: trocar aba sem reconstruir toda a topbar.
+    // Isso evita o efeito de "reset" visual no menu inicial.
+    od71RenderContent();
+    document.querySelectorAll('.od71-nav-btn').forEach(btn => {
+      const target = btn.dataset.od71Tab || btn.dataset.od75Tab;
+      btn.classList.toggle('active', target === od71Tab);
+    });
+
     try {
       const route = od71Tab === 'home' ? '/inicio' : (od71Tab === 'characters' ? '/personagens' : '/campanhas');
       history.replaceState({ od71Tab }, '', route);
@@ -5537,7 +5547,7 @@ function od66InventoryMutationUnlockSoon() {
     content.innerHTML = `
       <section class="od71-home-hero">
         <div class="od71-hero-inner">
-          <img class="od71-hero-logo" src="${od71LogoSrc()}" alt="One Dice" />
+          <img class="od71-hero-logo od82-hero-logo-full" src="assets/logo-completa.png" alt="One Dice" />
           <div class="od71-divider"></div>
           <p class="od71-eyebrow">A aventura começa</p>
           <div class="od71-home-grid">
@@ -5894,6 +5904,15 @@ function od66InventoryMutationUnlockSoon() {
     const tab = od75TabFromLocation();
     localStorage.setItem('od71_tab', tab);
 
+    const logoWrap = shell.querySelector('.od71-logo');
+    if (logoWrap) {
+      logoWrap.classList.add('od82-logo-static');
+      logoWrap.removeAttribute('data-od71-tab');
+      logoWrap.removeAttribute('data-od75-tab');
+      logoWrap.removeAttribute('role');
+      logoWrap.removeAttribute('tabindex');
+      logoWrap.title = '';
+    }
     const logo = shell.querySelector('.od71-logo img');
     if (logo) logo.src = 'assets/logo-completa.png';
 

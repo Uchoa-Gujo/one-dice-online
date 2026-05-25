@@ -6248,3 +6248,136 @@ body:not(.dark-sheet) .od79-skill-card {
 
 
 /* V81 - limpeza: CSS legado das setas v74/v75 removido. */
+
+
+/* =========================
+   V82 - Menu inicial nativo 1920x1080 e navegação estável
+   - remove rolagem desnecessária na home
+   - logo central completa maior
+   - logo superior fica apenas decorativa, sem ação de botão
+   - troca de abas sem efeito visual de reset
+========================= */
+#sessions-screen.active {
+  min-height: 100vh !important;
+  overflow: hidden !important;
+}
+
+#sessions-screen.active .od71-shell {
+  height: 100vh !important;
+  min-height: 100vh !important;
+  overflow: hidden !important;
+}
+
+.od71-topbar {
+  height: 76px !important;
+  min-height: 76px !important;
+}
+
+.od71-logo.od82-logo-static,
+.od71-logo.od82-logo-static:hover,
+.od71-logo.od82-logo-static:focus {
+  cursor: default !important;
+  transform: none !important;
+  pointer-events: none !important;
+  background: rgba(0, 0, 0, 0.18) !important;
+}
+
+.od71-logo.od82-logo-static img {
+  width: 128px !important;
+  max-width: 100% !important;
+  object-fit: contain !important;
+}
+
+.od71-content {
+  height: calc(100vh - 76px) !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: clamp(18px, 2.2vh, 30px) 0 clamp(18px, 2.2vh, 30px) !important;
+  scrollbar-gutter: stable;
+}
+
+.od71-content:has(.od71-home-hero) {
+  overflow-y: hidden !important;
+}
+
+.od71-home-hero {
+  height: 100% !important;
+  min-height: 0 !important;
+  align-items: center !important;
+  padding: 0 !important;
+}
+
+.od71-hero-inner {
+  gap: clamp(18px, 2.4vh, 28px) !important;
+  transform: translateY(-1vh);
+}
+
+.od71-hero-logo.od82-hero-logo-full {
+  width: min(360px, 42vw) !important;
+  max-height: 150px !important;
+  object-fit: contain !important;
+}
+
+.od71-home-grid {
+  gap: clamp(14px, 1.8vh, 20px) !important;
+}
+
+.od71-home-card {
+  min-height: clamp(112px, 13vh, 132px) !important;
+  padding: clamp(18px, 2vh, 22px) !important;
+}
+
+.od71-nav-btn {
+  will-change: auto !important;
+}
+
+.od71-nav-btn.active {
+  transform: none !important;
+}
+
+@media (max-height: 760px) {
+  .od71-topbar {
+    height: 68px !important;
+    min-height: 68px !important;
+  }
+
+  .od71-content {
+    height: calc(100vh - 68px) !important;
+    padding: 12px 0 !important;
+  }
+
+  .od71-hero-logo.od82-hero-logo-full {
+    width: min(300px, 40vw) !important;
+    max-height: 112px !important;
+  }
+
+  .od71-hero-inner {
+    gap: 14px !important;
+  }
+
+  .od71-home-card {
+    min-height: 98px !important;
+    padding: 14px !important;
+  }
+}
+
+@media (max-width: 820px) {
+  #sessions-screen.active,
+  #sessions-screen.active .od71-shell {
+    overflow: auto !important;
+    height: auto !important;
+    min-height: 100vh !important;
+  }
+
+  .od71-content,
+  .od71-content:has(.od71-home-hero) {
+    height: auto !important;
+    min-height: calc(100vh - 76px) !important;
+    overflow-y: visible !important;
+  }
+
+  .od71-hero-logo.od82-hero-logo-full {
+    width: min(300px, 72vw) !important;
+  }
+}
