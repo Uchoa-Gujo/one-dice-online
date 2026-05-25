@@ -7171,3 +7171,187 @@ body.od84-session-home #sessions-screen.active .od71-shell {
     width: 100% !important;
   }
 }
+
+/* =========================
+   V89 - Polimento da ficha, menu lateral e inventário compacto
+========================= */
+
+/* Remove somente o OBS que ficava abaixo do retrato. O OBS do menu das três linhas continua existindo. */
+#obs-copy-link-btn,
+.obs-copy-link-btn {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Remove o botão legado "Mostrar Treinadas"; as abas Treinadas/Não Treinadas ficam como controle oficial. */
+#compact-skills-toggle {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Retrato mais estável para evitar imagem estourando ou deformando na ficha. */
+.portrait-wrap {
+  width: 100% !important;
+  max-width: 210px !important;
+  align-self: start !important;
+}
+
+.portrait-button {
+  width: 100% !important;
+  max-width: 210px !important;
+  aspect-ratio: 1 / 1 !important;
+  display: block !important;
+  overflow: hidden !important;
+  border: 3px solid var(--line, #c5222c) !important;
+  background: rgba(0,0,0,.42) !important;
+}
+
+#char-portrait-preview,
+.od89-portrait-fixed {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  display: block !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  border: 0 !important;
+  aspect-ratio: 1 / 1 !important;
+}
+
+/* Inventário reduzido: sem setas de ordenação para não cobrir texto/botões. */
+.simple-inventory-list.compact .od80-card-order,
+.simple-inventory-list.compact .od80-order-btn,
+.simple-inventory-list.compact .simple-inventory-card .od80-card-order {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.simple-inventory-list.compact .simple-inventory-card.od80-sortable-card,
+.simple-inventory-list.compact .simple-inventory-card {
+  padding-right: 14px !important;
+}
+
+/* Perfil do menu das três linhas: mais elegante e sem parecer elemento quebrado. */
+#main-topbar .brand {
+  display: grid !important;
+  grid-template-columns: 92px minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 14px !important;
+  min-height: 96px !important;
+  padding: 12px 14px !important;
+  border: 1px solid color-mix(in srgb, var(--accent, #c5222c) 52%, transparent) !important;
+  border-radius: 18px !important;
+  background:
+    radial-gradient(circle at 20% 20%, color-mix(in srgb, var(--accent, #c5222c) 18%, transparent), transparent 38%),
+    rgba(0,0,0,.26) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.045), 0 14px 30px rgba(0,0,0,.24) !important;
+  overflow: hidden !important;
+}
+
+#main-topbar .brand img {
+  width: 86px !important;
+  max-width: 86px !important;
+  height: 42px !important;
+  object-fit: contain !important;
+  padding: 6px !important;
+  border-radius: 12px !important;
+  background: rgba(0,0,0,.42) !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+}
+
+#main-topbar .brand strong {
+  color: #fff !important;
+  font-size: 1.2rem !important;
+  letter-spacing: .04em !important;
+  text-shadow: 0 2px 0 rgba(0,0,0,.42) !important;
+}
+
+#main-topbar .brand span {
+  max-width: 170px !important;
+  color: rgba(255,255,255,.78) !important;
+  font-family: Arial, sans-serif !important;
+  font-size: .82rem !important;
+  line-height: 1.25 !important;
+}
+
+/* Menu lateral recolhido: mantém os dois quadrados centralizados dentro do retângulo escuro. */
+#main-topbar.topbar.collapsed {
+  width: 78px !important;
+  min-width: 78px !important;
+  height: 154px !important;
+  min-height: 154px !important;
+  padding: 8px !important;
+  display: block !important;
+  overflow: hidden !important;
+}
+
+#main-topbar.topbar.collapsed .topbar-menu-toggle,
+#main-topbar.topbar.collapsed #sidebar-dock-btn,
+#main-topbar.topbar.collapsed #master-dashboard-dock-btn {
+  position: absolute !important;
+  left: 10px !important;
+  width: 52px !important;
+  height: 52px !important;
+  min-width: 52px !important;
+  min-height: 52px !important;
+  margin: 0 !important;
+  border-radius: 14px !important;
+  display: grid !important;
+  place-items: center !important;
+}
+
+#main-topbar.topbar.collapsed .topbar-menu-toggle {
+  top: 10px !important;
+}
+
+#main-topbar.topbar.collapsed #sidebar-dock-btn,
+#main-topbar.topbar.collapsed #master-dashboard-dock-btn {
+  top: 84px !important;
+}
+
+#main-topbar.topbar.collapsed #sidebar-dock-btn.hidden,
+#main-topbar.topbar.collapsed #master-dashboard-dock-btn.hidden {
+  display: none !important;
+}
+
+/* Menu aberto: botões internos em grade limpa dentro do retângulo. */
+#main-topbar:not(.collapsed) {
+  width: min(860px, calc(100vw - 28px)) !important;
+}
+
+#main-topbar:not(.collapsed) .topbar-content {
+  grid-template-columns: minmax(250px, 320px) minmax(0, 1fr) !important;
+  align-items: stretch !important;
+  gap: 14px !important;
+  margin-left: 72px !important;
+}
+
+#main-topbar:not(.collapsed) .top-actions {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(150px, 1fr)) !important;
+  gap: 10px !important;
+  align-content: center !important;
+  justify-content: stretch !important;
+  max-width: none !important;
+}
+
+#main-topbar:not(.collapsed) .top-actions > * {
+  width: 100% !important;
+  min-width: 0 !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+@media (max-width: 900px) {
+  #main-topbar:not(.collapsed) .topbar-content {
+    grid-template-columns: 1fr !important;
+    margin-left: 64px !important;
+  }
+  #main-topbar:not(.collapsed) .top-actions {
+    grid-template-columns: 1fr !important;
+  }
+}

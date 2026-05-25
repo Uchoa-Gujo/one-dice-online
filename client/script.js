@@ -7403,3 +7403,65 @@ function od66InventoryMutationUnlockSoon() {
 
   new MutationObserver(() => od88TidyObsButtons()).observe(document.documentElement, { childList: true, subtree: true });
 })();
+
+/* =========================
+   V89 - Polimento da ficha, menu lateral e inventário compacto
+   - Remove somente o botão OBS abaixo do retrato
+   - Remove botão antigo "Mostrar Treinadas"
+   - Esconde setas no inventário em modo reduzido
+   - Reaplica ajustes visuais sem mexer na lógica principal
+========================= */
+(function od89SheetPolish(){
+  function od89RemovePortraitObsButton() {
+    document.querySelectorAll('#obs-copy-link-btn, .obs-copy-link-btn').forEach(btn => btn.remove());
+  }
+
+  function od89RemoveCompactSkillsButton() {
+    document.querySelectorAll('#compact-skills-toggle').forEach(btn => btn.remove());
+  }
+
+  function od89CleanCompactInventoryArrows() {
+    const list = document.getElementById('simple-inventory-list');
+    if (!list) return;
+    if (!list.classList.contains('compact')) return;
+    list.querySelectorAll('.simple-inventory-card .od80-card-order').forEach(control => control.remove());
+    list.querySelectorAll('.simple-inventory-card.od80-sortable-card').forEach(card => {
+      card.classList.remove('od80-sortable-card');
+    });
+  }
+
+  function od89Run() {
+    od89RemovePortraitObsButton();
+    od89RemoveCompactSkillsButton();
+    od89CleanCompactInventoryArrows();
+  }
+
+  document.addEventListener('click', event => {
+    if (event.target.closest('#obs-copy-link-btn, .obs-copy-link-btn')) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      od89RemovePortraitObsButton();
+      return;
+    }
+
+    if (event.target.closest('#simple-inventory-compact-toggle, #inventory-tab, [data-tab="inventory"]')) {
+      setTimeout(od89CleanCompactInventoryArrows, 0);
+      setTimeout(od89CleanCompactInventoryArrows, 120);
+    }
+  }, true);
+
+  document.addEventListener('input', event => {
+    if (event.target.closest('.portrait-wrap, #portrait-url')) {
+      const img = document.getElementById('char-portrait-preview');
+      if (img) img.classList.add('od89-portrait-fixed');
+    }
+  }, true);
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', od89Run);
+  else od89Run();
+  setTimeout(od89Run, 200);
+  setTimeout(od89Run, 800);
+  setInterval(od89Run, 1500);
+
+  new MutationObserver(od89Run).observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+})();
