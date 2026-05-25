@@ -53,6 +53,27 @@ async function requireTableMaster(req, res, next) {
   next();
 }
 
+
+
+function normalizeDrops(settings) {
+  const drops = settings && Array.isArray(settings.drops) ? settings.drops : [];
+  return drops.slice(0, 200);
+}
+
+function itemWeightTotal(items) {
+  return (Array.isArray(items) ? items : []).reduce((sum, entry) => sum + (Number(entry.weight) || 0), 0);
+}
+
+async function updateTableDrops(tableId, drops) {
+  const result = await query(`
+    update tables
+    set settings = jsonb_set(coalesce(settings, '{}'::jsonb), '{drops}', $1::jsonb, true), updated_at = now()
+    where id = $2
+    returning settings
+  `, [JSON.stringify(drops), tableId]);
+  return normalizeDrops(result.rows[0]?.settings || {});
+}
+
 function apiRole(role) {
   if (role === 'mestre') return 'master';
   if (role === 'jogador') return 'player';
@@ -208,6 +229,96 @@ router.post('/:id/messages', requireTableMember, async (req, res) => {
   res.json({ message: msg });
 });
 
+
+
+router.get('/:id/drops', requireTableMember, async (req, res) => {
+  const tableId = req.params.id;
+  const result = await query('select settings from tables where id = $1', [tableId]);
+  if (!result.rowCount) return res.status(404).json({ error: 'Mesa não encontrada.' });
+  res.json({ drops: normalizeDrops(result.rows[0].settings || {}) });
+});
+
+router.post('/:id/drop-item', requireTableMember, async (req, res) => {
+  const tableId = req.params.id;
+  const fromCharacterId = req.body.fromCharacterId || null;
+  const itemId = req.body.itemId || null;
+  if (!fromCharacterId || !itemId) return res.status(400).json({ error: 'Dados do drop incompletos.' });
+
+  const links = await query(`
+    select tm.character_id, tm.user_id, tm.role, c.owner_id, c.name, c.data
+    from table_members tm
+    join characters c on c.id = tm.character_id
+    where tm.table_id = $1 and tm.character_id = $2
+  `, [tableId, fromCharacterId]);
+  if (!links.rowCount) return res.status(404).json({ error: 'Ficha não está vinculada à mesa.' });
+  const from = links.rows[0];
+  const isMaster = isMasterRole(req.tableMember.role);
+  if (String(from.owner_id) !== String(req.user.id) && !isMaster) {
+    return res.status(403).json({ error: 'Você só pode dropar itens da sua própria ficha.' });
+  }
+
+  const fromData = from.data || {};
+  const fromItems = Array.isArray(fromData.inventoryItems) ? fromData.inventoryItems : [];
+  const index = fromItems.findIndex(item => String(item.id) === String(itemId));
+  if (index < 0) return res.status(404).json({ error: 'Item não encontrado na ficha.' });
+  const [item] = fromItems.splice(index, 1);
+  fromData.inventoryItems = fromItems;
+  fromData.weightCurrent = itemWeightTotal(fromItems);
+  const updatedFrom = await query('update characters set data = $1, updated_at = now() where id = $2 returning *', [fromData, fromCharacterId]);
+
+  const tableResult = await query('select settings from tables where id = $1', [tableId]);
+  const drops = normalizeDrops(tableResult.rows[0]?.settings || {});
+  const drop = { ...item, id: `drop_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`, fromCharacterId, fromName: from.name, createdAt: new Date().toISOString() };
+  drops.push(drop);
+  const savedDrops = await updateTableDrops(tableId, drops);
+
+  emitTable(req, tableId, 'character:updated', { character: updatedFrom.rows[0] });
+  emitTable(req, tableId, 'inventory:updated', { reason: 'drop-item', fromCharacterId, itemName: item.name || 'Item', drops: savedDrops });
+  res.json({ ok: true, item: drop, from: updatedFrom.rows[0], drops: savedDrops });
+});
+
+router.post('/:id/drops/:dropId/take', requireTableMember, async (req, res) => {
+  const tableId = req.params.id;
+  const dropId = req.params.dropId;
+  const toCharacterId = req.body.toCharacterId || null;
+  if (!toCharacterId) return res.status(400).json({ error: 'Escolha a ficha que vai receber.' });
+
+  const links = await query(`
+    select tm.character_id, tm.user_id, tm.role, c.owner_id, c.name, c.data
+    from table_members tm
+    join characters c on c.id = tm.character_id
+    where tm.table_id = $1 and tm.character_id = $2
+  `, [tableId, toCharacterId]);
+  if (!links.rowCount) return res.status(404).json({ error: 'Ficha não está vinculada à mesa.' });
+  const to = links.rows[0];
+  const isMaster = isMasterRole(req.tableMember.role);
+  if (String(to.owner_id) !== String(req.user.id) && !isMaster) {
+    return res.status(403).json({ error: 'Você só pode pegar drops para sua própria ficha.' });
+  }
+
+  const tableResult = await query('select settings from tables where id = $1', [tableId]);
+  const drops = normalizeDrops(tableResult.rows[0]?.settings || {});
+  const index = drops.findIndex(item => String(item.id) === String(dropId));
+  if (index < 0) return res.status(404).json({ error: 'Drop não encontrado.' });
+  const [item] = drops.splice(index, 1);
+
+  const toData = to.data || {};
+  const toItems = Array.isArray(toData.inventoryItems) ? toData.inventoryItems : [];
+  const itemForCharacter = { ...item, id: item.originalItemId || `inv_${Date.now()}_${Math.random().toString(36).slice(2, 8)}` };
+  delete itemForCharacter.fromCharacterId;
+  delete itemForCharacter.fromName;
+  delete itemForCharacter.createdAt;
+  delete itemForCharacter.originalItemId;
+  toItems.push(itemForCharacter);
+  toData.inventoryItems = toItems;
+  toData.weightCurrent = itemWeightTotal(toItems);
+  const updatedTo = await query('update characters set data = $1, updated_at = now() where id = $2 returning *', [toData, toCharacterId]);
+  const savedDrops = await updateTableDrops(tableId, drops);
+
+  emitTable(req, tableId, 'character:updated', { character: updatedTo.rows[0] });
+  emitTable(req, tableId, 'inventory:updated', { reason: 'take-drop', toCharacterId, itemName: item.name || 'Item', drops: savedDrops });
+  res.json({ ok: true, item, to: updatedTo.rows[0], drops: savedDrops });
+});
 
 router.post('/:id/transfer-item', requireTableMember, async (req, res) => {
   const tableId = req.params.id;

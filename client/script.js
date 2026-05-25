@@ -4681,3 +4681,330 @@ setTimeout(od46SyncSidebarDockButton, 120);
     }
   }, 500);
 })();
+
+/* =========================
+   V64 - estabilidade sem piscar, inventário online e drop visível
+========================= */
+(function od64StableMesa(){
+  const CHAT_RENDER_STATE = { conversation: '', rolls: '' };
+  const collapsedKey = () => currentCampaignId ? `od64_collapsed_${currentCampaignId}` : 'od64_collapsed';
+  let chatPollBusy = false;
+  let tableStateBusy = false;
+  let dropsCache = [];
+  let dropsBusy = false;
+
+  function stableString(value) {
+    try { return JSON.stringify(value || []); } catch (_) { return String(Date.now()); }
+  }
+
+  function sameMessages(a, b) {
+    const ax = (a || []).map(m => `${m.id}:${m.text}:${m.at}`).join('|');
+    const bx = (b || []).map(m => `${m.id}:${m.text}:${m.at}`).join('|');
+    return ax === bx;
+  }
+
+  function saveCollapsedState(id, collapsed) {
+    const state = get(collapsedKey(), {});
+    state[id] = !!collapsed;
+    set(collapsedKey(), state);
+  }
+
+  function restoreCollapsedState() {
+    const state = get(collapsedKey(), {});
+    Object.entries(state).forEach(([id, collapsed]) => {
+      const box = document.getElementById(id);
+      const btn = document.querySelector(`[data-toggle-chat="${CSS.escape(id)}"]`);
+      if (!box) return;
+      box.classList.toggle('chat-collapsed', !!collapsed);
+      if (btn) btn.textContent = collapsed ? '+' : '—';
+    });
+  }
+
+  const oldRenderChat = renderChat;
+  renderChat = function(force = false) {
+    const renderList = (targetId, messages, stateKey) => {
+      const log = document.getElementById(targetId);
+      if (!log) return;
+      const signature = stableString(messages.map(m => [m.id, m.user, m.text, m.at, m.avatar, m.type]));
+      if (!force && CHAT_RENDER_STATE[stateKey] === signature) return;
+      const wasNearBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 60;
+      CHAT_RENDER_STATE[stateKey] = signature;
+      log.innerHTML = '';
+      messages.forEach(msg => {
+        const div = document.createElement('div');
+        div.className = `chat-msg ${msg.type === 'roll' ? 'roll' : ''}`;
+        div.innerHTML = `
+          <img class="chat-msg-avatar" src="${escapeHtml(msg.avatar || 'assets/logo.jpg')}" alt="" />
+          <div class="chat-msg-main">
+            <small>${escapeHtml(msg.user || 'Sistema')} • ${escapeHtml(msg.at || '')}</small>
+            <div class="chat-msg-text">${escapeHtml(msg.text || '')}</div>
+          </div>`;
+        log.appendChild(div);
+      });
+      if (wasNearBottom) log.scrollTop = log.scrollHeight;
+    };
+    renderList('chat-log', get(campaignChatKey(), []), 'conversation');
+    renderList('roll-chat-log', get(v35RollChatKey(), []), 'rolls');
+    restoreCollapsedState();
+  };
+
+  function messageToLocal64(row = {}) {
+    if (typeof od44ApiMessageToLocal === 'function') return od44ApiMessageToLocal(row);
+    return row;
+  }
+
+  async function loadMessagesNoFlicker(tableId = currentCampaignId) {
+    if (!tableId || !od42Token || !od42Token() || chatPollBusy) return;
+    chatPollBusy = true;
+    try {
+      const data = await od42Api(`/api/tables/${tableId}/messages`);
+      const conversation = [];
+      const rolls = [];
+      (data.messages || []).forEach(row => {
+        const local = messageToLocal64(row);
+        if (row.channel === 'rolls' || local.type === 'roll') rolls.push(local);
+        else conversation.push(local);
+      });
+      const convKey = `${STORAGE.chat}_${tableId}`;
+      const rollKey = `${STORAGE.chat}_${tableId}_rolls`;
+      const oldConv = get(convKey, []);
+      const oldRolls = get(rollKey, []);
+      let changed = false;
+      if (!sameMessages(oldConv, conversation)) { set(convKey, conversation.slice(-220)); changed = true; }
+      if (!sameMessages(oldRolls, rolls)) { set(rollKey, rolls.slice(-220)); changed = true; }
+      if (changed) renderChat();
+    } catch (error) {
+      console.warn('Falha ao carregar chat sem piscar:', error);
+    } finally {
+      chatPollBusy = false;
+    }
+  }
+
+  od44LoadMessages = loadMessagesNoFlicker;
+  if (typeof od63LoadMessages !== 'undefined') od63LoadMessages = loadMessagesNoFlicker;
+
+  async function saveCharNow(char = currentChar()) {
+    if (!char?.id || !od42Token || !od42Token()) return;
+    try {
+      if (typeof od44SaveCharacterOnline === 'function') await od44SaveCharacterOnline(char);
+      else await od42Api(`/api/characters/${char.id}`, { method: 'PUT', body: JSON.stringify({ name: char.name || 'Ficha', data: char }) });
+    } catch (error) {
+      console.warn('Falha ao salvar ficha agora:', error);
+    }
+  }
+
+  function recalcItemWeight(char) {
+    char.inventoryItems = Array.isArray(char.inventoryItems) ? char.inventoryItems : [];
+    char.weightCurrent = char.inventoryItems.reduce((sum, item) => sum + (Number(item.weight) || 0), 0);
+  }
+
+  function mutateCurrentInventory(mutator, options = {}) {
+    const char = currentChar();
+    if (!char) return null;
+    updateChar(saved => {
+      saved.inventoryItems = Array.isArray(saved.inventoryItems) ? saved.inventoryItems : [];
+      mutator(saved);
+      recalcItemWeight(saved);
+    });
+    const updated = currentChar();
+    renderSimpleInventory(updated);
+    if (!options.noSave) saveCharNow(updated);
+    return updated;
+  }
+
+  document.addEventListener('click', event => {
+    const chatToggle = event.target.closest('[data-toggle-chat]');
+    if (chatToggle) {
+      setTimeout(() => {
+        const id = chatToggle.getAttribute('data-toggle-chat');
+        const box = document.getElementById(id);
+        if (box) saveCollapsedState(id, box.classList.contains('chat-collapsed'));
+      }, 0);
+      return;
+    }
+
+    if (!currentCampaignId) return;
+
+    const removeBtn = event.target.closest('[data-remove-simple-item]');
+    if (removeBtn) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const index = Number(removeBtn.dataset.removeSimpleItem);
+      mutateCurrentInventory(char => { char.inventoryItems.splice(index, 1); });
+      return;
+    }
+
+    const addBtn = event.target.closest('#add-simple-inventory-item');
+    if (addBtn) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      mutateCurrentInventory(char => {
+        char.inventoryItems.push({ id: uid('inv'), name: 'Novo item', weight: 0.5, uses: 0, desc: '' });
+      });
+      return;
+    }
+
+    const compactBtn = event.target.closest('#simple-inventory-compact-toggle');
+    if (compactBtn) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      mutateCurrentInventory(char => { char.simpleInventoryCompact = !char.simpleInventoryCompact; });
+      return;
+    }
+  }, true);
+
+  document.addEventListener('change', event => {
+    if (!currentCampaignId) return;
+    if (event.target.closest('#simple-inventory-list')) {
+      setTimeout(() => saveCharNow(currentChar()), 50);
+    }
+  }, true);
+
+  async function loadDrops() {
+    if (!currentCampaignId || !od42Token || !od42Token() || dropsBusy) return dropsCache;
+    dropsBusy = true;
+    try {
+      const data = await od42Api(`/api/tables/${currentCampaignId}/drops`);
+      dropsCache = data.drops || [];
+      renderGroupDrops();
+    } catch (error) {
+      console.warn('Falha ao carregar drops:', error);
+    } finally {
+      dropsBusy = false;
+    }
+    return dropsCache;
+  }
+
+  function renderGroupDrops() {
+    if (!currentCampaignId) return;
+    const target = byId('player-dashboard') || byId('master-dashboard');
+    if (!target) return;
+    let panel = byId('group-drops-panel');
+    if (!panel) {
+      panel = document.createElement('section');
+      panel.id = 'group-drops-panel';
+      panel.className = 'group-drops-panel mini-card';
+      const grid = byId('public-party-grid') || byId('master-characters-grid');
+      if (grid?.parentNode) grid.parentNode.insertBefore(panel, grid.nextSibling);
+      else target.appendChild(panel);
+    }
+    const chars = charactersInCurrentCampaign();
+    const myChar = currentChar() || od63ActiveCharacter?.();
+    const options = chars.map(c => `<option value="${escapeHtml(c.id)}" ${c.id === myChar?.id ? 'selected' : ''}>${escapeHtml(c.name || 'Personagem')}</option>`).join('');
+    panel.innerHTML = `<div class="section-title-row"><div><h3>Drop da Mesa</h3><p class="helper-text">Itens soltos na mesa. Escolha uma ficha e pegue o item.</p></div></div>
+      <div class="group-drops-list">${dropsCache.length ? dropsCache.map(item => `
+        <div class="group-drop-row">
+          <div><strong>${escapeHtml(item.name || 'Item')}</strong><small>Peso ${escapeHtml(item.weight || 0)} • Usos ${escapeHtml(item.uses || 0)}</small>${item.desc ? `<p>${escapeHtml(item.desc)}</p>` : ''}</div>
+          <select data-take-drop-target="${escapeHtml(item.id)}">${options}</select>
+          <button class="primary-btn small" data-take-drop-item="${escapeHtml(item.id)}" type="button">Pegar</button>
+        </div>`).join('') : '<div class="campaign-empty">Nenhum item dropado.</div>'}</div>`;
+  }
+
+  async function dropItemOnline(itemId) {
+    const from = currentChar();
+    if (!from || !currentCampaignId) return false;
+    try {
+      const data = await od42Api(`/api/tables/${currentCampaignId}/drop-item`, {
+        method: 'POST',
+        body: JSON.stringify({ fromCharacterId: from.id, itemId })
+      });
+      if (data?.from) od42MergeById(STORAGE.characters, [od42CharacterFromRow(data.from)]);
+      dropsCache = data?.drops || dropsCache;
+      addChat(`${from.name} colocou ${data?.item?.name || 'um item'} no drop da mesa.`, 'roll');
+      loadCharacter(from.id);
+      renderGroupDrops();
+      renderTableExperience();
+    } catch (error) {
+      alert(error.message || 'Erro ao enviar item para drop.');
+    }
+    return true;
+  }
+
+  async function takeDropOnline(dropId) {
+    const select = document.querySelector(`[data-take-drop-target="${CSS.escape(dropId)}"]`);
+    const toCharacterId = select?.value || currentChar()?.id;
+    if (!toCharacterId) return alert('Escolha uma ficha para receber o item.');
+    try {
+      const data = await od42Api(`/api/tables/${currentCampaignId}/drops/${dropId}/take`, {
+        method: 'POST',
+        body: JSON.stringify({ toCharacterId })
+      });
+      if (data?.to) od42MergeById(STORAGE.characters, [od42CharacterFromRow(data.to)]);
+      dropsCache = data?.drops || [];
+      const receiver = get(STORAGE.characters, []).find(c => c.id === toCharacterId);
+      addChat(`${receiver?.name || 'Personagem'} pegou ${data?.item?.name || 'um item'} do drop.`, 'roll');
+      if (currentCharacterId === toCharacterId) loadCharacter(toCharacterId);
+      renderGroupDrops();
+      renderTableExperience();
+    } catch (error) {
+      alert(error.message || 'Erro ao pegar drop.');
+    }
+  }
+
+  document.addEventListener('click', event => {
+    const dropBtn = event.target.closest('[data-drop-simple-item]');
+    if (dropBtn && currentCampaignId && od42Token && od42Token()) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      saveCurrentCharacter();
+      dropItemOnline(dropBtn.dataset.dropSimpleItem);
+      return;
+    }
+    const takeBtn = event.target.closest('[data-take-drop-item]');
+    if (takeBtn) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      takeDropOnline(takeBtn.dataset.takeDropItem);
+    }
+  }, true);
+
+  const baseRenderTableExperience64 = renderTableExperience;
+  renderTableExperience = function() {
+    baseRenderTableExperience64();
+    renderGroupDrops();
+    restoreCollapsedState();
+  };
+
+  const baseEnterCampaign64 = enterCampaign;
+  enterCampaign = async function(campaignId) {
+    await baseEnterCampaign64(campaignId);
+    await loadMessagesNoFlicker(campaignId);
+    await loadDrops();
+  };
+
+  // Rebaixa eventos de atualização ao mínimo necessário para não piscar tudo.
+  if (typeof od44EnsureSocket === 'function') {
+    const ensureBase64 = od44EnsureSocket;
+    od44EnsureSocket = function() {
+      const socket = ensureBase64();
+      if (!socket || socket.__od64Patched) return socket;
+      socket.__od64Patched = true;
+      socket.off('inventory:updated');
+      socket.on('inventory:updated', async payload => {
+        if (payload?.tableId && String(payload.tableId) !== String(currentCampaignId)) return;
+        await loadDrops();
+        if (!tableStateBusy) {
+          tableStateBusy = true;
+          try { await od42LoadTableState(currentCampaignId); }
+          catch (error) { console.warn('Falha ao atualizar inventário:', error); }
+          finally { tableStateBusy = false; }
+          if (currentCharacterId && !document.activeElement?.closest('#simple-inventory-list')) loadCharacter(currentCharacterId);
+          renderTableExperience();
+        }
+      });
+    };
+  }
+
+  // Remove visual e função do botão antigo de ocultar descrição em habilidades.
+  const abilityToggle = byId('toggle-ability-desc');
+  if (abilityToggle) abilityToggle.remove();
+
+  setInterval(() => {
+    if (!document.hidden && currentCampaignId && od42Token && od42Token()) {
+      loadMessagesNoFlicker(currentCampaignId);
+      loadDrops();
+    }
+  }, 5000);
+
+  setTimeout(() => { restoreCollapsedState(); loadDrops(); renderChat(true); }, 500);
+})();

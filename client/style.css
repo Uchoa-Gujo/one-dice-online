@@ -4573,3 +4573,15 @@ body.sidebar-collapsed #sidebar-dock-btn.od62-app-sheet-btn { display: grid !imp
   .od62-summary-grid { grid-template-columns: 1fr !important; }
   #main-topbar .topbar-content { margin-left: 0 !important; padding-top: 132px !important; }
 }
+
+/* V64 - estabilidade visual e drop da mesa */
+#toggle-ability-desc { display: none !important; }
+.group-drops-panel { margin-top: 16px; padding: 14px; border: 2px solid var(--line); border-radius: 16px; }
+.group-drops-list { display: grid; gap: 10px; }
+.group-drop-row { display: grid; grid-template-columns: minmax(0,1fr) minmax(140px,220px) auto; gap: 10px; align-items: center; border: 1px solid var(--line); border-radius: 12px; padding: 10px; background: rgba(0,0,0,.12); }
+.group-drop-row strong, .group-drop-row small { display: block; }
+.group-drop-row p { margin: 6px 0 0; opacity: .8; }
+.chat-box.chat-collapsed .chat-log, .chat-box.chat-collapsed .chat-form { display: none !important; }
+.simple-inventory-card { position: relative; }
+.simple-inventory-card .mini-danger-btn { align-self: center; justify-self: end; }
+@media (max-width: 720px) { .group-drop-row { grid-template-columns: 1fr; } }
