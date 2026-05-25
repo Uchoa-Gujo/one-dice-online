@@ -6382,116 +6382,122 @@ body:not(.dark-sheet) .od79-skill-card {
   }
 }
 
-
 /* =========================
-   V83 - Menu inicial mais compacto, sem rolagem e sem moldura preta
+   V84 - Menu inicial reparado e sem tela vazia
 ========================= */
-html:has(#sessions-screen.active),
-body:has(#sessions-screen.active) {
-  height: 100% !important;
-  max-height: 100vh !important;
+
+/* Fallback: o menu antigo só aparece se o dashboard novo não existir.
+   Isso impede a tela vazia sem trazer o quadrado antigo quando o dashboard está pronto. */
+#sessions-screen.active:not(.od84-dashboard-ready) .sessions-shell {
+  display: grid !important;
+}
+
+#sessions-screen.active.od84-dashboard-ready .sessions-shell {
+  display: none !important;
+}
+
+body.od84-session-home {
   overflow: hidden !important;
 }
 
-#sessions-screen.screen.active {
-  display: block !important;
+body.od84-session-home #sessions-screen.active,
+body.od84-session-home #sessions-screen.active .od71-shell {
   width: 100vw !important;
   height: 100vh !important;
   min-height: 100vh !important;
-  padding: 0 !important;
   overflow: hidden !important;
-  place-items: unset !important;
 }
 
-#sessions-screen.active .od71-shell {
-  width: 100vw !important;
-  height: 100vh !important;
-  min-height: 0 !important;
-  overflow: hidden !important;
+#sessions-screen.active .od71-shell.od84-home-clean,
+#sessions-screen.active .od84-home-clean .od71-content,
+#sessions-screen.active .od84-home-clean .od71-home-hero,
+#sessions-screen.active .od84-home-clean .od71-hero-inner {
   background: transparent !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
 }
 
-#sessions-screen.active .od71-content {
-  width: 100vw !important;
-  height: calc(100vh - 72px) !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-  background: transparent !important;
-  scrollbar-width: none !important;
-}
-
-#sessions-screen.active .od71-content::-webkit-scrollbar {
-  width: 0 !important;
-  height: 0 !important;
-}
-
-#sessions-screen.active .od71-topbar {
+#sessions-screen.active .od84-home-clean .od71-topbar {
   width: min(1480px, calc(100vw - 56px)) !important;
   height: 72px !important;
   min-height: 72px !important;
   margin: 28px auto 0 !important;
   padding: 0 28px !important;
-  border: 1px solid color-mix(in srgb, var(--accent) 48%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent) !important;
   border-radius: 18px !important;
   background: rgba(0, 0, 0, 0.52) !important;
 }
 
-#sessions-screen.active .od71-logo.od83-logo-static,
-#sessions-screen.active .od71-logo.od83-logo-static:hover,
-#sessions-screen.active .od71-logo.od83-logo-static:focus {
-  pointer-events: none !important;
-  cursor: default !important;
-  transform: none !important;
-  background: rgba(0, 0, 0, 0.16) !important;
+#sessions-screen.active .od84-home-clean .od71-content:has(.od71-home-hero) {
+  height: calc(100vh - 100px) !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  scrollbar-width: none !important;
 }
 
-#sessions-screen.active .od71-logo.od83-logo-static img {
-  width: 150px !important;
-  height: 52px !important;
-  object-fit: contain !important;
+#sessions-screen.active .od84-home-clean .od71-content:has(.od71-home-hero)::-webkit-scrollbar {
+  display: none !important;
 }
 
-#sessions-screen.active .od71-home-hero {
+#sessions-screen.active .od84-home-clean .od71-home-hero {
   height: calc(100vh - 100px) !important;
   min-height: 0 !important;
   display: grid !important;
   place-items: center !important;
   padding: 0 !important;
-  background: transparent !important;
 }
 
-#sessions-screen.active .od71-hero-inner {
-  width: min(780px, calc(100vw - 40px)) !important;
-  gap: clamp(13px, 1.65vh, 21px) !important;
-  transform: translateY(-5.8vh) !important;
-  background: transparent !important;
+#sessions-screen.active .od84-home-clean .od71-hero-inner {
+  width: min(820px, calc(100vw - 40px)) !important;
+  gap: clamp(12px, 1.55vh, 20px) !important;
+  transform: translateY(-5vh) !important;
 }
 
-#sessions-screen.active .od71-hero-logo.od82-hero-logo-full {
-  width: min(500px, 42vw) !important;
-  max-height: 190px !important;
+#sessions-screen.active .od84-home-clean .od71-hero-logo.od82-hero-logo-full {
+  width: min(570px, 46vw) !important;
+  max-height: 215px !important;
   object-fit: contain !important;
 }
 
-#sessions-screen.active .od71-divider {
-  margin-top: -2px !important;
-  margin-bottom: 2px !important;
+#sessions-screen.active .od84-home-clean .od71-divider {
+  width: min(360px, 44vw) !important;
+  margin-top: -4px !important;
+  margin-bottom: 0 !important;
 }
 
-#sessions-screen.active .od71-home-grid {
-  width: min(780px, calc(100vw - 40px)) !important;
+#sessions-screen.active .od84-home-clean .od71-eyebrow {
+  margin: 0 !important;
+}
+
+#sessions-screen.active .od84-home-clean .od71-home-grid {
+  width: min(820px, calc(100vw - 40px)) !important;
   gap: 18px !important;
   background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
 }
 
-#sessions-screen.active .od71-home-card {
-  min-height: 124px !important;
-  padding: 18px !important;
+#sessions-screen.active .od84-home-clean .od71-home-card {
+  min-height: 118px !important;
+  padding: 17px 18px !important;
   background: rgba(0, 0, 0, 0.42) !important;
 }
 
-#sessions-screen.active .od83-theme-btn {
+#sessions-screen.active .od84-logo-static,
+#sessions-screen.active .od84-logo-static:hover,
+#sessions-screen.active .od84-logo-static:focus {
+  pointer-events: none !important;
+  cursor: default !important;
+  transform: none !important;
+}
+
+#sessions-screen.active .od84-logo-static img {
+  width: 150px !important;
+  height: 52px !important;
+  object-fit: contain !important;
+}
+
+#sessions-screen.active .od84-theme-btn {
   width: 46px !important;
   height: 46px !important;
   min-height: 46px !important;
@@ -6501,15 +6507,15 @@ body:has(#sessions-screen.active) {
   background: rgba(0,0,0,.35) !important;
 }
 
-#sessions-screen.active .od83-theme-btn.active,
-#sessions-screen.active .od83-theme-btn:hover {
+#sessions-screen.active .od84-theme-btn.active,
+#sessions-screen.active .od84-theme-btn:hover {
   border-color: var(--accent) !important;
   background: color-mix(in srgb, var(--accent) 18%, rgba(0,0,0,.44)) !important;
 }
 
-.od83-theme-panel {
+.od84-theme-panel {
   position: fixed;
-  z-index: 9999;
+  z-index: 99999;
   display: grid;
   gap: 10px;
   padding: 14px;
@@ -6521,18 +6527,18 @@ body:has(#sessions-screen.active) {
   backdrop-filter: blur(12px);
 }
 
-.od83-theme-panel.hidden {
+.od84-theme-panel.hidden {
   display: none !important;
 }
 
-.od83-theme-title {
+.od84-theme-title {
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: .12em;
   color: var(--accent);
 }
 
-.od83-theme-panel label {
+.od84-theme-panel label {
   display: grid;
   gap: 6px;
   font-size: .78rem;
@@ -6541,8 +6547,8 @@ body:has(#sessions-screen.active) {
   opacity: .92;
 }
 
-.od83-theme-panel select,
-.od83-theme-action {
+.od84-theme-panel select,
+.od84-theme-action {
   width: 100%;
   min-height: 38px;
   border-radius: 10px;
@@ -6554,59 +6560,59 @@ body:has(#sessions-screen.active) {
   font-weight: 800;
 }
 
-.od83-theme-action {
+.od84-theme-action {
   cursor: pointer;
   text-transform: uppercase;
 }
 
-.od83-theme-action:hover,
-.od83-theme-panel select:hover {
+.od84-theme-action:hover,
+.od84-theme-panel select:hover {
   border-color: var(--accent);
 }
 
 @media (max-height: 760px) {
-  #sessions-screen.active .od71-topbar {
+  #sessions-screen.active .od84-home-clean .od71-topbar {
     height: 64px !important;
     min-height: 64px !important;
     margin-top: 16px !important;
   }
 
-  #sessions-screen.active .od71-content {
+  #sessions-screen.active .od84-home-clean .od71-content:has(.od71-home-hero),
+  #sessions-screen.active .od84-home-clean .od71-home-hero {
     height: calc(100vh - 80px) !important;
   }
 
-  #sessions-screen.active .od71-hero-inner {
-    gap: 10px !important;
+  #sessions-screen.active .od84-home-clean .od71-hero-inner {
+    gap: 9px !important;
     transform: translateY(-5vh) !important;
   }
 
-  #sessions-screen.active .od71-hero-logo.od82-hero-logo-full {
-    width: min(420px, 38vw) !important;
-    max-height: 145px !important;
+  #sessions-screen.active .od84-home-clean .od71-hero-logo.od82-hero-logo-full {
+    width: min(470px, 40vw) !important;
+    max-height: 150px !important;
   }
 
-  #sessions-screen.active .od71-home-card {
-    min-height: 104px !important;
-    padding: 13px !important;
+  #sessions-screen.active .od84-home-clean .od71-home-card {
+    min-height: 102px !important;
+    padding: 12px 14px !important;
   }
 }
 
 @media (max-width: 820px) {
-  html:has(#sessions-screen.active),
-  body:has(#sessions-screen.active) {
+  body.od84-session-home {
     overflow: auto !important;
   }
 
-  #sessions-screen.screen.active,
-  #sessions-screen.active .od71-shell,
-  #sessions-screen.active .od71-content {
-    width: 100% !important;
+  body.od84-session-home #sessions-screen.active,
+  body.od84-session-home #sessions-screen.active .od71-shell,
+  #sessions-screen.active .od84-home-clean .od71-content:has(.od71-home-hero),
+  #sessions-screen.active .od84-home-clean .od71-home-hero {
     height: auto !important;
     min-height: 100vh !important;
     overflow: visible !important;
   }
 
-  #sessions-screen.active .od71-topbar {
+  #sessions-screen.active .od84-home-clean .od71-topbar {
     width: calc(100vw - 24px) !important;
     margin-top: 12px !important;
     grid-template-columns: 1fr !important;
@@ -6614,21 +6620,16 @@ body:has(#sessions-screen.active) {
     padding: 12px !important;
   }
 
-  #sessions-screen.active .od71-home-hero {
-    height: auto !important;
-    min-height: calc(100vh - 120px) !important;
-  }
-
-  #sessions-screen.active .od71-hero-inner {
+  #sessions-screen.active .od84-home-clean .od71-hero-inner {
     transform: none !important;
     padding: 28px 0 !important;
   }
 
-  #sessions-screen.active .od71-hero-logo.od82-hero-logo-full {
-    width: min(380px, 78vw) !important;
+  #sessions-screen.active .od84-home-clean .od71-hero-logo.od82-hero-logo-full {
+    width: min(390px, 78vw) !important;
   }
 
-  #sessions-screen.active .od71-home-grid {
+  #sessions-screen.active .od84-home-clean .od71-home-grid {
     grid-template-columns: 1fr !important;
   }
 }
