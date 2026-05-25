@@ -6524,3 +6524,187 @@ function od66InventoryMutationUnlockSoon() {
 
 
 /* V81 - limpeza: removidos painéis legados de backup local e controles antigos v74/v75 de ordenação. */
+
+
+/* =========================
+   V83 - Ajustes finos do menu inicial
+   - engrenagem nativa ao lado da conta
+   - painel de tema/cor/fonte sem depender do menu antigo
+   - logo central maior
+   - correção de home 1920x1080 sem rolagem
+========================= */
+(function od83HomeMenuPolish(){
+  const PANEL_ID = 'od83-theme-panel';
+
+  function od83GetSettings() {
+    return typeof get === 'function' && typeof STORAGE !== 'undefined'
+      ? get(STORAGE.settings, { theme: 'light', accent: 'black', skillsCompact: true, font: 'impact', sound: true })
+      : { theme: 'light', accent: 'black', font: 'impact' };
+  }
+
+  function od83SetSettings(mutator) {
+    if (typeof updateSettings === 'function') {
+      updateSettings(mutator);
+      return;
+    }
+    const st = od83GetSettings();
+    mutator(st);
+    try { localStorage.setItem('od_settings', JSON.stringify(st)); } catch (_) {}
+    if (typeof applySettings === 'function') applySettings();
+  }
+
+  function od83UserAvatarSrc() {
+    const user = typeof currentUser !== 'undefined' ? currentUser : null;
+    return user?.avatar || user?.portrait || user?.image || 'assets/account-logo.png';
+  }
+
+  function od83EnsurePanel() {
+    let panel = document.getElementById(PANEL_ID);
+    if (panel) return panel;
+    panel = document.createElement('div');
+    panel.id = PANEL_ID;
+    panel.className = 'od83-theme-panel hidden';
+    panel.innerHTML = `
+      <div class="od83-theme-title">Aparência</div>
+      <button id="od83-theme-toggle" class="od83-theme-action" type="button">Tema Escuro</button>
+      <label>Cor do tema
+        <select id="od83-accent-select">
+          <option value="black">Preto</option>
+          <option value="green">Verde</option>
+          <option value="red">Vermelho</option>
+          <option value="blue">Azul</option>
+          <option value="gold">Dourado</option>
+          <option value="purple">Roxo</option>
+        </select>
+      </label>
+      <label>Fonte
+        <select id="od83-font-select">
+          <option value="impact">Fonte Manga</option>
+          <option value="medieval">Fonte Medieval</option>
+          <option value="clean">Fonte Limpa</option>
+          <option value="mono">Fonte Técnica</option>
+        </select>
+      </label>`;
+    document.body.appendChild(panel);
+    return panel;
+  }
+
+  function od83SyncPanel() {
+    const st = od83GetSettings();
+    const toggle = document.getElementById('od83-theme-toggle');
+    const accent = document.getElementById('od83-accent-select');
+    const font = document.getElementById('od83-font-select');
+    if (toggle) toggle.textContent = st.theme === 'dark' ? 'Tema Claro' : 'Tema Escuro';
+    if (accent) accent.value = st.accent || 'black';
+    if (font) font.value = st.font || 'impact';
+  }
+
+  function od83PositionPanel() {
+    const panel = od83EnsurePanel();
+    const btn = document.getElementById('od83-theme-btn');
+    if (!btn || panel.classList.contains('hidden')) return;
+    const rect = btn.getBoundingClientRect();
+    const width = Math.min(280, window.innerWidth - 24);
+    panel.style.width = width + 'px';
+    panel.style.left = Math.max(12, Math.min(window.innerWidth - width - 12, rect.right - width)) + 'px';
+    panel.style.top = Math.min(window.innerHeight - 20, rect.bottom + 10) + 'px';
+  }
+
+  function od83TogglePanel(force) {
+    const panel = od83EnsurePanel();
+    const open = typeof force === 'boolean' ? force : panel.classList.contains('hidden');
+    od83SyncPanel();
+    panel.classList.toggle('hidden', !open);
+    document.getElementById('od83-theme-btn')?.classList.toggle('active', open);
+    if (open) od83PositionPanel();
+  }
+
+  function od83EnsureDashboardControls() {
+    const shell = document.getElementById('od71-shell');
+    if (!shell) return;
+    shell.classList.add('od83-home-clean');
+
+    const logoWrap = shell.querySelector('.od71-logo');
+    if (logoWrap) {
+      logoWrap.classList.add('od82-logo-static', 'od83-logo-static');
+      logoWrap.removeAttribute('onclick');
+      logoWrap.removeAttribute('role');
+      logoWrap.removeAttribute('tabindex');
+      logoWrap.style.pointerEvents = 'none';
+      const logo = logoWrap.querySelector('img');
+      if (logo) logo.src = 'assets/logo-completa.png';
+    }
+
+    const userArea = shell.querySelector('.od71-user-area');
+    const account = document.getElementById('od71-account-btn');
+    if (userArea && account && !document.getElementById('od83-theme-btn')) {
+      const btn = document.createElement('button');
+      btn.id = 'od83-theme-btn';
+      btn.className = 'od71-icon-btn od83-theme-btn';
+      btn.type = 'button';
+      btn.title = 'Tema, cores e fonte';
+      btn.setAttribute('aria-label', 'Tema, cores e fonte');
+      btn.textContent = '⚙';
+      userArea.insertBefore(btn, account);
+    }
+
+    if (account && !account.querySelector('img')) {
+      account.innerHTML = `<img src="${escapeHtml(od83UserAvatarSrc())}" alt="Perfil" />`;
+    }
+
+    od83EnsurePanel();
+    od83SyncPanel();
+  }
+
+  document.addEventListener('click', event => {
+    const themeBtn = event.target.closest('#od83-theme-btn, #od71-settings-btn');
+    if (themeBtn) {
+      event.preventDefault();
+      event.stopPropagation();
+      od83TogglePanel();
+      return;
+    }
+
+    if (!event.target.closest('#' + PANEL_ID)) {
+      od83TogglePanel(false);
+    }
+
+    const themeToggle = event.target.closest('#od83-theme-toggle');
+    if (themeToggle) {
+      event.preventDefault();
+      od83SetSettings(st => { st.theme = st.theme === 'dark' ? 'light' : 'dark'; });
+      od83SyncPanel();
+      return;
+    }
+  }, true);
+
+  document.addEventListener('change', event => {
+    const accent = event.target.closest('#od83-accent-select');
+    if (accent) {
+      od83SetSettings(st => { st.accent = accent.value; });
+      od83SyncPanel();
+      return;
+    }
+    const font = event.target.closest('#od83-font-select');
+    if (font) {
+      od83SetSettings(st => { st.font = font.value; });
+      od83SyncPanel();
+      return;
+    }
+  }, true);
+
+  window.addEventListener('resize', od83PositionPanel);
+  window.addEventListener('scroll', od83PositionPanel, true);
+
+  const observer = new MutationObserver(() => od83EnsureDashboardControls());
+  observer.observe(document.documentElement, { childList: true, subtree: true });
+
+  const boot = () => {
+    od83EnsureDashboardControls();
+    setTimeout(od83EnsureDashboardControls, 100);
+    setTimeout(od83EnsureDashboardControls, 500);
+  };
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
