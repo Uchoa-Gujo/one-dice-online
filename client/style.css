@@ -4585,3 +4585,82 @@ body.sidebar-collapsed #sidebar-dock-btn.od62-app-sheet-btn { display: grid !imp
 .simple-inventory-card { position: relative; }
 .simple-inventory-card .mini-danger-btn { align-self: center; justify-self: end; }
 @media (max-width: 720px) { .group-drop-row { grid-template-columns: 1fr; } }
+
+
+/* =========================
+   V65 - estabilidade inventário/drop e Minhas Fichas compacto
+========================= */
+.group-drop-row {
+  grid-template-columns: minmax(0, 1fr) minmax(140px, 220px) auto auto !important;
+}
+.group-drop-row .danger-btn,
+.group-drop-row [data-delete-drop-item] {
+  min-width: 76px;
+  justify-self: end;
+}
+.simple-inventory-card {
+  padding-bottom: 72px !important;
+}
+.simple-inventory-card .mini-danger-btn,
+.simple-inventory-card [data-remove-simple-item] {
+  position: absolute !important;
+  right: 16px !important;
+  bottom: 28px !important;
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  display: grid !important;
+  place-items: center !important;
+  padding: 0 !important;
+}
+.account-character-list,
+#character-list {
+  gap: 10px !important;
+}
+.account-character-card,
+.character-pill.session-character {
+  min-height: unset !important;
+  padding: 12px !important;
+  overflow: hidden !important;
+}
+.account-character-card {
+  grid-template-columns: 54px minmax(0, 1fr) !important;
+  align-items: center !important;
+}
+.account-character-card img,
+.character-pill.session-character img,
+.character-pill.session-character .session-char-top img {
+  width: 54px !important;
+  height: 54px !important;
+  min-width: 54px !important;
+  border-radius: 12px !important;
+}
+.account-character-card strong,
+.character-pill.session-character strong,
+.character-pill.session-character .session-char-name {
+  font-size: .98rem !important;
+  line-height: 1.05 !important;
+  max-width: 100% !important;
+  overflow-wrap: anywhere !important;
+  word-break: normal !important;
+}
+.account-character-card span,
+.account-character-card small,
+.character-pill.session-character span,
+.character-pill.session-character small {
+  font-size: .78rem !important;
+  line-height: 1.15 !important;
+  overflow-wrap: anywhere !important;
+}
+.character-pill.session-character .session-char-badges {
+  gap: 4px !important;
+}
+.character-pill.session-character .session-char-badges span {
+  padding: 3px 6px !important;
+  font-size: .68rem !important;
+  max-width: 100% !important;
+}
+@media (max-width: 720px) {
+  .group-drop-row { grid-template-columns: 1fr !important; }
+  .group-drop-row .danger-btn, .group-drop-row [data-delete-drop-item] { justify-self: stretch; }
+}

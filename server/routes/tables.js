@@ -320,6 +320,34 @@ router.post('/:id/drops/:dropId/take', requireTableMember, async (req, res) => {
   res.json({ ok: true, item, to: updatedTo.rows[0], drops: savedDrops });
 });
 
+
+
+router.delete('/:id/drops/:dropId', requireTableMember, async (req, res) => {
+  const tableId = req.params.id;
+  const dropId = req.params.dropId;
+
+  const tableResult = await query('select settings from tables where id = $1', [tableId]);
+  if (!tableResult.rowCount) return res.status(404).json({ error: 'Mesa não encontrada.' });
+
+  const drops = normalizeDrops(tableResult.rows[0]?.settings || {});
+  const index = drops.findIndex(item => String(item.id) === String(dropId));
+  if (index < 0) return res.status(404).json({ error: 'Drop não encontrado.' });
+
+  const item = drops[index];
+  const isMaster = isMasterRole(req.tableMember.role);
+  if (!isMaster && item.fromCharacterId) {
+    const own = await query('select id from characters where id = $1 and owner_id = $2', [item.fromCharacterId, req.user.id]);
+    if (!own.rowCount) return res.status(403).json({ error: 'Apenas o mestre ou quem dropou pode excluir este item.' });
+  } else if (!isMaster && !item.fromCharacterId) {
+    return res.status(403).json({ error: 'Apenas o mestre pode excluir este item.' });
+  }
+
+  const [removed] = drops.splice(index, 1);
+  const savedDrops = await updateTableDrops(tableId, drops);
+  emitTable(req, tableId, 'inventory:updated', { reason: 'delete-drop', itemName: removed.name || 'Item', drops: savedDrops });
+  res.json({ ok: true, item: removed, drops: savedDrops });
+});
+
 router.post('/:id/transfer-item', requireTableMember, async (req, res) => {
   const tableId = req.params.id;
   const fromCharacterId = req.body.fromCharacterId || null;

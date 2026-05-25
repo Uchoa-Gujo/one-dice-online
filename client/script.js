@@ -4590,7 +4590,9 @@ setTimeout(od46SyncSidebarDockButton, 120);
 
   async function od63TransferItemOnline(itemId) {
     if (!od63HasOnlineTable()) return false;
+    clearTimeout(saveTimer);
     saveCurrentCharacter();
+    clearTimeout(saveTimer);
     const from = currentChar();
     if (!from) return false;
     const targets = v39CampaignCharacters().filter(c => c.id !== from.id);
@@ -4607,6 +4609,13 @@ setTimeout(od46SyncSidebarDockButton, 120);
       });
       if (data?.from) od42MergeById(STORAGE.characters, [od42CharacterFromRow(data.from)]);
       if (data?.to) od42MergeById(STORAGE.characters, [od42CharacterFromRow(data.to)]);
+      // Segurança contra autosave antigo: remove localmente também antes de qualquer re-render.
+      od42MergeById(STORAGE.characters, get(STORAGE.characters, []).map(c => {
+        if (String(c.id) !== String(from.id)) return c;
+        const inventoryItems = (Array.isArray(c.inventoryItems) ? c.inventoryItems : []).filter(item => String(item.id) !== String(itemId));
+        return { ...c, inventoryItems, weightCurrent: inventoryItems.reduce((sum, item) => sum + (Number(item.weight) || 0), 0) };
+      }));
+      clearTimeout(saveTimer);
       addChat(`${from.name} transferiu ${data?.item?.name || 'um item'} para ${target.name}.`, 'roll');
       await od63SoftReloadTableState(true);
       if (currentCharacterId === from.id || currentCharacterId === target.id) loadCharacter(currentCharacterId);
@@ -4897,10 +4906,12 @@ setTimeout(od46SyncSidebarDockButton, 120);
           <div><strong>${escapeHtml(item.name || 'Item')}</strong><small>Peso ${escapeHtml(item.weight || 0)} • Usos ${escapeHtml(item.uses || 0)}</small>${item.desc ? `<p>${escapeHtml(item.desc)}</p>` : ''}</div>
           <select data-take-drop-target="${escapeHtml(item.id)}">${options}</select>
           <button class="primary-btn small" data-take-drop-item="${escapeHtml(item.id)}" type="button">Pegar</button>
+          <button class="danger-btn small" data-delete-drop-item="${escapeHtml(item.id)}" type="button">Excluir</button>
         </div>`).join('') : '<div class="campaign-empty">Nenhum item dropado.</div>'}</div>`;
   }
 
   async function dropItemOnline(itemId) {
+    clearTimeout(saveTimer);
     const from = currentChar();
     if (!from || !currentCampaignId) return false;
     try {
@@ -4909,6 +4920,13 @@ setTimeout(od46SyncSidebarDockButton, 120);
         body: JSON.stringify({ fromCharacterId: from.id, itemId })
       });
       if (data?.from) od42MergeById(STORAGE.characters, [od42CharacterFromRow(data.from)]);
+      // Segurança contra autosave antigo: remove localmente também antes de qualquer re-render.
+      od42MergeById(STORAGE.characters, get(STORAGE.characters, []).map(c => {
+        if (String(c.id) !== String(from.id)) return c;
+        const inventoryItems = (Array.isArray(c.inventoryItems) ? c.inventoryItems : []).filter(item => String(item.id) !== String(itemId));
+        return { ...c, inventoryItems, weightCurrent: inventoryItems.reduce((sum, item) => sum + (Number(item.weight) || 0), 0) };
+      }));
+      clearTimeout(saveTimer);
       dropsCache = data?.drops || dropsCache;
       addChat(`${from.name} colocou ${data?.item?.name || 'um item'} no drop da mesa.`, 'roll');
       loadCharacter(from.id);
@@ -4941,13 +4959,36 @@ setTimeout(od46SyncSidebarDockButton, 120);
     }
   }
 
+  async function deleteDropOnline(dropId) {
+    if (!dropId || !currentCampaignId) return;
+    if (!confirm('Excluir este item dropado da mesa?')) return;
+    try {
+      const data = await od42Api(`/api/tables/${currentCampaignId}/drops/${dropId}`, { method: 'DELETE' });
+      dropsCache = data?.drops || [];
+      addChat(`Item removido do drop: ${data?.item?.name || 'Item'}.`, 'roll');
+      renderGroupDrops();
+      renderTableExperience();
+    } catch (error) {
+      alert(error.message || 'Erro ao excluir drop.');
+    }
+  }
+
   document.addEventListener('click', event => {
     const dropBtn = event.target.closest('[data-drop-simple-item]');
     if (dropBtn && currentCampaignId && od42Token && od42Token()) {
       event.preventDefault();
       event.stopImmediatePropagation();
+      clearTimeout(saveTimer);
       saveCurrentCharacter();
+      clearTimeout(saveTimer);
       dropItemOnline(dropBtn.dataset.dropSimpleItem);
+      return;
+    }
+    const deleteDropBtn = event.target.closest('[data-delete-drop-item]');
+    if (deleteDropBtn) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      deleteDropOnline(deleteDropBtn.dataset.deleteDropItem);
       return;
     }
     const takeBtn = event.target.closest('[data-take-drop-item]');
