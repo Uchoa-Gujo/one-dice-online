@@ -5,7 +5,6 @@ const fs = require('fs');
 const express = require('express');
 const http = require('http');
 const cors = require('cors');
-const cookieParser = require('cookie-parser');
 const { Server } = require('socket.io');
 const authRoutes = require('./routes/auth');
 const characterRoutes = require('./routes/characters');
@@ -28,12 +27,11 @@ const uploadDir = process.env.UPLOAD_DIR || path.join(rootDir, 'uploads');
 fs.mkdirSync(uploadDir, { recursive: true });
 
 app.use(cors());
-app.use(cookieParser());
 app.use(express.json({ limit: '15mb' }));
 app.use('/uploads', express.static(uploadDir));
 
 app.get('/api/health', (req, res) => {
-  res.json({ ok: true, app: 'One Dice Online', version: '0.75.0' });
+  res.json({ ok: true, app: 'One Dice Online', version: '0.81.0' });
 });
 
 app.use('/api/auth', authRoutes);

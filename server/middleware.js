@@ -10,7 +10,7 @@ function signToken(user) {
 
 function authRequired(req, res, next) {
   const header = req.headers.authorization || '';
-  const token = header.startsWith('Bearer ') ? header.slice(7) : req.cookies?.token;
+  const token = header.startsWith('Bearer ') ? header.slice(7) : null;
   if (!token) return res.status(401).json({ error: 'login_required' });
 
   try {

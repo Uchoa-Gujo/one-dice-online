@@ -1960,57 +1960,8 @@ saveCurrentCharacter = function() {
 };
 
 function v35InjectAccountTools() {
-  if (!byId("account-tools-panel")) {
-    const panel = document.createElement("div");
-    panel.id = "account-tools-panel";
-    panel.className = "manga-panel account-tools-panel";
-    panel.innerHTML = `
-      <div class="account-sheets-head">
-        <div><p class="eyebrow">Backup</p><h2>Importar / Exportar Fichas</h2><p class="subtitle">Use isso como segurança durante os testes locais.</p></div>
-        <div class="account-tools-actions">
-          <button id="export-sheets-btn" class="ghost-btn" type="button">Exportar Fichas</button>
-          <button id="toggle-import-sheets-btn" class="ghost-btn" type="button">Importar Fichas</button>
-        </div>
-      </div>
-      <div id="import-export-area" class="import-export-area">
-        <textarea id="import-export-text" placeholder="Cole aqui o JSON exportado"></textarea>
-        <div class="account-tools-actions"><button id="confirm-import-sheets-btn" class="primary-btn small" type="button">Confirmar Importação</button></div>
-      </div>`;
-    const sessionsList = document.querySelector(".sessions-list-panel");
-    sessionsList?.insertAdjacentElement("afterend", panel);
-  }
-}
-
-function v35ExportSheets() {
-  const mine = get(STORAGE.characters, []).filter(c => c.ownerId === currentUser?.id);
-  const payload = { version: "one-dice-v35", exportedAt: new Date().toISOString(), characters: mine };
-  const text = JSON.stringify(payload, null, 2);
-  const area = byId("import-export-area");
-  const out = byId("import-export-text");
-  if (area && out) {
-    area.classList.add("active");
-    out.value = text;
-    out.focus();
-    out.select();
-  }
-  navigator.clipboard?.writeText(text).catch(() => {});
-}
-
-function v35ImportSheets() {
-  const raw = byId("import-export-text")?.value?.trim();
-  if (!raw) return alert("Cole o JSON exportado antes de importar.");
-  let payload;
-  try { payload = JSON.parse(raw); } catch (_) { return alert("JSON inválido."); }
-  const incoming = Array.isArray(payload) ? payload : payload.characters;
-  if (!Array.isArray(incoming) || !incoming.length) return alert("Nenhuma ficha encontrada no arquivo.");
-  const chars = get(STORAGE.characters, []);
-  incoming.forEach(old => {
-    const copy = { ...old, id: uid("char"), ownerId: currentUser.id, name: `${old.name || "Ficha Importada"} (importada)` };
-    chars.push(copy);
-  });
-  set(STORAGE.characters, chars);
-  renderAccountCharacterMenu();
-  alert(`${incoming.length} ficha(s) importada(s).`);
+  // V81: painel legado de importação/exportação local removido.
+  // Mantido como no-op porque versões anteriores ainda chamam esta função.
 }
 
 document.addEventListener("click", event => {
@@ -2051,13 +2002,6 @@ document.addEventListener("click", event => {
     renderTableExperience();
     return;
   }
-  if (event.target.closest("#export-sheets-btn")) return v35ExportSheets();
-  if (event.target.closest("#toggle-import-sheets-btn")) {
-    byId("import-export-area")?.classList.toggle("active");
-    byId("import-export-text")?.focus();
-    return;
-  }
-  if (event.target.closest("#confirm-import-sheets-btn")) return v35ImportSheets();
 });
 
 document.addEventListener("change", event => {
@@ -5560,9 +5504,6 @@ function od66InventoryMutationUnlockSoon() {
         <nav class="od71-main-nav" aria-label="Menu principal">
           ${od71NavButton('characters', '♙', 'Personagens')}
           ${od71NavButton('campaigns', '⚔', 'Campanhas')}
-          ${od71NavButton('bestiary', '▣', 'Bestiário')}
-          ${od71NavButton('community', '☏', 'Comunidade')}
-          ${od71NavButton('map', '◇', 'Mapa 2D')}
         </nav>
         <div class="od71-user-area">
           <button class="od71-icon-btn" type="button" id="od71-settings-btn" title="Configurações">⚙</button>
@@ -5578,7 +5519,7 @@ function od66InventoryMutationUnlockSoon() {
     localStorage.setItem('od71_tab', od71Tab);
     od71RenderShell();
     try {
-      const route = od71Tab === 'home' ? '/mesas' : `/app?tab=${od71Tab}`;
+      const route = od71Tab === 'home' ? '/inicio' : (od71Tab === 'characters' ? '/personagens' : '/campanhas');
       history.replaceState({ od71Tab }, '', route);
     } catch (_) {}
   }
@@ -5588,9 +5529,7 @@ function od66InventoryMutationUnlockSoon() {
     if (!content) return;
     if (od71Tab === 'characters') return od71RenderCharacters(content);
     if (od71Tab === 'campaigns') return od71RenderCampaigns(content);
-    if (od71Tab === 'bestiary') return od71RenderPlaceholder(content, 'Bestiário', 'Área preparada para criaturas, inimigos e fichas de monstros.');
-    if (od71Tab === 'community') return od71RenderPlaceholder(content, 'Comunidade', 'Área futura para recados, notícias e avisos da mesa.');
-    if (od71Tab === 'map') return od71RenderPlaceholder(content, 'Mapa 2D', 'Área futura para mapa, posição de jogadores e cenas.');
+    if (!['home', 'characters', 'campaigns'].includes(od71Tab)) { od71Tab = 'home'; }
     return od71RenderHome(content);
   }
 
@@ -5793,6 +5732,10 @@ function od66InventoryMutationUnlockSoon() {
     const params = new URLSearchParams(location.search);
     const tab = params.get('tab');
     if (tab) od71Tab = tab;
+    else if (location.pathname.includes('personagens')) od71Tab = 'characters';
+    else if (location.pathname.includes('campanhas')) od71Tab = 'campaigns';
+    else if (location.pathname.includes('inicio')) od71Tab = 'home';
+    if (!['home','characters','campaigns'].includes(od71Tab)) od71Tab = 'home';
     od71RenderShell();
   };
 
@@ -5810,7 +5753,8 @@ function od66InventoryMutationUnlockSoon() {
 
   window.addEventListener('popstate', () => {
     const params = new URLSearchParams(location.search);
-    od71Tab = params.get('tab') || 'home';
+    od71Tab = params.get('tab') || (location.pathname.includes('personagens') ? 'characters' : location.pathname.includes('campanhas') ? 'campaigns' : 'home');
+    if (!['home','characters','campaigns'].includes(od71Tab)) od71Tab = 'home';
     if (document.getElementById('sessions-screen')?.classList.contains('active')) od71RenderShell();
   });
 })();
@@ -5819,73 +5763,18 @@ function od66InventoryMutationUnlockSoon() {
    V72-V74 - organização manual, OBS e micro-otimizações
 ========================= */
 (function od74QualityPatch(){
-  const OD74_SORTABLE = [
-    { list: 'spells-list', card: '.spell-card', type: 'spell' },
-    { list: 'abilities-list', card: '.ability-card', type: 'ability' },
-    { list: 'attacks-list', card: '.attack-card', type: 'attack' },
-    { list: 'simple-inventory-list', card: '.simple-inventory-card', type: 'item' }
-  ];
 
-  function od74Toast(text) {
-    try { console.info('[One Dice]', text); } catch (_) {}
-  }
 
-  function od74Renumber(list) {
-    [...list.children].forEach((el, index) => { if (el.dataset) el.dataset.index = index; });
-  }
 
-  function od74SaveAfterMove() {
-    try {
-      saveCurrentCharacter();
-      const char = currentChar();
-      if (typeof od42ScheduleCharacterSave === 'function' && char) od42ScheduleCharacterSave(char);
-    } catch (error) {
-      console.warn('Falha ao salvar ordem:', error);
-    }
-  }
 
-  function od74MoveCard(button, dir) {
-    const card = button.closest('.spell-card, .ability-card, .attack-card, .simple-inventory-card');
-    const list = card?.parentElement;
-    if (!card || !list) return;
-    const sibling = dir < 0 ? card.previousElementSibling : card.nextElementSibling;
-    if (!sibling) return;
-    if (dir < 0) list.insertBefore(card, sibling);
-    else list.insertBefore(sibling, card);
-    od74Renumber(list);
-    od74SaveAfterMove();
-  }
 
-  function od74EnhanceSortableList(listId) {
-    const list = document.getElementById(listId);
-    if (!list) return;
-    [...list.children].forEach((card, index) => {
-      card.classList.add('sortable-card');
-      card.dataset.index = index;
-      if (card.querySelector('.card-sort-tools')) return;
-      const tools = document.createElement('div');
-      tools.className = 'card-sort-tools';
-      tools.innerHTML = `
-        <button type="button" data-card-move="up" title="Mover para cima">↑</button>
-        <button type="button" data-card-move="down" title="Mover para baixo">↓</button>`;
-      card.appendChild(tools);
-    });
-  }
 
   function od74EnhanceAllSortable() {
-    OD74_SORTABLE.forEach(item => od74EnhanceSortableList(item.list));
+    // V81: ordenação antiga v74 removida; a ordenação oficial fica no patch v80.
     od74InjectObsButton();
   }
 
   document.addEventListener('click', event => {
-    const up = event.target.closest('[data-card-move="up"]');
-    const down = event.target.closest('[data-card-move="down"]');
-    if (up || down) {
-      event.preventDefault();
-      event.stopPropagation();
-      od74MoveCard(up || down, up ? -1 : 1);
-    }
-
     const obsBtn = event.target.closest('[data-copy-obs-link]');
     if (obsBtn) {
       event.preventDefault();
@@ -6153,42 +6042,10 @@ function od66InventoryMutationUnlockSoon() {
     });
   };
 
-  function od75ReorderArray(type, index, dir) {
-    const map = { spell: 'spells', ability: 'abilities', attack: 'attacks' };
-    const key = map[type];
-    if (!key) return;
-    updateChar(char => {
-      char[key] = Array.isArray(char[key]) ? char[key] : [];
-      const nextIndex = index + dir;
-      if (nextIndex < 0 || nextIndex >= char[key].length) return;
-      [char[key][index], char[key][nextIndex]] = [char[key][nextIndex], char[key][index]];
-    });
-    const c = currentChar();
-    if (!c) return;
-    if (type === 'spell') renderSpells(c);
-    if (type === 'ability') renderAbilities(c);
-    if (type === 'attack') renderAttacks(c);
-    od75AddOrderControls();
-  }
-
   function od75AddOrderControls() {
-    document.querySelectorAll('#spells-list .spell-card, #abilities-list .ability-card, #attacks-list .attack-card').forEach(card => {
-      if (card.querySelector('.od75-card-order')) return;
-      const index = Number(card.dataset.index || 0);
-      const type = card.classList.contains('spell-card') ? 'spell' : card.classList.contains('ability-card') ? 'ability' : 'attack';
-      const controls = document.createElement('div');
-      controls.className = 'od75-card-order';
-      controls.innerHTML = `<button type="button" data-od75-reorder="${type}" data-index="${index}" data-dir="-1">↑</button><button type="button" data-od75-reorder="${type}" data-index="${index}" data-dir="1">↓</button>`;
-      card.prepend(controls);
-    });
+    // V81: controles antigos v75 removidos; mantido como no-op para compatibilidade
+    // com chamadas antigas dentro deste patch de layout.
   }
-
-  const baseRenderSpells = renderSpells;
-  renderSpells = function(char) { baseRenderSpells(char); od75AddOrderControls(); };
-  const baseRenderAbilities = renderAbilities;
-  renderAbilities = function(char) { baseRenderAbilities(char); od75AddOrderControls(); };
-  const baseRenderAttacks = renderAttacks;
-  renderAttacks = function(char) { baseRenderAttacks(char); od75AddOrderControls(); };
 
   document.addEventListener('click', event => {
     const tab = event.target.closest('[data-od75-tab]');
@@ -6196,14 +6053,6 @@ function od66InventoryMutationUnlockSoon() {
       const next = tab.dataset.od75Tab;
       localStorage.setItem('od71_tab', next);
       setTimeout(() => { od75CleanPathForTab(next); od75EnhanceDashboardShell(); }, 0);
-    }
-
-    const reorder = event.target.closest('[data-od75-reorder]');
-    if (reorder) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      od75ReorderArray(reorder.dataset.od75Reorder, Number(reorder.dataset.index || 0), Number(reorder.dataset.dir || 0));
-      return;
     }
 
     if (event.target.closest('#sessions-menu-btn, .topbar-menu-toggle')) {
@@ -6240,3 +6089,419 @@ function od66InventoryMutationUnlockSoon() {
     if (currentChar()) { renderSkills(currentChar()); od75AddOrderControls(); }
   }, 250);
 })();
+
+
+/* =========================
+   V76 - Remoção real de abas extras da barra principal
+========================= */
+(function od76RemoveUnusedTabs(){
+  const allowed = new Set(['home', 'characters', 'campaigns']);
+  function cleanTabs() {
+    document.querySelectorAll('[data-od71-tab="bestiary"], [data-od71-tab="community"], [data-od71-tab="map"]').forEach(el => el.remove());
+    const params = new URLSearchParams(location.search);
+    const current = params.get('tab');
+    if (current && !allowed.has(current)) {
+      try { history.replaceState({ od71Tab: 'home' }, '', '/inicio'); } catch (_) {}
+    }
+  }
+  document.addEventListener('click', cleanTabs, true);
+  window.addEventListener('popstate', cleanTabs);
+  const mo = new MutationObserver(cleanTabs);
+  mo.observe(document.documentElement, { childList: true, subtree: true });
+  setTimeout(cleanTabs, 0);
+  setTimeout(cleanTabs, 250);
+})();
+
+/* =========================
+   V78 - Minhas Fichas flutuante sem aba fixa
+========================= */
+(function od78FloatingSheets(){
+  function applyFloatingSheets() {
+    const sidebar = document.getElementById('players-sidebar');
+    if (!sidebar) return;
+    sidebar.classList.add('od78-floating-sheets');
+    sidebar.setAttribute('role', 'dialog');
+    sidebar.setAttribute('aria-label', 'Minhas Fichas');
+
+    const close = sidebar.querySelector('.sidebar-toggle-btn');
+    if (close) {
+      close.textContent = '×';
+      close.title = 'Fechar Minhas Fichas';
+      close.setAttribute('aria-label', 'Fechar Minhas Fichas');
+    }
+
+    const dock = document.getElementById('sidebar-dock-btn');
+    if (dock) {
+      dock.classList.add('od62-app-sheet-btn');
+      dock.classList.remove('hidden');
+      dock.title = document.body.classList.contains('sidebar-collapsed') ? 'Abrir Minhas Fichas' : 'Fechar Minhas Fichas';
+      dock.setAttribute('aria-expanded', String(!document.body.classList.contains('sidebar-collapsed')));
+      dock.setAttribute('aria-controls', 'players-sidebar');
+    }
+  }
+
+  function setSheetsOpen(open) {
+    document.body.classList.toggle('sidebar-collapsed', !open);
+    try { localStorage.setItem('od_sidebar_collapsed', open ? '0' : '1'); } catch (_) {}
+    applyFloatingSheets();
+  }
+
+  document.addEventListener('click', (event) => {
+    const dock = event.target.closest('#sidebar-dock-btn');
+    if (dock) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const willOpen = document.body.classList.contains('sidebar-collapsed');
+      setSheetsOpen(willOpen);
+      return;
+    }
+
+    const close = event.target.closest('#players-sidebar .sidebar-toggle-btn');
+    if (close) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      setSheetsOpen(false);
+      return;
+    }
+  }, true);
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !document.body.classList.contains('sidebar-collapsed')) {
+      setSheetsOpen(false);
+    }
+  });
+
+  const previousRenderList = typeof renderCharacterList === 'function' ? renderCharacterList : null;
+  if (previousRenderList) {
+    renderCharacterList = function(...args) {
+      const result = previousRenderList.apply(this, args);
+      applyFloatingSheets();
+      return result;
+    };
+  }
+
+  const previousShowApp = typeof showApp === 'function' ? showApp : null;
+  if (previousShowApp) {
+    showApp = function(...args) {
+      const result = previousShowApp.apply(this, args);
+      setTimeout(applyFloatingSheets, 0);
+      return result;
+    };
+  }
+
+  setTimeout(() => {
+    setSheetsOpen(false);
+    applyFloatingSheets();
+  }, 80);
+})();
+
+
+/* =========================
+   V79 - Perícias em abas e cards compactos
+========================= */
+(function od79SkillsTabsPatch(){
+  window.od79SkillTab = window.od79SkillTab || 'trained';
+
+  function od79AttrShort(attrKey) {
+    const map = { forca: 'FOR', agilidade: 'AGI', vigor: 'VIG', intelecto: 'INT', presenca: 'PRE' };
+    return map[attrKey] || String(attrKey || '').slice(0, 3).toUpperCase();
+  }
+
+  function od79SkillCard(char, skillName, attrKey, trainedTab) {
+    char.skills = char.skills || {};
+    const skill = char.skills[skillName] || { trained: false, bonus: 0, disadvantage: false };
+    const modValue = attrMod(char.attrs?.[attrKey] ?? 1) - agilityOverweightPenalty(char, attrKey);
+    const totalValue = skillTotal(char, skillName, attrKey);
+    const checked = !!skill.trained;
+    return `
+      <article class="od79-skill-card ${checked ? 'is-trained' : 'is-untrained'}">
+        <label class="od79-skill-check" title="Marcar como treinada">
+          <input data-skill-trained="${escapeHtml(skillName)}" type="checkbox" ${checked ? 'checked' : ''}>
+          <span>${trainedTab ? 'Treinada' : 'Treinar'}</span>
+        </label>
+        <div class="od79-skill-main">
+          <strong class="od79-skill-name">${escapeHtml(skillName)}</strong>
+          <span class="od79-skill-attr">${escapeHtml(od79AttrShort(attrKey))}</span>
+        </div>
+        <div class="od79-skill-stats">
+          <span><small>Mod</small><b>${escapeHtml(formatMod(modValue))}</b></span>
+          <label><small>Bônus</small><input data-skill-bonus="${escapeHtml(skillName)}" type="number" value="${escapeHtml(skill.bonus || 0)}"></label>
+          <span><small>Total</small><b class="od79-skill-total">${escapeHtml(formatMod(totalValue))}</b></span>
+          <button class="primary-btn small roll-skill od79-skill-roll" data-skill="${escapeHtml(skillName)}" data-skill-attr="${escapeHtml(attrKey)}">D20</button>
+        </div>
+      </article>`;
+  }
+
+  function od79SetCompactButtonText() {
+    const btn = document.getElementById('compact-skills-toggle');
+    if (btn) btn.textContent = window.od79SkillTab === 'trained' ? 'Mostrar Não Treinadas' : 'Mostrar Treinadas';
+  }
+
+  const od79BaseApplySettings = typeof applySettings === 'function' ? applySettings : null;
+  if (od79BaseApplySettings) {
+    applySettings = function() {
+      od79BaseApplySettings();
+      od79SetCompactButtonText();
+    };
+  }
+
+  renderSkills = function(char) {
+    const wrap = document.getElementById('skills-wrap');
+    if (!wrap || !char) return;
+    char.skills = char.skills || {};
+    wrap.className = 'table-wrap od79-skills-wrap';
+
+    const trained = SKILLS.filter(([name]) => !!char.skills?.[name]?.trained);
+    const untrained = SKILLS.filter(([name]) => !char.skills?.[name]?.trained);
+    const active = window.od79SkillTab === 'untrained' ? 'untrained' : 'trained';
+    const rows = active === 'trained' ? trained : untrained;
+    const title = active === 'trained' ? 'Perícias Treinadas' : 'Perícias Não Treinadas';
+    const empty = active === 'trained' ? 'Nenhuma perícia treinada marcada.' : 'Todas as perícias estão treinadas.';
+
+    wrap.innerHTML = `
+      <div class="od79-skills-shell">
+        <div class="od79-skills-tabs" role="tablist" aria-label="Filtro de perícias">
+          <button type="button" class="od79-skill-tab ${active === 'trained' ? 'active' : ''}" data-od79-skill-tab="trained">Treinadas <span>${trained.length}</span></button>
+          <button type="button" class="od79-skill-tab ${active === 'untrained' ? 'active' : ''}" data-od79-skill-tab="untrained">Não Treinadas <span>${untrained.length}</span></button>
+        </div>
+        <section class="od79-skill-panel">
+          <header class="od79-skill-panel-head">
+            <h4>${title}</h4>
+            <small>Nome • atributo • mod • bônus • total • rolagem</small>
+          </header>
+          <div class="od79-skills-card-grid">
+            ${rows.length ? rows.map(([n,a]) => od79SkillCard(char, n, a, active === 'trained')).join('') : `<div class="od79-skill-empty">${empty}</div>`}
+          </div>
+        </section>
+      </div>`;
+
+    od79SetCompactButtonText();
+
+    wrap.querySelectorAll('[data-od79-skill-tab]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        window.od79SkillTab = btn.dataset.od79SkillTab === 'untrained' ? 'untrained' : 'trained';
+        renderSkills(currentChar() || char);
+      });
+    });
+
+    wrap.querySelectorAll('[data-skill-trained]').forEach(input => {
+      input.addEventListener('change', () => {
+        const name = input.dataset.skillTrained;
+        updateChar(saved => {
+          saved.skills = saved.skills || {};
+          saved.skills[name] = saved.skills[name] || { trained: false, bonus: 0, disadvantage: false };
+          saved.skills[name].trained = input.checked;
+        });
+        const updated = currentChar();
+        if (updated) { renderSkills(updated); updateDerivedStatsDisplay(updated); }
+      });
+    });
+
+    wrap.querySelectorAll('[data-skill-bonus]').forEach(input => {
+      input.addEventListener('change', () => {
+        const name = input.dataset.skillBonus;
+        updateChar(saved => {
+          saved.skills = saved.skills || {};
+          saved.skills[name] = saved.skills[name] || { trained: false, bonus: 0, disadvantage: false };
+          saved.skills[name].bonus = Number(input.value || 0);
+        });
+        const updated = currentChar();
+        if (updated) { renderSkills(updated); updateDerivedStatsDisplay(updated); }
+      });
+    });
+  };
+
+  document.addEventListener('click', event => {
+    const toggle = event.target.closest('#compact-skills-toggle');
+    if (!toggle) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    window.od79SkillTab = window.od79SkillTab === 'trained' ? 'untrained' : 'trained';
+    const char = currentChar();
+    if (char) renderSkills(char);
+  }, true);
+
+  setTimeout(() => {
+    od79SetCompactButtonText();
+    const char = currentChar && currentChar();
+    if (char) renderSkills(char);
+  }, 80);
+})();
+
+/* =========================
+   V80 - Correção isolada das setas de ordenação
+   - Remove controles duplicados da v74/v75
+   - Cria um único controle alinhado por card
+   - Afeta apenas ataques, magias, habilidades e inventário simples
+========================= */
+(function od80OrderControlsFix() {
+  const TARGETS = [
+    { listId: 'attacks-list', cardSelector: '.attack-card' },
+    { listId: 'spells-list', cardSelector: '.spell-card' },
+    { listId: 'abilities-list', cardSelector: '.ability-card' },
+    { listId: 'simple-inventory-list', cardSelector: '.simple-inventory-card' }
+  ];
+
+  let scheduled = false;
+
+  function scheduleEnhance() {
+    if (scheduled) return;
+    scheduled = true;
+    requestAnimationFrame(() => {
+      scheduled = false;
+      enhanceAll();
+    });
+  }
+
+  function getCards(list) {
+    if (!list) return [];
+    return [...list.children].filter(card =>
+      card.matches?.('.attack-card, .spell-card, .ability-card, .simple-inventory-card')
+    );
+  }
+
+  function renumberList(list) {
+    getCards(list).forEach((card, index) => {
+      if (card.dataset) {
+        card.dataset.index = String(index);
+        card.dataset.inventoryIndex = String(index);
+      }
+    });
+  }
+
+  function saveOrder() {
+    try {
+      if (typeof saveCurrentCharacter === 'function') {
+        saveCurrentCharacter();
+      }
+
+      const char = typeof currentChar === 'function' ? currentChar() : null;
+      if (typeof od42ScheduleCharacterSave === 'function' && char) {
+        od42ScheduleCharacterSave(char);
+      }
+    } catch (error) {
+      console.warn('[One Dice v80] Falha ao salvar ordem:', error);
+    }
+  }
+
+  function refreshButtons(list) {
+    const cards = getCards(list);
+
+    cards.forEach((card, index) => {
+      card.dataset.index = String(index);
+      card.dataset.inventoryIndex = String(index);
+
+      const up = card.querySelector(':scope > .od80-card-order .od80-order-up');
+      const down = card.querySelector(':scope > .od80-card-order .od80-order-down');
+
+      if (up) up.disabled = index === 0;
+      if (down) down.disabled = index === cards.length - 1;
+    });
+  }
+
+  function moveCard(button, direction) {
+    const card = button.closest('.attack-card, .spell-card, .ability-card, .simple-inventory-card');
+    const list = card?.parentElement;
+    if (!card || !list) return;
+
+    const sibling = direction < 0 ? card.previousElementSibling : card.nextElementSibling;
+    if (!sibling) return;
+
+    if (direction < 0) {
+      list.insertBefore(card, sibling);
+    } else {
+      list.insertBefore(sibling, card);
+    }
+
+    renumberList(list);
+    refreshButtons(list);
+    saveOrder();
+  }
+
+  function cleanOldControls(card) {
+    // V81: sem controles legados para remover; mantido para compatibilidade do fluxo v80.
+  }
+
+  function createControls() {
+    const controls = document.createElement('div');
+    controls.className = 'od80-card-order';
+    controls.setAttribute('aria-label', 'Ordenar card');
+    controls.innerHTML = `
+      <button type="button" class="od80-order-btn od80-order-up" data-od80-order="up" title="Mover para cima" aria-label="Mover para cima">▲</button>
+      <button type="button" class="od80-order-btn od80-order-down" data-od80-order="down" title="Mover para baixo" aria-label="Mover para baixo">▼</button>`;
+    return controls;
+  }
+
+  function enhanceCard(card) {
+    if (!card) return;
+
+    card.classList.add('od80-sortable-card');
+    cleanOldControls(card);
+
+    if (!card.querySelector(':scope > .od80-card-order')) {
+      card.appendChild(createControls());
+    }
+  }
+
+  function enhanceList(target) {
+    const list = document.getElementById(target.listId);
+    if (!list) return;
+
+    [...list.querySelectorAll(`:scope > ${target.cardSelector}`)].forEach(enhanceCard);
+    refreshButtons(list);
+  }
+
+  function enhanceAll() {
+    TARGETS.forEach(enhanceList);
+  }
+
+  function observeLists() {
+    TARGETS.forEach(target => {
+      const list = document.getElementById(target.listId);
+      if (!list || list.dataset.od80Observed === '1') return;
+
+      list.dataset.od80Observed = '1';
+      new MutationObserver(scheduleEnhance).observe(list, {
+        childList: true,
+        subtree: true
+      });
+    });
+  }
+
+  document.addEventListener('click', event => {
+    const button = event.target.closest('[data-od80-order]');
+    if (!button) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+
+    moveCard(button, button.dataset.od80Order === 'up' ? -1 : 1);
+  }, true);
+
+  function boot() {
+    observeLists();
+    enhanceAll();
+
+    setTimeout(() => {
+      observeLists();
+      enhanceAll();
+    }, 120);
+
+    setTimeout(() => {
+      observeLists();
+      enhanceAll();
+    }, 600);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+
+  window.od80FixOrderControls = enhanceAll;
+})();
+
+
+/* V81 - limpeza: removidos painéis legados de backup local e controles antigos v74/v75 de ordenação. */
