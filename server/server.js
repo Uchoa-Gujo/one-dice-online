@@ -31,7 +31,7 @@ app.use(express.json({ limit: '15mb' }));
 app.use('/uploads', express.static(uploadDir));
 
 app.get('/api/health', (req, res) => {
-  res.json({ ok: true, app: 'One Dice Online', version: '0.91.0' });
+  res.json({ ok: true, app: 'One Dice Online', version: '0.92.0' });
 });
 
 app.use('/api/auth', authRoutes);
@@ -39,6 +39,12 @@ app.use('/api/characters', characterRoutes);
 app.use('/api/tables', tableRoutes);
 
 app.get('/obs/personagem/:id', (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.sendFile(path.join(clientDir, 'obs.html'));
+});
+
+app.get('/obs.html', (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   res.sendFile(path.join(clientDir, 'obs.html'));
 });
 app.use(express.static(clientDir));

@@ -1,115 +1,19 @@
 (function(){
-  const params = new URLSearchParams(location.search);
-  const pathParts = location.pathname.split('/').filter(Boolean);
-  const characterId = pathParts[pathParts.length - 1];
-  const root = document.getElementById('obs-root');
-  const accent = params.get('cor') || params.get('color');
-  const scale = Number(params.get('escala') || params.get('scale'));
-
-  if (accent) document.documentElement.style.setProperty('--pv', accent);
-  if (Number.isFinite(scale) && scale > 0) document.documentElement.style.setProperty('--obs-scale', String(scale));
-
-  const els = {
-    card: document.getElementById('obs-card'),
-    portrait: document.getElementById('obs-portrait'),
-    pvText: document.getElementById('obs-pv-text'),
-    peText: document.getElementById('obs-pe-text'),
-    pvFill: document.getElementById('obs-pv-fill'),
-    peFill: document.getElementById('obs-pe-fill'),
-    pvOver: document.getElementById('obs-pv-over'),
-    peOver: document.getElementById('obs-pe-over')
-  };
-
-  let last = null;
-
-  function num(value, fallback = 0) {
-    const number = Number(value);
-    return Number.isFinite(number) ? number : fallback;
-  }
-
-  function clamp(value, min, max) {
-    return Math.max(min, Math.min(max, value));
-  }
-
-  function pct(current, max) {
-    if (max <= 0) return 0;
-    return clamp((current / max) * 100, 0, 100);
-  }
-
-  function overPct(current, max) {
-    if (max <= 0 || current <= max) return 0;
-    return clamp(((current - max) / max) * 100, 0, 100);
-  }
-
-  function formatValue(current, max) {
-    return `${current} / ${max}`;
-  }
-
-  function setBar(kind, current, max) {
-    const fill = kind === 'pv' ? els.pvFill : els.peFill;
-    const over = kind === 'pv' ? els.pvOver : els.peOver;
-    const text = kind === 'pv' ? els.pvText : els.peText;
-    const safeCurrent = num(current);
-    const safeMax = Math.max(1, num(max, 1));
-
-    fill.style.width = `${pct(Math.min(safeCurrent, safeMax), safeMax)}%`;
-    over.style.width = `${overPct(safeCurrent, safeMax)}%`;
-    text.textContent = formatValue(safeCurrent, safeMax);
-  }
-
-  function setPortrait(src) {
-    const nextSrc = src || '/assets/logo.jpg';
-    if (els.portrait.getAttribute('src') !== nextSrc) els.portrait.src = nextSrc;
-  }
-
-  function applyCharacter(character) {
-    if (!character) return;
-
-    const changed = last && (
-      last.pvCurrent !== character.pvCurrent ||
-      last.pvMax !== character.pvMax ||
-      last.peCurrent !== character.peCurrent ||
-      last.peMax !== character.peMax ||
-      last.portrait !== character.portrait
-    );
-
-    setPortrait(character.portrait);
-    setBar('pv', character.pvCurrent, character.pvMax);
-    setBar('pe', character.peCurrent, character.peMax);
-
-    if (changed) {
-      els.card.classList.remove('obs-pulse');
-      void els.card.offsetWidth;
-      els.card.classList.add('obs-pulse');
-    }
-
-    last = JSON.parse(JSON.stringify(character));
-  }
-
-  async function refresh() {
-    if (!characterId) return;
-
-    try {
-      const response = await fetch(`/api/characters/public/${encodeURIComponent(characterId)}`, { cache: 'no-store' });
-      if (!response.ok) throw new Error('Ficha não encontrada');
-      const data = await response.json();
-      applyCharacter(data.character);
-      root.classList.remove('obs-unavailable');
-    } catch (error) {
-      root.classList.add('obs-unavailable');
-      setBar('pv', 0, 1);
-      setBar('pe', 0, 1);
-      setPortrait('/assets/logo.jpg');
-    }
-  }
-
-  try {
-    document.documentElement.classList.add('obs-page');
-    document.body.classList.add('obs-page');
-    document.documentElement.style.background = 'transparent';
-    document.body.style.background = 'transparent';
-  } catch (_) {}
-
-  refresh();
-  setInterval(refresh, Math.max(600, Number(params.get('intervalo') || 1000)));
+  'use strict';
+  const $=(id)=>document.getElementById(id);
+  const root=$('obs-root'), portrait=$('obs-portrait'), pvFill=$('obs-pv-fill'), peFill=$('obs-pe-fill'), pvText=$('obs-pv-text'), peText=$('obs-pe-text');
+  const params=new URLSearchParams(window.location.search||'');
+  const setStatus=(status)=>{ if(root) root.dataset.status=status; };
+  const toNumber=(value,fallback)=>{ const n=Number(value); return Number.isFinite(n)?n:fallback; };
+  const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
+  const percent=(current,max)=>clamp((toNumber(current,0)/Math.max(1,toNumber(max,1)))*100,0,100);
+  function setImage(src){ const fallback='/assets/logo.jpg'; const next=typeof src==='string'&&src.trim()?src.trim():fallback; if(portrait&&portrait.getAttribute('src')!==next) portrait.setAttribute('src',next); }
+  function setBar(kind,current,max){ const fill=kind==='pv'?pvFill:peFill; const text=kind==='pv'?pvText:peText; const c=Math.max(0,toNumber(current,0)); const m=Math.max(1,toNumber(max,1)); if(fill) fill.style.width=`${percent(c,m)}%`; if(text) text.textContent=`${c} / ${m}`; }
+  function normalize(raw){ const character=raw&&raw.character?raw.character:raw; const data=character&&character.data?character.data:character; if(!data||typeof data!=='object') return null; return { portrait:data.portrait||data.avatar||data.image||data.imageUrl||data.foto||'', pvCurrent:data.pvCurrent??data.pvAtual??data.pv??data.hpCurrent??data.hpAtual??0, pvMax:data.pvMax??data.pvTotal??data.hpMax??data.hpTotal??1, peCurrent:data.peCurrent??data.peAtual??data.pe??data.energyCurrent??0, peMax:data.peMax??data.peTotal??data.energyMax??1 }; }
+  function getId(){ const q=params.get('character')||params.get('characterId')||params.get('id')||params.get('ficha'); if(q) return q.trim(); const parts=window.location.pathname.split('/').filter(Boolean).map(decodeURIComponent); const i=parts.indexOf('personagem'); return i>=0&&parts[i+1]?parts[i+1]:''; }
+  async function getCharacter(id){ const r=await fetch(`/api/characters/public/${encodeURIComponent(id)}`,{cache:'no-store',headers:{Accept:'application/json'}}); if(!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); }
+  let last='';
+  async function refresh(){ const id=getId(); if(!id){ setStatus('idle'); setImage(''); setBar('pv',0,1); setBar('pe',0,1); return; } try{ const payload=await getCharacter(id); const ch=normalize(payload); if(!ch) throw new Error('Ficha inválida'); const js=JSON.stringify(ch); if(js!==last){ setImage(ch.portrait); setBar('pv',ch.pvCurrent,ch.pvMax); setBar('pe',ch.peCurrent,ch.peMax); last=js; } setStatus('ready'); }catch(error){ console.warn('[One Dice OBS] Falha ao carregar ficha:',error); setStatus('error'); setImage(''); setBar('pv',0,1); setBar('pe',0,1); } }
+  function boot(){ try{ document.documentElement.style.background='transparent'; document.body.style.background='transparent'; document.documentElement.classList.add('one-dice-obs-page'); document.body.classList.add('one-dice-obs-page'); }catch(_){} const scale=toNumber(params.get('scale')||params.get('escala'),NaN); if(Number.isFinite(scale)&&scale>0) document.documentElement.style.setProperty('--od-scale',String(clamp(scale,.35,2))); refresh(); const interval=clamp(toNumber(params.get('intervalo')||params.get('interval')||1200,1200),700,10000); window.setInterval(refresh,interval); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true}); else boot();
 })();
