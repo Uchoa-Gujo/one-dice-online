@@ -7,23 +7,46 @@
   <link rel="stylesheet" href="/obs.css" />
 </head>
 <body>
-  <main id="obs-root" class="obs-root obs-card-mode">
-    <section class="obs-card" id="obs-card">
-      <img id="obs-portrait" class="obs-portrait" src="/assets/logo.jpg" alt="" />
-      <div class="obs-info">
-        <h1 id="obs-name">Carregando...</h1>
-        <p id="obs-meta">One Dice</p>
-        <div class="obs-bars">
-          <div class="obs-bar-wrap" data-kind="pv">
-            <div class="obs-bar-label"><span>PV</span><strong id="obs-pv-text">0/0</strong></div>
-            <div class="obs-bar"><span id="obs-pv-fill"></span><span id="obs-pv-over"></span></div>
+  <main id="obs-root" class="obs-root">
+    <section class="obs-frame" aria-hidden="true">
+      <span class="obs-corner obs-corner-tl"></span>
+      <span class="obs-corner obs-corner-tr"></span>
+      <span class="obs-corner obs-corner-bl"></span>
+      <span class="obs-corner obs-corner-br"></span>
+      <span class="obs-line obs-line-top"></span>
+      <span class="obs-line obs-line-right"></span>
+      <span class="obs-line obs-line-bottom"></span>
+      <span class="obs-line obs-line-left"></span>
+      <span class="obs-detail obs-detail-top"></span>
+      <span class="obs-detail obs-detail-left"></span>
+      <span class="obs-detail obs-detail-right"></span>
+      <span class="obs-detail obs-detail-bottom"></span>
+    </section>
+
+    <section class="obs-hud" id="obs-card" aria-label="Status do personagem">
+      <div class="obs-portrait-shell">
+        <div class="obs-portrait-cut"></div>
+        <img id="obs-portrait" class="obs-portrait" src="/assets/logo.jpg" alt="" />
+      </div>
+
+      <div class="obs-bars">
+        <div class="obs-bar-row obs-pv-row" data-kind="pv">
+          <div class="obs-tag"><span>PV</span><i>♥</i></div>
+          <div class="obs-track">
+            <span id="obs-pv-fill" class="obs-fill"></span>
+            <span id="obs-pv-over" class="obs-over"></span>
           </div>
-          <div class="obs-bar-wrap" data-kind="pe">
-            <div class="obs-bar-label"><span>PE</span><strong id="obs-pe-text">0/0</strong></div>
-            <div class="obs-bar"><span id="obs-pe-fill"></span><span id="obs-pe-over"></span></div>
-          </div>
+          <strong id="obs-pv-text" class="obs-value">0 / 0</strong>
         </div>
-        <div id="obs-condition" class="obs-condition">Normal</div>
+
+        <div class="obs-bar-row obs-pe-row" data-kind="pe">
+          <div class="obs-tag"><span>PE</span><i>◎</i></div>
+          <div class="obs-track">
+            <span id="obs-pe-fill" class="obs-fill"></span>
+            <span id="obs-pe-over" class="obs-over"></span>
+          </div>
+          <strong id="obs-pe-text" class="obs-value">0 / 0</strong>
+        </div>
       </div>
     </section>
   </main>

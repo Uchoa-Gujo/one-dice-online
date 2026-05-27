@@ -7355,3 +7355,121 @@ body.od84-session-home #sessions-screen.active .od71-shell {
     grid-template-columns: 1fr !important;
   }
 }
+
+
+/* =========================
+   V90 - Perfil real no menu e símbolo de ficha estável
+========================= */
+.od90-user-menu-card,
+.od75-account-menu-card.od90-user-menu-card {
+  display: grid !important;
+  grid-template-columns: 74px minmax(0, 1fr) !important;
+  gap: 16px !important;
+  align-items: center !important;
+  width: 100% !important;
+  max-width: 360px !important;
+  min-height: 96px !important;
+  padding: 14px !important;
+  border-radius: 20px !important;
+  border: 1px solid color-mix(in srgb, var(--accent, #c5222c) 52%, transparent) !important;
+  background:
+    radial-gradient(circle at 18% 24%, color-mix(in srgb, var(--accent, #c5222c) 18%, transparent), transparent 42%),
+    rgba(0,0,0,.30) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.04), 0 12px 30px rgba(0,0,0,.28) !important;
+  overflow: hidden !important;
+}
+
+.od90-user-menu-card .od90-user-avatar,
+.od75-account-menu-card.od90-user-menu-card img.od90-user-avatar {
+  width: 74px !important;
+  height: 74px !important;
+  min-width: 74px !important;
+  border-radius: 18px !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  border: 2px solid var(--accent, #c5222c) !important;
+  background: rgba(0,0,0,.45) !important;
+  box-shadow: 0 0 0 3px rgba(255,255,255,.04) !important;
+}
+
+.od90-user-info {
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+.od90-user-info strong {
+  display: block !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  color: #fff !important;
+  font-size: 1.12rem !important;
+  line-height: 1.15 !important;
+  letter-spacing: .04em !important;
+  text-shadow: 0 2px 0 rgba(0,0,0,.42) !important;
+}
+
+.od90-user-info small {
+  display: block !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  margin-top: 5px !important;
+  color: rgba(255,255,255,.76) !important;
+  font-family: Arial, sans-serif !important;
+  font-size: .84rem !important;
+  line-height: 1.15 !important;
+}
+
+/* O botão de ficha não usa mais imagem externa; isso evita o quadrado branco/ícone quebrado. */
+#sidebar-dock-btn.od90-sheet-stable-btn,
+#toggle-account-panel-btn.od90-sheet-stable-btn,
+.sessions-sheet-toggle.od90-sheet-stable-btn {
+  display: grid !important;
+  place-items: center !important;
+  overflow: hidden !important;
+}
+
+#sidebar-dock-btn.od90-sheet-stable-btn img,
+#sidebar-dock-btn.od90-sheet-stable-btn svg,
+#toggle-account-panel-btn.od90-sheet-stable-btn img,
+#toggle-account-panel-btn.od90-sheet-stable-btn svg,
+.sessions-sheet-toggle.od90-sheet-stable-btn img,
+.sessions-sheet-toggle.od90-sheet-stable-btn svg {
+  display: none !important;
+}
+
+.od90-sheet-icon {
+  position: relative !important;
+  display: block !important;
+  width: 25px !important;
+  height: 31px !important;
+  border: 3px solid rgba(255,255,255,.92) !important;
+  border-radius: 4px !important;
+  background: linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.04)) !important;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.18) !important;
+}
+
+.od90-sheet-icon::before,
+.od90-sheet-icon::after {
+  content: '' !important;
+  position: absolute !important;
+  left: 5px !important;
+  right: 5px !important;
+  height: 2px !important;
+  border-radius: 999px !important;
+  background: rgba(255,255,255,.82) !important;
+}
+
+.od90-sheet-icon::before { top: 9px !important; }
+.od90-sheet-icon::after { top: 17px !important; }
+
+#main-topbar.topbar.collapsed #sidebar-dock-btn.od90-sheet-stable-btn,
+#main-topbar.topbar.collapsed #toggle-account-panel-btn.od90-sheet-stable-btn {
+  left: 10px !important;
+  top: 84px !important;
+  width: 52px !important;
+  height: 52px !important;
+}

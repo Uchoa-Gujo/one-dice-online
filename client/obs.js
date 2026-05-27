@@ -2,73 +2,114 @@
   const params = new URLSearchParams(location.search);
   const pathParts = location.pathname.split('/').filter(Boolean);
   const characterId = pathParts[pathParts.length - 1];
-  const mode = params.get('modo') || params.get('mode') || 'card';
-  const accent = params.get('cor') || params.get('color');
   const root = document.getElementById('obs-root');
-  if (accent) document.documentElement.style.setProperty('--accent', accent);
-  root.className = `obs-root obs-${mode}-mode`;
+  const accent = params.get('cor') || params.get('color');
+  const scale = Number(params.get('escala') || params.get('scale'));
+
+  if (accent) document.documentElement.style.setProperty('--pv', accent);
+  if (Number.isFinite(scale) && scale > 0) document.documentElement.style.setProperty('--obs-scale', String(scale));
 
   const els = {
     card: document.getElementById('obs-card'),
     portrait: document.getElementById('obs-portrait'),
-    name: document.getElementById('obs-name'),
-    meta: document.getElementById('obs-meta'),
     pvText: document.getElementById('obs-pv-text'),
     peText: document.getElementById('obs-pe-text'),
     pvFill: document.getElementById('obs-pv-fill'),
     peFill: document.getElementById('obs-pe-fill'),
     pvOver: document.getElementById('obs-pv-over'),
-    peOver: document.getElementById('obs-pe-over'),
-    condition: document.getElementById('obs-condition')
+    peOver: document.getElementById('obs-pe-over')
   };
 
   let last = null;
-  function num(v, fallback = 0) { const n = Number(v); return Number.isFinite(n) ? n : fallback; }
-  function pct(cur, max) { return max > 0 ? Math.max(0, Math.min(100, (cur / max) * 100)) : 0; }
-  function overPct(cur, max) { return max > 0 && cur > max ? Math.min(100, ((cur - max) / max) * 100) : 0; }
-  function setBar(kind, cur, max) {
+
+  function num(value, fallback = 0) {
+    const number = Number(value);
+    return Number.isFinite(number) ? number : fallback;
+  }
+
+  function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+  }
+
+  function pct(current, max) {
+    if (max <= 0) return 0;
+    return clamp((current / max) * 100, 0, 100);
+  }
+
+  function overPct(current, max) {
+    if (max <= 0 || current <= max) return 0;
+    return clamp(((current - max) / max) * 100, 0, 100);
+  }
+
+  function formatValue(current, max) {
+    return `${current} / ${max}`;
+  }
+
+  function setBar(kind, current, max) {
     const fill = kind === 'pv' ? els.pvFill : els.peFill;
     const over = kind === 'pv' ? els.pvOver : els.peOver;
     const text = kind === 'pv' ? els.pvText : els.peText;
-    fill.style.width = `${pct(Math.min(cur, max), max)}%`;
-    over.style.width = `${overPct(cur, max)}%`;
-    text.textContent = `${cur}/${max}`;
+    const safeCurrent = num(current);
+    const safeMax = Math.max(1, num(max, 1));
+
+    fill.style.width = `${pct(Math.min(safeCurrent, safeMax), safeMax)}%`;
+    over.style.width = `${overPct(safeCurrent, safeMax)}%`;
+    text.textContent = formatValue(safeCurrent, safeMax);
   }
-  function applyCharacter(char) {
-    if (!char) return;
-    const changed = last && (last.pvCurrent !== char.pvCurrent || last.peCurrent !== char.peCurrent || last.condition !== char.condition);
-    els.name.textContent = char.name || 'Personagem';
-    els.meta.textContent = [char.race, char.className, char.level ? `Nv. ${char.level}` : ''].filter(Boolean).join(' • ') || 'One Dice';
-    els.portrait.src = char.portrait || '/assets/logo.jpg';
-    setBar('pv', num(char.pvCurrent), num(char.pvMax, 1));
-    setBar('pe', num(char.peCurrent), num(char.peMax, 1));
-    els.condition.textContent = char.condition || 'Normal';
+
+  function setPortrait(src) {
+    const nextSrc = src || '/assets/logo.jpg';
+    if (els.portrait.getAttribute('src') !== nextSrc) els.portrait.src = nextSrc;
+  }
+
+  function applyCharacter(character) {
+    if (!character) return;
+
+    const changed = last && (
+      last.pvCurrent !== character.pvCurrent ||
+      last.pvMax !== character.pvMax ||
+      last.peCurrent !== character.peCurrent ||
+      last.peMax !== character.peMax ||
+      last.portrait !== character.portrait
+    );
+
+    setPortrait(character.portrait);
+    setBar('pv', character.pvCurrent, character.pvMax);
+    setBar('pe', character.peCurrent, character.peMax);
+
     if (changed) {
       els.card.classList.remove('obs-pulse');
       void els.card.offsetWidth;
       els.card.classList.add('obs-pulse');
     }
-    last = JSON.parse(JSON.stringify(char));
+
+    last = JSON.parse(JSON.stringify(character));
   }
+
   async function refresh() {
+    if (!characterId) return;
+
     try {
-      const res = await fetch(`/api/characters/public/${encodeURIComponent(characterId)}`, { cache: 'no-store' });
-      if (!res.ok) throw new Error('Ficha não encontrada');
-      const data = await res.json();
+      const response = await fetch(`/api/characters/public/${encodeURIComponent(characterId)}`, { cache: 'no-store' });
+      if (!response.ok) throw new Error('Ficha não encontrada');
+      const data = await response.json();
       applyCharacter(data.character);
-    } catch (err) {
-      els.name.textContent = 'Overlay indisponível';
-      els.meta.textContent = err.message || 'Erro ao carregar ficha';
+      root.classList.remove('obs-unavailable');
+    } catch (error) {
+      root.classList.add('obs-unavailable');
+      setBar('pv', 0, 1);
+      setBar('pe', 0, 1);
+      setPortrait('/assets/logo.jpg');
     }
   }
+
+  try {
+    document.documentElement.classList.add('obs-page');
+    document.body.classList.add('obs-page');
+    document.documentElement.style.background = 'transparent';
+    document.body.style.background = 'transparent';
+  } catch (_) {}
+
   refresh();
   setInterval(refresh, Math.max(600, Number(params.get('intervalo') || 1000)));
 })();
-
-/* V75 - marca página como OBS transparente */
-try {
-  document.documentElement.classList.add('obs-page');
-  document.body.classList.add('obs-page');
-  document.documentElement.style.background = 'transparent';
-  document.body.style.background = 'transparent';
-} catch (_) {}

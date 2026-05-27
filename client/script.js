@@ -7465,3 +7465,125 @@ function od66InventoryMutationUnlockSoon() {
 
   new MutationObserver(od89Run).observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
 })();
+
+
+/* =========================
+   V90 - perfil do menu e ícone estável de fichas
+   - Troca o card do menu lateral para foto + nome real do usuário
+   - Remove marca One Dice do card de perfil do menu da ficha
+   - Substitui o ícone de ficha por desenho CSS estável, sem imagem que falha/intermitente
+========================= */
+(function od90ProfileAndSheetIconFix(){
+  function safe(value) {
+    return typeof escapeHtml === 'function' ? escapeHtml(String(value ?? '')) : String(value ?? '');
+  }
+
+  function userName() {
+    const user = typeof currentUser !== 'undefined' ? currentUser : null;
+    if (!user) return 'Usuário';
+    if (typeof userDisplayName === 'function') return userDisplayName(user) || user.realName || user.name || user.nick || 'Usuário';
+    return user.realName || user.name || user.nick || 'Usuário';
+  }
+
+  function userNick() {
+    const user = typeof currentUser !== 'undefined' ? currentUser : null;
+    return user?.nick ? '@' + user.nick : 'Conta One Dice';
+  }
+
+  function userAvatar() {
+    const user = typeof currentUser !== 'undefined' ? currentUser : null;
+    return user?.avatar || user?.avatarUrl || user?.photo || user?.photoUrl || user?.portrait || user?.image || user?.picture || 'assets/account-logo.png';
+  }
+
+  function currentRoleText() {
+    try {
+      if (typeof currentMembership === 'function') {
+        const member = currentMembership();
+        if (member?.role === 'mestre') return 'Mestre da mesa';
+        if (member?.role === 'jogador') return 'Jogador da mesa';
+      }
+      if (typeof currentCampaignId !== 'undefined' && currentCampaignId && typeof getMembers === 'function') {
+        const user = typeof currentUser !== 'undefined' ? currentUser : null;
+        const member = getMembers().find(m => m.campaignId === currentCampaignId && m.userId === user?.id);
+        if (member?.role === 'mestre') return 'Mestre da mesa';
+        if (member?.role === 'jogador') return 'Jogador da mesa';
+      }
+    } catch (_) {}
+    return 'Conta';
+  }
+
+  function renderMenuProfileCard() {
+    const panel = document.getElementById('sessions-menu-panel');
+    if (!panel) return;
+
+    let card = panel.querySelector('.od90-user-menu-card');
+    const old = panel.querySelector('.od75-account-menu-card');
+
+    if (!card) {
+      card = document.createElement('div');
+      card.className = 'od90-user-menu-card od75-account-menu-card';
+      if (old && old.parentElement) old.replaceWith(card);
+      else panel.prepend(card);
+    }
+
+    card.innerHTML = `
+      <img class="od90-user-avatar" src="${safe(userAvatar())}" alt="Foto do usuário" />
+      <div class="od90-user-info">
+        <strong>${safe(userName())}</strong>
+        <small>${safe(userNick())}</small>
+        <small>${safe(currentRoleText())}</small>
+      </div>`;
+  }
+
+  function stabilizeSheetButton(btn) {
+    if (!btn) return;
+    btn.classList.add('od90-sheet-stable-btn');
+    btn.title = 'Minhas Fichas';
+    btn.setAttribute('aria-label', 'Minhas Fichas');
+
+    const hasStable = btn.querySelector('.od90-sheet-icon');
+    if (!hasStable || btn.querySelector('img, svg')) {
+      btn.innerHTML = '<span class="od90-sheet-icon" aria-hidden="true"></span>';
+    }
+  }
+
+  function stabilizeSheetButtons() {
+    stabilizeSheetButton(document.getElementById('sidebar-dock-btn'));
+    stabilizeSheetButton(document.getElementById('toggle-account-panel-btn'));
+    stabilizeSheetButton(document.querySelector('.sessions-sheet-toggle'));
+  }
+
+  function run() {
+    renderMenuProfileCard();
+    stabilizeSheetButtons();
+  }
+
+  document.addEventListener('click', event => {
+    if (event.target.closest('#topbar-menu-toggle, .topbar-menu-toggle, #sessions-menu-btn')) {
+      setTimeout(run, 0);
+      setTimeout(run, 120);
+    }
+  }, true);
+
+  document.addEventListener('input', event => {
+    if (event.target.closest('#account-settings-name, #account-settings-real-name, #account-settings-nick, #account-settings-avatar-url')) {
+      setTimeout(run, 0);
+    }
+  }, true);
+
+  document.addEventListener('change', event => {
+    if (event.target.closest('#account-settings-avatar-file, #account-settings-avatar-url')) {
+      setTimeout(run, 80);
+      setTimeout(run, 350);
+    }
+  }, true);
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
+  else run();
+
+  setTimeout(run, 200);
+  setTimeout(run, 800);
+  setInterval(run, 1800);
+
+  new MutationObserver(run).observe(document.documentElement, { childList: true, subtree: true });
+})();
