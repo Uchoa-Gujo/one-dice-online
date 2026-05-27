@@ -5,45 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="Cache-Control" content="no-store" />
   <title>One Dice OBS</title>
-  <link rel="stylesheet" href="/obs.css?v=92" />
+  <link rel="stylesheet" href="/obs.css?v=94" />
 </head>
 <body>
   <main id="obs-root" class="obs-root" data-status="loading">
-    <section class="od-obs-frame" aria-hidden="true">
-      <div class="od-obs-border od-obs-border-top"></div>
-      <div class="od-obs-border od-obs-border-right"></div>
-      <div class="od-obs-border od-obs-border-bottom"></div>
-      <div class="od-obs-border od-obs-border-left"></div>
-      <div class="od-obs-corner od-obs-corner-tl"></div>
-      <div class="od-obs-corner od-obs-corner-tr"></div>
-      <div class="od-obs-corner od-obs-corner-bl"></div>
-      <div class="od-obs-corner od-obs-corner-br"></div>
-      <div class="od-obs-mark od-obs-mark-top"></div>
-      <div class="od-obs-mark od-obs-mark-left"></div>
-      <div class="od-obs-mark od-obs-mark-right"></div>
-      <div class="od-obs-mark od-obs-mark-bottom"></div>
-      <div class="od-obs-splatter od-obs-splatter-a"></div>
-      <div class="od-obs-splatter od-obs-splatter-b"></div>
-    </section>
-
-    <section id="obs-hud" class="od-obs-hud" aria-label="HUD do personagem">
-      <div class="od-obs-portrait-box">
-        <img id="obs-portrait" class="od-obs-portrait" src="/assets/logo.jpg" alt="" draggable="false" />
+    <section id="obs-hud" class="od-obs-hud" aria-label="Status do personagem">
+      <div class="od-obs-photo-wrap">
+        <img id="obs-portrait" class="od-obs-photo" src="/assets/logo.jpg" alt="" draggable="false" />
       </div>
-      <div class="od-obs-bars" aria-hidden="true">
-        <div class="od-obs-bar-row od-obs-pv-row">
-          <div class="od-obs-label"><strong>PV</strong><span>♥</span></div>
-          <div class="od-obs-track"><i id="obs-pv-fill" class="od-obs-fill"></i></div>
-          <div id="obs-pv-text" class="od-obs-value">0 / 0</div>
+
+      <div class="od-obs-info">
+        <div class="od-obs-bar od-obs-bar-pv" aria-label="Pontos de Vida">
+          <div id="obs-pv-fill" class="od-obs-fill"></div>
+          <div class="od-obs-text">
+            <span>PV</span>
+            <strong id="obs-pv-text">0 / 0</strong>
+          </div>
         </div>
-        <div class="od-obs-bar-row od-obs-pe-row">
-          <div class="od-obs-label"><strong>PE</strong><span>◎</span></div>
-          <div class="od-obs-track"><i id="obs-pe-fill" class="od-obs-fill"></i></div>
-          <div id="obs-pe-text" class="od-obs-value">0 / 0</div>
+
+        <div class="od-obs-bar od-obs-bar-pe" aria-label="Pontos de Esforço">
+          <div id="obs-pe-fill" class="od-obs-fill"></div>
+          <div class="od-obs-text">
+            <span>PE</span>
+            <strong id="obs-pe-text">0 / 0</strong>
+          </div>
         </div>
       </div>
     </section>
   </main>
-  <script src="/obs.js?v=92" defer></script>
+  <script src="/obs.js?v=94" defer></script>
 </body>
 </html>
