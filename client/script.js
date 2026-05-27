@@ -7526,13 +7526,21 @@ function od66InventoryMutationUnlockSoon() {
       else panel.prepend(card);
     }
 
-    card.innerHTML = `
-      <img class="od90-user-avatar" src="${safe(userAvatar())}" alt="Foto do usuário" />
+    const html = `
+      <img class="od90-user-avatar" src="${safe(userAvatar())}" alt="Foto do usuário" onerror="this.src='assets/account-logo.png'" />
       <div class="od90-user-info">
         <strong>${safe(userName())}</strong>
         <small>${safe(userNick())}</small>
         <small>${safe(currentRoleText())}</small>
       </div>`;
+
+    // V93: evita reescrever o mesmo HTML toda vez.
+    // A v90 fazia innerHTML em loop; combinado com MutationObserver no documento inteiro,
+    // isso podia travar o carregamento da tela após login.
+    if (card.dataset.od90ProfileHtml !== html) {
+      card.dataset.od90ProfileHtml = html;
+      card.innerHTML = html;
+    }
   }
 
   function stabilizeSheetButton(btn) {
@@ -7583,7 +7591,12 @@ function od66InventoryMutationUnlockSoon() {
 
   setTimeout(run, 200);
   setTimeout(run, 800);
-  setInterval(run, 1800);
 
-  new MutationObserver(run).observe(document.documentElement, { childList: true, subtree: true });
+  // V93: removido setInterval infinito e MutationObserver global da v90.
+  // O observer global observava document.documentElement e chamava run(),
+  // mas run() alterava o próprio DOM; isso criava um ciclo de mutações.
+  // Agora o patch só roda em eventos reais de abertura/edição do menu.
+  window.od90RefreshUserMenuCard = run;
 })();
+
+/* V93 - Estabilidade: removido loop de MutationObserver/setInterval do patch v90. */
