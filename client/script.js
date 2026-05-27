@@ -7600,3 +7600,183 @@ function od66InventoryMutationUnlockSoon() {
 })();
 
 /* V93 - Estabilidade: removido loop de MutationObserver/setInterval do patch v90. */
+
+/* =========================
+   V96 - Ícones OBS por estado de vida/transformação
+   - Adiciona campos no modal de retrato
+   - Salva ícones: normal, ferido, 0 PV e transformação
+   - Mantém fallback para o retrato principal
+========================= */
+(function od96ObsStateIcons() {
+  'use strict';
+
+  const $ = (id) => document.getElementById(id);
+  const safe = typeof escapeHtml === 'function'
+    ? escapeHtml
+    : (value) => String(value ?? '').replace(/[&<>\"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+
+  function current() {
+    try { return typeof currentChar === 'function' ? currentChar() : null; }
+    catch (_) { return null; }
+  }
+
+  function ensurePanel() {
+    const modal = $('portrait-modal');
+    const form = modal?.querySelector('.modal-card');
+    if (!form || form.querySelector('.od96-obs-icons-panel')) return;
+
+    const panel = document.createElement('section');
+    panel.className = 'od96-obs-icons-panel';
+    panel.innerHTML = `
+      <div class="od96-obs-icons-head">
+        <h3>Ícones do OBS</h3>
+        <p>Opcional. Se deixar vazio, o OBS usa o retrato principal.</p>
+      </div>
+      <label>Ícone 50% ou mais de PV
+        <input id="od96-icon-normal" type="url" placeholder="URL ou imagem em base64" />
+        <input class="od96-icon-file" data-target="od96-icon-normal" type="file" accept="image/*" />
+      </label>
+      <label>Ícone abaixo de 50% de PV
+        <input id="od96-icon-low" type="url" placeholder="URL ou imagem em base64" />
+        <input class="od96-icon-file" data-target="od96-icon-low" type="file" accept="image/*" />
+      </label>
+      <label>Ícone com 0 PV
+        <input id="od96-icon-zero" type="url" placeholder="URL ou imagem em base64" />
+        <input class="od96-icon-file" data-target="od96-icon-zero" type="file" accept="image/*" />
+      </label>
+      <label>Ícone de transformação
+        <input id="od96-icon-transformation" type="url" placeholder="URL ou imagem em base64" />
+        <input class="od96-icon-file" data-target="od96-icon-transformation" type="file" accept="image/*" />
+      </label>
+      <label class="od96-transform-toggle">
+        <input id="od96-transform-active" type="checkbox" />
+        <span>Usar ícone de transformação no OBS</span>
+      </label>
+    `;
+
+    const actions = form.querySelector('.modal-actions');
+    if (actions) actions.before(panel);
+    else form.appendChild(panel);
+  }
+
+  function fillPanel(char = current()) {
+    ensurePanel();
+    if (!char) return;
+    const icons = char.obsIcons || {};
+    const normal = $('od96-icon-normal');
+    const low = $('od96-icon-low');
+    const zero = $('od96-icon-zero');
+    const transformation = $('od96-icon-transformation');
+    const active = $('od96-transform-active');
+
+    if (normal) normal.value = icons.normal || char.obsIconNormal || '';
+    if (low) low.value = icons.low || char.obsIconLow || '';
+    if (zero) zero.value = icons.zero || char.obsIconZero || '';
+    if (transformation) transformation.value = icons.transformation || char.obsIconTransformation || '';
+    if (active) active.checked = Boolean(char.obsTransformationActive || char.activeTransformation || char.isTransformation);
+  }
+
+  function readPanel() {
+    ensurePanel();
+    return {
+      normal: $('od96-icon-normal')?.value?.trim() || '',
+      low: $('od96-icon-low')?.value?.trim() || '',
+      zero: $('od96-icon-zero')?.value?.trim() || '',
+      transformation: $('od96-icon-transformation')?.value?.trim() || '',
+      active: Boolean($('od96-transform-active')?.checked)
+    };
+  }
+
+  function applyPanelToChar(char) {
+    if (!char) return;
+    const values = readPanel();
+    char.obsIcons = {
+      normal: values.normal,
+      low: values.low,
+      zero: values.zero,
+      transformation: values.transformation
+    };
+    char.obsIconNormal = values.normal;
+    char.obsIconLow = values.low;
+    char.obsIconZero = values.zero;
+    char.obsIconTransformation = values.transformation;
+    char.obsTransformationActive = values.active;
+  }
+
+  function readFileToInput(input, file) {
+    if (!input || !file) return;
+    if (!file.type || !file.type.startsWith('image/')) return alert('Escolha um arquivo de imagem.');
+    const reader = new FileReader();
+    reader.onload = () => {
+      input.value = String(reader.result || '');
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    };
+    reader.readAsDataURL(file);
+  }
+
+  const baseLoadCharacter = typeof loadCharacter === 'function' ? loadCharacter : null;
+  if (baseLoadCharacter && !baseLoadCharacter.__od96Wrapped) {
+    const wrapped = function od96LoadCharacter(id) {
+      const result = baseLoadCharacter.apply(this, arguments);
+      setTimeout(() => fillPanel(current()), 0);
+      return result;
+    };
+    wrapped.__od96Wrapped = true;
+    try { window.loadCharacter = wrapped; } catch (_) {}
+    try { globalThis.loadCharacter = wrapped; } catch (_) {}
+  }
+
+  const baseSaveCurrentCharacter = typeof saveCurrentCharacter === 'function' ? saveCurrentCharacter : null;
+  if (baseSaveCurrentCharacter && !baseSaveCurrentCharacter.__od96Wrapped) {
+    const wrapped = function od96SaveCurrentCharacter() {
+      const result = baseSaveCurrentCharacter.apply(this, arguments);
+      try {
+        if (typeof updateChar === 'function') {
+          updateChar(char => applyPanelToChar(char));
+        }
+      } catch (_) {}
+      return result;
+    };
+    wrapped.__od96Wrapped = true;
+    try { window.saveCurrentCharacter = wrapped; } catch (_) {}
+    try { globalThis.saveCurrentCharacter = wrapped; } catch (_) {}
+  }
+
+  document.addEventListener('click', event => {
+    if (event.target.closest('#portrait-button')) {
+      setTimeout(() => fillPanel(current()), 0);
+    }
+  }, true);
+
+  document.addEventListener('change', event => {
+    const fileInput = event.target.closest('.od96-icon-file');
+    if (!fileInput) return;
+    const target = $(fileInput.dataset.target || '');
+    readFileToInput(target, fileInput.files?.[0]);
+    fileInput.value = '';
+  }, true);
+
+  document.addEventListener('input', event => {
+    if (!event.target.closest('.od96-obs-icons-panel')) return;
+    try {
+      if (typeof updateChar === 'function') updateChar(char => applyPanelToChar(char));
+      if (typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(current());
+    } catch (_) {}
+  }, true);
+
+  document.addEventListener('change', event => {
+    if (!event.target.closest('.od96-obs-icons-panel')) return;
+    try {
+      if (typeof updateChar === 'function') updateChar(char => applyPanelToChar(char));
+      if (typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(current());
+    } catch (_) {}
+  }, true);
+
+  function boot() {
+    ensurePanel();
+    fillPanel(current());
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
+  else boot();
+})();

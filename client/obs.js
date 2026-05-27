@@ -5,8 +5,10 @@
   const root = $('obs-root');
   const portrait = $('obs-portrait');
   const portraitBox = $('obs-portrait-box');
-  const pvFill = $('obs-pv-fill');
-  const peFill = $('obs-pe-fill');
+  const pvBase = $('obs-pv-base');
+  const pvExtra = $('obs-pv-extra');
+  const peBase = $('obs-pe-base');
+  const peExtra = $('obs-pe-extra');
   const pvText = $('obs-pv-text');
   const peText = $('obs-pe-text');
   const params = new URLSearchParams(window.location.search || '');
@@ -26,12 +28,6 @@
     return Math.max(min, Math.min(max, value));
   }
 
-  function calcPercent(current, max) {
-    const c = Math.max(0, toNumber(current, 0));
-    const m = Math.max(1, toNumber(max, 1));
-    return clamp((c / m) * 100, 0, 100);
-  }
-
   function safeImagePath(src) {
     const value = typeof src === 'string' ? src.trim() : '';
     if (!value) return fallbackImage;
@@ -46,32 +42,88 @@
     if (portrait.getAttribute('src') !== next) portrait.setAttribute('src', next);
   }
 
+  function imageStamp(character) {
+    return encodeURIComponent(
+      character && (
+        character.updatedAt ||
+        character.updated_at ||
+        character.portrait ||
+        character.obsPortraitMode ||
+        Date.now()
+      )
+    );
+  }
+
   function setImageFromCharacter(id, character) {
     if (!id) {
       setImage(character && character.portrait ? character.portrait : fallbackImage);
       return;
     }
 
-    // Usar uma rota própria evita falha no OBS quando a imagem da ficha é dataURL grande,
-    // URL relativa, ou quando o Browser Source não aceita o mesmo src usado no navegador.
-    const stamp = encodeURIComponent(character && character.updatedAt ? character.updatedAt : Date.now());
-    setImage(`/api/characters/public/${encodeURIComponent(id)}/portrait?v=95&t=${stamp}`);
+    const mode = character?.obsPortraitMode || '';
+    const stamp = imageStamp(character);
+    setImage(`/api/characters/public/${encodeURIComponent(id)}/portrait?v=96&t=${stamp}&mode=${encodeURIComponent(mode)}`);
   }
 
-  function setBar(kind, current, max) {
-    const fill = kind === 'pv' ? pvFill : peFill;
+  function setSegmentedBar(kind, current, max) {
+    const base = kind === 'pv' ? pvBase : peBase;
+    const extra = kind === 'pv' ? pvExtra : peExtra;
     const text = kind === 'pv' ? pvText : peText;
     const c = Math.max(0, Math.round(toNumber(current, 0)));
     const m = Math.max(1, Math.round(toNumber(max, 1)));
 
-    if (fill) fill.style.width = `${calcPercent(c, m)}%`;
     if (text) text.textContent = `${c} / ${m}`;
+
+    if (!base || !extra) return;
+
+    if (c <= m) {
+      const percent = clamp((c / m) * 100, 0, 100);
+      base.style.width = `${percent}%`;
+      extra.style.left = '100%';
+      extra.style.width = '0%';
+      return;
+    }
+
+    // Quando passa do máximo, a barra representa o total atual:
+    // parte normal = máximo, parte adicional = excedente.
+    const basePercent = clamp((m / c) * 100, 0, 100);
+    const extraPercent = clamp(100 - basePercent, 0, 100);
+    base.style.width = `${basePercent}%`;
+    extra.style.left = `${basePercent}%`;
+    extra.style.width = `${extraPercent}%`;
   }
 
   function normalize(raw) {
     const character = raw && raw.character ? raw.character : raw;
     const data = character && character.data ? character.data : character;
     if (!data || typeof data !== 'object') return null;
+
+    const obsIcons = data.obsIcons || data.obs_icons || {};
+    const pvCurrent =
+      data.pvCurrent ??
+      data.pvAtual ??
+      data.pv_current ??
+      data.pv ??
+      data.hpCurrent ??
+      data.hpAtual ??
+      data.hp ??
+      0;
+    const pvMax =
+      data.pvMax ??
+      data.pvTotal ??
+      data.pv_max ??
+      data.hpMax ??
+      data.hpTotal ??
+      data.hp_max ??
+      1;
+
+    let obsPortraitMode = 'normal';
+    const pv = toNumber(pvCurrent, 0);
+    const max = Math.max(1, toNumber(pvMax, 1));
+    const ratio = pv / max;
+    if (data.isTransformation || data.obsTransformationActive || data.activeTransformation) obsPortraitMode = 'transformation';
+    else if (pv <= 0) obsPortraitMode = 'zero';
+    else if (ratio < 0.5) obsPortraitMode = 'low';
 
     return {
       updatedAt: character.updatedAt || character.updated_at || data.updatedAt || data.updated_at || '',
@@ -83,23 +135,15 @@
         data.photo ||
         data.foto ||
         '',
-      pvCurrent:
-        data.pvCurrent ??
-        data.pvAtual ??
-        data.pv_current ??
-        data.pv ??
-        data.hpCurrent ??
-        data.hpAtual ??
-        data.hp ??
-        0,
-      pvMax:
-        data.pvMax ??
-        data.pvTotal ??
-        data.pv_max ??
-        data.hpMax ??
-        data.hpTotal ??
-        data.hp_max ??
-        1,
+      obsPortraitMode,
+      obsIcons: {
+        normal: obsIcons.normal || data.obsIconNormal || data.iconNormal || '',
+        low: obsIcons.low || data.obsIconLow || data.iconLow || '',
+        zero: obsIcons.zero || data.obsIconZero || data.iconZero || '',
+        transformation: obsIcons.transformation || data.obsIconTransformation || data.iconTransformation || ''
+      },
+      pvCurrent,
+      pvMax,
       peCurrent:
         data.peCurrent ??
         data.peAtual ??
@@ -157,8 +201,8 @@
     if (!id) {
       setStatus('idle');
       setImage(fallbackImage);
-      setBar('pv', 0, 1);
-      setBar('pe', 0, 1);
+      setSegmentedBar('pv', 0, 1);
+      setSegmentedBar('pe', 0, 1);
       return;
     }
 
@@ -170,8 +214,8 @@
       const nextPayload = JSON.stringify(character);
       if (nextPayload !== lastPayload) {
         setImageFromCharacter(id, character);
-        setBar('pv', character.pvCurrent, character.pvMax);
-        setBar('pe', character.peCurrent, character.peMax);
+        setSegmentedBar('pv', character.pvCurrent, character.pvMax);
+        setSegmentedBar('pe', character.peCurrent, character.peMax);
         lastPayload = nextPayload;
       }
 
@@ -180,8 +224,8 @@
       console.warn('[One Dice OBS] Falha ao carregar ficha:', error);
       setStatus('error');
       setImage(fallbackImage);
-      setBar('pv', 0, 1);
-      setBar('pe', 0, 1);
+      setSegmentedBar('pv', 0, 1);
+      setSegmentedBar('pe', 0, 1);
     }
   }
 
@@ -199,7 +243,7 @@
           portrait.setAttribute('src', fallbackImage);
         } else {
           portrait.classList.add('is-hidden');
-          if (portraitBox) portraitBox.style.background = 'rgba(10, 10, 10, 0.96)';
+          if (portraitBox) portraitBox.style.background = 'transparent';
         }
       });
     }

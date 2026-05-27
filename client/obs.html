@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="Cache-Control" content="no-store" />
   <title>One Dice OBS</title>
-  <link rel="stylesheet" href="/obs.css?v=95" />
+  <link rel="stylesheet" href="/obs.css?v=96" />
 </head>
 <body>
   <main id="obs-root" class="obs-root" data-status="loading">
@@ -16,7 +16,8 @@
 
       <div class="od-obs-bars">
         <div class="od-obs-bar od-obs-bar-pv" aria-label="Pontos de Vida">
-          <div id="obs-pv-fill" class="od-obs-fill"></div>
+          <div id="obs-pv-base" class="od-obs-fill od-obs-fill-base"></div>
+          <div id="obs-pv-extra" class="od-obs-fill od-obs-fill-extra"></div>
           <div class="od-obs-text">
             <span>PV</span>
             <strong id="obs-pv-text">0 / 0</strong>
@@ -24,7 +25,8 @@
         </div>
 
         <div class="od-obs-bar od-obs-bar-pe" aria-label="Pontos de Esforço">
-          <div id="obs-pe-fill" class="od-obs-fill"></div>
+          <div id="obs-pe-base" class="od-obs-fill od-obs-fill-base"></div>
+          <div id="obs-pe-extra" class="od-obs-fill od-obs-fill-extra"></div>
           <div class="od-obs-text">
             <span>PE</span>
             <strong id="obs-pe-text">0 / 0</strong>
@@ -33,6 +35,6 @@
       </div>
     </section>
   </main>
-  <script src="/obs.js?v=95" defer></script>
+  <script src="/obs.js?v=96" defer></script>
 </body>
 </html>
