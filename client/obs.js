@@ -4,6 +4,7 @@
   const $ = (id) => document.getElementById(id);
   const root = $('obs-root');
   const portrait = $('obs-portrait');
+  const portraitBox = $('obs-portrait-box');
   const pvFill = $('obs-pv-fill');
   const peFill = $('obs-pe-fill');
   const pvText = $('obs-pv-text');
@@ -31,10 +32,30 @@
     return clamp((c / m) * 100, 0, 100);
   }
 
+  function safeImagePath(src) {
+    const value = typeof src === 'string' ? src.trim() : '';
+    if (!value) return fallbackImage;
+    if (/^(data:image\/|https?:\/\/|\/)/i.test(value)) return value;
+    return `/${value.replace(/^\.\//, '').replace(/^\/+/, '')}`;
+  }
+
   function setImage(src) {
     if (!portrait) return;
-    const next = typeof src === 'string' && src.trim() ? src.trim() : fallbackImage;
+    const next = safeImagePath(src);
+    portrait.classList.remove('is-hidden');
     if (portrait.getAttribute('src') !== next) portrait.setAttribute('src', next);
+  }
+
+  function setImageFromCharacter(id, character) {
+    if (!id) {
+      setImage(character && character.portrait ? character.portrait : fallbackImage);
+      return;
+    }
+
+    // Usar uma rota própria evita falha no OBS quando a imagem da ficha é dataURL grande,
+    // URL relativa, ou quando o Browser Source não aceita o mesmo src usado no navegador.
+    const stamp = encodeURIComponent(character && character.updatedAt ? character.updatedAt : Date.now());
+    setImage(`/api/characters/public/${encodeURIComponent(id)}/portrait?v=95&t=${stamp}`);
   }
 
   function setBar(kind, current, max) {
@@ -53,6 +74,7 @@
     if (!data || typeof data !== 'object') return null;
 
     return {
+      updatedAt: character.updatedAt || character.updated_at || data.updatedAt || data.updated_at || '',
       portrait:
         data.portrait ||
         data.avatar ||
@@ -134,7 +156,7 @@
 
     if (!id) {
       setStatus('idle');
-      setImage('');
+      setImage(fallbackImage);
       setBar('pv', 0, 1);
       setBar('pe', 0, 1);
       return;
@@ -147,7 +169,7 @@
 
       const nextPayload = JSON.stringify(character);
       if (nextPayload !== lastPayload) {
-        setImage(character.portrait);
+        setImageFromCharacter(id, character);
         setBar('pv', character.pvCurrent, character.pvMax);
         setBar('pe', character.peCurrent, character.peMax);
         lastPayload = nextPayload;
@@ -157,7 +179,7 @@
     } catch (error) {
       console.warn('[One Dice OBS] Falha ao carregar ficha:', error);
       setStatus('error');
-      setImage('');
+      setImage(fallbackImage);
       setBar('pv', 0, 1);
       setBar('pe', 0, 1);
     }
@@ -170,6 +192,17 @@
       document.documentElement.classList.add('one-dice-obs-page');
       document.body.classList.add('one-dice-obs-page');
     } catch (_) {}
+
+    if (portrait) {
+      portrait.addEventListener('error', () => {
+        if (portrait.getAttribute('src') !== fallbackImage) {
+          portrait.setAttribute('src', fallbackImage);
+        } else {
+          portrait.classList.add('is-hidden');
+          if (portraitBox) portraitBox.style.background = 'rgba(10, 10, 10, 0.96)';
+        }
+      });
+    }
 
     const scale = toNumber(params.get('scale') || params.get('escala'), NaN);
     if (Number.isFinite(scale) && scale > 0) {

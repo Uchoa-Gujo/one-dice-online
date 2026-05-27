@@ -13,6 +13,48 @@ router.get('/public/:id', async (req, res) => {
   res.json({ character: { id: row.id, ownerId: row.owner_id, name: row.name, updatedAt: row.updated_at, ...data } });
 });
 
+
+function getPortraitSource(data) {
+  if (!data || typeof data !== 'object') return '';
+  return String(
+    data.portrait ||
+    data.avatar ||
+    data.image ||
+    data.imageUrl ||
+    data.photo ||
+    data.foto ||
+    ''
+  ).trim();
+}
+
+router.get('/public/:id/portrait', async (req, res) => {
+  const id = req.params.id;
+  const result = await query('select data from characters where id = $1', [id]);
+  const data = result.rows[0]?.data || {};
+  const src = getPortraitSource(data);
+
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+
+  if (!src) return res.redirect(302, '/assets/logo.jpg');
+
+  const dataMatch = src.match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/);
+  if (dataMatch) {
+    try {
+      const mime = dataMatch[1];
+      const buffer = Buffer.from(dataMatch[2], 'base64');
+      res.type(mime);
+      return res.send(buffer);
+    } catch (error) {
+      return res.redirect(302, '/assets/logo.jpg');
+    }
+  }
+
+  if (/^https?:\/\//i.test(src)) return res.redirect(302, src);
+
+  const safeLocal = `/${src.replace(/^\.\//, '').replace(/^\/+/, '')}`;
+  return res.redirect(302, safeLocal || '/assets/logo.jpg');
+});
+
 router.use(authRequired);
 
 router.get('/', async (req, res) => {
