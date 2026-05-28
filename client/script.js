@@ -13417,12 +13417,12 @@ function od66InventoryMutationUnlockSoon() {
 
 
 /* =========================
-   V127 - Atributos e imagens sem flicker
-   - Remove a dependência do patch V126 e usa um único render limpo.
-   - Botões de atributo gravam direto na ficha atual e disparam autosave.
-   - Imagens da ficha só trocam src quando o link muda, evitando piscadas.
+   V128 - Atributos estáveis sem sobreposição + imagens sem flicker
+   - Remove o render V127 e substitui por um render único.
+   - Layout simples em 3 linhas: cabeçalho, controles, rolagem.
+   - Botões funcionam e mantêm data-attr para o salvamento da ficha.
 ========================= */
-(function od127AttributesAndImageStability() {
+(function od128AttributesAndImageStability() {
   'use strict';
 
   const ATTRS = [
@@ -13434,7 +13434,6 @@ function od66InventoryMutationUnlockSoon() {
   ];
 
   let renderingAttrs = false;
-  let renderQueued = false;
 
   function $(id) { return document.getElementById(id); }
 
@@ -13490,7 +13489,7 @@ function od66InventoryMutationUnlockSoon() {
     return mod >= 0 ? `+${mod}` : String(mod);
   }
 
-  function rollLabel(model, value, bonus) {
+  function rollLabel(model, value) {
     return model === 'pool' ? `${value}D20` : 'D20';
   }
 
@@ -13510,7 +13509,11 @@ function od66InventoryMutationUnlockSoon() {
     try { if (typeof updateDerivedStatsDisplay === 'function') updateDerivedStatsDisplay(updated); } catch (_) {}
     try { if (typeof updateBars === 'function') updateBars(updated); } catch (_) {}
     try { if (typeof updateOverlay === 'function') updateOverlay(updated); } catch (_) {}
-    try { if (typeof renderSkills === 'function' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') renderSkills(updated); } catch (_) {}
+    try {
+      const active = document.activeElement;
+      const typing = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA');
+      if (!typing && typeof renderSkills === 'function') renderSkills(updated);
+    } catch (_) {}
     try { if (typeof queueSave === 'function') queueSave(); } catch (_) {}
     try { if (typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(updated); } catch (_) {}
     return updated;
@@ -13519,45 +13522,38 @@ function od66InventoryMutationUnlockSoon() {
   function renderAttributeCard(char, key, label) {
     const value = attrValue(char, key);
     const model = modelOf(char);
-    const bonus = attrBonusText(value);
     const isPool = model === 'pool';
+    const detail = isPool ? `${value}D` : attrBonusText(value);
 
     const card = document.createElement('div');
-    card.className = `od127-attr-card ${isPool ? 'is-pool' : 'is-d20'}`;
+    card.className = `od128-attr-card ${isPool ? 'is-pool' : 'is-d20'}`;
     card.dataset.attrKey = key;
     card.innerHTML = `
-      <div class="od127-attr-name">${esc(label)}</div>
-      <div class="od127-attr-bonus" title="${isPool ? 'Quantidade de dados' : 'Bônus'}">${isPool ? esc(value + 'D') : esc(bonus)}</div>
-      <div class="od127-attr-kind">${isPool ? 'Pool Dice' : 'D20'}</div>
-      <div class="od127-attr-controls">
-        <button type="button" class="od127-attr-step" data-od127-attr-step="${esc(key)}" data-dir="-1" aria-label="Diminuir ${esc(label)}">−</button>
-        <input class="od127-attr-value" data-attr="${esc(key)}" data-od127-attr="${esc(key)}" type="number" min="1" inputmode="numeric" value="${esc(value)}" aria-label="Valor total de ${esc(label)}">
-        <button type="button" class="od127-attr-step" data-od127-attr-step="${esc(key)}" data-dir="1" aria-label="Aumentar ${esc(label)}">+</button>
+      <div class="od128-attr-head">
+        <div class="od128-attr-title">${esc(label)}</div>
+        <div class="od128-attr-detail" title="${isPool ? 'Quantidade de dados' : 'Bônus'}">${esc(detail)}</div>
       </div>
-      <button type="button" class="primary-btn small roll-attr od127-attr-roll" data-roll-attr="${esc(key)}">${esc(rollLabel(model, value, bonus))}</button>
+      <div class="od128-attr-meta">${isPool ? 'Pool Dice' : 'D20'}</div>
+      <div class="od128-attr-controls">
+        <button type="button" class="od128-attr-step" data-od128-attr-step="${esc(key)}" data-dir="-1" aria-label="Diminuir ${esc(label)}">−</button>
+        <input class="od128-attr-value" data-attr="${esc(key)}" data-od128-attr="${esc(key)}" type="number" min="1" inputmode="numeric" value="${esc(value)}" aria-label="Valor total de ${esc(label)}">
+        <button type="button" class="od128-attr-step" data-od128-attr-step="${esc(key)}" data-dir="1" aria-label="Aumentar ${esc(label)}">+</button>
+      </div>
+      <button type="button" class="primary-btn small roll-attr od128-attr-roll" data-roll-attr="${esc(key)}">${esc(rollLabel(model, value))}</button>
     `;
     return card;
   }
 
-  function renderAttributesV127(char = charNow()) {
+  function renderAttributesV128(char = charNow()) {
     const grid = $('attributes-grid');
     if (!grid || !char || renderingAttrs) return;
     renderingAttrs = true;
     try {
-      grid.className = 'attributes-grid od127-attributes-grid';
+      grid.className = 'attributes-grid od128-attributes-grid';
       grid.replaceChildren(...ATTRS.map(([key, label]) => renderAttributeCard(char, key, label)));
     } finally {
       renderingAttrs = false;
     }
-  }
-
-  function scheduleAttributesRender() {
-    if (renderQueued) return;
-    renderQueued = true;
-    requestAnimationFrame(() => {
-      renderQueued = false;
-      renderAttributesV127();
-    });
   }
 
   function rollPool(label, value) {
@@ -13576,19 +13572,19 @@ function od66InventoryMutationUnlockSoon() {
   }
 
   document.addEventListener('click', event => {
-    const step = event.target.closest('[data-od127-attr-step]');
+    const step = event.target.closest('[data-od128-attr-step]');
     if (step) {
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
-      const key = step.dataset.od127AttrStep;
+      const key = step.dataset.od128AttrStep;
       const current = attrValue(charNow(), key);
       const updated = persistAttr(key, current + numeric(step.dataset.dir, 0));
-      if (updated) renderAttributesV127(updated);
+      if (updated) renderAttributesV128(updated);
       return;
     }
 
-    const roll = event.target.closest('.od127-attr-roll[data-roll-attr]');
+    const roll = event.target.closest('.od128-attr-roll[data-roll-attr]');
     if (roll) {
       event.preventDefault();
       event.stopPropagation();
@@ -13607,32 +13603,31 @@ function od66InventoryMutationUnlockSoon() {
   }, true);
 
   document.addEventListener('input', event => {
-    const input = event.target.closest('input.od127-attr-value[data-od127-attr]');
+    const input = event.target.closest('input.od128-attr-value[data-od128-attr]');
     if (!input) return;
     event.stopPropagation();
-    persistAttr(input.dataset.od127Attr, input.value);
+    persistAttr(input.dataset.od128Attr, input.value);
   }, true);
 
   document.addEventListener('change', event => {
-    const input = event.target.closest('input.od127-attr-value[data-od127-attr]');
+    const input = event.target.closest('input.od128-attr-value[data-od128-attr]');
     if (!input) return;
     event.preventDefault();
     event.stopPropagation();
     event.stopImmediatePropagation();
-    const updated = persistAttr(input.dataset.od127Attr, input.value);
-    if (updated) renderAttributesV127(updated);
+    const updated = persistAttr(input.dataset.od128Attr, input.value);
+    if (updated) renderAttributesV128(updated);
   }, true);
 
-  // Exporta o render limpo e apaga a influência dos renders antigos de atributo.
-  window.renderAttributes = renderAttributesV127;
-  window.renderAttributesV127 = renderAttributesV127;
-  window.renderAttributesV126 = renderAttributesV127;
-  window.renderAttributesV125 = renderAttributesV127;
-  window.renderAttributesV121 = renderAttributesV127;
-  window.renderAttributesV118 = renderAttributesV127;
-  window.renderAttributesV103 = renderAttributesV127;
+  window.renderAttributes = renderAttributesV128;
+  window.renderAttributesV128 = renderAttributesV128;
+  window.renderAttributesV127 = renderAttributesV128;
+  window.renderAttributesV126 = renderAttributesV128;
+  window.renderAttributesV125 = renderAttributesV128;
+  window.renderAttributesV121 = renderAttributesV128;
+  window.renderAttributesV118 = renderAttributesV128;
+  window.renderAttributesV103 = renderAttributesV128;
 
-  // Imagens estáveis: não troca src por fallback durante cliques/saves intermediários.
   const FALLBACKS = new Set(['', 'assets/logo.jpg', 'assets/logo.png', 'assets/favicon.png', 'assets/account-logo.png']);
 
   function cleanImage(value) {
@@ -13669,22 +13664,19 @@ function od66InventoryMutationUnlockSoon() {
   function setStableImage(img, src, fallback = 'assets/logo.jpg') {
     if (!img) return;
     const wanted = cleanImage(src) || fallback;
-    if (img.dataset.od127Src === wanted && img.getAttribute('src') === wanted) return;
-    if (!cleanImage(src) && img.dataset.od127HadReal === '1') return;
-    img.dataset.od127Src = wanted;
-    if (cleanImage(src)) img.dataset.od127HadReal = '1';
+    if (img.dataset.od128Src === wanted && img.getAttribute('src') === wanted) return;
+    if (!cleanImage(src) && img.dataset.od128HadReal === '1') return;
+    img.dataset.od128Src = wanted;
+    if (cleanImage(src)) img.dataset.od128HadReal = '1';
     img.decoding = 'async';
     img.loading = 'eager';
     img.onerror = () => {
       img.onerror = null;
-      if (img.dataset.od127HadReal === '1' && img.dataset.od127LastGood) {
-        img.src = img.dataset.od127LastGood;
-      } else {
-        img.src = fallback;
-      }
+      if (img.dataset.od128HadReal === '1' && img.dataset.od128LastGood) img.src = img.dataset.od128LastGood;
+      else img.src = fallback;
     };
     img.onload = () => {
-      if (cleanImage(wanted)) img.dataset.od127LastGood = wanted;
+      if (cleanImage(wanted)) img.dataset.od128LastGood = wanted;
     };
     img.src = wanted;
   }
@@ -13705,9 +13697,7 @@ function od66InventoryMutationUnlockSoon() {
 
   const oldUpdateOverlay = typeof updateOverlay === 'function' ? updateOverlay : null;
   window.updateOverlay = function updateOverlayStable(char) {
-    try {
-      if (oldUpdateOverlay) oldUpdateOverlay(char);
-    } catch (_) {}
+    try { if (oldUpdateOverlay) oldUpdateOverlay(char); } catch (_) {}
     refreshStableImages(char || charNow());
     const c = char || charNow();
     if (!c) return;
@@ -13724,7 +13714,7 @@ function od66InventoryMutationUnlockSoon() {
   };
 
   function boot() {
-    renderAttributesV127();
+    renderAttributesV128();
     refreshStableImages();
   }
 
