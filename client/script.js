@@ -13414,3 +13414,195 @@ function od66InventoryMutationUnlockSoon() {
   setTimeout(boot, 100);
   setTimeout(boot, 700);
 })();
+
+/* =========================
+   V126 - Correção real do painel de atributos
+   - Substitui qualquer render antigo que reapareça depois de salvar/trocar aba
+   - Layout fechado: nome, bônus/pool, valor total, botões -/+, rolagem
+   - Não deixa botões/inputs saírem do card
+========================= */
+(function od126AttributeLayoutHardFix() {
+  'use strict';
+
+  const ATTRS = [
+    ['forca', 'Força'],
+    ['agilidade', 'Agilidade'],
+    ['vigor', 'Vigor'],
+    ['intelecto', 'Intelecto'],
+    ['presenca', 'Presença']
+  ];
+
+  let rendering = false;
+  let scheduled = false;
+
+  function $(id) { return document.getElementById(id); }
+
+  function escape(value) {
+    try {
+      if (typeof escapeHtml === 'function') return escapeHtml(String(value ?? ''));
+    } catch (_) {}
+    const div = document.createElement('div');
+    div.textContent = String(value ?? '');
+    return div.innerHTML;
+  }
+
+  function number(value, fallback = 1) {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : fallback;
+  }
+
+  function currentCharacter() {
+    try { return typeof currentChar === 'function' ? currentChar() : null; }
+    catch (_) { return null; }
+  }
+
+  function modelOf(char) {
+    const raw = String(char?.systemModel || char?.sheetModel || char?.fichaModelo || char?.model || 'd20').toLowerCase();
+    return raw.includes('pool') ? 'pool' : 'd20';
+  }
+
+  function getAttrValue(char, key) {
+    char.attrs = char.attrs || {};
+    return Math.max(1, number(char.attrs[key], 1));
+  }
+
+  function calcBonus(value) {
+    const mod = typeof attrMod === 'function' ? attrMod(value) : value;
+    if (typeof formatMod === 'function') return formatMod(mod);
+    return mod >= 0 ? `+${mod}` : String(mod);
+  }
+
+  function rollText(model, value, bonus) {
+    return model === 'pool' ? `${Math.max(1, value)}D20` : (bonus === '+0' ? 'D20' : `D20 ${bonus}`);
+  }
+
+  function syncAfterChange(char) {
+    try { if (typeof syncDodge === 'function') syncDodge(char); } catch (_) {}
+    try { if (typeof updateDerivedStatsDisplay === 'function') updateDerivedStatsDisplay(char); } catch (_) {}
+    try { if (typeof renderSkills === 'function') renderSkills(char); } catch (_) {}
+    try { if (typeof updateBars === 'function') updateBars(char); } catch (_) {}
+    try { if (typeof updateOverlay === 'function') updateOverlay(char); } catch (_) {}
+    try { if (typeof queueSave === 'function') queueSave(); } catch (_) {}
+    try { if (typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(char); } catch (_) {}
+  }
+
+  function setAttribute(key, value, shouldRender = true) {
+    const char = currentCharacter();
+    if (!char) return;
+    char.attrs = char.attrs || {};
+    char.attrs[key] = Math.max(1, number(value, 1));
+    syncAfterChange(char);
+    if (shouldRender) scheduleRender();
+  }
+
+  function buildCard(char, key, label) {
+    const model = modelOf(char);
+    const value = getAttrValue(char, key);
+    const bonus = calcBonus(value);
+    const isPool = model === 'pool';
+    const card = document.createElement('div');
+    card.className = `od126-attr-card ${isPool ? 'is-pool' : 'is-d20'}`;
+    card.dataset.attrKey = key;
+    card.innerHTML = `
+      <div class="od126-attr-header">
+        <div class="od126-attr-name">${escape(label)}</div>
+        ${isPool
+          ? `<div class="od126-attr-badge is-pool">${escape(value)}D20</div>`
+          : `<div class="od126-attr-badge">${escape(bonus)}</div>`}
+      </div>
+
+      <div class="od126-attr-info">
+        <span>${isPool ? 'Pool Dice' : 'D20'}</span>
+        <span>Valor total</span>
+      </div>
+
+      <div class="od126-attr-main">
+        <button type="button" class="od126-step" data-od126-attr-step="${escape(key)}" data-dir="-1" aria-label="Diminuir ${escape(label)}">−</button>
+        <input class="od126-value" data-od126-attr="${escape(key)}" type="number" min="1" inputmode="numeric" value="${escape(value)}" aria-label="Valor total de ${escape(label)}">
+        <button type="button" class="od126-step" data-od126-attr-step="${escape(key)}" data-dir="1" aria-label="Aumentar ${escape(label)}">+</button>
+        <button type="button" class="primary-btn small roll-attr od126-roll" data-roll-attr="${escape(key)}">${escape(rollText(model, value, bonus))}</button>
+      </div>
+    `;
+    return card;
+  }
+
+  function renderAttributesV126(char = currentCharacter()) {
+    const grid = $('attributes-grid');
+    if (!grid || !char || rendering) return;
+
+    rendering = true;
+    try {
+      grid.className = 'attributes-grid od126-attributes-grid';
+      grid.replaceChildren(...ATTRS.map(([key, label]) => buildCard(char, key, label)));
+    } finally {
+      rendering = false;
+    }
+  }
+
+  function scheduleRender() {
+    if (scheduled) return;
+    scheduled = true;
+    requestAnimationFrame(() => {
+      scheduled = false;
+      renderAttributesV126();
+    });
+  }
+
+  function ensureRendered() {
+    const grid = $('attributes-grid');
+    if (!grid) return;
+    if (!grid.querySelector('.od126-attr-card')) scheduleRender();
+  }
+
+  if (typeof renderAttributes === 'function') renderAttributes = renderAttributesV126;
+  window.renderAttributes = renderAttributesV126;
+  window.renderAttributesV126 = renderAttributesV126;
+  window.renderAttributesV125 = renderAttributesV126;
+  window.renderAttributesV121 = renderAttributesV126;
+  window.renderAttributesV118 = renderAttributesV126;
+  window.renderAttributesV103 = renderAttributesV126;
+
+  document.addEventListener('click', event => {
+    const btn = event.target.closest('[data-od126-attr-step]');
+    if (!btn) return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    const char = currentCharacter();
+    const key = btn.dataset.od126AttrStep;
+    const current = getAttrValue(char || {}, key);
+    setAttribute(key, current + number(btn.dataset.dir, 0), true);
+  }, true);
+
+  document.addEventListener('input', event => {
+    const input = event.target.closest('input.od126-value[data-od126-attr]');
+    if (!input) return;
+    event.stopPropagation();
+    setAttribute(input.dataset.od126Attr, input.value, false);
+  }, true);
+
+  document.addEventListener('change', event => {
+    const input = event.target.closest('input.od126-value[data-od126-attr]');
+    if (!input) return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    setAttribute(input.dataset.od126Attr, input.value, true);
+  }, true);
+
+  function boot() {
+    renderAttributesV126();
+    const grid = $('attributes-grid');
+    if (grid && !grid.__od126Observer) {
+      grid.__od126Observer = true;
+      new MutationObserver(() => {
+        if (!rendering) ensureRendered();
+      }).observe(grid, { childList: true });
+    }
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
+  else boot();
+  setTimeout(boot, 100);
+  setTimeout(boot, 700);
+})();
