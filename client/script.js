@@ -13415,13 +13415,14 @@ function od66InventoryMutationUnlockSoon() {
   setTimeout(boot, 700);
 })();
 
+
 /* =========================
-   V126 - Correção real do painel de atributos
-   - Substitui qualquer render antigo que reapareça depois de salvar/trocar aba
-   - Layout fechado: nome, bônus/pool, valor total, botões -/+, rolagem
-   - Não deixa botões/inputs saírem do card
+   V127 - Atributos e imagens sem flicker
+   - Remove a dependência do patch V126 e usa um único render limpo.
+   - Botões de atributo gravam direto na ficha atual e disparam autosave.
+   - Imagens da ficha só trocam src quando o link muda, evitando piscadas.
 ========================= */
-(function od126AttributeLayoutHardFix() {
+(function od127AttributesAndImageStability() {
   'use strict';
 
   const ATTRS = [
@@ -13432,12 +13433,12 @@ function od66InventoryMutationUnlockSoon() {
     ['presenca', 'Presença']
   ];
 
-  let rendering = false;
-  let scheduled = false;
+  let renderingAttrs = false;
+  let renderQueued = false;
 
   function $(id) { return document.getElementById(id); }
 
-  function escape(value) {
+  function esc(value) {
     try {
       if (typeof escapeHtml === 'function') return escapeHtml(String(value ?? ''));
     } catch (_) {}
@@ -13446,14 +13447,32 @@ function od66InventoryMutationUnlockSoon() {
     return div.innerHTML;
   }
 
-  function number(value, fallback = 1) {
+  function numeric(value, fallback = 1) {
     const n = Number(value);
     return Number.isFinite(n) ? n : fallback;
   }
 
-  function currentCharacter() {
+  function charNow() {
     try { return typeof currentChar === 'function' ? currentChar() : null; }
     catch (_) { return null; }
+  }
+
+  function charIdNow() {
+    try { return currentCharacterId || charNow()?.id || null; }
+    catch (_) { return charNow()?.id || null; }
+  }
+
+  function readCharacters() {
+    try {
+      if (typeof get === 'function' && typeof STORAGE !== 'undefined') return get(STORAGE.characters, []);
+    } catch (_) {}
+    return [];
+  }
+
+  function writeCharacters(chars) {
+    try {
+      if (typeof set === 'function' && typeof STORAGE !== 'undefined') set(STORAGE.characters, chars);
+    } catch (_) {}
   }
 
   function modelOf(char) {
@@ -13461,148 +13480,255 @@ function od66InventoryMutationUnlockSoon() {
     return raw.includes('pool') ? 'pool' : 'd20';
   }
 
-  function getAttrValue(char, key) {
-    char.attrs = char.attrs || {};
-    return Math.max(1, number(char.attrs[key], 1));
+  function attrValue(char, key) {
+    return Math.max(1, numeric(char?.attrs?.[key], 1));
   }
 
-  function calcBonus(value) {
+  function attrBonusText(value) {
     const mod = typeof attrMod === 'function' ? attrMod(value) : value;
     if (typeof formatMod === 'function') return formatMod(mod);
     return mod >= 0 ? `+${mod}` : String(mod);
   }
 
-  function rollText(model, value, bonus) {
-    return model === 'pool' ? `${Math.max(1, value)}D20` : (bonus === '+0' ? 'D20' : `D20 ${bonus}`);
+  function rollLabel(model, value, bonus) {
+    return model === 'pool' ? `${value}D20` : 'D20';
   }
 
-  function syncAfterChange(char) {
-    try { if (typeof syncDodge === 'function') syncDodge(char); } catch (_) {}
-    try { if (typeof updateDerivedStatsDisplay === 'function') updateDerivedStatsDisplay(char); } catch (_) {}
-    try { if (typeof renderSkills === 'function') renderSkills(char); } catch (_) {}
-    try { if (typeof updateBars === 'function') updateBars(char); } catch (_) {}
-    try { if (typeof updateOverlay === 'function') updateOverlay(char); } catch (_) {}
+  function persistAttr(key, value) {
+    const id = charIdNow();
+    if (!id) return null;
+    const nextValue = Math.max(1, numeric(value, 1));
+    const chars = readCharacters();
+    const index = chars.findIndex(c => c && c.id === id);
+    if (index < 0) return null;
+
+    const updated = { ...chars[index], attrs: { ...(chars[index].attrs || {}), [key]: nextValue } };
+    chars[index] = updated;
+    writeCharacters(chars);
+
+    try { if (typeof syncDodge === 'function') syncDodge(updated); } catch (_) {}
+    try { if (typeof updateDerivedStatsDisplay === 'function') updateDerivedStatsDisplay(updated); } catch (_) {}
+    try { if (typeof updateBars === 'function') updateBars(updated); } catch (_) {}
+    try { if (typeof updateOverlay === 'function') updateOverlay(updated); } catch (_) {}
+    try { if (typeof renderSkills === 'function' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') renderSkills(updated); } catch (_) {}
     try { if (typeof queueSave === 'function') queueSave(); } catch (_) {}
-    try { if (typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(char); } catch (_) {}
+    try { if (typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(updated); } catch (_) {}
+    return updated;
   }
 
-  function setAttribute(key, value, shouldRender = true) {
-    const char = currentCharacter();
-    if (!char) return;
-    char.attrs = char.attrs || {};
-    char.attrs[key] = Math.max(1, number(value, 1));
-    syncAfterChange(char);
-    if (shouldRender) scheduleRender();
-  }
-
-  function buildCard(char, key, label) {
+  function renderAttributeCard(char, key, label) {
+    const value = attrValue(char, key);
     const model = modelOf(char);
-    const value = getAttrValue(char, key);
-    const bonus = calcBonus(value);
+    const bonus = attrBonusText(value);
     const isPool = model === 'pool';
+
     const card = document.createElement('div');
-    card.className = `od126-attr-card ${isPool ? 'is-pool' : 'is-d20'}`;
+    card.className = `od127-attr-card ${isPool ? 'is-pool' : 'is-d20'}`;
     card.dataset.attrKey = key;
     card.innerHTML = `
-      <div class="od126-attr-header">
-        <div class="od126-attr-name">${escape(label)}</div>
-        ${isPool
-          ? `<div class="od126-attr-badge is-pool">${escape(value)}D20</div>`
-          : `<div class="od126-attr-badge">${escape(bonus)}</div>`}
+      <div class="od127-attr-name">${esc(label)}</div>
+      <div class="od127-attr-bonus" title="${isPool ? 'Quantidade de dados' : 'Bônus'}">${isPool ? esc(value + 'D') : esc(bonus)}</div>
+      <div class="od127-attr-kind">${isPool ? 'Pool Dice' : 'D20'}</div>
+      <div class="od127-attr-controls">
+        <button type="button" class="od127-attr-step" data-od127-attr-step="${esc(key)}" data-dir="-1" aria-label="Diminuir ${esc(label)}">−</button>
+        <input class="od127-attr-value" data-attr="${esc(key)}" data-od127-attr="${esc(key)}" type="number" min="1" inputmode="numeric" value="${esc(value)}" aria-label="Valor total de ${esc(label)}">
+        <button type="button" class="od127-attr-step" data-od127-attr-step="${esc(key)}" data-dir="1" aria-label="Aumentar ${esc(label)}">+</button>
       </div>
-
-      <div class="od126-attr-info">
-        <span>${isPool ? 'Pool Dice' : 'D20'}</span>
-        <span>Valor total</span>
-      </div>
-
-      <div class="od126-attr-main">
-        <button type="button" class="od126-step" data-od126-attr-step="${escape(key)}" data-dir="-1" aria-label="Diminuir ${escape(label)}">−</button>
-        <input class="od126-value" data-od126-attr="${escape(key)}" type="number" min="1" inputmode="numeric" value="${escape(value)}" aria-label="Valor total de ${escape(label)}">
-        <button type="button" class="od126-step" data-od126-attr-step="${escape(key)}" data-dir="1" aria-label="Aumentar ${escape(label)}">+</button>
-        <button type="button" class="primary-btn small roll-attr od126-roll" data-roll-attr="${escape(key)}">${escape(rollText(model, value, bonus))}</button>
-      </div>
+      <button type="button" class="primary-btn small roll-attr od127-attr-roll" data-roll-attr="${esc(key)}">${esc(rollLabel(model, value, bonus))}</button>
     `;
     return card;
   }
 
-  function renderAttributesV126(char = currentCharacter()) {
+  function renderAttributesV127(char = charNow()) {
     const grid = $('attributes-grid');
-    if (!grid || !char || rendering) return;
-
-    rendering = true;
+    if (!grid || !char || renderingAttrs) return;
+    renderingAttrs = true;
     try {
-      grid.className = 'attributes-grid od126-attributes-grid';
-      grid.replaceChildren(...ATTRS.map(([key, label]) => buildCard(char, key, label)));
+      grid.className = 'attributes-grid od127-attributes-grid';
+      grid.replaceChildren(...ATTRS.map(([key, label]) => renderAttributeCard(char, key, label)));
     } finally {
-      rendering = false;
+      renderingAttrs = false;
     }
   }
 
-  function scheduleRender() {
-    if (scheduled) return;
-    scheduled = true;
+  function scheduleAttributesRender() {
+    if (renderQueued) return;
+    renderQueued = true;
     requestAnimationFrame(() => {
-      scheduled = false;
-      renderAttributesV126();
+      renderQueued = false;
+      renderAttributesV127();
     });
   }
 
-  function ensureRendered() {
-    const grid = $('attributes-grid');
-    if (!grid) return;
-    if (!grid.querySelector('.od126-attr-card')) scheduleRender();
+  function rollPool(label, value) {
+    const qty = Math.max(1, Math.min(20, Math.floor(value)));
+    const results = Array.from({ length: qty }, () => Math.floor(Math.random() * 20) + 1);
+    const best = Math.max(...results);
+    const text = `${label}: ${qty}D20 → [${results.join(', ')}] melhor = ${best}`;
+    const last = $('last-roll');
+    if (last) {
+      last.textContent = text;
+      last.classList.remove('shake');
+      void last.offsetWidth;
+      last.classList.add('shake');
+    }
+    try { if (typeof addChat === 'function') addChat(text, 'roll'); } catch (_) {}
   }
 
-  if (typeof renderAttributes === 'function') renderAttributes = renderAttributesV126;
-  window.renderAttributes = renderAttributesV126;
-  window.renderAttributesV126 = renderAttributesV126;
-  window.renderAttributesV125 = renderAttributesV126;
-  window.renderAttributesV121 = renderAttributesV126;
-  window.renderAttributesV118 = renderAttributesV126;
-  window.renderAttributesV103 = renderAttributesV126;
-
   document.addEventListener('click', event => {
-    const btn = event.target.closest('[data-od126-attr-step]');
-    if (!btn) return;
-    event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-    const char = currentCharacter();
-    const key = btn.dataset.od126AttrStep;
-    const current = getAttrValue(char || {}, key);
-    setAttribute(key, current + number(btn.dataset.dir, 0), true);
+    const step = event.target.closest('[data-od127-attr-step]');
+    if (step) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      const key = step.dataset.od127AttrStep;
+      const current = attrValue(charNow(), key);
+      const updated = persistAttr(key, current + numeric(step.dataset.dir, 0));
+      if (updated) renderAttributesV127(updated);
+      return;
+    }
+
+    const roll = event.target.closest('.od127-attr-roll[data-roll-attr]');
+    if (roll) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      const char = charNow();
+      if (!char) return;
+      const key = roll.dataset.rollAttr;
+      const label = ATTRS.find(([k]) => k === key)?.[1] || key;
+      const value = attrValue(char, key);
+      if (modelOf(char) === 'pool') rollPool(label, value);
+      else {
+        const mod = typeof attrMod === 'function' ? attrMod(value) : 0;
+        try { if (typeof doRoll === 'function') doRoll(`Teste de ${label}`, 1, 20, mod); } catch (_) {}
+      }
+    }
   }, true);
 
   document.addEventListener('input', event => {
-    const input = event.target.closest('input.od126-value[data-od126-attr]');
+    const input = event.target.closest('input.od127-attr-value[data-od127-attr]');
     if (!input) return;
     event.stopPropagation();
-    setAttribute(input.dataset.od126Attr, input.value, false);
+    persistAttr(input.dataset.od127Attr, input.value);
   }, true);
 
   document.addEventListener('change', event => {
-    const input = event.target.closest('input.od126-value[data-od126-attr]');
+    const input = event.target.closest('input.od127-attr-value[data-od127-attr]');
     if (!input) return;
     event.preventDefault();
     event.stopPropagation();
     event.stopImmediatePropagation();
-    setAttribute(input.dataset.od126Attr, input.value, true);
+    const updated = persistAttr(input.dataset.od127Attr, input.value);
+    if (updated) renderAttributesV127(updated);
   }, true);
 
+  // Exporta o render limpo e apaga a influência dos renders antigos de atributo.
+  window.renderAttributes = renderAttributesV127;
+  window.renderAttributesV127 = renderAttributesV127;
+  window.renderAttributesV126 = renderAttributesV127;
+  window.renderAttributesV125 = renderAttributesV127;
+  window.renderAttributesV121 = renderAttributesV127;
+  window.renderAttributesV118 = renderAttributesV127;
+  window.renderAttributesV103 = renderAttributesV127;
+
+  // Imagens estáveis: não troca src por fallback durante cliques/saves intermediários.
+  const FALLBACKS = new Set(['', 'assets/logo.jpg', 'assets/logo.png', 'assets/favicon.png', 'assets/account-logo.png']);
+
+  function cleanImage(value) {
+    const src = String(value || '').trim();
+    if (!src || FALLBACKS.has(src)) return '';
+    return src;
+  }
+
+  function activeTransformationPortrait(char) {
+    const forms = Array.isArray(char?.transformations) ? char.transformations : [];
+    const activeId = char?.activeTransformationId || char?.activeTransformation || '';
+    const form = forms.find(f => f && (f.id === activeId || f.name === activeId || f.active));
+    return cleanImage(form?.portrait || '');
+  }
+
+  function normalPortrait(char) {
+    return cleanImage(char?.portrait || char?.image || char?.photo || char?.avatar || char?.retrato || '');
+  }
+
+  function portraitForState(char) {
+    if (!char) return '';
+    const transformed = activeTransformationPortrait(char);
+    if (transformed) return transformed;
+
+    const pv = Number(char.pvCurrent ?? char.pv ?? 1);
+    const max = Math.max(1, Number(char.pvMax ?? char.pvTotal ?? 1));
+    const icons = char.obsIcons || {};
+    if (pv < 0) return '';
+    if (pv === 0) return cleanImage(icons.zero || char.portraitZero || char.obsIconZero || '') || normalPortrait(char);
+    if (pv / max < 0.5) return cleanImage(icons.low || char.portraitLow || char.obsIconLow || '') || normalPortrait(char);
+    return normalPortrait(char);
+  }
+
+  function setStableImage(img, src, fallback = 'assets/logo.jpg') {
+    if (!img) return;
+    const wanted = cleanImage(src) || fallback;
+    if (img.dataset.od127Src === wanted && img.getAttribute('src') === wanted) return;
+    if (!cleanImage(src) && img.dataset.od127HadReal === '1') return;
+    img.dataset.od127Src = wanted;
+    if (cleanImage(src)) img.dataset.od127HadReal = '1';
+    img.decoding = 'async';
+    img.loading = 'eager';
+    img.onerror = () => {
+      img.onerror = null;
+      if (img.dataset.od127HadReal === '1' && img.dataset.od127LastGood) {
+        img.src = img.dataset.od127LastGood;
+      } else {
+        img.src = fallback;
+      }
+    };
+    img.onload = () => {
+      if (cleanImage(wanted)) img.dataset.od127LastGood = wanted;
+    };
+    img.src = wanted;
+  }
+
+  function refreshStableImages(char = charNow()) {
+    if (!char) return;
+    const main = portraitForState(char);
+    const normal = normalPortrait(char) || main;
+    setStableImage($('char-portrait-preview'), main);
+    setStableImage($('overlay-portrait'), normal);
+    const hidden = $('portrait-url');
+    if (hidden && normal && hidden.value !== normal) hidden.value = normal;
+  }
+
+  window.renderPortrait = function renderPortraitStable(char) {
+    refreshStableImages(char || charNow());
+  };
+
+  const oldUpdateOverlay = typeof updateOverlay === 'function' ? updateOverlay : null;
+  window.updateOverlay = function updateOverlayStable(char) {
+    try {
+      if (oldUpdateOverlay) oldUpdateOverlay(char);
+    } catch (_) {}
+    refreshStableImages(char || charNow());
+    const c = char || charNow();
+    if (!c) return;
+    const name = $('overlay-name');
+    if (name) name.textContent = c.name || '';
+    const pv = $('overlay-pv');
+    const pe = $('overlay-pe');
+    if (pv) pv.style.width = `${Math.max(0, Math.min(100, (Number(c.pvCurrent || 0) / Math.max(1, Number(c.pvMax || 1))) * 100))}%`;
+    if (pe) pe.style.width = `${Math.max(0, Math.min(100, (Number(c.peCurrent || 0) / Math.max(1, Number(c.peMax || 1))) * 100))}%`;
+    const pvText = $('overlay-pv-text');
+    const peText = $('overlay-pe-text');
+    if (pvText) pvText.textContent = `${c.pvCurrent ?? 0}/${c.pvMax ?? 0}`;
+    if (peText) peText.textContent = `${c.peCurrent ?? 0}/${c.peMax ?? 0}`;
+  };
+
   function boot() {
-    renderAttributesV126();
-    const grid = $('attributes-grid');
-    if (grid && !grid.__od126Observer) {
-      grid.__od126Observer = true;
-      new MutationObserver(() => {
-        if (!rendering) ensureRendered();
-      }).observe(grid, { childList: true });
-    }
+    renderAttributesV127();
+    refreshStableImages();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
   else boot();
-  setTimeout(boot, 100);
-  setTimeout(boot, 700);
+  setTimeout(boot, 150);
 })();
