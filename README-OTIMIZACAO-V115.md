@@ -9,7 +9,6 @@ Esta versão é um update de manutenção geral em cima da v114.
 - Headers de cache organizados para HTML/JS/CSS e assets.
 - Índices adicionais no banco para melhorar busca de fichas, membros e mensagens.
 - Logs de requisição opcionais com `LOG_REQUESTS=true`.
-- Substituição do polling constante da discussão por atualização via MutationObserver.
 - Polling de mensagens/drops reduzido de 5s para 12s.
 - Microanimações otimizadas com respeito a `prefers-reduced-motion`.
 - Sons leves de interface com botão de ligar/desligar no menu da engrenagem.
