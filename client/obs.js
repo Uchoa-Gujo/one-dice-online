@@ -11,6 +11,7 @@
   const peExtra = $('obs-pe-extra');
   const pvText = $('obs-pv-text');
   const peText = $('obs-pe-text');
+  const conditionBox = $('obs-conditions');
   const params = new URLSearchParams(window.location.search || '');
 
   const fallbackImage = '/assets/logo.jpg';
@@ -110,6 +111,90 @@
     extra.style.width = `${extraPercent}%`;
   }
 
+
+
+
+  const CONDITION_META = {
+    'fascinado': ['Fascinado', 'mental'],
+    'fatigado': ['Fatigado', 'fisico'],
+    'fraco': ['Fraco', 'fisico'],
+    'frustrado': ['Frustrado', 'mental'],
+    'imunidade': ['Imunidade', 'azul'],
+    'imovel': ['Imóvel', 'controle'],
+    'inconsciente': ['Inconsciente', 'cinza'],
+    'indefeso': ['Indefeso', 'cinza'],
+    'lento': ['Lento', 'controle'],
+    'machucado': ['Machucado', 'dano'],
+    'morrendo': ['Morrendo', 'dano'],
+    'ofuscado': ['Ofuscado', 'controle'],
+    'paralisado': ['Paralisado', 'controle'],
+    'pasmo': ['Pasmo', 'mental'],
+    'petrificado': ['Petrificado', 'cinza'],
+    'sangrando': ['Sangrando', 'dano'],
+    'surdo': ['Surdo', 'controle'],
+    'surpreendido': ['Surpreendido', 'mental'],
+    'vulneravel': ['Vulnerável', 'dano'],
+    'agarrado': ['Agarrado', 'controle'],
+    'cego': ['Cego', 'controle'],
+    'confuso': ['Confuso', 'mental'],
+    'envenenado': ['Envenenado', 'veneno'],
+    'terreno-dificil': ['Terreno Difícil', 'terreno']
+  };
+
+  function slugCondition(value) {
+    return String(value || '')
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  }
+
+  function escapeHtml(value) {
+    return String(value ?? '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;');
+  }
+
+  function normalizeConditions(data) {
+    const out = [];
+    const push = (value) => {
+      if (!value) return;
+      const raw = String(value).trim();
+      if (!raw || /^normal$/i.test(raw)) return;
+      const slug = CONDITION_META[raw] ? raw : slugCondition(raw);
+      const id = CONDITION_META[slug] ? slug : slug;
+      if (id && !out.includes(id)) out.push(id);
+    };
+    if (Array.isArray(data?.conditions)) data.conditions.forEach(push);
+    if (Array.isArray(data?.conditionTags)) data.conditionTags.forEach(push);
+    if (typeof data?.conditionsText === 'string') data.conditionsText.split(/[,;|\n]+/).forEach(push);
+    if (typeof data?.condition === 'string') data.condition.split(/[,;|\n]+/).forEach(push);
+    return out;
+  }
+
+  function renderConditions(conditions) {
+    if (!conditionBox) return;
+    const list = Array.isArray(conditions) ? conditions : [];
+    if (!list.length) {
+      conditionBox.innerHTML = '';
+      conditionBox.classList.add('is-empty');
+      return;
+    }
+    conditionBox.classList.remove('is-empty');
+    conditionBox.innerHTML = list.map((id) => {
+      const meta = CONDITION_META[id] || [String(id || '').replace(/-/g, ' '), 'cinza'];
+      return `<span class="od-obs-condition od-obs-condition-${escapeHtml(meta[1])}">${escapeHtml(meta[0])}</span>`;
+    }).join('');
+  }
+
+  function getActiveTransformationPortrait(data) {
+    const forms = Array.isArray(data?.transformations) ? data.transformations : [];
+    if (!forms.length) return '';
+    const activeId = data.activeTransformationId || '';
+    const active = forms.find((form) => String(form.id) === String(activeId)) || forms.find((form) => form.active);
+    return active?.portrait || active?.image || active?.photo || active?.avatar || '';
+  }
+
   function normalize(raw) {
     const character = raw && raw.character ? raw.character : raw;
     const data = character && character.data ? character.data : character;
@@ -138,7 +223,7 @@
     const pv = toNumber(pvCurrent, 0);
     const max = Math.max(1, toNumber(pvMax, 1));
     const ratio = pv / max;
-    if (data.isTransformation || data.obsTransformationActive || data.activeTransformation || data.activeTransformationId) obsPortraitMode = 'transformation';
+    if (data.obsTransformationActive || data.activeTransformation || data.activeTransformationId) obsPortraitMode = 'transformation';
     else if (pv < 0) obsPortraitMode = 'hidden';
     else if (pv === 0) obsPortraitMode = 'zero';
     else if (ratio < 0.5) obsPortraitMode = 'low';
@@ -146,7 +231,7 @@
     return {
       updatedAt: character.updatedAt || character.updated_at || data.updatedAt || data.updated_at || '',
       portrait:
-        (obsPortraitMode === 'transformation' && (data.obsTransformPortrait || data.transformationPortrait)) ||
+        (obsPortraitMode === 'transformation' && (getActiveTransformationPortrait(data) || data.obsTransformPortrait || data.transformationPortrait)) ||
         data.portrait ||
         data.avatar ||
         data.image ||
@@ -159,7 +244,7 @@
         normal: obsIcons.normal || data.obsIconNormal || data.iconNormal || '',
         low: obsIcons.low || data.obsIconLow || data.iconLow || data.iconeMachucado || data.damagedPortrait || '',
         zero: obsIcons.zero || data.obsIconZero || data.iconZero || data.iconeMorrendo || data.dyingPortrait || '',
-        transformation: data.obsTransformPortrait || data.transformationPortrait || obsIcons.transformation || data.obsIconTransformation || data.iconTransformation || ''
+        transformation: getActiveTransformationPortrait(data) || data.obsTransformPortrait || data.transformationPortrait || obsIcons.transformation || data.obsIconTransformation || data.iconTransformation || ''
       },
       pvCurrent,
       pvMax,
@@ -175,7 +260,8 @@
         data.peTotal ??
         data.pe_max ??
         data.energyMax ??
-        1
+        1,
+      conditions: normalizeConditions(data)
     };
   }
 
@@ -222,6 +308,7 @@
       setImage(fallbackImage);
       setSegmentedBar('pv', 0, 1);
       setSegmentedBar('pe', 0, 1);
+      renderConditions([]);
       return;
     }
 
@@ -235,6 +322,7 @@
         setImageFromCharacter(id, character);
         setSegmentedBar('pv', character.pvCurrent, character.pvMax);
         setSegmentedBar('pe', character.peCurrent, character.peMax);
+        renderConditions(character.conditions);
         lastPayload = nextPayload;
       }
 
@@ -245,6 +333,7 @@
       setImage(fallbackImage);
       setSegmentedBar('pv', 0, 1);
       setSegmentedBar('pe', 0, 1);
+      renderConditions([]);
     }
   }
 

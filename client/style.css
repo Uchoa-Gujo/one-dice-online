@@ -8478,3 +8478,1170 @@ body.od84-session-home #sessions-screen.active .od71-shell {
   .od102-attr-control { grid-template-columns: 22px 1fr 22px !important; }
   .od102-attr-control input[data-attr] { width: 100% !important; max-width: none !important; }
 }
+
+/* =========================
+   V103 - Painel de atributos organizado
+========================= */
+.attributes-grid {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(170px, 1fr)) !important;
+  gap: 12px !important;
+  align-items: stretch !important;
+}
+
+.od103-attr-card {
+  position: relative !important;
+  overflow: hidden !important;
+  display: grid !important;
+  grid-template-rows: auto auto auto !important;
+  gap: 8px !important;
+  min-height: 128px !important;
+  padding: 12px 14px !important;
+  box-sizing: border-box !important;
+}
+
+.od103-attr-card .attr-head,
+.od103-attr-card .od98-attr-control,
+.od103-attr-card .od99-attr-control,
+.od103-attr-card .od102-attr-body,
+.od103-attr-card .od102-attr-control,
+.od103-attr-card .od102-attr-name {
+  display: none !important;
+}
+
+.od103-attr-top {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: start !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+}
+
+.od103-attr-name {
+  color: #fff !important;
+  font-family: var(--display-font, inherit) !important;
+  font-size: 0.98rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 1px !important;
+  text-transform: uppercase !important;
+  line-height: 1.05 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.od103-attr-bonus {
+  color: var(--accent, #d32632) !important;
+  font-size: 1.45rem !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+  min-width: 44px !important;
+  text-align: right !important;
+  text-shadow: 0 2px 5px rgba(0,0,0,.45) !important;
+}
+
+.od103-attr-mid {
+  display: grid !important;
+  grid-template-columns: 28px minmax(44px, 58px) 28px !important;
+  justify-content: end !important;
+  align-items: center !important;
+  gap: 6px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+.od103-attr-step {
+  width: 28px !important;
+  height: 30px !important;
+  min-width: 28px !important;
+  padding: 0 !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(255,255,255,.18) !important;
+  background: linear-gradient(180deg, rgba(211,38,50,.96), rgba(100,7,15,.96)) !important;
+  color: #fff !important;
+  font-size: 1rem !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+  cursor: pointer !important;
+  display: grid !important;
+  place-items: center !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.20), 0 4px 10px rgba(0,0,0,.30) !important;
+}
+
+.od103-attr-step:hover {
+  filter: brightness(1.15) !important;
+}
+
+.od103-attr-value,
+.od103-attr-card input[data-attr] {
+  width: 58px !important;
+  max-width: 58px !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  padding: 2px 4px !important;
+  box-sizing: border-box !important;
+  text-align: center !important;
+  font-size: 1.25rem !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+  color: #fff !important;
+  background: rgba(0,0,0,.18) !important;
+  border: 2px solid rgba(255,255,255,.82) !important;
+  border-radius: 0 !important;
+  appearance: textfield !important;
+  -moz-appearance: textfield !important;
+}
+
+.od103-attr-value::-webkit-outer-spin-button,
+.od103-attr-value::-webkit-inner-spin-button,
+.od103-attr-card input[data-attr]::-webkit-outer-spin-button,
+.od103-attr-card input[data-attr]::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
+
+.od103-attr-bottom {
+  display: grid !important;
+  grid-template-columns: auto minmax(80px, 1fr) !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.od103-attr-dice {
+  color: rgba(255,255,255,.74) !important;
+  font-size: .72rem !important;
+  letter-spacing: 1px !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+}
+
+.od103-roll,
+.od103-attr-card .roll-attr {
+  width: 100% !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  margin: 0 !important;
+  padding: 0 8px !important;
+  display: grid !important;
+  place-items: center !important;
+  text-align: center !important;
+}
+
+@media (max-width: 1180px) {
+  .attributes-grid { grid-template-columns: repeat(3, minmax(170px, 1fr)) !important; }
+}
+
+@media (max-width: 760px) {
+  .attributes-grid { grid-template-columns: repeat(2, minmax(150px, 1fr)) !important; }
+  .od103-attr-card { padding: 10px !important; }
+}
+
+@media (max-width: 520px) {
+  .attributes-grid { grid-template-columns: 1fr !important; }
+}
+
+/* =========================
+   V104 - Modal de fotos estável por link
+========================= */
+.od104-hidden-old-photo-modal { display: none !important; }
+.od104-photo-modal::backdrop { background: rgba(0,0,0,.72); backdrop-filter: blur(3px); }
+.od104-photo-card {
+  width: min(880px, calc(100vw - 32px));
+  max-height: min(760px, calc(100vh - 32px));
+  overflow: auto;
+  padding: 28px;
+}
+.od104-modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+.od104-modal-head h2 { margin: 0 0 6px; font-size: 30px; letter-spacing: .04em; }
+.od104-modal-head p { margin: 0; opacity: .84; }
+.od104-photo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 16px;
+}
+.od104-photo-grid label { display: grid; gap: 6px; font-weight: 900; letter-spacing: .04em; }
+.od104-photo-grid input {
+  min-width: 0;
+  width: 100%;
+  height: 42px;
+  padding: 0 12px;
+  border: 2px solid rgba(255,255,255,.75);
+  background: rgba(0,0,0,.24);
+  color: #fff;
+  font-weight: 800;
+}
+.od104-preview-wrap { display: grid; justify-items: center; gap: 10px; margin-top: 18px; text-align: center; }
+.od104-crop-stage {
+  width: 330px;
+  height: 330px;
+  max-width: 78vw;
+  max-height: 78vw;
+  overflow: hidden;
+  border: 2px solid #d3252a;
+  border-radius: 18px;
+  background: rgba(255,255,255,.94);
+  box-shadow: 0 16px 34px rgba(0,0,0,.35), inset 0 0 0 2px rgba(255,255,255,.65);
+  cursor: grab;
+  touch-action: none;
+}
+.od104-crop-stage:active { cursor: grabbing; }
+.od104-crop-stage img { width: 100%; height: 100%; display: block; user-select: none; pointer-events: none; }
+#char-portrait-preview { object-fit: cover; }
+@media (max-width: 760px) {
+  .od104-photo-grid { grid-template-columns: 1fr; }
+  .od104-photo-card { padding: 20px; }
+}
+
+/* =========================
+   V105 - Transformações embutidas na mesma ficha
+========================= */
+.od105-transform-card {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: stretch;
+  padding: 14px;
+}
+
+.od105-transform-preview {
+  width: 112px;
+  height: 112px;
+  border: 2px solid var(--accent, #c9252a);
+  background: rgba(0, 0, 0, 0.55);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 12px;
+  text-align: center;
+}
+
+.od105-transform-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.od105-transform-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.od105-transform-fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  color: var(--text, #fff);
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.od105-transform-fields label:nth-child(3),
+.od105-transform-fields label:nth-child(4) {
+  grid-column: span 1;
+}
+
+.od105-transform-fields input,
+.od105-transform-fields textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid rgba(255,255,255,.7);
+  background: rgba(0,0,0,.42);
+  color: var(--text, #fff);
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.od105-transform-actions {
+  min-width: 110px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+
+.transformation-card.od105-transform-card.active {
+  box-shadow: 0 0 0 2px rgba(255, 217, 92, .35), 0 0 24px rgba(255, 217, 92, .14);
+}
+
+@media (max-width: 900px) {
+  .od105-transform-card {
+    grid-template-columns: 96px 1fr;
+  }
+  .od105-transform-actions {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .od105-transform-preview { width: 96px; height: 96px; }
+}
+
+@media (max-width: 640px) {
+  .od105-transform-fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================
+   V106 - Alinhamento global de textos em caixas
+   Ajuste visual seguro: centraliza valores e padroniza inputs/botões
+========================= */
+:root {
+  --od106-control-line: 1;
+}
+
+input,
+select,
+button,
+textarea {
+  box-sizing: border-box;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+select {
+  min-height: 38px;
+  line-height: 1.15 !important;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+input[type="number"],
+.attribute-value,
+.attr-value,
+.defense-value,
+.evasion-value,
+.stat-value,
+.pv-value,
+.pe-value,
+.hp-value,
+.mp-value,
+.roll-value,
+.attribute-card input[type="number"],
+.attr-card input[type="number"],
+.status-card input[type="number"],
+.resource-card input[type="number"],
+.skill-card input[type="number"],
+.resistance-card input[type="number"],
+.attack-card input[type="number"],
+.spell-card input[type="number"],
+.ability-card input[type="number"] {
+  text-align: center !important;
+  font-variant-numeric: tabular-nums;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+button,
+.btn,
+.nav-btn,
+.action-btn,
+.dice-btn,
+.roll-btn,
+.menu-btn,
+.tab-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.05 !important;
+  vertical-align: middle;
+}
+
+/* Caixas numéricas grandes da ficha */
+.defense-box,
+.evasion-box,
+.defense-value,
+.evasion-value,
+.stat-value,
+.attribute-number,
+.attribute-value,
+.attr-number,
+.attr-value {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  line-height: 1 !important;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Recursos: PV, PE e demais caixas com barra */
+.resource-inputs,
+.status-inputs,
+.hp-inputs,
+.pe-inputs,
+.pv-inputs {
+  align-items: center !important;
+}
+
+.resource-inputs input,
+.status-inputs input,
+.hp-inputs input,
+.pe-inputs input,
+.pv-inputs input {
+  display: block;
+  text-align: center !important;
+  line-height: 1 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Atributos: evita texto colado no topo/lateral e mantém valor legível */
+.attribute-card,
+.attr-card {
+  overflow: hidden;
+}
+
+.attribute-card input,
+.attr-card input {
+  min-height: 32px;
+  line-height: 1 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.attribute-card .od103-attr-value,
+.attr-card .od103-attr-value,
+.attribute-card .attr-value,
+.attr-card .attr-value {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  line-height: 1 !important;
+}
+
+/* Perícias, resistências e cards compactos */
+.skill-card input,
+.resistance-card input,
+.simple-inventory-card input,
+.attack-card input,
+.spell-card input,
+.ability-card input {
+  line-height: 1.1 !important;
+}
+
+/* Textareas devem continuar confortáveis para escrita longa */
+textarea {
+  line-height: 1.35 !important;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+/* =========================
+   V108 - menu de informações útil
+========================= */
+#main-topbar .brand.od108-info-card {
+  display: grid !important;
+  grid-template-columns: 86px minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 16px !important;
+  min-height: 170px !important;
+  padding: 18px !important;
+  border-radius: 22px !important;
+  border: 1px solid rgba(197, 34, 44, .72) !important;
+  background:
+    radial-gradient(circle at 22% 18%, rgba(197,34,44,.22), transparent 40%),
+    linear-gradient(135deg, rgba(25,6,8,.88), rgba(3,7,7,.92)) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.04), 0 18px 42px rgba(0,0,0,.34) !important;
+  overflow: hidden !important;
+}
+
+#main-topbar .brand.od108-info-card::before {
+  content: '' !important;
+  position: absolute !important;
+  inset: 10px !important;
+  border-radius: 18px !important;
+  border: 1px solid rgba(255,255,255,.05) !important;
+  pointer-events: none !important;
+}
+
+.od108-info-avatar-wrap {
+  width: 86px !important;
+  height: 86px !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 20px !important;
+  background: rgba(0,0,0,.42) !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+  overflow: hidden !important;
+}
+
+#main-topbar .brand.od108-info-card .od108-info-avatar {
+  width: 86px !important;
+  height: 86px !important;
+  max-width: 86px !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  padding: 0 !important;
+  border-radius: 18px !important;
+  background: rgba(0,0,0,.5) !important;
+  border: 2px solid rgba(197,34,44,.9) !important;
+}
+
+.od108-info-body { min-width: 0 !important; position: relative !important; z-index: 1 !important; }
+.od108-info-kicker {
+  color: var(--accent, #c5222c) !important;
+  font-size: .68rem !important;
+  font-weight: 900 !important;
+  letter-spacing: .22em !important;
+  text-transform: uppercase !important;
+  margin-bottom: 4px !important;
+}
+
+.od108-info-name {
+  display: block !important;
+  color: #fff !important;
+  font-size: 1.28rem !important;
+  line-height: 1.05 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.od108-compat-label {
+  display: block !important;
+  margin-top: 4px !important;
+  color: rgba(255,255,255,.72) !important;
+  font-family: Arial, sans-serif !important;
+  font-size: .78rem !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.od108-info-pills {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+  margin-top: 10px !important;
+}
+
+.od108-info-pills span {
+  max-width: 100% !important;
+  padding: 5px 8px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+  background: rgba(0,0,0,.34) !important;
+  color: rgba(255,255,255,.86) !important;
+  font-family: Arial, sans-serif !important;
+  font-size: .72rem !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.od108-info-stats {
+  display: grid !important;
+  gap: 7px !important;
+  margin-top: 12px !important;
+}
+
+.od108-stat-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  color: #fff !important;
+  font-family: Arial, sans-serif !important;
+  font-size: .72rem !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  margin-bottom: 4px !important;
+}
+
+.od108-stat-track {
+  height: 7px !important;
+  border-radius: 999px !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+  background: rgba(255,255,255,.08) !important;
+}
+.od108-stat-track i {
+  display: block !important;
+  height: 100% !important;
+  border-radius: inherit !important;
+}
+.od108-stat.hp .od108-stat-track i { background: linear-gradient(90deg, #8f0f18, #ff2537) !important; }
+.od108-stat.pe .od108-stat-track i { background: linear-gradient(90deg, #0961b9, #24a3ff) !important; }
+
+.od108-info-empty {
+  margin-top: 12px !important;
+  padding: 8px 10px !important;
+  border-radius: 12px !important;
+  background: rgba(0,0,0,.28) !important;
+  color: rgba(255,255,255,.72) !important;
+  font-family: Arial, sans-serif !important;
+  font-size: .76rem !important;
+}
+
+#main-topbar:not(.collapsed) .topbar-content {
+  grid-template-columns: minmax(330px, 410px) minmax(0, 1fr) !important;
+}
+
+#main-topbar.topbar.collapsed .brand.od108-info-card,
+#main-topbar.topbar.collapsed .topbar-content {
+  display: none !important;
+}
+
+.od108-panel-user-info small:nth-of-type(3) {
+  color: rgba(255,255,255,.92) !important;
+}
+
+/* =========================
+   V109 - Home sem logo central e objetos centralizados
+   - Remove apenas a logo grande do centro
+   - Mantém o topo intacto
+   - Centraliza melhor divisor, título e cards
+========================= */
+#sessions-screen.active .od84-home-clean .od71-hero-logo.od82-hero-logo-full,
+#sessions-screen.active .od84-home-clean .od71-hero-logo,
+#sessions-screen.active .od84-home-clean .od71-hero-inner > img[src*="logo"] {
+  display: none !important;
+}
+
+#sessions-screen.active .od84-home-clean .od71-home-hero {
+  height: calc(100vh - 100px) !important;
+  min-height: 0 !important;
+  display: grid !important;
+  align-items: center !important;
+  justify-items: center !important;
+  padding: 0 !important;
+}
+
+#sessions-screen.active .od84-home-clean .od71-hero-inner {
+  width: min(900px, calc(100vw - 48px)) !important;
+  min-height: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 18px !important;
+  transform: translateY(-1.5vh) !important;
+  margin: 0 auto !important;
+  text-align: center !important;
+}
+
+#sessions-screen.active .od84-home-clean .od71-divider {
+  width: min(420px, 48vw) !important;
+  margin: 0 auto 2px !important;
+}
+
+#sessions-screen.active .od84-home-clean .od71-eyebrow {
+  margin: 0 auto 4px !important;
+  text-align: center !important;
+}
+
+#sessions-screen.active .od84-home-clean .od71-home-grid {
+  width: min(900px, calc(100vw - 48px)) !important;
+  margin: 0 auto !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(280px, 1fr)) !important;
+  gap: 22px !important;
+  align-items: stretch !important;
+  justify-content: center !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+#sessions-screen.active .od84-home-clean .od71-home-card {
+  min-height: 128px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+@media (max-width: 760px) {
+  #sessions-screen.active .od84-home-clean .od71-hero-inner {
+    width: min(520px, calc(100vw - 28px)) !important;
+    gap: 14px !important;
+    transform: translateY(0) !important;
+  }
+
+  #sessions-screen.active .od84-home-clean .od71-home-grid {
+    width: min(520px, calc(100vw - 28px)) !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  #sessions-screen.active .od84-home-clean .od71-home-card {
+    min-height: 104px !important;
+  }
+}
+
+/* =========================
+   V110 - Topbar realmente centralizada
+   - O menu principal fica no centro real da barra inteira
+   - Logo fica fixa à esquerda sem empurrar o menu
+   - Engrenagem/conta ficam fixas à direita sem empurrar o menu
+========================= */
+#sessions-screen.active .od71-topbar {
+  position: sticky !important;
+  top: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 74px !important;
+  padding: 12px 210px !important;
+  box-sizing: border-box !important;
+}
+
+#sessions-screen.active .od71-topbar .od71-logo {
+  position: absolute !important;
+  left: 22px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  margin: 0 !important;
+  flex: 0 0 auto !important;
+}
+
+#sessions-screen.active .od71-topbar .od71-main-nav {
+  position: relative !important;
+  left: auto !important;
+  right: auto !important;
+  top: auto !important;
+  transform: none !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin: 0 auto !important;
+  width: auto !important;
+  max-width: calc(100vw - 520px) !important;
+  flex: 0 1 auto !important;
+  z-index: 2 !important;
+}
+
+#sessions-screen.active .od71-topbar .od71-user-area {
+  position: absolute !important;
+  right: 22px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  margin: 0 !important;
+  flex: 0 0 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+}
+
+@media (max-width: 920px) {
+  #sessions-screen.active .od71-topbar {
+    justify-content: flex-start !important;
+    padding: 84px 14px 12px !important;
+    min-height: 142px !important;
+  }
+
+  #sessions-screen.active .od71-topbar .od71-logo {
+    left: 14px !important;
+    top: 14px !important;
+    transform: none !important;
+  }
+
+  #sessions-screen.active .od71-topbar .od71-user-area {
+    right: 14px !important;
+    top: 14px !important;
+    transform: none !important;
+  }
+
+  #sessions-screen.active .od71-topbar .od71-main-nav {
+    width: 100% !important;
+    max-width: 100% !important;
+    justify-content: center !important;
+    overflow-x: auto !important;
+  }
+}
+
+
+/* =========================
+   V111 - Condições e tags do mestre
+========================= */
+.od111-master-condition-toolbar {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) minmax(320px, 1.5fr);
+  gap: 16px;
+  align-items: end;
+  padding: 18px;
+  border: 1px solid rgba(207, 31, 38, 0.8);
+  background: linear-gradient(135deg, rgba(15, 0, 0, 0.88), rgba(7, 8, 8, 0.92));
+  box-shadow: 0 8px 24px rgba(0,0,0,.26);
+  border-radius: 16px;
+  margin-bottom: 12px;
+}
+.od111-master-condition-toolbar h3 { margin: 0 0 6px; letter-spacing: .08em; text-transform: uppercase; }
+.od111-master-condition-toolbar p { margin: 0; opacity: .78; line-height: 1.35; }
+.od111-toolbar-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; align-items: center; }
+.od111-toolbar-actions select { min-height: 40px; min-width: 180px; background: #070909; color: #fff; border: 1px solid rgba(255,255,255,.6); padding: 0 10px; font-weight: 800; }
+.od111-master-card { overflow: visible; }
+.od111-master-top { grid-template-columns: auto 54px 1fr auto; }
+.od111-select-wrap { width: 28px; height: 28px; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.45); border-radius: 8px; background: rgba(0,0,0,.35); cursor: pointer; }
+.od111-select-wrap input { width: 16px; height: 16px; accent-color: #cf1f26; }
+.od111-active-tags, .od111-player-condition-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+.od111-player-condition-tags { padding: 8px 0; }
+.od111-condition-tag, .od111-empty-tag { display: inline-flex; align-items: center; justify-content: center; min-height: 24px; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; color: #fff; border: 1px solid rgba(255,255,255,.28); box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 2px 6px rgba(0,0,0,.28); }
+.od111-empty-tag { background: rgba(255,255,255,.08); color: rgba(255,255,255,.72); }
+.od111-dano { background: linear-gradient(135deg, #8b0614, #d82331); }
+.od111-veneno { background: linear-gradient(135deg, #0d612b, #22a957); }
+.od111-mental { background: linear-gradient(135deg, #9a6a00, #e6a81d); color: #17110a; }
+.od111-controle { background: linear-gradient(135deg, #063f78, #1f89d8); }
+.od111-fisico { background: linear-gradient(135deg, #66421c, #b56a25); }
+.od111-cinza { background: linear-gradient(135deg, #30343a, #6e747c); }
+.od111-azul { background: linear-gradient(135deg, #123e9a, #33b5ff); }
+.od111-terreno { background: linear-gradient(135deg, #3e2a12, #8a6b2e); }
+.od111-condition-panel { margin-top: 10px; border: 1px solid rgba(255,255,255,.14); border-radius: 12px; padding: 8px 10px; background: rgba(0,0,0,.18); }
+.od111-condition-panel summary { cursor: pointer; font-weight: 900; text-transform: uppercase; letter-spacing: .08em; }
+.od111-condition-grid { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+.od111-condition-toggle { min-height: 28px; padding: 4px 9px; border-radius: 999px; border: 1px solid rgba(255,255,255,.25); color: #fff; font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: .04em; opacity: .58; background: rgba(255,255,255,.08); cursor: pointer; }
+.od111-condition-toggle.active { opacity: 1; outline: 2px solid rgba(255,255,255,.5); }
+.od111-condition-toggle.od111-dano { background: #8b0614; }
+.od111-condition-toggle.od111-veneno { background: #0d612b; }
+.od111-condition-toggle.od111-mental { background: #b07b0c; color: #17110a; }
+.od111-condition-toggle.od111-controle { background: #063f78; }
+.od111-condition-toggle.od111-fisico { background: #66421c; }
+.od111-condition-toggle.od111-cinza { background: #30343a; }
+.od111-condition-toggle.od111-azul { background: #123e9a; }
+.od111-condition-toggle.od111-terreno { background: #5a401b; }
+@media (max-width: 900px) {
+  .od111-master-condition-toolbar { grid-template-columns: 1fr; }
+  .od111-toolbar-actions { justify-content: flex-start; }
+  .od111-master-top { grid-template-columns: auto 48px 1fr; }
+  .od111-master-top .v51-online-chip { grid-column: 2 / -1; justify-self: start; }
+}
+
+
+/* =========================
+   V113 - Modelo D20 / Pool Dice
+========================= */
+.od113-system-field {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 6px 10px;
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 12px;
+  background: rgba(0,0,0,.18);
+  color: inherit;
+  font-size: .86rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.od113-system-field.compact { min-width: 145px; }
+.od113-system-select {
+  min-width: 108px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,.24);
+  background: rgba(10,10,10,.86);
+  color: #fff;
+  font-weight: 900;
+  text-align: center;
+  padding: 0 8px;
+}
+.session-inline-form .od113-system-field { flex: 0 0 auto; }
+.account-sheets-head .od113-system-field { margin-left: auto; margin-right: 8px; }
+.od113-system-badge,
+.od113-campaign-model-badge {
+  display: inline-grid;
+  place-items: center;
+  width: max-content;
+  min-height: 20px;
+  padding: 2px 8px;
+  margin: 4px 0 2px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.28);
+  background: linear-gradient(135deg, rgba(255,214,90,.24), rgba(0,0,0,.35));
+  color: inherit;
+  font-size: .68rem;
+  font-style: normal;
+  font-weight: 900;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+.od113-system-badge.mini { font-size: .62rem; padding: 1px 7px; opacity: .9; }
+.od113-choose-hint,
+.od113-incompatible-note {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px dashed rgba(255,255,255,.28);
+  background: rgba(0,0,0,.14);
+  font-size: .9rem;
+  font-weight: 700;
+}
+.od113-incompatible-note { opacity: .78; }
+.od113-open-sheet-model {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 8px;
+  max-width: 180px;
+  font-size: .78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+.od113-open-sheet-model .od113-system-select { width: 100%; }
+@media (max-width: 780px) {
+  .session-inline-form .od113-system-field,
+  .account-sheets-head .od113-system-field {
+    width: 100%;
+    margin: 6px 0;
+  }
+}
+
+
+/* =========================
+   V114 - Discussão da Campanha
+========================= */
+.od114-discussion-btn {
+  border-color: rgba(125, 196, 255, .38) !important;
+  background: linear-gradient(135deg, rgba(23, 45, 78, .92), rgba(18, 22, 38, .92)) !important;
+  color: #eaf6ff !important;
+}
+.od114-discussion-modal::backdrop { background: rgba(0,0,0,.72); backdrop-filter: blur(3px); }
+.od114-card {
+  width: min(1180px, calc(100vw - 32px));
+  max-height: min(900px, calc(100vh - 32px));
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255, 220, 120, .23);
+  background: radial-gradient(circle at top left, rgba(255, 205, 80, .08), transparent 34%), linear-gradient(180deg, rgba(18, 20, 28, .98), rgba(8, 10, 16, .98));
+}
+.od114-head h3 { margin: 0; font-size: 1.25rem; }
+.od114-head span { color: rgba(255,255,255,.62); font-size: .9rem; }
+.od114-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) 1fr;
+  gap: 16px;
+  overflow: hidden;
+  min-height: 0;
+  padding: 14px;
+}
+.od114-session-box,
+.od114-feed-box,
+.od114-composer,
+.od114-post {
+  border: 1px solid rgba(255,255,255,.09);
+  background: rgba(255,255,255,.045);
+  border-radius: 18px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 12px 30px rgba(0,0,0,.24);
+}
+.od114-session-box {
+  padding: 16px;
+  overflow: auto;
+}
+.od114-session-box h4 { margin: 0 0 10px; color: #ffd978; }
+.od114-next-date {
+  display: inline-flex;
+  margin-bottom: 10px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(255, 217, 120, .12);
+  border: 1px solid rgba(255, 217, 120, .22);
+  color: #ffe7a3;
+  font-weight: 800;
+}
+.od114-session-box strong { display:block; margin-bottom: 8px; font-size:1.05rem; }
+.od114-session-box p { color: rgba(255,255,255,.78); line-height:1.45; }
+.od114-session-box .muted { color: rgba(255,255,255,.45); }
+.od114-session-editor {
+  margin-top: 14px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  padding-top: 12px;
+}
+.od114-session-editor summary { cursor:pointer; font-weight:900; color:#fff; margin-bottom:10px; }
+.od114-session-editor label,
+.od114-composer label { display:block; color:rgba(255,255,255,.75); font-size:.86rem; margin-bottom:10px; }
+.od114-session-editor input,
+.od114-session-editor textarea,
+.od114-composer input,
+.od114-composer textarea,
+.od114-composer select {
+  width:100%;
+  box-sizing:border-box;
+  min-height:40px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(0,0,0,.28);
+  color:#fff;
+  padding:10px 12px;
+  outline:none;
+}
+.od114-session-editor textarea,
+.od114-composer textarea { min-height:100px; resize:vertical; text-align:left; }
+.od114-feed-box { padding: 14px; overflow: auto; min-height:0; }
+.od114-composer { padding: 12px; margin-bottom: 14px; }
+.od114-type-row { display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap; }
+.od114-type-row button {
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);
+  color:rgba(255,255,255,.76);
+  border-radius:999px;
+  padding:8px 12px;
+  cursor:pointer;
+  font-weight:800;
+}
+.od114-type-row button.active {
+  color:#10131b;
+  background:linear-gradient(135deg,#ffd86b,#fff1ae);
+  border-color:rgba(255,224,120,.8);
+}
+.od114-feed { display:flex; flex-direction:column; gap:12px; }
+.od114-empty { padding:24px; text-align:center; color:rgba(255,255,255,.55); border:1px dashed rgba(255,255,255,.12); border-radius:16px; }
+.od114-post { padding: 13px; }
+.od114-post-head { display:grid; grid-template-columns:40px 1fr auto auto; gap:10px; align-items:center; margin-bottom:10px; }
+.od114-post-head img { width:40px; height:40px; object-fit:cover; border-radius:50%; background:#111; }
+.od114-post-head strong { display:block; color:#fff; }
+.od114-post-head span { display:block; color:rgba(255,255,255,.46); font-size:.78rem; }
+.od114-post-head em {
+  font-style:normal;
+  padding:5px 9px;
+  border-radius:999px;
+  font-size:.72rem;
+  font-weight:900;
+  background:rgba(125,196,255,.14);
+  color:#bfe5ff;
+}
+.od114-post-resumo .od114-post-head em { background:rgba(255,216,107,.14); color:#ffe18a; }
+.od114-post-foto .od114-post-head em { background:rgba(150,255,189,.12); color:#a8ffc6; }
+.od114-post-delete {
+  width:28px;
+  height:28px;
+  border-radius:999px;
+  border:1px solid rgba(255,95,95,.22);
+  background:rgba(255,60,60,.10);
+  color:#ffb5b5;
+  cursor:pointer;
+}
+.od114-post h4 { margin:6px 0 8px; color:#fff; font-size:1.02rem; }
+.od114-post p { color:rgba(255,255,255,.82); line-height:1.45; margin:0 0 10px; white-space:normal; }
+.od114-post figure { margin:10px 0 0; border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,.10); background:#05070b; }
+.od114-post figure img { display:block; width:100%; max-height:420px; object-fit:contain; background:#05070b; }
+@media (max-width: 820px) {
+  .od114-layout { grid-template-columns:1fr; overflow:auto; }
+  .od114-card { overflow:auto; }
+  .od114-feed-box { overflow:visible; }
+}
+
+
+/* =========================
+   V115 - Ajustes globais de acabamento e animação leve
+========================= */
+:root {
+  --od115-ease: cubic-bezier(.2,.8,.2,1);
+}
+
+button,
+.primary-btn,
+.ghost-btn,
+.danger-btn,
+.tab-btn,
+.sheet-tab,
+.menu-entry {
+  transition: transform .14s var(--od115-ease), filter .14s var(--od115-ease), box-shadow .14s var(--od115-ease), border-color .14s var(--od115-ease), background .14s var(--od115-ease);
+}
+
+button:hover:not(:disabled),
+.primary-btn:hover:not(:disabled),
+.ghost-btn:hover:not(:disabled),
+.danger-btn:hover:not(:disabled),
+.tab-btn:hover:not(:disabled),
+.sheet-tab:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+
+.od115-pop {
+  animation: od115-pop .22s var(--od115-ease);
+}
+
+@keyframes od115-pop {
+  0% { transform: scale(.985); }
+  55% { transform: scale(1.018); }
+  100% { transform: scale(1); }
+}
+
+.screen.active,
+.manga-panel,
+.campaign-card,
+.od86-campaign-card,
+.od114-post,
+.attribute-card,
+.skill-card,
+.simple-inventory-card,
+.attack-card,
+.spell-card,
+.ability-card {
+  animation: od115-soft-in .22s var(--od115-ease) both;
+}
+
+@keyframes od115-soft-in {
+  from { opacity: .88; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+input,
+textarea,
+select,
+button {
+  font-variant-numeric: tabular-nums;
+}
+
+.od115-sound-toggle {
+  justify-content: center;
+  text-align: center;
+}
+
+.od115-front-error::after {
+  content: "Erro visual detectado. Recarregue a página ou limpe o cache se a interface travar.";
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 99999;
+  max-width: min(420px, calc(100vw - 32px));
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 210, 80, .45);
+  background: rgba(18, 14, 8, .92);
+  color: #ffe9a6;
+  box-shadow: 0 10px 30px rgba(0,0,0,.35);
+  font-size: 13px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .001ms !important;
+  }
+}

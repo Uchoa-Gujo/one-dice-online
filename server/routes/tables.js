@@ -40,7 +40,7 @@ function emitTable(req, tableId, eventName, payload = {}) {
 async function requireTableMember(req, res, next) {
   const tableId = req.params.id;
   const member = await memberFor(tableId, req.user.id);
-  if (!member) return res.status(403).json({ error: 'Você não faz parte desta mesa.' });
+  if (!member) return res.status(403).json({ error: 'Você não participa desta campanha.' });
   req.tableMember = member;
   next();
 }
@@ -48,7 +48,7 @@ async function requireTableMember(req, res, next) {
 async function requireTableMaster(req, res, next) {
   const tableId = req.params.id;
   const member = await memberFor(tableId, req.user.id);
-  if (!member || !isMasterRole(member.role)) return res.status(403).json({ error: 'Apenas o mestre pode fazer isso.' });
+  if (!member || !isMasterRole(member.role)) return res.status(403).json({ error: 'Apenas o mestre pode realizar esta ação.' });
   req.tableMember = member;
   next();
 }
@@ -74,6 +74,45 @@ async function updateTableDrops(tableId, drops) {
   return normalizeDrops(result.rows[0]?.settings || {});
 }
 
+
+
+function normalizeSystemModel(value) {
+  const v = String(value || '').trim().toLowerCase().replace(/[\s_-]+/g, '');
+  if (['pool', 'pooldice', 'dados', 'ordem', 'ordemparanormal'].includes(v)) return 'pool';
+  return 'd20';
+}
+
+function tableSystemModel(table) {
+  return normalizeSystemModel(table?.settings?.systemModel || table?.settings?.systemType || table?.system_model || table?.system_type);
+}
+
+function characterSystemModel(data) {
+  return normalizeSystemModel(data?.systemModel || data?.systemType || data?.sheetModel || data?.diceSystem || data?.ruleset);
+}
+
+async function assertCompatibleCharacter(tableId, characterId, userId) {
+  if (!characterId) return;
+  const tableResult = await query('select settings from tables where id = $1', [tableId]);
+  if (!tableResult.rowCount) {
+    const err = new Error('Campanha não encontrada.');
+    err.status = 404;
+    throw err;
+  }
+  const characterResult = await query('select id, data from characters where id = $1 and owner_id = $2', [characterId, userId]);
+  if (!characterResult.rowCount) {
+    const err = new Error('Essa ficha não pertence a você.');
+    err.status = 403;
+    throw err;
+  }
+  const tableModel = tableSystemModel(tableResult.rows[0]);
+  const charModel = characterSystemModel(characterResult.rows[0].data || {});
+  if (tableModel !== charModel) {
+    const err = new Error(`Essa campanha usa ${tableModel === 'pool' ? 'Pool Dice' : 'D20'}. Escolha uma ficha do mesmo modelo.`);
+    err.status = 400;
+    throw err;
+  }
+}
+
 function apiRole(role) {
   if (role === 'mestre') return 'master';
   if (role === 'jogador') return 'player';
@@ -88,7 +127,7 @@ router.get('/', async (req, res) => {
     from table_members tm
     join tables t on t.id = tm.table_id
     where tm.user_id = $1
-    order by t.updated_at desc
+    order by lower(t.name) asc, t.updated_at desc
   `, [req.user.id]);
   res.json({ tables: result.rows });
 });
@@ -99,11 +138,13 @@ router.post('/', async (req, res) => {
   const name = String(req.body.name || 'Nova Mesa').trim().slice(0, 80) || 'Nova Mesa';
   const description = String(req.body.description || '').trim().slice(0, 200);
   const logoUrl = String(req.body.logoUrl || req.body.logo_url || '').trim().slice(0, 200000);
+  const systemModel = normalizeSystemModel(req.body.systemType || req.body.systemModel || req.body?.settings?.systemType || req.body?.settings?.systemModel);
+  const settings = { ...(req.body.settings && typeof req.body.settings === 'object' ? req.body.settings : {}), systemType: systemModel, systemModel };
   const code = await uniqueInviteCode();
 
   const created = await query(
-    'insert into tables (name, owner_id, invite_code, description, logo_url) values ($1, $2, $3, $4, $5) returning *',
-    [name, req.user.id, code, description, logoUrl]
+    'insert into tables (name, owner_id, invite_code, description, logo_url, settings) values ($1, $2, $3, $4, $5, $6) returning *',
+    [name, req.user.id, code, description, logoUrl, settings]
   );
   const table = created.rows[0];
 
@@ -123,14 +164,20 @@ router.post('/join', async (req, res) => {
   const characterId = req.body.characterId || null;
 
   if (!/^[A-Z]{5}$/.test(code)) {
-    return res.status(400).json({ error: 'Código inválido.' });
+    return res.status(400).json({ error: 'Código de convite inválido.' });
   }
 
   const found = await query('select * from tables where invite_code = $1', [code]);
-  if (!found.rowCount) return res.status(404).json({ error: 'Mesa não encontrada.' });
+  if (!found.rowCount) return res.status(404).json({ error: 'Campanha não encontrada.' });
   const table = found.rows[0];
 
   const wantedRole = table.owner_id === req.user.id ? 'master_player' : 'player';
+
+  try {
+    await assertCompatibleCharacter(table.id, characterId, req.user.id);
+  } catch (error) {
+    return res.status(error.status || 400).json({ error: error.message || 'Ficha incompatível com a campanha.' });
+  }
 
   await query(`
     insert into table_members (table_id, user_id, role, character_id)
@@ -152,10 +199,10 @@ router.post('/join', async (req, res) => {
 router.get('/:id/state', async (req, res) => {
   const tableId = req.params.id;
   const isMember = await query('select id from table_members where table_id = $1 and user_id = $2', [tableId, req.user.id]);
-  if (!isMember.rowCount) return res.status(403).json({ error: 'Você não faz parte desta mesa.' });
+  if (!isMember.rowCount) return res.status(403).json({ error: 'Você não participa desta campanha.' });
 
   const tableResult = await query('select * from tables where id = $1', [tableId]);
-  if (!tableResult.rowCount) return res.status(404).json({ error: 'Mesa não encontrada.' });
+  if (!tableResult.rowCount) return res.status(404).json({ error: 'Campanha não encontrada.' });
 
   const members = await query(`
     select tm.*, u.nick, u.real_name, u.avatar_url, c.name as character_name, c.data as character_data
@@ -163,7 +210,7 @@ router.get('/:id/state', async (req, res) => {
     join users u on u.id = tm.user_id
     left join characters c on c.id = tm.character_id
     where tm.table_id = $1
-    order by tm.created_at asc
+    order by lower(coalesce(c.name, u.real_name, u.nick)) asc, tm.created_at asc
   `, [tableId]);
 
   res.json({ table: tableResult.rows[0], members: members.rows });
@@ -175,13 +222,17 @@ router.put('/:id', requireTableMaster, async (req, res) => {
   const name = String(req.body.name || 'Campanha').trim().slice(0, 80) || 'Campanha';
   const description = String(req.body.description || '').trim().slice(0, 200);
   const logoUrl = String(req.body.logoUrl || req.body.logo_url || '').trim().slice(0, 200000);
+  const currentTable = await query('select settings from tables where id = $1 and owner_id = $2', [tableId, req.user.id]);
+  const previousSettings = currentTable.rows[0]?.settings || {};
+  const systemModel = normalizeSystemModel(req.body.systemType || req.body.systemModel || req.body?.settings?.systemType || req.body?.settings?.systemModel || previousSettings.systemType || previousSettings.systemModel);
+  const settings = { ...previousSettings, ...(req.body.settings && typeof req.body.settings === 'object' ? req.body.settings : {}), systemType: systemModel, systemModel };
 
   const result = await query(`
     update tables
-    set name = $1, description = $2, logo_url = $3, updated_at = now()
-    where id = $4 and owner_id = $5
+    set name = $1, description = $2, logo_url = $3, settings = $4, updated_at = now()
+    where id = $5 and owner_id = $6
     returning *
-  `, [name, description, logoUrl, tableId, req.user.id]);
+  `, [name, description, logoUrl, settings, tableId, req.user.id]);
 
   if (!result.rowCount) return res.status(403).json({ error: 'Somente o mestre dono pode editar esta campanha.' });
   emitTable(req, tableId, 'table:updated', { reason: 'metadata-updated', table: result.rows[0] });
@@ -192,17 +243,18 @@ router.put('/:id/member', async (req, res) => {
   const tableId = req.params.id;
   const characterId = req.body.characterId || null;
 
-  if (characterId) {
-    const own = await query('select id from characters where id = $1 and owner_id = $2', [characterId, req.user.id]);
-    if (!own.rowCount) return res.status(403).json({ error: 'Essa ficha não pertence a você.' });
+  try {
+    await assertCompatibleCharacter(tableId, characterId, req.user.id);
+  } catch (error) {
+    return res.status(error.status || 400).json({ error: error.message || 'Ficha incompatível com a campanha.' });
   }
 
   const tableResult = await query('select * from tables where id = $1', [tableId]);
-  if (!tableResult.rowCount) return res.status(404).json({ error: 'Mesa não encontrada.' });
+  if (!tableResult.rowCount) return res.status(404).json({ error: 'Campanha não encontrada.' });
   const table = tableResult.rows[0];
 
   const existing = await query('select * from table_members where table_id = $1 and user_id = $2', [tableId, req.user.id]);
-  if (!existing.rowCount) return res.status(403).json({ error: 'Você não faz parte desta mesa.' });
+  if (!existing.rowCount) return res.status(403).json({ error: 'Você não participa desta campanha.' });
 
   let role = existing.rows[0].role;
   if (table.owner_id === req.user.id && role === 'master' && characterId) role = 'master_player';
@@ -263,10 +315,126 @@ router.delete('/:id/messages', requireTableMember, async (req, res) => {
 });
 
 
+/* V114 - Discussão da campanha fora da sessão
+   Armazena no settings.discussion da mesa para não exigir nova tabela. */
+function sanitizeDiscussion(raw) {
+  const discussion = raw && typeof raw === 'object' ? raw : {};
+  const session = discussion.session && typeof discussion.session === 'object' ? discussion.session : {};
+  const posts = Array.isArray(discussion.posts) ? discussion.posts : [];
+  return {
+    session: {
+      date: String(session.date || '').slice(0, 20),
+      time: String(session.time || '').slice(0, 10),
+      title: String(session.title || '').slice(0, 100),
+      info: String(session.info || session.notes || '').slice(0, 1500),
+      objective: String(session.objective || '').slice(0, 1000),
+      updatedAt: session.updatedAt || null,
+      updatedBy: session.updatedBy || null
+    },
+    posts: posts
+      .filter(post => post && typeof post === 'object')
+      .slice(-120)
+      .map(post => ({
+        id: String(post.id || `${Date.now()}-${Math.random()}`).slice(0, 80),
+        type: ['resumo', 'foto', 'conversa'].includes(post.type) ? post.type : 'conversa',
+        title: String(post.title || '').slice(0, 120),
+        text: String(post.text || '').slice(0, 3000),
+        imageUrl: String(post.imageUrl || post.image_url || '').slice(0, 200000),
+        authorId: post.authorId || post.author_id || null,
+        authorName: String(post.authorName || post.author_name || 'Jogador').slice(0, 80),
+        authorAvatar: String(post.authorAvatar || post.author_avatar || '').slice(0, 200000),
+        createdAt: post.createdAt || post.created_at || new Date().toISOString()
+      }))
+  };
+}
+
+async function getDiscussion(tableId) {
+  const result = await query('select settings from tables where id = $1', [tableId]);
+  const settings = result.rows[0]?.settings || {};
+  return sanitizeDiscussion(settings.discussion || {});
+}
+
+async function saveDiscussion(tableId, discussion) {
+  const clean = sanitizeDiscussion(discussion);
+  const result = await query(`
+    update tables
+    set settings = jsonb_set(coalesce(settings, '{}'::jsonb), '{discussion}', $1::jsonb, true), updated_at = now()
+    where id = $2
+    returning settings
+  `, [JSON.stringify(clean), tableId]);
+  return sanitizeDiscussion(result.rows[0]?.settings?.discussion || clean);
+}
+
+router.get('/:id/discussion', requireTableMember, async (req, res) => {
+  const discussion = await getDiscussion(req.params.id);
+  res.json({
+    discussion,
+    canManage: isMasterRole(req.tableMember.role),
+    canPost: true
+  });
+});
+
+router.put('/:id/discussion/session', requireTableMaster, async (req, res) => {
+  const current = await getDiscussion(req.params.id);
+  current.session = {
+    date: String(req.body.date || '').slice(0, 20),
+    time: String(req.body.time || '').slice(0, 10),
+    title: String(req.body.title || '').slice(0, 100),
+    info: String(req.body.info || req.body.notes || '').slice(0, 1500),
+    objective: String(req.body.objective || '').slice(0, 1000),
+    updatedAt: new Date().toISOString(),
+    updatedBy: req.user.id
+  };
+  const discussion = await saveDiscussion(req.params.id, current);
+  emitTable(req, req.params.id, 'discussion:updated', { discussion, reason: 'session-updated' });
+  res.json({ discussion });
+});
+
+router.post('/:id/discussion/posts', requireTableMember, async (req, res) => {
+  const type = ['resumo', 'foto', 'conversa'].includes(req.body.type) ? req.body.type : 'conversa';
+  const title = String(req.body.title || '').trim().slice(0, 120);
+  const text = String(req.body.text || '').trim().slice(0, 3000);
+  const imageUrl = String(req.body.imageUrl || req.body.image_url || '').trim().slice(0, 200000);
+  if (!text && !imageUrl && !title) return res.status(400).json({ error: 'Post vazio.' });
+  const userInfo = await query('select nick, real_name, avatar_url from users where id = $1', [req.user.id]);
+  const user = userInfo.rows[0] || {};
+  const current = await getDiscussion(req.params.id);
+  const post = {
+    id: `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`,
+    type,
+    title,
+    text,
+    imageUrl,
+    authorId: req.user.id,
+    authorName: user.real_name || user.nick || req.user.nick || 'Jogador',
+    authorAvatar: user.avatar_url || '',
+    createdAt: new Date().toISOString()
+  };
+  current.posts.push(post);
+  current.posts = current.posts.slice(-120);
+  const discussion = await saveDiscussion(req.params.id, current);
+  emitTable(req, req.params.id, 'discussion:updated', { discussion, reason: 'post-created', post });
+  res.json({ post, discussion });
+});
+
+router.delete('/:id/discussion/posts/:postId', requireTableMember, async (req, res) => {
+  const current = await getDiscussion(req.params.id);
+  const post = current.posts.find(p => String(p.id) === String(req.params.postId));
+  if (!post) return res.status(404).json({ error: 'Post não encontrado.' });
+  if (!isMasterRole(req.tableMember.role) && String(post.authorId) !== String(req.user.id)) {
+    return res.status(403).json({ error: 'Você não pode apagar este post.' });
+  }
+  current.posts = current.posts.filter(p => String(p.id) !== String(req.params.postId));
+  const discussion = await saveDiscussion(req.params.id, current);
+  emitTable(req, req.params.id, 'discussion:updated', { discussion, reason: 'post-deleted' });
+  res.json({ ok: true, discussion });
+});
+
+
 router.get('/:id/drops', requireTableMember, async (req, res) => {
   const tableId = req.params.id;
   const result = await query('select settings from tables where id = $1', [tableId]);
-  if (!result.rowCount) return res.status(404).json({ error: 'Mesa não encontrada.' });
+  if (!result.rowCount) return res.status(404).json({ error: 'Campanha não encontrada.' });
   res.json({ drops: normalizeDrops(result.rows[0].settings || {}) });
 });
 
@@ -282,7 +450,7 @@ router.post('/:id/drop-item', requireTableMember, async (req, res) => {
     join characters c on c.id = tm.character_id
     where tm.table_id = $1 and tm.character_id = $2
   `, [tableId, fromCharacterId]);
-  if (!links.rowCount) return res.status(404).json({ error: 'Ficha não está vinculada à mesa.' });
+  if (!links.rowCount) return res.status(404).json({ error: 'Ficha não vinculada à campanha.' });
   const from = links.rows[0];
   const isMaster = isMasterRole(req.tableMember.role);
   if (String(from.owner_id) !== String(req.user.id) && !isMaster) {
@@ -321,7 +489,7 @@ router.post('/:id/drops/:dropId/take', requireTableMember, async (req, res) => {
     join characters c on c.id = tm.character_id
     where tm.table_id = $1 and tm.character_id = $2
   `, [tableId, toCharacterId]);
-  if (!links.rowCount) return res.status(404).json({ error: 'Ficha não está vinculada à mesa.' });
+  if (!links.rowCount) return res.status(404).json({ error: 'Ficha não vinculada à campanha.' });
   const to = links.rows[0];
   const isMaster = isMasterRole(req.tableMember.role);
   if (String(to.owner_id) !== String(req.user.id) && !isMaster) {
@@ -359,7 +527,7 @@ router.delete('/:id/drops/:dropId', requireTableMember, async (req, res) => {
   const dropId = req.params.dropId;
 
   const tableResult = await query('select settings from tables where id = $1', [tableId]);
-  if (!tableResult.rowCount) return res.status(404).json({ error: 'Mesa não encontrada.' });
+  if (!tableResult.rowCount) return res.status(404).json({ error: 'Campanha não encontrada.' });
 
   const drops = normalizeDrops(tableResult.rows[0]?.settings || {});
   const index = drops.findIndex(item => String(item.id) === String(dropId));
@@ -436,7 +604,7 @@ router.post('/:id/transfer-item', requireTableMember, async (req, res) => {
 router.get('/:id/initiative', requireTableMember, async (req, res) => {
   const tableId = req.params.id;
   const result = await query('select settings from tables where id = $1', [tableId]);
-  if (!result.rowCount) return res.status(404).json({ error: 'Mesa não encontrada.' });
+  if (!result.rowCount) return res.status(404).json({ error: 'Campanha não encontrada.' });
   const initiative = result.rows[0].settings?.initiative || { active: false, round: 1, entries: [] };
   res.json({ initiative });
 });
@@ -480,7 +648,7 @@ router.put('/:id/characters/:characterId', requireTableMaster, async (req, res) 
 router.delete('/:id/leave', async (req, res) => {
   const tableId = req.params.id;
   const tableResult = await query('select owner_id from tables where id = $1', [tableId]);
-  if (!tableResult.rowCount) return res.status(404).json({ error: 'Mesa não encontrada.' });
+  if (!tableResult.rowCount) return res.status(404).json({ error: 'Campanha não encontrada.' });
   if (tableResult.rows[0].owner_id === req.user.id) {
     return res.status(400).json({ error: 'O dono deve excluir a mesa em vez de sair.' });
   }

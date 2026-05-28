@@ -10125,3 +10125,2431 @@ function od66InventoryMutationUnlockSoon() {
   setTimeout(boot, 700);
   window.od102RefreshBetaFixes = boot;
 })();
+
+/* =========================
+   V103 - Ajuste isolado do painel de atributos
+   Objetivo: mostrar nome, bônus, D20, rolagem, −/+, e valor cheio sem sobreposição.
+========================= */
+(function od103AttributePanelFix() {
+  const $ = id => document.getElementById(id);
+  const esc = value => {
+    if (typeof escapeHtml === 'function') return escapeHtml(String(value ?? ''));
+    const div = document.createElement('div');
+    div.textContent = String(value ?? '');
+    return div.innerHTML;
+  };
+  const num = (value, fallback = 0) => {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : fallback;
+  };
+  const labels = {
+    forca: 'Força',
+    agilidade: 'Agilidade',
+    vigor: 'Vigor',
+    intelecto: 'Intelecto',
+    presenca: 'Presença'
+  };
+
+  function getChar() {
+    try { return typeof currentChar === 'function' ? currentChar() : null; } catch (_) { return null; }
+  }
+
+  function saveSoft() {
+    try { if (typeof queueSave === 'function') queueSave(); } catch (_) {}
+    try {
+      const char = getChar();
+      if (char && typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(char);
+    } catch (_) {}
+  }
+
+  function refreshAfterAttrChange(char) {
+    if (!char) return;
+    try { if (typeof syncDodge === 'function') syncDodge(char); } catch (_) {}
+    try { if (typeof renderSkills === 'function') renderSkills(char); } catch (_) {}
+    try { if (typeof updateDerivedStatsDisplay === 'function') updateDerivedStatsDisplay(char); } catch (_) {}
+    try { if (typeof updateBars === 'function') updateBars(char); } catch (_) {}
+  }
+
+  function renderAttributesV103(char = getChar()) {
+    const grid = $('attributes-grid');
+    if (!grid || !char) return;
+
+    char.attrs = char.attrs || {};
+    grid.innerHTML = '';
+
+    Object.entries(labels).forEach(([key, label]) => {
+      const value = num(char.attrs[key], 1);
+      const mod = typeof attrMod === 'function' ? attrMod(value) : value;
+      const modText = typeof formatMod === 'function' ? formatMod(mod) : String(mod);
+
+      const card = document.createElement('div');
+      card.className = 'attr-card-v2 od103-attr-card';
+      card.innerHTML = `
+        <div class="od103-attr-top">
+          <div class="od103-attr-name">${esc(label)}</div>
+          <div class="od103-attr-bonus">${esc(modText)}</div>
+        </div>
+
+        <div class="od103-attr-mid">
+          <button type="button" class="od103-attr-step" data-od103-attr-step="${esc(key)}" data-dir="-1" aria-label="Diminuir ${esc(label)}">−</button>
+          <input class="od103-attr-value" data-attr="${esc(key)}" type="number" value="${esc(value)}" min="1" inputmode="numeric" aria-label="Valor de ${esc(label)}">
+          <button type="button" class="od103-attr-step" data-od103-attr-step="${esc(key)}" data-dir="1" aria-label="Aumentar ${esc(label)}">+</button>
+        </div>
+
+        <div class="od103-attr-bottom">
+          <span class="od103-attr-dice">D20</span>
+          <button class="primary-btn small roll-attr od103-roll" data-roll-attr="${esc(key)}" type="button">D20</button>
+        </div>`;
+      grid.appendChild(card);
+    });
+  }
+
+  if (typeof renderAttributes === 'function') {
+    renderAttributes = renderAttributesV103;
+  }
+  window.renderAttributesV103 = renderAttributesV103;
+
+  document.addEventListener('click', event => {
+    const btn = event.target.closest('[data-od103-attr-step]');
+    if (!btn) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+
+    const key = btn.dataset.od103AttrStep;
+    const dir = num(btn.dataset.dir, 0);
+    const input = document.querySelector(`input[data-attr="${CSS.escape(key)}"]`);
+    if (!input) return;
+
+    const next = Math.max(1, num(input.value, 1) + dir);
+    input.value = next;
+
+    try {
+      if (typeof updateChar === 'function') {
+        updateChar(char => {
+          char.attrs = char.attrs || {};
+          char.attrs[key] = next;
+          try { if (typeof syncDodge === 'function') syncDodge(char); } catch (_) {}
+        });
+      }
+    } catch (_) {}
+
+    const char = getChar();
+    if (char) {
+      char.attrs = char.attrs || {};
+      char.attrs[key] = next;
+      renderAttributesV103(char);
+      refreshAfterAttrChange(char);
+      saveSoft();
+    }
+  }, true);
+
+  document.addEventListener('input', event => {
+    const input = event.target.closest('input.od103-attr-value[data-attr]');
+    if (!input) return;
+
+    const key = input.dataset.attr;
+    const value = Math.max(1, num(input.value, 1));
+
+    try {
+      if (typeof updateChar === 'function') {
+        updateChar(char => {
+          char.attrs = char.attrs || {};
+          char.attrs[key] = value;
+          try { if (typeof syncDodge === 'function') syncDodge(char); } catch (_) {}
+        });
+      }
+    } catch (_) {}
+
+    const char = getChar();
+    if (char) {
+      char.attrs = char.attrs || {};
+      char.attrs[key] = value;
+      refreshAfterAttrChange(char);
+      saveSoft();
+    }
+  }, true);
+
+  function boot() {
+    const char = getChar();
+    if (char && $('attributes-grid')) renderAttributesV103(char);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
+
+/* =========================
+   V104 - Correção isolada: fotos da ficha por link
+   - Salva a foto direto no personagem atual sem depender de wrappers antigos
+   - Mantém GIF animado por link direto
+   - Atualiza imediatamente imagem da ficha, menus e OBS
+   - Protege contra save antigo sobrescrever o retrato com valor vazio/fallback
+========================= */
+(function od104PortraitLinkFix(){
+  const $ = id => document.getElementById(id);
+  const FALLBACK = 'assets/logo.jpg';
+  const esc = value => {
+    try { return typeof escapeHtml === 'function' ? escapeHtml(String(value ?? '')) : String(value ?? ''); }
+    catch (_) { return String(value ?? ''); }
+  };
+  const num = (value, fallback = 0) => {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : fallback;
+  };
+  const clean = value => String(value || '').trim();
+  const valid = value => {
+    const src = clean(value);
+    return !!src && !/^(null|undefined|about:blank)$/i.test(src) && !src.includes('assets/logo');
+  };
+  const getChars = () => { try { return get(STORAGE.characters, []); } catch (_) { return []; } };
+  const setChars = chars => { try { set(STORAGE.characters, chars); } catch (_) {} };
+  const getChar = () => {
+    try {
+      const id = typeof currentCharacterId !== 'undefined' ? currentCharacterId : null;
+      return getChars().find(c => String(c.id) === String(id));
+    } catch (_) { return null; }
+  };
+  const primary = char => clean(char?.portrait || char?.image || char?.photo || char?.avatar || char?.retrato || '');
+  const statePortrait = char => {
+    if (!char) return FALLBACK;
+    const pv = num(char.pvCurrent ?? char.pvAtual ?? char.pv ?? char.hpCurrent ?? char.hp, 0);
+    const max = Math.max(1, num(char.pvMax ?? char.pvTotal ?? char.pv_max ?? char.hpMax ?? char.hpTotal, 1));
+    const icons = char.obsIcons || {};
+    if (pv < 0) return '';
+    if (char.obsTransformationActive && valid(char.obsTransformPortrait || icons.transformation || char.transformationPortrait)) {
+      return clean(char.obsTransformPortrait || icons.transformation || char.transformationPortrait);
+    }
+    if (pv === 0 && valid(icons.zero || char.portraitZero || char.obsIconZero)) return clean(icons.zero || char.portraitZero || char.obsIconZero);
+    if (pv > 0 && pv / max < 0.5 && valid(icons.low || char.portraitLow || char.obsIconLow)) return clean(icons.low || char.portraitLow || char.obsIconLow);
+    return primary(char) || FALLBACK;
+  };
+  function applyCrop(img, char){
+    if (!img || !char) return;
+    const crop = Object.assign({ x: 50, y: 50, scale: 1 }, char.portraitCrop || {});
+    img.style.objectFit = 'cover';
+    img.style.objectPosition = `${num(crop.x, 50)}% ${num(crop.y, 50)}%`;
+    img.style.transformOrigin = `${num(crop.x, 50)}% ${num(crop.y, 50)}%`;
+    img.style.transform = `scale(${Math.max(1, Math.min(3, num(crop.scale, 1)))})`;
+  }
+  function putImg(img, src, char){
+    if (!img) return;
+    const value = clean(src);
+    img.onerror = () => { img.onerror = null; img.src = FALLBACK; };
+    if (!value) {
+      img.removeAttribute('src');
+      img.style.visibility = 'hidden';
+      return;
+    }
+    img.style.visibility = '';
+    if (img.getAttribute('src') !== value) img.src = value;
+    applyCrop(img, char);
+  }
+  function syncAllImages(char = getChar()){
+    if (!char) return;
+    const normal = primary(char) || FALLBACK;
+    const current = statePortrait(char);
+    putImg($('char-portrait-preview'), current, char);
+    putImg($('overlay-portrait'), normal, char);
+    const hidden = $('portrait-url');
+    const oldModal = $('portrait-modal-url');
+    if (hidden) hidden.value = primary(char);
+    if (oldModal) oldModal.value = primary(char);
+    const id = String(char.id || '');
+    if (id) {
+      document.querySelectorAll(`img[data-character-id="${CSS.escape(id)}"], img[data-char-id="${CSS.escape(id)}"]`).forEach(img => putImg(img, normal, char));
+    }
+    document.querySelectorAll('.account-character-card, .od85-character-card, .choose-character-card, .session-character, .character-pill, .campaign-character-preview').forEach(card => {
+      if (!char.name || !(card.textContent || '').includes(char.name)) return;
+      const img = card.querySelector('img');
+      if (img) putImg(img, normal, char);
+    });
+  }
+  function directMutate(mutator){
+    const chars = getChars();
+    const id = typeof currentCharacterId !== 'undefined' ? currentCharacterId : null;
+    const index = chars.findIndex(c => String(c.id) === String(id));
+    if (index < 0) return null;
+    mutator(chars[index]);
+    chars[index].updatedAt = Date.now();
+    setChars(chars);
+    return chars[index];
+  }
+  async function saveOnline(char){
+    if (!char) return;
+    try { if (typeof queueSave === 'function') queueSave(); } catch (_) {}
+    try {
+      if (typeof od44SaveCharacterOnline === 'function') await od44SaveCharacterOnline(char);
+      else if (typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(char);
+    } catch (error) {
+      console.warn('[One Dice v104] Falha ao salvar foto online:', error);
+    }
+  }
+  function ensureDialog(){
+    let dialog = $('od104-photo-modal');
+    if (dialog) return dialog;
+    dialog = document.createElement('dialog');
+    dialog.id = 'od104-photo-modal';
+    dialog.className = 'od104-photo-modal od-modal';
+    dialog.innerHTML = `
+      <form method="dialog" class="modal-card manga-panel od104-photo-card">
+        <div class="od104-modal-head">
+          <div>
+            <h2>Fotos da Ficha</h2>
+            <p>Cole links diretos. PNG, JPG, WEBP e GIF funcionam. GIF permanece animado.</p>
+          </div>
+          <button type="button" class="icon-btn" id="od104-photo-close">×</button>
+        </div>
+        <div class="od104-photo-grid">
+          <label>Foto normal<input id="od104-photo-normal" type="text" placeholder="https://..." autocomplete="off"></label>
+          <label>Machucado, abaixo de 50% PV<input id="od104-photo-low" type="text" placeholder="opcional" autocomplete="off"></label>
+          <label>Morrendo, 0 PV<input id="od104-photo-zero" type="text" placeholder="opcional" autocomplete="off"></label>
+          <label>Transformação ativa<input id="od104-photo-transform" type="text" placeholder="opcional" autocomplete="off"></label>
+        </div>
+        <div class="od104-preview-wrap">
+          <div id="od104-crop-stage" class="od104-crop-stage" title="Arraste para mover. Roda do mouse para zoom.">
+            <img id="od104-crop-img" alt="Prévia" draggable="false">
+          </div>
+          <small>Arraste a imagem para enquadrar e use a roda do mouse para zoom. GIF fica animado porque o link é preservado.</small>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="ghost-btn" id="od104-photo-reset">Centralizar</button>
+          <button type="button" class="ghost-btn" id="od104-photo-cancel">Cancelar</button>
+          <button type="button" class="primary-btn" id="od104-photo-save">Salvar Fotos</button>
+        </div>
+      </form>`;
+    document.body.appendChild(dialog);
+    return dialog;
+  }
+  function refreshPreview(){
+    const img = $('od104-crop-img');
+    if (!img) return;
+    const src = clean($('od104-photo-normal')?.value || '');
+    if (!src) { img.removeAttribute('src'); return; }
+    const crop = Object.assign({ x: 50, y: 50, scale: 1 }, window.od104CropState || {});
+    img.onerror = () => { img.removeAttribute('src'); };
+    if (img.getAttribute('src') !== src) img.src = src;
+    img.style.objectFit = 'cover';
+    img.style.objectPosition = `${crop.x}% ${crop.y}%`;
+    img.style.transformOrigin = `${crop.x}% ${crop.y}%`;
+    img.style.transform = `scale(${Math.max(1, Math.min(3, num(crop.scale, 1)))})`;
+  }
+  function setupCrop(){
+    const stage = $('od104-crop-stage');
+    if (!stage || stage.dataset.od104Ready === '1') return;
+    stage.dataset.od104Ready = '1';
+    let dragging = false;
+    let start = null;
+    stage.addEventListener('pointerdown', ev => {
+      dragging = true;
+      stage.setPointerCapture?.(ev.pointerId);
+      const crop = Object.assign({ x: 50, y: 50, scale: 1 }, window.od104CropState || {});
+      start = { x: ev.clientX, y: ev.clientY, cropX: crop.x, cropY: crop.y };
+    });
+    stage.addEventListener('pointermove', ev => {
+      if (!dragging || !start) return;
+      const rect = stage.getBoundingClientRect();
+      const dx = ((ev.clientX - start.x) / Math.max(1, rect.width)) * -100;
+      const dy = ((ev.clientY - start.y) / Math.max(1, rect.height)) * -100;
+      window.od104CropState = Object.assign({}, window.od104CropState || {}, {
+        x: Math.max(0, Math.min(100, start.cropX + dx)),
+        y: Math.max(0, Math.min(100, start.cropY + dy))
+      });
+      refreshPreview();
+    });
+    ['pointerup','pointercancel','pointerleave'].forEach(type => stage.addEventListener(type, () => { dragging = false; start = null; }));
+    stage.addEventListener('wheel', ev => {
+      ev.preventDefault();
+      const crop = Object.assign({ x: 50, y: 50, scale: 1 }, window.od104CropState || {});
+      crop.scale = Math.max(1, Math.min(3, crop.scale + (ev.deltaY < 0 ? 0.08 : -0.08)));
+      window.od104CropState = crop;
+      refreshPreview();
+    }, { passive: false });
+  }
+  function openDialog(){
+    const char = getChar();
+    const dialog = ensureDialog();
+    const icons = char?.obsIcons || {};
+    $('od104-photo-normal').value = primary(char) || $('portrait-url')?.value || '';
+    $('od104-photo-low').value = clean(icons.low || char?.portraitLow || char?.obsIconLow || '');
+    $('od104-photo-zero').value = clean(icons.zero || char?.portraitZero || char?.obsIconZero || '');
+    $('od104-photo-transform').value = clean(icons.transformation || char?.obsTransformPortrait || char?.transformationPortrait || '');
+    window.od104CropState = Object.assign({ x: 50, y: 50, scale: 1 }, char?.portraitCrop || {});
+    setupCrop();
+    refreshPreview();
+    dialog.showModal();
+  }
+  async function saveDialog(){
+    const normal = clean($('od104-photo-normal')?.value || '');
+    const low = clean($('od104-photo-low')?.value || '');
+    const zero = clean($('od104-photo-zero')?.value || '');
+    const transformation = clean($('od104-photo-transform')?.value || '');
+    const crop = Object.assign({ x: 50, y: 50, scale: 1 }, window.od104CropState || {});
+    const hidden = $('portrait-url');
+    const oldModal = $('portrait-modal-url');
+    if (hidden) hidden.value = normal;
+    if (oldModal) oldModal.value = normal;
+    const char = directMutate(c => {
+      c.portrait = normal;
+      c.image = normal;
+      c.photo = normal;
+      c.avatar = normal;
+      c.retrato = normal;
+      c.obsIcons = c.obsIcons || {};
+      c.obsIcons.low = low;
+      c.obsIcons.zero = zero;
+      c.obsIcons.transformation = transformation;
+      c.portraitLow = low;
+      c.portraitZero = zero;
+      c.obsIconLow = low;
+      c.obsIconZero = zero;
+      c.obsTransformPortrait = transformation;
+      c.transformationPortrait = transformation;
+      c.portraitCrop = crop;
+    });
+    syncAllImages(char);
+    try { if (typeof updateOverlay === 'function') updateOverlay(char); } catch (_) {}
+    try { if (typeof renderCharacterList === 'function') renderCharacterList(); } catch (_) {}
+    try { if (typeof renderAccountCharacterList === 'function') renderAccountCharacterList(); } catch (_) {}
+    try { if (typeof renderCampaignMenu === 'function') renderCampaignMenu(); } catch (_) {}
+    await saveOnline(char);
+    setTimeout(() => syncAllImages(getChar()), 50);
+    setTimeout(() => syncAllImages(getChar()), 400);
+  }
+
+  // Proteção: saves antigos não podem apagar o retrato salvo com fallback/vazio.
+  if (typeof saveCurrentCharacter === 'function' && !saveCurrentCharacter.__od104PortraitWrapped) {
+    const baseSave = saveCurrentCharacter;
+    saveCurrentCharacter = function od104SaveCurrentCharacter() {
+      const before = getChar();
+      const keepPortrait = primary(before);
+      const hidden = $('portrait-url');
+      if (hidden && keepPortrait && (!valid(hidden.value) || hidden.value !== keepPortrait)) hidden.value = keepPortrait;
+      const result = baseSave.apply(this, arguments);
+      const after = directMutate(c => {
+        if (keepPortrait && !valid(c.portrait)) {
+          c.portrait = keepPortrait;
+          c.image = keepPortrait;
+          c.photo = keepPortrait;
+          c.avatar = keepPortrait;
+          c.retrato = keepPortrait;
+        }
+      });
+      syncAllImages(after || getChar());
+      return result;
+    };
+    saveCurrentCharacter.__od104PortraitWrapped = true;
+  }
+  if (typeof renderPortrait === 'function') {
+    renderPortrait = function od104RenderPortrait(char) { syncAllImages(char || getChar()); };
+    renderPortrait.__od104PortraitWrapped = true;
+  }
+  if (typeof loadCharacter === 'function' && !loadCharacter.__od104PortraitWrapped) {
+    const baseLoad = loadCharacter;
+    loadCharacter = function od104LoadCharacter(id) {
+      const result = baseLoad.apply(this, arguments);
+      setTimeout(() => syncAllImages(getChar()), 0);
+      setTimeout(() => syncAllImages(getChar()), 250);
+      return result;
+    };
+    loadCharacter.__od104PortraitWrapped = true;
+  }
+
+  document.addEventListener('click', event => {
+    const portraitBtn = event.target.closest('#portrait-button, #od101-portrait-button, #od102-portrait-button, .portrait-button');
+    if (portraitBtn) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      openDialog();
+      return;
+    }
+    if (event.target.closest('#od104-photo-close, #od104-photo-cancel')) { event.preventDefault(); $('od104-photo-modal')?.close(); return; }
+    if (event.target.closest('#od104-photo-reset')) { event.preventDefault(); window.od104CropState = { x: 50, y: 50, scale: 1 }; refreshPreview(); return; }
+    if (event.target.closest('#od104-photo-save')) { event.preventDefault(); saveDialog().then(() => $('od104-photo-modal')?.close()); return; }
+  }, true);
+  document.addEventListener('input', event => {
+    if (event.target.closest('#od104-photo-normal, #od104-photo-low, #od104-photo-zero, #od104-photo-transform')) refreshPreview();
+  }, true);
+  function boot(){
+    ['portrait-modal','od99-portrait-crop-modal','od100-portrait-modal','od101-photo-modal','od102-photo-modal'].forEach(id => $(id)?.classList.add('od104-hidden-old-photo-modal'));
+    const btn = $('portrait-button') || $('od101-portrait-button') || $('od102-portrait-button') || document.querySelector('.portrait-button');
+    if (btn) { btn.id = 'od104-portrait-button'; btn.classList.add('portrait-button'); btn.setAttribute('title', 'Trocar fotos da ficha'); }
+    syncAllImages(getChar());
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+  setTimeout(boot, 150);
+  setTimeout(boot, 800);
+  window.od104RefreshPortraits = () => syncAllImages(getChar());
+})();
+
+/* =========================
+   V105 - Transformações como estado da mesma ficha
+   - Não cria personagem separado.
+   - Cada transformação fica dentro da ficha base.
+   - A foto da transformação pertence à transformação e não altera a foto normal.
+========================= */
+(function od105EmbeddedTransformations() {
+  'use strict';
+
+  const $ = (id) => document.getElementById(id);
+  const esc = (value) => (typeof escapeHtml === 'function' ? escapeHtml(value) : String(value ?? '').replace(/[&<>\"]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s])));
+  const chars = () => (typeof get === 'function' && typeof STORAGE !== 'undefined') ? get(STORAGE.characters, []) : [];
+  const setChars = (list) => { if (typeof set === 'function' && typeof STORAGE !== 'undefined') set(STORAGE.characters, list); };
+  const idOf = () => (typeof currentCharacterId !== 'undefined' ? currentCharacterId : '');
+  const makeId = () => (typeof uid === 'function' ? uid('form') : `form-${Date.now()}-${Math.random().toString(16).slice(2)}`);
+
+  function findCurrent() {
+    const id = idOf();
+    return chars().find(c => String(c.id) === String(id));
+  }
+
+  function baseIdOf(char) {
+    return char?.baseCharacterId || char?.id || idOf();
+  }
+
+  function normalizeTransformations(char) {
+    if (!char) return [];
+    if (!Array.isArray(char.transformations)) char.transformations = [];
+    char.transformations = char.transformations.map((form, index) => ({
+      id: form.id || makeId(),
+      name: form.name || `Transformação ${index + 1}`,
+      portrait: form.portrait || form.image || form.photo || form.avatar || form.retrato || '',
+      description: form.description || form.desc || form.notes || '',
+      effects: form.effects || form.bonusText || form.modifiersText || '',
+      active: Boolean(form.active)
+    }));
+    return char.transformations;
+  }
+
+  function mutateCurrent(mutator) {
+    const list = chars();
+    const index = list.findIndex(c => String(c.id) === String(idOf()));
+    if (index < 0) return null;
+    normalizeTransformations(list[index]);
+    mutator(list[index]);
+    list[index].updatedAt = Date.now();
+    setChars(list);
+    return list[index];
+  }
+
+  function saveOnline(char) {
+    if (!char) return;
+    try {
+      if (typeof od44SaveCharacterOnline === 'function') od44SaveCharacterOnline(char);
+      else if (typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(char);
+      else if (typeof queueSave === 'function') queueSave();
+    } catch (error) {
+      console.warn('[One Dice v105] Falha ao salvar transformação online:', error);
+    }
+  }
+
+  function migrateLegacyTransformations() {
+    const list = chars();
+    if (!list.length) return;
+    const legacy = list.filter(c => c?.isTransformation && c?.baseCharacterId);
+    if (!legacy.length) return;
+
+    let changed = false;
+    const legacyIds = new Set(legacy.map(c => String(c.id)));
+    for (const form of legacy) {
+      const base = list.find(c => String(c.id) === String(form.baseCharacterId));
+      if (!base) continue;
+      normalizeTransformations(base);
+      if (!base.transformations.some(t => String(t.id) === String(form.id))) {
+        base.transformations.push({
+          id: form.id,
+          name: form.name || 'Transformação',
+          portrait: form.portrait || form.image || form.photo || form.avatar || '',
+          description: form.description || form.desc || '',
+          effects: form.effects || form.notes || '',
+          active: Boolean(form.activeTransformation || base.activeTransformationId === form.id)
+        });
+        changed = true;
+      }
+      if (typeof currentCharacterId !== 'undefined' && String(currentCharacterId) === String(form.id)) currentCharacterId = base.id;
+    }
+
+    if (changed || legacy.length) {
+      const clean = list.filter(c => !legacyIds.has(String(c.id)));
+      clean.forEach(c => {
+        if (c?.transformations?.length) {
+          const active = c.transformations.find(t => t.active || String(t.id) === String(c.activeTransformationId));
+          c.activeTransformationId = active?.id || c.activeTransformationId || '';
+          c.obsTransformationActive = Boolean(c.activeTransformationId);
+          c.obsTransformPortrait = active?.portrait || '';
+        }
+      });
+      setChars(clean);
+      const current = findCurrent();
+      if (current) saveOnline(current);
+    }
+  }
+
+  function getActiveForm(char) {
+    const forms = normalizeTransformations(char);
+    return forms.find(t => String(t.id) === String(char.activeTransformationId)) || forms.find(t => t.active) || null;
+  }
+
+  function syncActiveTransform(char) {
+    const active = getActiveForm(char);
+    normalizeTransformations(char).forEach(t => { t.active = Boolean(active && String(t.id) === String(active.id)); });
+    char.activeTransformationId = active?.id || '';
+    char.activeTransformationName = active?.name || '';
+    char.obsTransformationActive = Boolean(active);
+    char.obsTransformPortrait = active?.portrait || '';
+    char.transformationPortrait = active?.portrait || '';
+    char.obsIcons = char.obsIcons || {};
+    // Compatibilidade com OBS antigo: a fonte vem da transformação ativa, mas a foto normal não é alterada.
+    char.obsIcons.transformation = active?.portrait || '';
+    return char;
+  }
+
+  function renderEmpty(list) {
+    list.innerHTML = `<div class="simple-inventory-empty">Nenhuma transformação criada. Crie uma forma para guardar foto, descrição e efeitos dentro desta mesma ficha.</div>`;
+  }
+
+  function renderTransformationsV105(char = findCurrent()) {
+    const list = $('transformations-list');
+    const banner = $('active-form-banner');
+    if (!list) return;
+    if (!char) { renderEmpty(list); return; }
+    normalizeTransformations(char);
+    syncActiveTransform(char);
+    list.innerHTML = '';
+
+    if (banner) {
+      const active = getActiveForm(char);
+      banner.classList.toggle('hidden', !active);
+      banner.innerHTML = active
+        ? `<strong>Transformação ativa:</strong> ${esc(active.name)} <button class="ghost-btn small" data-od105-deactivate-transform type="button">Desativar</button>`
+        : '';
+    }
+
+    if (!char.transformations.length) return renderEmpty(list);
+
+    char.transformations.forEach((form, index) => {
+      const active = String(form.id) === String(char.activeTransformationId);
+      const card = document.createElement('article');
+      card.className = `mini-card transformation-card od105-transform-card ${active ? 'active' : ''}`;
+      card.dataset.od105TransformId = form.id;
+      card.innerHTML = `
+        <div class="od105-transform-preview">
+          ${form.portrait ? `<img src="${esc(form.portrait)}" alt="">` : `<span>Sem foto</span>`}
+        </div>
+        <div class="od105-transform-fields">
+          <label>Nome
+            <input data-od105-transform-field="name" value="${esc(form.name)}" placeholder="Nome da transformação">
+          </label>
+          <label>Foto da transformação
+            <input data-od105-transform-field="portrait" value="${esc(form.portrait)}" placeholder="https://... PNG, JPG, WEBP ou GIF">
+          </label>
+          <label>Descrição
+            <textarea data-od105-transform-field="description" rows="2" placeholder="Descrição breve da forma">${esc(form.description)}</textarea>
+          </label>
+          <label>Efeitos / bônus
+            <textarea data-od105-transform-field="effects" rows="2" placeholder="Anote os bônus desta transformação">${esc(form.effects)}</textarea>
+          </label>
+        </div>
+        <div class="transformation-actions od105-transform-actions">
+          <button class="${active ? 'ghost-btn' : 'primary-btn'} small" data-od105-activate-transform="${esc(form.id)}" type="button">${active ? 'Ativa' : 'Ativar'}</button>
+          <button class="ghost-btn small" data-od105-duplicate-transform="${esc(form.id)}" type="button">Duplicar</button>
+          <button class="danger-btn small" data-od105-delete-transform="${esc(form.id)}" type="button">Apagar</button>
+        </div>`;
+      list.appendChild(card);
+    });
+  }
+
+  function createTransform() {
+    const char = mutateCurrent(c => {
+      const forms = normalizeTransformations(c);
+      forms.push({
+        id: makeId(),
+        name: `Transformação ${forms.length + 1}`,
+        portrait: '',
+        description: '',
+        effects: '',
+        active: false
+      });
+      syncActiveTransform(c);
+    });
+    saveOnline(char);
+    renderTransformationsV105(char);
+    document.querySelector('[data-tab="transformacoes"]')?.click();
+  }
+
+  function updateTransformFromCard(card) {
+    if (!card) return;
+    const id = card.dataset.od105TransformId;
+    const char = mutateCurrent(c => {
+      const form = normalizeTransformations(c).find(t => String(t.id) === String(id));
+      if (!form) return;
+      card.querySelectorAll('[data-od105-transform-field]').forEach(field => {
+        form[field.dataset.od105TransformField] = field.value || '';
+      });
+      syncActiveTransform(c);
+    });
+    saveOnline(char);
+    const img = card.querySelector('.od105-transform-preview img');
+    const src = card.querySelector('[data-od105-transform-field="portrait"]')?.value?.trim() || '';
+    const preview = card.querySelector('.od105-transform-preview');
+    if (preview) preview.innerHTML = src ? `<img src="${esc(src)}" alt="">` : '<span>Sem foto</span>';
+  }
+
+  function activateTransform(id) {
+    const char = mutateCurrent(c => {
+      normalizeTransformations(c).forEach(t => { t.active = String(t.id) === String(id); });
+      c.activeTransformationId = id;
+      syncActiveTransform(c);
+    });
+    saveOnline(char);
+    renderTransformationsV105(char);
+  }
+
+  function deactivateTransform() {
+    const char = mutateCurrent(c => {
+      normalizeTransformations(c).forEach(t => { t.active = false; });
+      c.activeTransformationId = '';
+      c.activeTransformationName = '';
+      c.obsTransformationActive = false;
+      c.obsTransformPortrait = '';
+      c.transformationPortrait = '';
+      if (c.obsIcons) c.obsIcons.transformation = '';
+    });
+    saveOnline(char);
+    renderTransformationsV105(char);
+  }
+
+  function duplicateTransform(id) {
+    const char = mutateCurrent(c => {
+      const forms = normalizeTransformations(c);
+      const source = forms.find(t => String(t.id) === String(id));
+      if (!source) return;
+      forms.push(Object.assign({}, source, { id: makeId(), name: `${source.name || 'Transformação'} (cópia)`, active: false }));
+      syncActiveTransform(c);
+    });
+    saveOnline(char);
+    renderTransformationsV105(char);
+  }
+
+  function deleteTransform(id) {
+    if (!confirm('Apagar esta transformação?')) return;
+    const char = mutateCurrent(c => {
+      c.transformations = normalizeTransformations(c).filter(t => String(t.id) !== String(id));
+      if (String(c.activeTransformationId) === String(id)) c.activeTransformationId = '';
+      syncActiveTransform(c);
+    });
+    saveOnline(char);
+    renderTransformationsV105(char);
+  }
+
+  // Substitui as funções antigas sem criar fichas novas.
+  window.v39BaseCharId = baseIdOf;
+  window.v39TransformationsOf = function(baseId) {
+    const base = chars().find(c => String(c.id) === String(baseId)) || findCurrent();
+    return normalizeTransformations(base);
+  };
+  window.v39CreateTransformation = createTransform;
+  window.renderTransformations = renderTransformationsV105;
+
+  if (typeof loadCharacter === 'function' && !loadCharacter.__od105TransformWrapped) {
+    const baseLoad = loadCharacter;
+    loadCharacter = function od105LoadCharacter(id) {
+      migrateLegacyTransformations();
+      const result = baseLoad.apply(this, arguments);
+      setTimeout(() => renderTransformationsV105(findCurrent()), 0);
+      return result;
+    };
+    loadCharacter.__od105TransformWrapped = true;
+  }
+
+  if (typeof saveCurrentCharacter === 'function' && !saveCurrentCharacter.__od105TransformWrapped) {
+    const baseSave = saveCurrentCharacter;
+    saveCurrentCharacter = function od105SaveCurrentCharacter() {
+      const result = baseSave.apply(this, arguments);
+      const char = mutateCurrent(c => { normalizeTransformations(c); syncActiveTransform(c); });
+      return result;
+    };
+    saveCurrentCharacter.__od105TransformWrapped = true;
+  }
+
+  document.addEventListener('click', event => {
+    if (event.target.closest('#create-transformation-btn')) {
+      event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation(); createTransform(); return;
+    }
+    const oldOpen = event.target.closest('[data-open-transformation], [data-open-base-form]');
+    if (oldOpen) { event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation(); return; }
+    const activate = event.target.closest('[data-od105-activate-transform]');
+    if (activate) { event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation(); activateTransform(activate.dataset.od105ActivateTransform); return; }
+    const deactivate = event.target.closest('[data-od105-deactivate-transform]');
+    if (deactivate) { event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation(); deactivateTransform(); return; }
+    const duplicate = event.target.closest('[data-od105-duplicate-transform]');
+    if (duplicate) { event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation(); duplicateTransform(duplicate.dataset.od105DuplicateTransform); return; }
+    const del = event.target.closest('[data-od105-delete-transform]');
+    if (del) { event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation(); deleteTransform(del.dataset.od105DeleteTransform); return; }
+  }, true);
+
+  document.addEventListener('input', event => {
+    const field = event.target.closest('[data-od105-transform-field]');
+    if (!field) return;
+    updateTransformFromCard(field.closest('[data-od105-transform-id]'));
+  }, true);
+
+  function hideGlobalTransformPhotoField() {
+    const input = $('od104-photo-transform') || $('od102-photo-transform') || $('od101-photo-transform');
+    if (!input) return;
+    const label = input.closest('label');
+    if (label) label.style.display = 'none';
+    input.value = '';
+  }
+
+  function boot() {
+    migrateLegacyTransformations();
+    hideGlobalTransformPhotoField();
+    renderTransformationsV105(findCurrent());
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+  setTimeout(boot, 250);
+  setTimeout(boot, 1000);
+
+  window.od105RefreshTransformations = boot;
+})();
+
+/* V105b - remove campo global de foto da transformação do modal de fotos */
+(function od105HideGlobalTransformPhotoField(){
+  function hide(){
+    ['od104-photo-transform','od102-photo-transform','od101-photo-transform','od100-photo-transform'].forEach(id => {
+      const input = document.getElementById(id);
+      if (!input) return;
+      input.value = '';
+      const label = input.closest('label');
+      if (label) label.style.display = 'none';
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', hide);
+  else hide();
+  new MutationObserver(hide).observe(document.documentElement, { childList: true, subtree: true });
+})();
+
+/* =========================
+   V107 - Remover perícia Esquiva
+   - Esquiva não é mais uma perícia visível/treinável
+   - Mantém cálculo usando Reflexo conforme regra atual
+========================= */
+(function od107RemoveDodgeSkill(){
+  const normalize = value => String(value || '').trim().toLowerCase();
+
+  function removeDodgeFromSkillList() {
+    try {
+      if (Array.isArray(window.SKILLS)) {
+        window.SKILLS = window.SKILLS.filter(([name]) => normalize(name) !== 'esquiva');
+      } else if (typeof SKILLS !== 'undefined' && Array.isArray(SKILLS)) {
+        for (let i = SKILLS.length - 1; i >= 0; i--) {
+          if (normalize(SKILLS[i]?.[0]) === 'esquiva') SKILLS.splice(i, 1);
+        }
+      }
+    } catch (_) {}
+  }
+
+  function removeDodgeFromCharacter(char) {
+    try {
+      if (char?.skills?.Esquiva) delete char.skills.Esquiva;
+      if (char?.skills?.esquiva) delete char.skills.esquiva;
+    } catch (_) {}
+  }
+
+  function current() {
+    try { return typeof currentChar === 'function' ? currentChar() : null; } catch (_) { return null; }
+  }
+
+  function cleanRenderedCards() {
+    try {
+      document.querySelectorAll('[data-od98-skill-card], [data-od88-skill-card], [data-od79-skill-card]').forEach(card => {
+        const name = card.getAttribute('data-od98-skill-card') || card.getAttribute('data-od88-skill-card') || card.getAttribute('data-od79-skill-card') || '';
+        if (normalize(name) === 'esquiva') card.remove();
+      });
+      document.querySelectorAll('[data-skill="Esquiva"], [data-skill-trained="Esquiva"], [data-skill-bonus="Esquiva"], [data-od98-skill-trained="Esquiva"], [data-od98-skill-bonus="Esquiva"]').forEach(el => {
+        const card = el.closest('article, tr, .od98-skill-card, .od88-skill-card, .od79-skill-card');
+        if (card) card.remove();
+      });
+    } catch (_) {}
+  }
+
+  removeDodgeFromSkillList();
+  removeDodgeFromCharacter(current());
+
+  if (typeof renderSkills === 'function' && !renderSkills.__od107NoDodge) {
+    const baseRenderSkills = renderSkills;
+    renderSkills = function od107RenderSkillsNoDodge(char) {
+      removeDodgeFromSkillList();
+      removeDodgeFromCharacter(char);
+      const result = baseRenderSkills.apply(this, arguments);
+      cleanRenderedCards();
+      return result;
+    };
+    renderSkills.__od107NoDodge = true;
+  }
+
+  if (typeof saveCurrentCharacter === 'function' && !saveCurrentCharacter.__od107NoDodge) {
+    const baseSaveCurrentCharacter = saveCurrentCharacter;
+    saveCurrentCharacter = function od107SaveCurrentCharacterNoDodge() {
+      removeDodgeFromCharacter(current());
+      return baseSaveCurrentCharacter.apply(this, arguments);
+    };
+    saveCurrentCharacter.__od107NoDodge = true;
+  }
+
+  function boot() {
+    removeDodgeFromSkillList();
+    removeDodgeFromCharacter(current());
+    cleanRenderedCards();
+    try { if (typeof renderSkills === 'function' && current()) renderSkills(current()); } catch (_) {}
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
+  else boot();
+  setTimeout(boot, 200);
+  setTimeout(boot, 900);
+})();
+
+/* =========================
+   V108 - menu de informações útil
+   - Troca o bloco vazio do menu lateral por um resumo real da sessão
+   - Mantém #current-user-label para compatibilidade com o código antigo
+========================= */
+(function od108UsefulInfoMenu(){
+  function esc(v){
+    try { return typeof escapeHtml === 'function' ? escapeHtml(String(v ?? '')) : String(v ?? ''); }
+    catch(_) { return String(v ?? ''); }
+  }
+
+  function getUser(){ return typeof currentUser !== 'undefined' ? currentUser : null; }
+  function getChar(){ try { return typeof currentChar === 'function' ? currentChar() : null; } catch(_) { return null; } }
+  function getCamp(){ try { return typeof activeCampaign === 'function' ? activeCampaign() : null; } catch(_) { return null; } }
+  function getMember(){ try { return typeof currentMembership === 'function' ? currentMembership() : null; } catch(_) { return null; } }
+
+  function userName(){
+    const u = getUser();
+    if (!u) return 'Usuário';
+    try { if (typeof userDisplayName === 'function') return userDisplayName(u) || u.realName || u.name || u.nick || 'Usuário'; } catch(_) {}
+    return u.realName || u.name || u.nick || 'Usuário';
+  }
+
+  function avatar(){
+    const u = getUser();
+    return u?.avatar || u?.avatarUrl || u?.photo || u?.photoUrl || u?.portrait || u?.image || u?.picture || 'assets/account-logo.png';
+  }
+
+  function roleLabel(){
+    const m = getMember();
+    if (m?.role === 'mestre') return 'Mestre';
+    if (m?.role === 'jogador') return 'Jogador';
+    if (m?.role === 'mestre_jogador') return 'Mestre/Jogador';
+    return 'Conta';
+  }
+
+  function numberFrom(obj, keys, fallback = 0){
+    for (const k of keys) {
+      const n = Number(obj?.[k]);
+      if (Number.isFinite(n)) return n;
+    }
+    return fallback;
+  }
+
+  function statBlock(label, cur, max, cls){
+    const c = Number.isFinite(Number(cur)) ? Number(cur) : 0;
+    const m = Number.isFinite(Number(max)) && Number(max) > 0 ? Number(max) : 1;
+    const pct = Math.max(0, Math.min(100, (c / m) * 100));
+    return `
+      <div class="od108-stat ${cls}">
+        <div class="od108-stat-row"><b>${label}</b><span>${esc(c)} / ${esc(m)}</span></div>
+        <div class="od108-stat-track"><i style="width:${pct}%"></i></div>
+      </div>`;
+  }
+
+  function renderBrand(){
+    const brand = document.querySelector('#main-topbar .brand');
+    if (!brand) return;
+
+    const user = getUser();
+    const char = getChar();
+    const camp = getCamp();
+    const hp = numberFrom(char, ['pv', 'hp', 'currentHp', 'vidaAtual']);
+    const hpMax = numberFrom(char, ['pvMax', 'hpMax', 'maxHp', 'vidaMaxima'], 1);
+    const pe = numberFrom(char, ['pe', 'currentPe', 'esforcoAtual']);
+    const peMax = numberFrom(char, ['peMax', 'maxPe', 'esforcoMaximo'], 1);
+
+    const html = `
+      <div class="od108-info-avatar-wrap">
+        <img class="od108-info-avatar" src="${esc(avatar())}" alt="Foto do usuário" onerror="this.src='assets/account-logo.png'" />
+      </div>
+      <div class="od108-info-body">
+        <div class="od108-info-kicker">PERFIL DA SESSÃO</div>
+        <strong class="od108-info-name">${esc(userName())}</strong>
+        <span id="current-user-label" class="od108-compat-label">${esc(user?.nick ? '@' + user.nick : 'Conta One Dice')}</span>
+        <div class="od108-info-pills">
+          <span>${esc(roleLabel())}</span>
+          <span>${esc(camp?.name || 'Fora de mesa')}</span>
+          <span>${esc(char?.name || 'Sem ficha aberta')}</span>
+        </div>
+        ${char ? `<div class="od108-info-stats">${statBlock('PV', hp, hpMax, 'hp')}${statBlock('PE', pe, peMax, 'pe')}</div>` : `<div class="od108-info-empty">Abra uma ficha para ver PV e PE aqui.</div>`}
+      </div>`;
+
+    if (brand.dataset.od108Html !== html) {
+      brand.dataset.od108Html = html;
+      brand.classList.add('od108-info-card');
+      brand.innerHTML = html;
+    }
+  }
+
+  function renderMenuPanel(){
+    const card = document.querySelector('#sessions-menu-panel .od90-user-menu-card');
+    if (!card) return;
+    const char = getChar();
+    const camp = getCamp();
+    const html = `
+      <img class="od90-user-avatar" src="${esc(avatar())}" alt="Foto do usuário" onerror="this.src='assets/account-logo.png'" />
+      <div class="od90-user-info od108-panel-user-info">
+        <strong>${esc(userName())}</strong>
+        <small>${esc(getUser()?.nick ? '@' + getUser().nick : 'Conta One Dice')}</small>
+        <small>${esc(roleLabel())} • ${esc(camp?.name || 'Fora de mesa')}</small>
+        <small>${esc(char?.name || 'Sem ficha aberta')}</small>
+      </div>`;
+    if (card.dataset.od108PanelHtml !== html) {
+      card.dataset.od108PanelHtml = html;
+      card.innerHTML = html;
+    }
+  }
+
+  function run(){
+    renderBrand();
+    renderMenuPanel();
+  }
+
+  document.addEventListener('click', function(event){
+    if (event.target.closest('#topbar-menu-toggle, .topbar-menu-toggle, #sessions-menu-btn, #back-to-sessions-btn, #campaign-character-btn, .sheet-tab, [data-enter-campaign], [data-select-character-for-campaign]')) {
+      setTimeout(run, 0);
+      setTimeout(run, 160);
+    }
+  }, true);
+
+  document.addEventListener('input', function(event){
+    if (event.target.closest('input, textarea, select')) setTimeout(run, 250);
+  }, true);
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
+  else run();
+  setTimeout(run, 300);
+  setTimeout(run, 1000);
+  window.od108RefreshInfoMenu = run;
+})();
+
+
+/* =========================
+   V111 - Sistema de condições da mesa
+   - Condições como tags visuais por personagem
+   - Controle pelo mestre individual, selecionados ou todos
+   - OBS mostra tags coloridas
+   - Terreno Difícil é a única condição com efeito: deslocamento pela metade
+========================= */
+(function od111ConditionsPatch(){
+  const OD111_CONDITIONS = [
+    { id:'fascinado', name:'Fascinado', color:'mental' },
+    { id:'fatigado', name:'Fatigado', color:'fisico' },
+    { id:'fraco', name:'Fraco', color:'fisico' },
+    { id:'frustrado', name:'Frustrado', color:'mental' },
+    { id:'imunidade', name:'Imunidade', color:'azul' },
+    { id:'imovel', name:'Imóvel', color:'controle' },
+    { id:'inconsciente', name:'Inconsciente', color:'cinza' },
+    { id:'indefeso', name:'Indefeso', color:'cinza' },
+    { id:'lento', name:'Lento', color:'controle' },
+    { id:'machucado', name:'Machucado', color:'dano' },
+    { id:'morrendo', name:'Morrendo', color:'dano' },
+    { id:'ofuscado', name:'Ofuscado', color:'controle' },
+    { id:'paralisado', name:'Paralisado', color:'controle' },
+    { id:'pasmo', name:'Pasmo', color:'mental' },
+    { id:'petrificado', name:'Petrificado', color:'cinza' },
+    { id:'sangrando', name:'Sangrando', color:'dano' },
+    { id:'surdo', name:'Surdo', color:'controle' },
+    { id:'surpreendido', name:'Surpreendido', color:'mental' },
+    { id:'vulneravel', name:'Vulnerável', color:'dano' },
+    { id:'agarrado', name:'Agarrado', color:'controle' },
+    { id:'cego', name:'Cego', color:'controle' },
+    { id:'confuso', name:'Confuso', color:'mental' },
+    { id:'envenenado', name:'Envenenado', color:'veneno' },
+    { id:'terreno-dificil', name:'Terreno Difícil', color:'terreno', effect:'halfSpeed' }
+  ];
+  const OD111_BY_ID = Object.fromEntries(OD111_CONDITIONS.map(c => [c.id, c]));
+
+  function slugCondition(value){
+    return String(value || '')
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  }
+
+  function conditionName(id){ return OD111_BY_ID[id]?.name || String(id || '').replace(/-/g, ' '); }
+  function conditionColor(id){ return OD111_BY_ID[id]?.color || 'cinza'; }
+
+  function normalizeConditionIds(char){
+    const out = [];
+    const push = (value) => {
+      if (!value) return;
+      const raw = String(value).trim();
+      if (!raw || /^normal$/i.test(raw)) return;
+      const id = OD111_BY_ID[raw] ? raw : slugCondition(raw);
+      if (!id || id === 'normal') return;
+      const found = OD111_BY_ID[id] ? id : (OD111_CONDITIONS.find(c => slugCondition(c.name) === id)?.id || id);
+      if (!out.includes(found)) out.push(found);
+    };
+
+    if (Array.isArray(char?.conditions)) char.conditions.forEach(push);
+    if (Array.isArray(char?.conditionTags)) char.conditionTags.forEach(push);
+    if (typeof char?.conditionsText === 'string') char.conditionsText.split(/[,;|\n]+/).forEach(push);
+    if (typeof char?.condition === 'string') char.condition.split(/[,;|\n]+/).forEach(push);
+    return out.filter(id => OD111_BY_ID[id] || id);
+  }
+
+  function setConditionIds(char, ids){
+    const normalized = [];
+    (ids || []).forEach(id => {
+      const key = OD111_BY_ID[id] ? id : slugCondition(id);
+      if (key && !normalized.includes(key)) normalized.push(key);
+    });
+    char.conditions = normalized;
+    char.conditionTags = normalized;
+    char.conditionsText = normalized.length ? normalized.map(conditionName).join(', ') : 'Normal';
+    char.condition = char.conditionsText;
+    applyConditionEffects(char);
+  }
+
+  function parseMeters(value){
+    const text = String(value ?? '').replace(',', '.');
+    const match = text.match(/-?\d+(?:\.\d+)?/);
+    if (!match) return null;
+    return Number(match[0]);
+  }
+
+  function formatMeters(value){
+    const rounded = Math.round(Number(value || 0) * 10) / 10;
+    return `${String(rounded).replace('.', ',')} m`;
+  }
+
+  function halfSpeedText(value){
+    const meters = parseMeters(value);
+    if (!Number.isFinite(meters)) return value || '';
+    return formatMeters(Math.max(0, meters / 2));
+  }
+
+  function applyConditionEffects(char){
+    if (!char || typeof char !== 'object') return;
+    const ids = normalizeConditionIds(char);
+    const hasTerrain = ids.includes('terreno-dificil');
+
+    if (hasTerrain) {
+      if (!char.od111BaseSpeed) char.od111BaseSpeed = char.speed || char.deslocamento || '0 m';
+      char.speed = halfSpeedText(char.od111BaseSpeed);
+      char.deslocamento = char.speed;
+      return;
+    }
+
+    if (char.od111BaseSpeed) {
+      char.speed = char.od111BaseSpeed;
+      char.deslocamento = char.od111BaseSpeed;
+      delete char.od111BaseSpeed;
+    }
+  }
+
+  function conditionTagsHtml(char){
+    const ids = normalizeConditionIds(char);
+    if (!ids.length) return `<span class="od111-empty-tag">Sem condições</span>`;
+    return ids.map(id => `<span class="od111-condition-tag od111-${escapeHtml(conditionColor(id))}" data-condition-id="${escapeHtml(id)}">${escapeHtml(conditionName(id))}</span>`).join('');
+  }
+
+  function conditionButtonsHtml(char){
+    const active = new Set(normalizeConditionIds(char));
+    return OD111_CONDITIONS.map(c => `
+      <button type="button"
+        class="od111-condition-toggle od111-${escapeHtml(c.color)} ${active.has(c.id) ? 'active' : ''}"
+        data-toggle-condition="${escapeHtml(c.id)}"
+        data-char-id="${escapeHtml(char.id)}">
+        ${escapeHtml(c.name)}
+      </button>`).join('');
+  }
+
+  function conditionOptionsHtml(){
+    return OD111_CONDITIONS.map(c => `<option value="${escapeHtml(c.id)}">${escapeHtml(c.name)}</option>`).join('');
+  }
+
+  function selectedMasterCharacters(){
+    return [...document.querySelectorAll('[data-od111-select-char]:checked')].map(input => input.value).filter(Boolean);
+  }
+
+  function updateManyConditions(charIds, conditionId, action){
+    if (!conditionId || !charIds.length) return;
+    charIds.forEach(charId => {
+      v35UpdateCharacter(charId, char => {
+        const ids = normalizeConditionIds(char);
+        const set = new Set(ids);
+        if (action === 'remove') set.delete(conditionId);
+        else set.add(conditionId);
+        setConditionIds(char, [...set]);
+      }, `${action === 'remove' ? 'Removida' : 'Aplicada'} condição ${conditionName(conditionId)}.`);
+    });
+  }
+
+  function clearManyConditions(charIds){
+    if (!charIds.length) return;
+    charIds.forEach(charId => {
+      v35UpdateCharacter(charId, char => setConditionIds(char, []), 'Condições removidas.');
+    });
+  }
+
+  // Compatibilidade com funções antigas que exibiam condição em texto.
+  window.od111NormalizeConditionIds = normalizeConditionIds;
+  window.od111ConditionTagsHtml = conditionTagsHtml;
+  window.od111Conditions = OD111_CONDITIONS;
+  v35CharCondition = function(char){
+    const ids = normalizeConditionIds(char);
+    return ids.length ? ids.map(conditionName).join(', ') : 'Normal';
+  };
+
+  const baseLoadCharacter111 = loadCharacter;
+  loadCharacter = function(id){
+    baseLoadCharacter111(id);
+    const char = currentChar();
+    if (char) {
+      applyConditionEffects(char);
+      const speed = byId('char-speed');
+      if (speed && char.speed != null) speed.value = char.speed;
+    }
+  };
+
+  const previousRenderMasterDashboard111 = renderMasterDashboard;
+  renderMasterDashboard = function(){
+    const panel = byId('master-dashboard');
+    const grid = byId('master-characters-grid');
+    if (!panel || !grid) return previousRenderMasterDashboard111?.();
+
+    const master = v35IsMaster();
+    panel.classList.toggle('hidden', !master);
+    document.body.classList.toggle('master-dashboard-mode', master);
+    if (!master) return;
+
+    const chars = charactersInCurrentCampaign();
+    const users = get(STORAGE.users, []);
+    const members = getMembers().filter(m => m.campaignId === currentCampaignId);
+    grid.innerHTML = '';
+
+    if (!chars.length) {
+      grid.innerHTML = `<div class="campaign-empty">Nenhum jogador vinculou ficha nesta mesa ainda.</div>`;
+      if (typeof renderInitiativePanel === 'function') renderInitiativePanel();
+      if (typeof v39RenderCommercePanel === 'function') v39RenderCommercePanel();
+      return;
+    }
+
+    const toolbar = document.createElement('section');
+    toolbar.className = 'od111-master-condition-toolbar';
+    toolbar.innerHTML = `
+      <div>
+        <h3>Condições da Mesa</h3>
+        <p>Aplique tags visuais em um jogador, vários selecionados ou todos. Apenas Terreno Difícil altera deslocamento.</p>
+      </div>
+      <div class="od111-toolbar-actions">
+        <select id="od111-condition-select">${conditionOptionsHtml()}</select>
+        <button type="button" class="ghost-btn small" data-od111-apply="selected">Aplicar selecionados</button>
+        <button type="button" class="ghost-btn small" data-od111-remove="selected">Remover selecionados</button>
+        <button type="button" class="primary-btn small" data-od111-apply="all">Aplicar todos</button>
+        <button type="button" class="danger-btn small" data-od111-clear="selected">Limpar selecionados</button>
+        <button type="button" class="danger-btn small" data-od111-clear="all">Limpar todos</button>
+      </div>`;
+    grid.appendChild(toolbar);
+
+    chars.forEach(char => {
+      applyConditionEffects(char);
+      const member = members.find(m => m.characterId === char.id);
+      const user = users.find(u => u.id === member?.userId);
+      const card = document.createElement('article');
+      card.className = 'master-character-card v51-master-card od111-master-card';
+      card.innerHTML = `
+        <div class="master-card-top od111-master-top">
+          <label class="od111-select-wrap" title="Selecionar para aplicar condição em grupo">
+            <input type="checkbox" data-od111-select-char value="${escapeHtml(char.id)}" />
+          </label>
+          <img src="${escapeHtml(char.portrait || 'assets/favicon.png')}" alt="" />
+          <div>
+            <small>Jogador: ${escapeHtml(userDisplayName(user))}</small>
+            <strong>${escapeHtml(char.name || 'Personagem')}</strong>
+            <span>${escapeHtml(char.race || 'Raça')} • ${escapeHtml(char.className || 'Classe')} • Nv. ${escapeHtml(char.level || 1)}</span>
+          </div>
+          <span class="v51-online-chip">Na mesa</span>
+        </div>
+        <div class="master-quick-grid v51-quick-grid">
+          <div class="quick-vital">
+            <label>PV</label>
+            <div class="quick-vital-row">
+              <button type="button" data-quick-resource="pv" data-quick-delta="-5" data-char-id="${escapeHtml(char.id)}">−5</button>
+              <input data-quick-input="pv" data-char-id="${escapeHtml(char.id)}" value="${escapeHtml(char.pvCurrent ?? 0)}" type="number" />
+              <button type="button" data-quick-resource="pv" data-quick-delta="5" data-char-id="${escapeHtml(char.id)}">+5</button>
+            </div>
+            <small>Máx: ${escapeHtml(char.pvMax ?? 0)}</small>
+          </div>
+          <div class="quick-vital">
+            <label>PE</label>
+            <div class="quick-vital-row">
+              <button type="button" data-quick-resource="pe" data-quick-delta="-1" data-char-id="${escapeHtml(char.id)}">−1</button>
+              <input data-quick-input="pe" data-char-id="${escapeHtml(char.id)}" value="${escapeHtml(char.peCurrent ?? 0)}" type="number" />
+              <button type="button" data-quick-resource="pe" data-quick-delta="1" data-char-id="${escapeHtml(char.id)}">+1</button>
+            </div>
+            <small>Máx: ${escapeHtml(char.peMax ?? 0)}</small>
+          </div>
+        </div>
+        <div class="od111-active-tags">${conditionTagsHtml(char)}</div>
+        <details class="od111-condition-panel">
+          <summary>Editar condições</summary>
+          <div class="od111-condition-grid">${conditionButtonsHtml(char)}</div>
+        </details>
+        <div class="master-card-actions">
+          <button class="primary-btn small" type="button" data-open-master-char="${escapeHtml(char.id)}">Abrir Ficha</button>
+          <button class="ghost-btn small" type="button" data-quick-resource="pv" data-quick-delta="-1" data-char-id="${escapeHtml(char.id)}">-1 PV</button>
+          <button class="ghost-btn small" type="button" data-quick-resource="pv" data-quick-delta="1" data-char-id="${escapeHtml(char.id)}">+1 PV</button>
+          <button class="danger-btn small" type="button" data-od111-clear-char="${escapeHtml(char.id)}">Limpar condições</button>
+        </div>`;
+      grid.appendChild(card);
+    });
+
+    if (typeof renderInitiativePanel === 'function') renderInitiativePanel();
+    if (typeof v39RenderCommercePanel === 'function') v39RenderCommercePanel();
+    if (typeof od51RenderHistory === 'function') od51RenderHistory();
+  };
+
+  const previousRenderPlayerDashboard111 = renderPlayerDashboard;
+  renderPlayerDashboard = function(){
+    previousRenderPlayerDashboard111?.();
+    const char = currentChar();
+    const host = document.querySelector('#player-dashboard, .player-dashboard, .sheet-header, .sheet-area');
+    if (!host || !char) return;
+    let box = document.getElementById('od111-player-condition-tags');
+    if (!box) {
+      box = document.createElement('div');
+      box.id = 'od111-player-condition-tags';
+      box.className = 'od111-player-condition-tags';
+      host.prepend(box);
+    }
+    box.innerHTML = conditionTagsHtml(char);
+  };
+
+  document.addEventListener('click', event => {
+    const toggle = event.target.closest('[data-toggle-condition]');
+    if (toggle) {
+      event.preventDefault();
+      const charId = toggle.dataset.charId;
+      const conditionId = toggle.dataset.toggleCondition;
+      v35UpdateCharacter(charId, char => {
+        const set = new Set(normalizeConditionIds(char));
+        if (set.has(conditionId)) set.delete(conditionId);
+        else set.add(conditionId);
+        setConditionIds(char, [...set]);
+      }, `${toggle.classList.contains('active') ? 'Removida' : 'Aplicada'} condição ${conditionName(conditionId)}.`);
+      return;
+    }
+
+    const clearChar = event.target.closest('[data-od111-clear-char]');
+    if (clearChar) {
+      event.preventDefault();
+      v35UpdateCharacter(clearChar.dataset.od111ClearChar, char => setConditionIds(char, []), 'Condições removidas.');
+      return;
+    }
+
+    const apply = event.target.closest('[data-od111-apply]');
+    if (apply) {
+      event.preventDefault();
+      const conditionId = byId('od111-condition-select')?.value;
+      const chars = charactersInCurrentCampaign().map(c => c.id);
+      const targets = apply.dataset.od111Apply === 'all' ? chars : selectedMasterCharacters();
+      if (!targets.length) return alert('Selecione pelo menos um personagem.');
+      updateManyConditions(targets, conditionId, 'add');
+      return;
+    }
+
+    const remove = event.target.closest('[data-od111-remove]');
+    if (remove) {
+      event.preventDefault();
+      const conditionId = byId('od111-condition-select')?.value;
+      const targets = remove.dataset.od111Remove === 'all' ? charactersInCurrentCampaign().map(c => c.id) : selectedMasterCharacters();
+      if (!targets.length) return alert('Selecione pelo menos um personagem.');
+      updateManyConditions(targets, conditionId, 'remove');
+      return;
+    }
+
+    const clear = event.target.closest('[data-od111-clear]');
+    if (clear) {
+      event.preventDefault();
+      const targets = clear.dataset.od111Clear === 'all' ? charactersInCurrentCampaign().map(c => c.id) : selectedMasterCharacters();
+      if (!targets.length) return alert('Selecione pelo menos um personagem.');
+      clearManyConditions(targets);
+    }
+  });
+
+  // Garante consistência ao salvar e ao receber atualizações online.
+  const previousSaveCurrentCharacter111 = saveCurrentCharacter;
+  saveCurrentCharacter = function(){
+    previousSaveCurrentCharacter111();
+    const char = currentChar();
+    if (char) {
+      updateChar(saved => {
+        setConditionIds(saved, normalizeConditionIds(saved));
+      });
+    }
+  };
+})();
+
+
+/* =========================
+   V113 - Modelo de Sistema: D20 / Pool Dice
+   - Campo em fichas e campanhas
+   - Compatibilidade ficha x campanha
+   - Rolagem de atributo D20 ou pool de D20
+========================= */
+(function od113SystemModelPatch(){
+  const MODEL_D20 = 'd20';
+  const MODEL_POOL = 'pool';
+  const LABELS = { d20: 'D20', pool: 'Pool Dice' };
+  const $ = id => document.getElementById(id);
+  const esc = value => {
+    try { return typeof escapeHtml === 'function' ? escapeHtml(String(value ?? '')) : String(value ?? ''); }
+    catch (_) { return String(value ?? ''); }
+  };
+  const safe = value => String(value || '').trim();
+  const normalizeModel = value => {
+    const v = String(value || '').trim().toLowerCase().replace(/[_\s-]+/g, '');
+    if (['pool','pooldice','dices','dados','ordem','ordemparanormal'].includes(v)) return MODEL_POOL;
+    return MODEL_D20;
+  };
+  const modelLabel = value => LABELS[normalizeModel(value)] || 'D20';
+  const getChars = () => { try { return get(STORAGE.characters, []); } catch (_) { return []; } };
+  const setChars = chars => { try { set(STORAGE.characters, chars); } catch (_) {} };
+  const getTables = () => { try { return getCampaigns(); } catch (_) { return []; } };
+  const current = () => { try { return typeof currentChar === 'function' ? currentChar() : getChars().find(c => String(c.id) === String(currentCharacterId)); } catch (_) { return null; } };
+  const characterModel = char => normalizeModel(char?.systemModel || char?.systemType || char?.sheetModel || char?.diceSystem || char?.ruleset);
+  const setCharacterModel = (char, model) => {
+    if (!char) return;
+    const normalized = normalizeModel(model);
+    char.systemModel = normalized;
+    char.systemType = normalized;
+    char.sheetModel = normalized;
+  };
+  const campaignModel = table => normalizeModel(table?.systemModel || table?.systemType || table?.settings?.systemModel || table?.settings?.systemType || table?.ruleset);
+  const setCampaignModel = (table, model) => {
+    if (!table) return;
+    const normalized = normalizeModel(model);
+    table.settings = table.settings || {};
+    table.systemModel = normalized;
+    table.systemType = normalized;
+    table.settings.systemModel = normalized;
+    table.settings.systemType = normalized;
+  };
+  const getSelectedCharacterModel = () => normalizeModel($('od113-character-system-select')?.value || MODEL_D20);
+  const getSelectedCampaignModel = () => normalizeModel($('od113-campaign-system-select')?.value || MODEL_D20);
+
+  function ensureCharacterDefaults(char) {
+    if (!char) return char;
+    setCharacterModel(char, characterModel(char));
+    return char;
+  }
+  function ensureAllDefaults() {
+    const chars = getChars();
+    let changedChars = false;
+    chars.forEach(c => {
+      const before = c.systemModel || c.systemType || c.sheetModel;
+      ensureCharacterDefaults(c);
+      if (!before) changedChars = true;
+    });
+    if (changedChars) setChars(chars);
+
+    try {
+      const tables = getTables();
+      let changedTables = false;
+      tables.forEach(t => {
+        const before = t.systemModel || t.systemType || t.settings?.systemModel || t.settings?.systemType;
+        setCampaignModel(t, campaignModel(t));
+        if (!before) changedTables = true;
+      });
+      if (changedTables && typeof setCampaigns === 'function') setCampaigns(tables);
+    } catch (_) {}
+  }
+
+  function makeModelSelect(id, selected = MODEL_D20, compact = false) {
+    return `<label class="od113-system-field ${compact ? 'compact' : ''}">
+      <span>Modelo</span>
+      <select id="${id}" class="od113-system-select">
+        <option value="d20" ${normalizeModel(selected) === MODEL_D20 ? 'selected' : ''}>D20</option>
+        <option value="pool" ${normalizeModel(selected) === MODEL_POOL ? 'selected' : ''}>Pool Dice</option>
+      </select>
+    </label>`;
+  }
+
+  function ensureCreateControls() {
+    const createAccount = $('create-account-character-btn');
+    if (createAccount && !$('od113-character-system-select')) {
+      createAccount.insertAdjacentHTML('beforebegin', makeModelSelect('od113-character-system-select', MODEL_D20, true));
+    }
+    const newCampaignName = $('new-campaign-name');
+    if (newCampaignName && !$('od113-campaign-system-select')) {
+      newCampaignName.insertAdjacentHTML('afterend', makeModelSelect('od113-campaign-system-select', MODEL_D20, true));
+    }
+  }
+
+  function decorateSystemBadges() {
+    ensureAllDefaults();
+    document.querySelectorAll('.account-character-card').forEach(card => {
+      const edit = card.querySelector('[data-edit-account-character]');
+      if (!edit || card.querySelector('.od113-system-badge')) return;
+      const char = getChars().find(c => String(c.id) === String(edit.dataset.editAccountCharacter));
+      const strong = card.querySelector('strong');
+      if (char && strong) strong.insertAdjacentHTML('afterend', `<em class="od113-system-badge">${modelLabel(characterModel(char))}</em>`);
+    });
+    document.querySelectorAll('.session-character').forEach(card => {
+      if (card.querySelector('.od113-system-badge')) return;
+      const img = card.querySelector('img');
+      let char = null;
+      if (card.dataset?.characterId) char = getChars().find(c => String(c.id) === String(card.dataset.characterId));
+      const name = card.querySelector('strong')?.textContent?.trim();
+      if (!char && name) char = getChars().find(c => safe(c.name) === name);
+      const small = card.querySelector('small, span:last-child');
+      if (char && (small || card)) (small || card).insertAdjacentHTML('afterend', `<em class="od113-system-badge mini">${modelLabel(characterModel(char))}</em>`);
+    });
+    document.querySelectorAll('.campaign-card').forEach(card => {
+      if (card.querySelector('.od113-campaign-model-badge')) return;
+      const enter = card.querySelector('[data-enter-campaign]');
+      if (!enter) return;
+      const table = getTables().find(t => String(t.id) === String(enter.dataset.enterCampaign));
+      const title = card.querySelector('.campaign-main strong, strong');
+      if (table && title) title.insertAdjacentHTML('afterend', `<em class="od113-campaign-model-badge">${modelLabel(campaignModel(table))}</em>`);
+    });
+  }
+
+  function sortAlpha() {
+    try {
+      const chars = getChars();
+      chars.sort((a,b)=>safe(a.name).localeCompare(safe(b.name), 'pt-BR', { sensitivity:'base' }));
+      setChars(chars);
+    } catch (_) {}
+    try {
+      const tables = getTables();
+      tables.sort((a,b)=>safe(a.name).localeCompare(safe(b.name), 'pt-BR', { sensitivity:'base' }));
+      if (typeof setCampaigns === 'function') setCampaigns(tables);
+    } catch (_) {}
+  }
+
+  function scheduleDecorate() {
+    setTimeout(() => { ensureCreateControls(); decorateSystemBadges(); }, 0);
+  }
+
+  // Criação local/offline
+  const baseCreateCharacter113 = createCharacter;
+  createCharacter = function(ownerId, name = 'Novo Personagem', model = MODEL_D20) {
+    const char = baseCreateCharacter113(ownerId, name);
+    setCharacterModel(char, model);
+    return char;
+  };
+
+  // Normalização online
+  if (typeof od42CharacterFromRow === 'function') {
+    const oldCharFromRow = od42CharacterFromRow;
+    od42CharacterFromRow = function(row) {
+      const char = oldCharFromRow(row);
+      ensureCharacterDefaults(char);
+      return char;
+    };
+  }
+  if (typeof od42TableFromRow === 'function') {
+    const oldTableFromRow = od42TableFromRow;
+    od42TableFromRow = function(row) {
+      const table = oldTableFromRow(row);
+      table.settings = row?.settings || table.settings || {};
+      if (row?.system_model || row?.system_type) setCampaignModel(table, row.system_model || row.system_type);
+      else setCampaignModel(table, campaignModel(table));
+      return table;
+    };
+  }
+
+  if (typeof od42CreateCharacter === 'function') {
+    od42CreateCharacter = async function(name = 'Novo Personagem', model = getSelectedCharacterModel()) {
+      const base = createCharacter(currentUser.id, name, model);
+      const data = await od42Api('/api/characters', {
+        method: 'POST',
+        body: JSON.stringify({ name: base.name, data: base })
+      });
+      const char = od42CharacterFromRow(data.character);
+      setCharacterModel(char, model);
+      od42MergeById(STORAGE.characters, [char]);
+      sortAlpha();
+      return char;
+    };
+  }
+
+  createAccountCharacter = function(openAfterCreate = true) {
+    const model = getSelectedCharacterModel();
+    if (typeof od42CreateCharacter === 'function' && typeof od42Api === 'function' && typeof od42Token === 'function' && od42Token()) {
+      od42CreateCharacter('Novo Personagem', model).then(char => {
+        currentCharacterId = char.id;
+        if (typeof renderAccountCharacterMenu === 'function') renderAccountCharacterMenu();
+        if (openAfterCreate && typeof initAccountCharacterEditor === 'function') initAccountCharacterEditor(char.id);
+        scheduleDecorate();
+      }).catch(error => alert(error.message || 'Erro ao criar ficha.'));
+      return;
+    }
+    const chars = getChars();
+    const char = createCharacter(currentUser.id, 'Novo Personagem', model);
+    chars.push(char);
+    setChars(chars);
+    currentCharacterId = char.id;
+    if (typeof renderAccountCharacterMenu === 'function') renderAccountCharacterMenu();
+    if (openAfterCreate && typeof initAccountCharacterEditor === 'function') initAccountCharacterEditor(char.id);
+    scheduleDecorate();
+  };
+
+  createCampaign = async function() {
+    try {
+      const name = $('new-campaign-name')?.value?.trim() || 'Nova Mesa';
+      const model = getSelectedCampaignModel();
+      if (typeof od42Api === 'function' && typeof od42Token === 'function' && od42Token()) {
+        const data = await od42Api('/api/tables', {
+          method: 'POST',
+          body: JSON.stringify({ name, systemType: model, settings: { systemType: model, systemModel: model } })
+        });
+        const table = od42TableFromRow(data.table);
+        setCampaignModel(table, model);
+        if ($('new-campaign-name')) $('new-campaign-name').value = '';
+        await od42RefreshTables();
+        if (typeof renderCampaignMenu === 'function') renderCampaignMenu();
+        scheduleDecorate();
+        alert(`Mesa criada! Código de convite: ${table.code}`);
+        return;
+      }
+      const campaigns = getTables();
+      const campaign = { id: uid('camp'), name, code: generateInviteCode(), ownerId: currentUser.id, createdAt: Date.now(), settings: {} };
+      setCampaignModel(campaign, model);
+      campaigns.push(campaign);
+      setCampaigns(campaigns);
+      const members = getMembers();
+      members.push({ id: uid('member'), campaignId: campaign.id, userId: currentUser.id, role: 'mestre', characterId: null });
+      setMembers(members);
+      if ($('new-campaign-name')) $('new-campaign-name').value = '';
+      if (typeof renderCampaignMenu === 'function') renderCampaignMenu();
+      scheduleDecorate();
+      alert(`Mesa criada! Código de convite: ${campaign.code}`);
+    } catch (error) {
+      alert(error.message || 'Erro ao criar mesa.');
+    }
+  };
+
+  function compatibleWithCampaign(char, table) {
+    if (!char || !table) return false;
+    return characterModel(char) === campaignModel(table);
+  }
+
+  openChooseCharacterModal = function(campaignId = currentCampaignId) {
+    pendingChooseCampaignId = campaignId;
+    const list = $('choose-character-list');
+    if (!list) return;
+    ensureAllDefaults();
+    const table = getTables().find(t => String(t.id) === String(campaignId));
+    const model = campaignModel(table);
+    const chars = getChars()
+      .filter(c => c.ownerId === currentUser?.id)
+      .sort((a,b)=>safe(a.name).localeCompare(safe(b.name), 'pt-BR', { sensitivity:'base' }));
+    const compatible = chars.filter(c => characterModel(c) === model);
+
+    list.innerHTML = `<div class="od113-choose-hint">Esta campanha usa <b>${modelLabel(model)}</b>. Só fichas do mesmo modelo podem ser vinculadas.</div>`;
+
+    if (!compatible.length) {
+      const empty = document.createElement('div');
+      empty.className = 'campaign-empty';
+      empty.innerHTML = `Você ainda não tem ficha <b>${modelLabel(model)}</b>. Crie uma nova ficha nesse modelo ou entre sem ficha.`;
+      list.appendChild(empty);
+    }
+
+    compatible.forEach(char => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'choose-character-card';
+      btn.dataset.selectCharacterForCampaign = char.id;
+      btn.innerHTML = `<img src="${esc(char.portrait || 'assets/logo.jpg')}" alt="" /><strong>${esc(char.name)}</strong><span>${esc(char.race)} • ${esc(char.className)} • Nv. ${char.level}</span><em class="od113-system-badge">${modelLabel(characterModel(char))}</em>`;
+      list.appendChild(btn);
+    });
+
+    const incompatible = chars.filter(c => characterModel(c) !== model);
+    if (incompatible.length) {
+      const note = document.createElement('div');
+      note.className = 'od113-incompatible-note';
+      note.textContent = `${incompatible.length} ficha(s) ocultas por serem de outro modelo.`;
+      list.appendChild(note);
+    }
+
+    const modal = $('choose-character-modal');
+    const createBtn = $('create-character-for-campaign');
+    if (createBtn) createBtn.textContent = `+ Nova Ficha ${modelLabel(model)}`;
+    if (modal?.showModal) modal.showModal();
+  };
+
+  attachCharacterToCampaign = async function(campaignId, characterId) {
+    try {
+      const table = getTables().find(t => String(t.id) === String(campaignId));
+      const char = characterId ? getChars().find(c => String(c.id) === String(characterId)) : null;
+      if (characterId && table && char && !compatibleWithCampaign(char, table)) {
+        return alert(`Essa mesa é ${modelLabel(campaignModel(table))}. Escolha uma ficha ${modelLabel(campaignModel(table))}.`);
+      }
+      if (typeof od42Api === 'function' && typeof od42Token === 'function' && od42Token()) {
+        await od42Api(`/api/tables/${campaignId}/member`, { method: 'PUT', body: JSON.stringify({ characterId }) });
+        await od42RefreshTables();
+        await od42LoadTableState(campaignId);
+      } else {
+        const members = getMembers().map(m => m.campaignId === campaignId && m.userId === currentUser.id ? { ...m, characterId } : m);
+        setMembers(members);
+      }
+      $('choose-character-modal')?.close();
+      if (typeof renderCampaignMenu === 'function') renderCampaignMenu();
+      if (currentCampaignId === campaignId && typeof initApp === 'function') initApp(campaignId);
+      scheduleDecorate();
+    } catch (error) {
+      alert(error.message || 'Erro ao vincular ficha.');
+    }
+  };
+
+  createCharacterForCampaign = async function() {
+    try {
+      const table = getTables().find(t => String(t.id) === String(pendingChooseCampaignId));
+      const model = campaignModel(table);
+      const char = typeof od42CreateCharacter === 'function'
+        ? await od42CreateCharacter('Novo Personagem', model)
+        : createCharacter(currentUser.id, 'Novo Personagem', model);
+      if (!char.id) {
+        const chars = getChars();
+        chars.push(char);
+        setChars(chars);
+      }
+      await attachCharacterToCampaign(pendingChooseCampaignId, char.id);
+    } catch (error) {
+      alert(error.message || 'Erro ao criar ficha.');
+    }
+  };
+
+  // Botão entrar sem ficha, sem erro duplicado.
+  document.addEventListener('click', event => {
+    const noSheet = event.target.closest('#od113-enter-without-sheet');
+    if (!noSheet) return;
+    event.preventDefault();
+    const campaignId = pendingChooseCampaignId;
+    $('choose-character-modal')?.close();
+    if (campaignId && typeof enterCampaign === 'function') enterCampaign(campaignId);
+  }, true);
+
+  function ensureNoSheetButton() {
+    const modalActions = document.querySelector('#choose-character-modal .modal-actions');
+    if (modalActions && !$('od113-enter-without-sheet')) {
+      modalActions.insertAdjacentHTML('afterbegin', `<button id="od113-enter-without-sheet" class="ghost-btn" type="button">Entrar sem ficha</button>`);
+    }
+  }
+
+  // Salva alteração manual do modelo da ficha aberta, sem trocar campanha automaticamente.
+  function ensureSheetModelField() {
+    const identityPanel = $('char-name')?.closest('section, .sheet-section, .manga-panel, div');
+    const char = current();
+    if (!identityPanel || !char || $('od113-open-sheet-model')) return;
+    const wrap = document.createElement('label');
+    wrap.className = 'od113-open-sheet-model';
+    wrap.innerHTML = `<span>Modelo da ficha</span><select id="od113-open-sheet-model" class="od113-system-select"><option value="d20">D20</option><option value="pool">Pool Dice</option></select>`;
+    const nameInput = $('char-name');
+    if (nameInput?.parentElement) nameInput.parentElement.appendChild(wrap);
+    const select = $('od113-open-sheet-model');
+    if (select) {
+      select.value = characterModel(char);
+      select.addEventListener('change', () => {
+        const next = normalizeModel(select.value);
+        const linked = (typeof getMembers === 'function' ? getMembers() : []).some(m => String(m.characterId) === String(char.id));
+        if (linked && !confirm('Essa ficha pode estar vinculada a uma mesa. Alterar o modelo pode impedir vínculo com campanhas de outro modelo. Continuar?')) {
+          select.value = characterModel(char);
+          return;
+        }
+        updateChar(c => setCharacterModel(c, next));
+        const currentCharNow = current();
+        if (currentCharNow) setCharacterModel(currentCharNow, next);
+        try { saveCurrentCharacter(); } catch (_) {}
+        scheduleDecorate();
+      });
+    }
+  }
+
+  const oldLoadCharacter113 = typeof loadCharacter === 'function' ? loadCharacter : null;
+  if (oldLoadCharacter113) {
+    loadCharacter = function(id) {
+      oldLoadCharacter113(id);
+      setTimeout(() => {
+        ensureSheetModelField();
+        const select = $('od113-open-sheet-model');
+        const char = current();
+        if (select && char) select.value = characterModel(char);
+      }, 0);
+    };
+  }
+
+  // Compatibilidade visual após renderizações existentes.
+  ['renderAccountCharacterMenu','renderCampaignMenu','renderAccountCharacterSidebar'].forEach(name => {
+    if (typeof window !== 'undefined' && typeof window[name] === 'function') return;
+  });
+  const wrapRender = name => {
+    try {
+      if (typeof globalThis[name] !== 'function') return;
+      const old = globalThis[name];
+      globalThis[name] = function(...args) {
+        const out = old.apply(this, args);
+        sortAlpha();
+        scheduleDecorate();
+        return out;
+      };
+    } catch (_) {}
+  };
+  wrapRender('renderAccountCharacterMenu');
+  wrapRender('renderCampaignMenu');
+  wrapRender('renderAccountCharacterSidebar');
+
+  // Rolagem de atributos por modelo.
+  document.addEventListener('click', event => {
+    const btn = event.target.closest('.roll-attr[data-roll-attr]');
+    if (!btn) return;
+    const char = current();
+    if (!char) return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+
+    const key = btn.dataset.rollAttr;
+    const label = (typeof ATTRIBUTE_KEYS !== 'undefined' ? ATTRIBUTE_KEYS.find(a => a[0] === key)?.[1] : null) || key;
+    const value = Math.max(1, Number(char.attrs?.[key] ?? 1) || 1);
+    if (characterModel(char) === MODEL_POOL) {
+      const qty = Math.max(1, Math.min(20, Math.floor(value)));
+      const results = Array.from({ length: qty }, () => Math.floor(Math.random() * 20) + 1);
+      const best = Math.max(...results);
+      const text = `${label} • Pool Dice: ${qty}D20 → [${results.join(', ')}] melhor = ${best}`;
+      if ($('last-roll')) {
+        $('last-roll').textContent = text;
+        $('last-roll').classList.remove('shake'); void $('last-roll').offsetWidth; $('last-roll').classList.add('shake');
+      }
+      if (typeof addChat === 'function') addChat(text, 'roll');
+    } else {
+      const mod = typeof attrMod === 'function' ? attrMod(value) : 0;
+      if (typeof doRoll === 'function') doRoll(`Teste de ${label}`, 1, 20, mod);
+    }
+  }, true);
+
+  // Atualiza texto dos cards de atributo para o modelo ativo.
+  const oldRenderAttributes113 = typeof renderAttributes === 'function' ? renderAttributes : null;
+  if (oldRenderAttributes113) {
+    renderAttributes = function(char) {
+      oldRenderAttributes113(char);
+      const model = characterModel(char);
+      document.querySelectorAll('.attr-card-v2, .od103-attr-card').forEach(card => {
+        const dice = card.querySelector('.od103-attr-dice, .attr-help');
+        const btn = card.querySelector('.roll-attr');
+        if (model === MODEL_POOL) {
+          if (dice) dice.textContent = 'POOL';
+          if (btn) btn.textContent = 'POOL';
+        } else {
+          if (dice && dice.classList.contains('od103-attr-dice')) dice.textContent = 'D20';
+          if (dice && dice.classList.contains('attr-help')) dice.textContent = dice.textContent.replace(/fórmula D&D|POOL/g, 'D20');
+          if (btn) btn.textContent = 'D20';
+        }
+      });
+      ensureSheetModelField();
+    };
+  }
+
+  document.addEventListener('change', event => {
+    const select = event.target.closest('#od113-character-system-select, #od113-campaign-system-select');
+    if (!select) return;
+    scheduleDecorate();
+  }, true);
+
+  function boot() {
+    ensureAllDefaults();
+    ensureCreateControls();
+    ensureNoSheetButton();
+    ensureSheetModelField();
+    decorateSystemBadges();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+  setTimeout(boot, 300);
+  setTimeout(boot, 1000);
+
+  window.od113SystemModel = { normalizeModel, characterModel, campaignModel, modelLabel, decorateSystemBadges };
+})();
+
+/* =========================
+   V113.1 - Integração com editor moderno de campanhas v86
+========================= */
+(function od113CampaignEditorIntegration(){
+  const $ = id => document.getElementById(id);
+  const normalizeModel = value => {
+    const v = String(value || '').trim().toLowerCase().replace(/[\s_-]+/g, '');
+    return ['pool','pooldice','dados','ordem','ordemparanormal'].includes(v) ? 'pool' : 'd20';
+  };
+  const label = value => normalizeModel(value) === 'pool' ? 'Pool Dice' : 'D20';
+  const campaignModel = campaign => normalizeModel(campaign?.systemModel || campaign?.systemType || campaign?.settings?.systemModel || campaign?.settings?.systemType);
+  let lastEditorCampaignId = null;
+
+  function ensureEditorModelField() {
+    const grid = document.querySelector('#od86-campaign-editor .od86-editor-grid');
+    if (!grid || $('od86-campaign-system')) return;
+    const campaign = lastEditorCampaignId ? (typeof getCampaigns === 'function' ? getCampaigns() : []).find(c => String(c.id) === String(lastEditorCampaignId)) : null;
+    const current = campaignModel(campaign);
+    const labelEl = document.createElement('label');
+    labelEl.className = 'od113-od86-system-label';
+    labelEl.innerHTML = `Modelo da campanha
+      <select id="od86-campaign-system" class="od113-system-select">
+        <option value="d20" ${current === 'd20' ? 'selected' : ''}>D20</option>
+        <option value="pool" ${current === 'pool' ? 'selected' : ''}>Pool Dice</option>
+      </select>`;
+    const desc = $('od86-campaign-description')?.closest('label');
+    if (desc) desc.insertAdjacentElement('afterend', labelEl);
+    else grid.prepend(labelEl);
+  }
+
+  function syncEditorValue() {
+    ensureEditorModelField();
+    const select = $('od86-campaign-system');
+    if (!select) return;
+    const campaign = lastEditorCampaignId ? (typeof getCampaigns === 'function' ? getCampaigns() : []).find(c => String(c.id) === String(lastEditorCampaignId)) : null;
+    select.value = campaignModel(campaign);
+  }
+
+  document.addEventListener('click', event => {
+    const edit = event.target.closest('[data-od86-edit-campaign]');
+    const create = event.target.closest('#od86-new-campaign');
+    if (edit) lastEditorCampaignId = edit.dataset.od86EditCampaign || null;
+    if (create) lastEditorCampaignId = null;
+    if (edit || create) {
+      setTimeout(syncEditorValue, 0);
+      setTimeout(syncEditorValue, 80);
+    }
+  }, true);
+
+  // Injeta o modelo escolhido em qualquer POST/PUT de campanhas, inclusive no editor v86.
+  if (typeof od42Api === 'function' && !od42Api.__od113Wrapped) {
+    const originalApi = od42Api;
+    od42Api = async function(path, options = {}) {
+      try {
+        const method = String(options?.method || 'GET').toUpperCase();
+        const isTableSave = String(path || '') === '/api/tables' && method === 'POST'
+          || (/^\/api\/tables\/[^/]+$/.test(String(path || '')) && method === 'PUT');
+        if (isTableSave) {
+          let body = {};
+          try { body = options.body ? JSON.parse(options.body) : {}; } catch (_) { body = {}; }
+          const selected = normalizeModel($('od86-campaign-system')?.value || $('od113-campaign-system-select')?.value || body.systemType || body.systemModel || body?.settings?.systemType);
+          body.systemType = selected;
+          body.systemModel = selected;
+          body.settings = { ...(body.settings && typeof body.settings === 'object' ? body.settings : {}), systemType: selected, systemModel: selected };
+          options = { ...options, body: JSON.stringify(body) };
+        }
+      } catch (_) {}
+      return originalApi(path, options);
+    };
+    od42Api.__od113Wrapped = true;
+  }
+
+  function decorateOd86Cards() {
+    document.querySelectorAll('.od86-campaign-card').forEach(card => {
+      if (card.querySelector('.od113-campaign-model-badge')) return;
+      const enter = card.querySelector('[data-enter-campaign]');
+      if (!enter) return;
+      const campaign = (typeof getCampaigns === 'function' ? getCampaigns() : []).find(c => String(c.id) === String(enter.dataset.enterCampaign));
+      const title = card.querySelector('.od86-campaign-title-row h3, .od86-campaign-title-row strong, h3, strong');
+      if (title) title.insertAdjacentHTML('afterend', `<em class="od113-campaign-model-badge">${label(campaignModel(campaign))}</em>`);
+    });
+  }
+
+  setInterval(decorateOd86Cards, 1200);
+})();
+
+
+/* =========================
+   V114 - Discussão da Campanha
+   - Feed fora de sessão dentro do menu Campanhas
+   - Resumos, fotos por link e conversas estilo mural
+   - Informações da próxima sessão para todos
+   - Mestre edita organização da próxima sessão
+========================= */
+(function od114CampaignDiscussion(){
+  const $ = id => document.getElementById(id);
+  const safe = value => {
+    try { return typeof escapeHtml === 'function' ? escapeHtml(String(value ?? '')) : String(value ?? ''); }
+    catch (_) { return String(value ?? ''); }
+  };
+  const uid114 = () => `disc-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  let activeTableId = null;
+  let activeDiscussion = { session: {}, posts: [] };
+  let activeCanManage = false;
+
+  function campaigns(){ try { return typeof getCampaigns === 'function' ? getCampaigns() : []; } catch (_) { return []; } }
+  function members(){ try { return typeof getMembers === 'function' ? getMembers() : []; } catch (_) { return []; } }
+  function currentMember(tableId){ return members().find(m => String(m.campaignId) === String(tableId) && String(m.userId) === String(currentUser?.id)); }
+  function roleIsMaster(role){ return ['mestre','master','mestre_jogador','master_player'].includes(String(role || '').toLowerCase()); }
+  function tableById(tableId){ return campaigns().find(c => String(c.id) === String(tableId)); }
+  function localKey(tableId){ return `od114_discussion_${tableId}`; }
+
+  function defaultDiscussion(){ return { session: { date:'', time:'', title:'', info:'', objective:'' }, posts: [] }; }
+  function normalizeDiscussion(value){
+    const d = value && typeof value === 'object' ? value : {};
+    const session = d.session && typeof d.session === 'object' ? d.session : {};
+    const posts = Array.isArray(d.posts) ? d.posts : [];
+    return {
+      session: {
+        date: String(session.date || '').slice(0,20),
+        time: String(session.time || '').slice(0,10),
+        title: String(session.title || '').slice(0,100),
+        info: String(session.info || session.notes || '').slice(0,1500),
+        objective: String(session.objective || '').slice(0,1000),
+        updatedAt: session.updatedAt || null
+      },
+      posts: posts.slice(-120).map(post => ({
+        id: String(post.id || uid114()),
+        type: ['resumo','foto','conversa'].includes(post.type) ? post.type : 'conversa',
+        title: String(post.title || '').slice(0,120),
+        text: String(post.text || '').slice(0,3000),
+        imageUrl: String(post.imageUrl || post.image_url || '').slice(0,200000),
+        authorId: post.authorId || post.author_id || '',
+        authorName: String(post.authorName || post.author_name || currentUser?.realName || currentUser?.name || currentUser?.nick || 'Jogador').slice(0,80),
+        authorAvatar: String(post.authorAvatar || post.author_avatar || currentUser?.avatarUrl || currentUser?.avatar_url || '').slice(0,200000),
+        createdAt: post.createdAt || post.created_at || new Date().toISOString()
+      }))
+    };
+  }
+  function getLocalDiscussion(tableId){
+    try { return normalizeDiscussion(JSON.parse(localStorage.getItem(localKey(tableId)) || 'null') || tableById(tableId)?.settings?.discussion || defaultDiscussion()); }
+    catch (_) { return normalizeDiscussion(tableById(tableId)?.settings?.discussion || defaultDiscussion()); }
+  }
+  function setLocalDiscussion(tableId, discussion){
+    const clean = normalizeDiscussion(discussion);
+    try { localStorage.setItem(localKey(tableId), JSON.stringify(clean)); } catch (_) {}
+    try {
+      const tables = campaigns();
+      const table = tables.find(t => String(t.id) === String(tableId));
+      if (table) {
+        table.settings = table.settings || {};
+        table.settings.discussion = clean;
+        if (typeof setCampaigns === 'function') setCampaigns(tables);
+      }
+    } catch (_) {}
+    return clean;
+  }
+  async function api(path, options){
+    if (typeof od42Api !== 'function' || typeof od42Token !== 'function' || !od42Token()) throw new Error('offline');
+    return od42Api(path, options);
+  }
+  async function fetchDiscussion(tableId){
+    activeCanManage = roleIsMaster(currentMember(tableId)?.role);
+    try {
+      const data = await api(`/api/tables/${tableId}/discussion`);
+      activeCanManage = !!data.canManage;
+      activeDiscussion = normalizeDiscussion(data.discussion || {});
+      setLocalDiscussion(tableId, activeDiscussion);
+    } catch (_) {
+      activeDiscussion = getLocalDiscussion(tableId);
+    }
+    return activeDiscussion;
+  }
+  async function saveSession(tableId, session){
+    const next = normalizeDiscussion({ ...activeDiscussion, session });
+    activeDiscussion = next;
+    setLocalDiscussion(tableId, next);
+    try {
+      const data = await api(`/api/tables/${tableId}/discussion/session`, { method:'PUT', body: JSON.stringify(session) });
+      activeDiscussion = normalizeDiscussion(data.discussion || next);
+      setLocalDiscussion(tableId, activeDiscussion);
+    } catch (error) {
+      if (String(error.message || '').toLowerCase() !== 'offline') alert(error.message || 'Não foi possível salvar a próxima sessão.');
+    }
+    renderModal();
+  }
+  async function createPost(tableId, post){
+    const cleanPost = {
+      id: uid114(),
+      type: post.type || 'conversa',
+      title: String(post.title || '').trim().slice(0,120),
+      text: String(post.text || '').trim().slice(0,3000),
+      imageUrl: String(post.imageUrl || '').trim().slice(0,200000),
+      authorId: currentUser?.id || '',
+      authorName: currentUser?.realName || currentUser?.name || currentUser?.nick || 'Jogador',
+      authorAvatar: currentUser?.avatarUrl || currentUser?.avatar_url || '',
+      createdAt: new Date().toISOString()
+    };
+    if (!cleanPost.title && !cleanPost.text && !cleanPost.imageUrl) return alert('Escreva algo ou adicione uma imagem por link.');
+    activeDiscussion.posts.push(cleanPost);
+    activeDiscussion.posts = activeDiscussion.posts.slice(-120);
+    setLocalDiscussion(tableId, activeDiscussion);
+    renderModal();
+    try {
+      const data = await api(`/api/tables/${tableId}/discussion/posts`, { method:'POST', body: JSON.stringify(cleanPost) });
+      activeDiscussion = normalizeDiscussion(data.discussion || activeDiscussion);
+      setLocalDiscussion(tableId, activeDiscussion);
+      renderModal();
+    } catch (_) {}
+  }
+  async function deletePost(tableId, postId){
+    const post = activeDiscussion.posts.find(p => String(p.id) === String(postId));
+    if (!post) return;
+    const canDelete = activeCanManage || String(post.authorId) === String(currentUser?.id);
+    if (!canDelete) return alert('Somente o mestre ou autor pode apagar esta postagem.');
+    if (!confirm('Apagar esta postagem da discussão?')) return;
+    activeDiscussion.posts = activeDiscussion.posts.filter(p => String(p.id) !== String(postId));
+    setLocalDiscussion(tableId, activeDiscussion);
+    renderModal();
+    try {
+      const data = await api(`/api/tables/${tableId}/discussion/posts/${encodeURIComponent(postId)}`, { method:'DELETE' });
+      activeDiscussion = normalizeDiscussion(data.discussion || activeDiscussion);
+      setLocalDiscussion(tableId, activeDiscussion);
+      renderModal();
+    } catch (_) {}
+  }
+
+  function formatDate(session){
+    const date = session?.date || '';
+    const time = session?.time || '';
+    if (!date && !time) return 'Ainda não definida';
+    const parts = [];
+    if (date) parts.push(date.split('-').reverse().join('/'));
+    if (time) parts.push(time);
+    return parts.join(' às ');
+  }
+  function postTypeLabel(type){ return type === 'resumo' ? 'Resumo' : type === 'foto' ? 'Foto' : 'Conversa'; }
+  function postHtml(post){
+    const canDelete = activeCanManage || String(post.authorId) === String(currentUser?.id);
+    const created = post.createdAt ? new Date(post.createdAt).toLocaleString('pt-BR') : '';
+    const avatar = post.authorAvatar || 'assets/favicon.png';
+    return `<article class="od114-post od114-post-${safe(post.type)}">
+      <div class="od114-post-head">
+        <img src="${safe(avatar)}" alt="" />
+        <div><strong>${safe(post.authorName || 'Jogador')}</strong><span>${safe(created)}</span></div>
+        <em>${safe(postTypeLabel(post.type))}</em>
+        ${canDelete ? `<button type="button" class="od114-post-delete" data-od114-delete-post="${safe(post.id)}">×</button>` : ''}
+      </div>
+      ${post.title ? `<h4>${safe(post.title)}</h4>` : ''}
+      ${post.text ? `<p>${safe(post.text).replace(/\n/g, '<br>')}</p>` : ''}
+      ${post.imageUrl ? `<figure><img src="${safe(post.imageUrl)}" alt="Imagem da discussão" loading="lazy" /></figure>` : ''}
+    </article>`;
+  }
+  function ensureModal(){
+    let dialog = $('od114-discussion-modal');
+    if (dialog) return dialog;
+    dialog = document.createElement('dialog');
+    dialog.id = 'od114-discussion-modal';
+    dialog.className = 'od114-discussion-modal od-modal';
+    document.body.appendChild(dialog);
+    return dialog;
+  }
+  function renderModal(){
+    const dialog = ensureModal();
+    const table = tableById(activeTableId) || {};
+    const session = activeDiscussion.session || {};
+    const posts = [...(activeDiscussion.posts || [])].sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0));
+    dialog.innerHTML = `<form method="dialog" class="modal-card od114-card">
+      <div class="modal-head od114-head">
+        <div><h3>Discussão da Campanha</h3><span>${safe(table.name || 'Campanha')}</span></div>
+        <button class="icon-btn" type="button" id="od114-close">×</button>
+      </div>
+      <div class="od114-layout">
+        <aside class="od114-session-box">
+          <h4>Próxima sessão</h4>
+          <div class="od114-next-date">${safe(formatDate(session))}</div>
+          <strong>${safe(session.title || 'Sem título definido')}</strong>
+          ${session.objective ? `<p><b>Objetivo:</b> ${safe(session.objective)}</p>` : '<p class="muted">Objetivo ainda não definido.</p>'}
+          ${session.info ? `<p><b>Informações:</b><br>${safe(session.info).replace(/\n/g, '<br>')}</p>` : ''}
+          ${activeCanManage ? `<details class="od114-session-editor" open>
+            <summary>Organizar sessão</summary>
+            <label>Data <input id="od114-session-date" type="date" value="${safe(session.date)}" /></label>
+            <label>Horário <input id="od114-session-time" type="time" value="${safe(session.time)}" /></label>
+            <label>Título <input id="od114-session-title" maxlength="100" value="${safe(session.title)}" placeholder="Título da próxima sessão" /></label>
+            <label>Objetivo <input id="od114-session-objective" maxlength="1000" value="${safe(session.objective)}" placeholder="Objetivo principal" /></label>
+            <label>Informações <textarea id="od114-session-info" maxlength="1500" placeholder="Avisos, preparação, recado para jogadores...">${safe(session.info)}</textarea></label>
+            <button type="button" class="primary-btn" id="od114-save-session">Salvar sessão</button>
+          </details>` : ''}
+        </aside>
+        <main class="od114-feed-box">
+          <section class="od114-composer">
+            <div class="od114-type-row">
+              <button type="button" class="active" data-od114-type="conversa">Conversa</button>
+              <button type="button" data-od114-type="resumo">Resumo</button>
+              <button type="button" data-od114-type="foto">Foto</button>
+            </div>
+            <input id="od114-post-title" maxlength="120" placeholder="Título opcional" />
+            <textarea id="od114-post-text" maxlength="3000" placeholder="Escreva como um mural fora da sessão..."></textarea>
+            <input id="od114-post-image" type="url" placeholder="Link de imagem ou GIF opcional" />
+            <button type="button" class="primary-btn" id="od114-send-post">Publicar</button>
+          </section>
+          <section class="od114-feed">
+            ${posts.length ? posts.map(postHtml).join('') : '<div class="od114-empty">Nenhuma conversa ainda. Use este espaço para resumos, fotos e combinados fora da sessão.</div>'}
+          </section>
+        </main>
+      </div>
+    </form>`;
+  }
+  async function openDiscussion(tableId){
+    activeTableId = tableId;
+    activeDiscussion = defaultDiscussion();
+    renderModal();
+    const dialog = ensureModal();
+    if (!dialog.open) dialog.showModal();
+    await fetchDiscussion(tableId);
+    renderModal();
+  }
+
+  function addDiscussionButtons(){
+    document.querySelectorAll('[data-enter-campaign]').forEach(btn => {
+      const tableId = btn.dataset.enterCampaign;
+      const actions = btn.closest('.od86-campaign-actions, .campaign-actions, .od71-card-actions, article, div');
+      if (!actions || actions.querySelector(`[data-od114-discussion="${CSS.escape(String(tableId))}"]`)) return;
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'od71-card-btn od114-discussion-btn';
+      button.dataset.od114Discussion = tableId;
+      button.textContent = 'Discussão';
+      const choose = actions.querySelector('[data-choose-campaign-char]');
+      if (choose) choose.insertAdjacentElement('afterend', button);
+      else btn.insertAdjacentElement('afterend', button);
+    });
+  }
+  function scheduleButtons(){ setTimeout(addDiscussionButtons,0); setTimeout(addDiscussionButtons,150); setTimeout(addDiscussionButtons,800); }
+
+  document.addEventListener('click', async event => {
+    const open = event.target.closest('[data-od114-discussion]');
+    if (open) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      await openDiscussion(open.dataset.od114Discussion);
+      return;
+    }
+    if (event.target.closest('#od114-close')) { event.preventDefault(); $('od114-discussion-modal')?.close(); return; }
+    const typeBtn = event.target.closest('[data-od114-type]');
+    if (typeBtn) {
+      event.preventDefault();
+      document.querySelectorAll('[data-od114-type]').forEach(btn => btn.classList.remove('active'));
+      typeBtn.classList.add('active');
+      return;
+    }
+    if (event.target.closest('#od114-save-session')) {
+      event.preventDefault();
+      await saveSession(activeTableId, {
+        date: $('od114-session-date')?.value || '',
+        time: $('od114-session-time')?.value || '',
+        title: $('od114-session-title')?.value || '',
+        objective: $('od114-session-objective')?.value || '',
+        info: $('od114-session-info')?.value || ''
+      });
+      return;
+    }
+    if (event.target.closest('#od114-send-post')) {
+      event.preventDefault();
+      const type = document.querySelector('[data-od114-type].active')?.dataset.od114Type || 'conversa';
+      await createPost(activeTableId, {
+        type,
+        title: $('od114-post-title')?.value || '',
+        text: $('od114-post-text')?.value || '',
+        imageUrl: $('od114-post-image')?.value || ''
+      });
+      return;
+    }
+    const del = event.target.closest('[data-od114-delete-post]');
+    if (del) { event.preventDefault(); await deletePost(activeTableId, del.dataset.od114DeletePost); return; }
+    const campTab = event.target.closest('[data-od71-tab="campaigns"], [data-od75-tab="campaigns"]');
+    if (campTab) scheduleButtons();
+  }, true);
+
+  // Atualização por socket quando outro usuário publica/altera.
+  function bindSocket(){
+    try {
+      const s = typeof socket !== 'undefined' ? socket : window.socket;
+      if (!s || s.__od114Bound) return;
+      s.on?.('discussion:updated', payload => {
+        if (!payload?.tableId) return;
+        setLocalDiscussion(payload.tableId, payload.discussion || {});
+        if (String(activeTableId) === String(payload.tableId) && $('od114-discussion-modal')?.open) {
+          activeDiscussion = normalizeDiscussion(payload.discussion || {});
+          renderModal();
+        }
+      });
+      s.__od114Bound = true;
+    } catch (_) {}
+  }
+
+  const wrap = name => {
+    try {
+      if (typeof globalThis[name] !== 'function' || globalThis[name].__od114Wrapped) return;
+      const old = globalThis[name];
+      globalThis[name] = function(...args){ const out = old.apply(this,args); scheduleButtons(); return out; };
+      globalThis[name].__od114Wrapped = true;
+    } catch (_) {}
+  };
+  wrap('renderCampaignMenu');
+  function observeCampaignList(){
+    const root = document.getElementById('campaign-list') || document.querySelector('.campaign-list, .od86-campaign-grid, .od71-cards-grid');
+    if (!root || root.__od114Observed) return;
+    root.__od114Observed = true;
+    new MutationObserver(() => scheduleButtons()).observe(root, { childList: true, subtree: true });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => { scheduleButtons(); bindSocket(); observeCampaignList(); });
+  else { scheduleButtons(); bindSocket(); observeCampaignList(); }
+  window.od114OpenCampaignDiscussion = openDiscussion;
+})();
+
+
+/* =========================
+   V115 - Manutenção geral: rotas formais, sons leves, limpeza segura e microanimações
+   Este bloco não altera regras de ficha; apenas melhora autonomia e experiência.
+========================= */
+(function od115Maintenance(){
+  const VERSION = '1.15.0';
+  const STORAGE_PREFIX = 'od_';
+  const routeMap = {
+    home: '/inicio',
+    inicio: '/inicio',
+    characters: '/personagens',
+    personagens: '/personagens',
+    campaigns: '/campanhas',
+    campanhas: '/campanhas'
+  };
+  const lastSound = { at: 0, name: '' };
+
+  function now(){ return Date.now(); }
+  function hasMotion(){ return !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches; }
+  function getSoundEnabled(){ return localStorage.getItem('od115_sound_enabled') !== '0'; }
+  function setSoundEnabled(value){ localStorage.setItem('od115_sound_enabled', value ? '1' : '0'); updateSoundButton(); }
+
+  function beep(name = 'click') {
+    if (!getSoundEnabled()) return;
+    const at = now();
+    if (lastSound.name === name && at - lastSound.at < 90) return;
+    lastSound.name = name;
+    lastSound.at = at;
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = window.__od115AudioContext || (window.__od115AudioContext = new AudioContext());
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const map = {
+        click: [420, 0.025, 0.018],
+        tab: [520, 0.035, 0.022],
+        success: [660, 0.045, 0.026],
+        error: [160, 0.055, 0.030],
+        roll: [880, 0.060, 0.035]
+      };
+      const [freq, duration, volume] = map[name] || map.click;
+      osc.frequency.value = freq;
+      osc.type = name === 'error' ? 'sawtooth' : 'triangle';
+      gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(volume, ctx.currentTime + 0.008);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + duration + 0.01);
+    } catch (_) {}
+  }
+
+  function animate(node, className = 'od115-pop') {
+    if (!node || !hasMotion()) return;
+    node.classList.remove(className);
+    void node.offsetWidth;
+    node.classList.add(className);
+    setTimeout(() => node.classList.remove(className), 260);
+  }
+
+  function updateSoundButton() {
+    const button = document.getElementById('od115-sound-toggle');
+    if (!button) return;
+    button.textContent = getSoundEnabled() ? 'Sons: Ligados' : 'Sons: Desligados';
+    button.setAttribute('aria-pressed', getSoundEnabled() ? 'true' : 'false');
+  }
+
+  function ensureSoundButton() {
+    const panel = document.getElementById('sessions-menu-panel');
+    if (!panel || document.getElementById('od115-sound-toggle')) return;
+    const button = document.createElement('button');
+    button.id = 'od115-sound-toggle';
+    button.type = 'button';
+    button.className = 'ghost-btn menu-entry od115-sound-toggle';
+    button.addEventListener('click', event => {
+      event.preventDefault();
+      setSoundEnabled(!getSoundEnabled());
+      beep('success');
+    });
+    panel.appendChild(button);
+    updateSoundButton();
+  }
+
+  function formalRouteForTab(tab) {
+    const key = String(tab || '').toLowerCase();
+    return routeMap[key] || '';
+  }
+
+  function safePushRoute(route) {
+    if (!route || location.pathname === route) return;
+    try { history.pushState({ odRoute: 'v115', route }, '', route); } catch (_) {}
+  }
+
+  function cleanupLocalCache() {
+    try {
+      const obsolete = [
+        'od_route_notice',
+        'od_legacy_cache',
+        'od_last_overlay',
+        'one_dice_temp_image',
+        'od_debug_route'
+      ];
+      obsolete.forEach(key => localStorage.removeItem(key));
+      const stampKey = `${STORAGE_PREFIX}maintenance_version`;
+      if (localStorage.getItem(stampKey) !== VERSION) {
+        localStorage.setItem(stampKey, VERSION);
+        sessionStorage.removeItem('od_pending_route');
+      }
+    } catch (_) {}
+  }
+
+  document.addEventListener('click', event => {
+    const clickable = event.target.closest('button, .tab-btn, .sheet-tab, [role="button"], [data-od71-tab], [data-od75-tab]');
+    if (!clickable || clickable.disabled) return;
+
+    const text = (clickable.textContent || '').toLowerCase();
+    if (/d20|rolar|dado|dice/.test(text)) beep('roll');
+    else if (clickable.matches('.tab-btn, .sheet-tab, [data-od71-tab], [data-od75-tab]')) beep('tab');
+    else if (clickable.matches('.danger-btn')) beep('error');
+    else beep('click');
+
+    animate(clickable);
+
+    const tab = clickable.dataset?.od71Tab || clickable.dataset?.od75Tab || clickable.dataset?.tab;
+    const route = formalRouteForTab(tab);
+    if (route && !document.body.classList.contains('app-mode')) safePushRoute(route);
+  }, true);
+
+  window.addEventListener('error', event => {
+    if (String(event.message || '').includes('ResizeObserver')) return;
+    document.body.classList.add('od115-front-error');
+  });
+
+  function boot() {
+    cleanupLocalCache();
+    ensureSoundButton();
+    document.documentElement.dataset.odVersion = VERSION;
+    setTimeout(ensureSoundButton, 500);
+    setTimeout(ensureSoundButton, 1500);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+
+  window.od115 = { version: VERSION, beep, cleanupLocalCache, setSoundEnabled };
+})();

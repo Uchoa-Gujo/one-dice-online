@@ -4,6 +4,22 @@ const { authRequired } = require('../middleware');
 
 const router = express.Router();
 
+function normalizeSystemModel(value) {
+  const v = String(value || '').trim().toLowerCase().replace(/[\s_-]+/g, '');
+  if (['pool', 'pooldice', 'dados', 'ordem', 'ordemparanormal'].includes(v)) return 'pool';
+  return 'd20';
+}
+
+function normalizeCharacterData(data) {
+  const out = data && typeof data === 'object' ? { ...data } : {};
+  const model = normalizeSystemModel(out.systemModel || out.systemType || out.sheetModel || out.diceSystem || out.ruleset);
+  out.systemModel = model;
+  out.systemType = model;
+  out.sheetModel = model;
+  return out;
+}
+
+
 router.get('/public/:id', async (req, res) => {
   const id = req.params.id;
   const result = await query('select id, owner_id, name, data, updated_at from characters where id = $1', [id]);
@@ -104,13 +120,26 @@ function getBestImageSource(data, preferredKeys = []) {
   return unique[0]?.src || '';
 }
 
+
+function getActiveTransformation(data) {
+  const forms = Array.isArray(data?.transformations) ? data.transformations : [];
+  if (!forms.length) return null;
+  const activeId = data?.activeTransformationId || '';
+  return forms.find(form => String(form.id) === String(activeId)) || forms.find(form => form?.active) || null;
+}
+
+function getActiveTransformationPortrait(data) {
+  const active = getActiveTransformation(data);
+  return firstText(active?.portrait || active?.image || active?.photo || active?.avatar || active?.retrato || '');
+}
+
 function getObsIconMap(data) {
   const icons = data?.obsIcons || data?.obs_icons || {};
   return {
     normal: icons.normal || data?.obsIconNormal || data?.iconNormal || data?.iconeNormal || '',
     low: icons.low || data?.obsIconLow || data?.iconLow || data?.iconeMachucado || data?.damagedPortrait || data?.iconeFerido || data?.iconeBaixo || '',
     zero: icons.zero || data?.obsIconZero || data?.iconZero || data?.iconeMorrendo || data?.dyingPortrait || data?.iconeZero || data?.iconeCaido || '',
-    transformation: icons.transformation || data?.obsIconTransformation || data?.iconTransformation || data?.iconeTransformacao || ''
+    transformation: getActiveTransformationPortrait(data) || icons.transformation || data?.obsIconTransformation || data?.iconTransformation || data?.iconeTransformacao || ''
   };
 }
 
@@ -123,7 +152,7 @@ function getPortraitMode(data, forcedMode = '') {
   const mode = String(forcedMode || '').trim().toLowerCase();
   if (['normal', 'low', 'zero', 'transformation'].includes(mode)) return mode;
 
-  if (data?.isTransformation || data?.obsTransformationActive || data?.activeTransformation) return 'transformation';
+  if (data?.obsTransformationActive || data?.activeTransformation || data?.activeTransformationId) return 'transformation';
 
   const pv = toNumber(data?.pvCurrent ?? data?.pvAtual ?? data?.pv_current ?? data?.pv ?? data?.hpCurrent ?? data?.hpAtual ?? data?.hp, 0);
   const max = Math.max(1, toNumber(data?.pvMax ?? data?.pvTotal ?? data?.pv_max ?? data?.hpMax ?? data?.hpTotal ?? data?.hp_max, 1));
@@ -145,7 +174,7 @@ function getPortraitSource(data, forcedMode = '') {
   const icons = getObsIconMap(data);
   const mode = getPortraitMode(data, forcedMode);
   if (mode === 'transformation') {
-    const transformDirect = firstText(data?.obsTransformPortrait || data?.transformationPortrait || data?.activeTransformationPortrait || '');
+    const transformDirect = firstText(getActiveTransformationPortrait(data) || data?.obsTransformPortrait || data?.transformationPortrait || data?.activeTransformationPortrait || '');
     if (looksLikeImageSource(transformDirect) && !isFallbackLogo(transformDirect)) return transformDirect;
   }
   if (mode === 'hidden') return '';
@@ -201,11 +230,8 @@ router.get('/public/:id/portrait', async (req, res) => {
 
   const mode = getPortraitMode(data, req.query.mode);
   if (mode === 'transformation' && data?.activeTransformationId) {
-    try {
-      const transform = await query('select data from characters where id = $1', [data.activeTransformationId]);
-      const transformData = transform.rows[0]?.data || {};
-      src = getPortraitSource(transformData, 'normal') || firstText(transformData.portrait || transformData.image || transformData.photo || '');
-    } catch (_) {}
+    const activePortrait = getActiveTransformationPortrait(data);
+    if (looksLikeImageSource(activePortrait) && !isFallbackLogo(activePortrait)) src = activePortrait;
   }
 
   if (!src) src = getPortraitSource(data, req.query.mode);
@@ -218,7 +244,7 @@ router.use(authRequired);
 
 router.get('/', async (req, res) => {
   const result = await query(
-    'select id, owner_id, name, data, created_at, updated_at from characters where owner_id = $1 order by updated_at desc',
+    'select id, owner_id, name, data, created_at, updated_at from characters where owner_id = $1 order by lower(name) asc, updated_at desc',
     [req.user.id]
   );
   res.json({ characters: result.rows });
@@ -228,7 +254,7 @@ router.post('/', async (req, res) => {
   const limit = await query('select count(*)::int as total from characters where owner_id = $1', [req.user.id]);
   if ((limit.rows[0]?.total || 0) >= 10) return res.status(403).json({ error: 'Limite de 10 personagens por conta atingido.' });
   const name = String(req.body.name || 'Nova Ficha').trim();
-  const data = req.body.data || {};
+  const data = normalizeCharacterData(req.body.data || {});
   const result = await query(
     'insert into characters (owner_id, name, data) values ($1, $2, $3) returning *',
     [req.user.id, name, data]
@@ -239,7 +265,7 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   const id = req.params.id;
   const name = String(req.body.name || 'Ficha').trim();
-  const data = req.body.data || {};
+  const data = normalizeCharacterData(req.body.data || {});
   const result = await query(
     'update characters set name = $1, data = $2, updated_at = now() where id = $3 and owner_id = $4 returning *',
     [name, data, id, req.user.id]
