@@ -11843,9 +11843,20 @@ function od66InventoryMutationUnlockSoon() {
     const noSheet = event.target.closest('#od113-enter-without-sheet');
     if (!noSheet) return;
     event.preventDefault();
-    const campaignId = pendingChooseCampaignId;
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    if (typeof enterWithoutSheet === 'function') {
+      enterWithoutSheet();
+      return;
+    }
+    const campaignId = pendingChooseCampaignId || currentCampaignId;
     $('choose-character-modal')?.close();
-    if (campaignId && typeof enterCampaign === 'function') enterCampaign(campaignId);
+    $('create-first-sheet-modal')?.close();
+    if (campaignId) {
+      currentCampaignId = campaignId;
+      safeSet?.(STORAGE.activeCampaign, campaignId);
+      initApp?.(campaignId);
+    }
   }, true);
 
   function ensureNoSheetButton() {
@@ -12552,4 +12563,856 @@ function od66InventoryMutationUnlockSoon() {
   else boot();
 
   window.od115 = { version: VERSION, beep, cleanupLocalCache, setSoundEnabled };
+})();
+
+
+/* =========================
+   V116 - Reparo: entrar na sessão sem ficha
+   - Corrige reset ao clicar em Entrar sem ficha
+   - Evita que wrappers antigos reabram o modal de ficha
+========================= */
+(function od116EnterWithoutSheetFix() {
+  function $(id) { return document.getElementById(id); }
+  function asList(value) { return Array.isArray(value) ? value : []; }
+  function token() { try { return typeof od42Token === 'function' ? od42Token() : null; } catch (_) { return null; } }
+  function setSafe(key, value) {
+    try {
+      if (typeof set === 'function') set(key, value);
+      else if (typeof safeSet === 'function') safeSet(key, value);
+      else localStorage.setItem(key, JSON.stringify(value));
+    } catch (_) {}
+  }
+  function getSafe(key, fallback) {
+    try {
+      if (typeof get === 'function') return get(key, fallback);
+      if (typeof safeGet === 'function') return safeGet(key, fallback);
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    } catch (_) { return fallback; }
+  }
+  async function saveNoSheetMember(campaignId) {
+    if (!campaignId) return;
+    if (token() && typeof od42Api === 'function') {
+      await od42Api(`/api/tables/${campaignId}/member`, {
+        method: 'PUT',
+        body: JSON.stringify({ characterId: null, noSheet: true })
+      });
+      await od42RefreshTables?.().catch?.(() => {});
+      await od42LoadTableState?.(campaignId).catch?.(() => {});
+      return;
+    }
+    const members = typeof getMembers === 'function' ? getMembers() : asList(getSafe(STORAGE.members, []));
+    let member = members.find(m => String(m.campaignId) === String(campaignId) && String(m.userId) === String(currentUser?.id));
+    if (!member) {
+      member = { id: typeof uid === 'function' ? uid('member') : `member-${Date.now()}`, campaignId, userId: currentUser?.id, role: 'jogador', characterId: null };
+      members.push(member);
+    }
+    member.characterId = null;
+    member.noSheet = true;
+    if (typeof setMembers === 'function') setMembers(members);
+    else setSafe(STORAGE.members, members);
+  }
+  async function enterNoSheet(campaignId) {
+    if (!campaignId) return;
+    window.__od116EnteringWithoutSheet = true;
+    try {
+      await saveNoSheetMember(campaignId);
+      $('choose-character-modal')?.close?.();
+      $('create-first-sheet-modal')?.close?.();
+      if (typeof currentCampaignId !== 'undefined') currentCampaignId = campaignId;
+      try { setSafe(STORAGE.activeCampaign, campaignId); } catch (_) {}
+      if (typeof showApp === 'function') showApp();
+      if (typeof initApp === 'function') initApp(campaignId);
+      try { renderCampaignMenu?.(); } catch (_) {}
+    } catch (error) {
+      alert(error?.message || 'Não foi possível entrar sem ficha.');
+    } finally {
+      setTimeout(() => { window.__od116EnteringWithoutSheet = false; }, 300);
+    }
+  }
+  window.od116EnterNoSheet = enterNoSheet;
+
+  if (typeof enterCampaign === 'function' && !enterCampaign.__od116NoSheetFix) {
+    const baseEnterCampaign = enterCampaign;
+    enterCampaign = async function od116EnterCampaign(campaignId) {
+      if (window.__od116EnteringWithoutSheet) {
+        if (typeof currentCampaignId !== 'undefined') currentCampaignId = campaignId;
+        try { setSafe(STORAGE.activeCampaign, campaignId); } catch (_) {}
+        return initApp?.(campaignId);
+      }
+      return baseEnterCampaign.apply(this, arguments);
+    };
+    enterCampaign.__od116NoSheetFix = true;
+  }
+
+  document.addEventListener('click', event => {
+    const button = event.target.closest('#od102-enter-without-sheet, #od113-enter-without-sheet, [data-enter-without-sheet]');
+    if (!button) return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    const campaignId = pendingChooseCampaignId || currentCampaignId || button.dataset.campaignId;
+    enterNoSheet(campaignId);
+  }, true);
+})();
+
+/* =========================
+   V117 - Reparo do topo da ficha
+   - Corrige campo Modelo da Ficha que era inserido dentro do label do nome
+   - Reorganiza o cabeçalho sem alterar dados da ficha
+========================= */
+(function od117RepairSheetHeaderLayout() {
+  const $ = id => document.getElementById(id);
+
+  function repairModelField() {
+    const nameInput = $('char-name');
+    const identityGrid = document.querySelector('#mobile-identity-panel .identity-grid, .sheet-header .identity-grid');
+    const select = $('od113-open-sheet-model');
+    if (!nameInput || !identityGrid || !select) return;
+
+    const wrapper = select.closest('.od113-open-sheet-model');
+    if (!wrapper) return;
+
+    wrapper.classList.add('od117-model-field');
+
+    const nameLabel = nameInput.closest('label');
+    if (nameLabel && nameLabel.contains(wrapper)) {
+      const raceLabel = $('char-race')?.closest('label');
+      if (raceLabel && raceLabel.parentElement === identityGrid) {
+        identityGrid.insertBefore(wrapper, raceLabel);
+      } else {
+        identityGrid.insertBefore(wrapper, identityGrid.children[1] || null);
+      }
+    }
+  }
+
+  function repairHeader() {
+    const panel = $('mobile-identity-panel');
+    if (panel) panel.classList.add('od117-sheet-header-fixed');
+    const grid = panel?.querySelector('.identity-grid');
+    if (grid) grid.classList.add('od117-identity-grid-fixed');
+    repairModelField();
+  }
+
+  const baseLoad = typeof loadCharacter === 'function' ? loadCharacter : null;
+  if (baseLoad && !baseLoad.__od117HeaderFix) {
+    loadCharacter = function od117LoadCharacterHeaderFix(id) {
+      const result = baseLoad.apply(this, arguments);
+      requestAnimationFrame(repairHeader);
+      setTimeout(repairHeader, 80);
+      return result;
+    };
+    loadCharacter.__od117HeaderFix = true;
+  }
+
+  const observer = new MutationObserver(() => {
+    if ($('char-name') && $('od113-open-sheet-model')) repairHeader();
+  });
+
+  function boot() {
+    repairHeader();
+    if (document.body) observer.observe(document.body, { childList: true, subtree: true });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
+
+
+/* =========================
+   V118 - Painel de atributos refeito
+   - Nome
+   - Bônus/valor de rolagem quando D20
+   - Botão - e botão + dentro do card
+   - Valor total do atributo
+   - Botão de rolagem
+   - Pool Dice usa atributo como quantidade de D20
+========================= */
+(function od118AttributePanelFinalFix() {
+  const $ = id => document.getElementById(id);
+  const labels = {
+    forca: 'Força',
+    agilidade: 'Agilidade',
+    vigor: 'Vigor',
+    intelecto: 'Intelecto',
+    presenca: 'Presença'
+  };
+
+  const esc = value => {
+    try {
+      if (typeof escapeHtml === 'function') return escapeHtml(String(value ?? ''));
+    } catch (_) {}
+    const div = document.createElement('div');
+    div.textContent = String(value ?? '');
+    return div.innerHTML;
+  };
+
+  const num = (value, fallback = 0) => {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : fallback;
+  };
+
+  function getChar() {
+    try { return typeof currentChar === 'function' ? currentChar() : null; }
+    catch (_) { return null; }
+  }
+
+  function getModel(char) {
+    const raw = String(char?.systemModel || char?.model || char?.sheetModel || char?.fichaModelo || 'd20').toLowerCase();
+    return raw.includes('pool') ? 'pool' : 'd20';
+  }
+
+  function saveSoft() {
+    try { if (typeof queueSave === 'function') queueSave(); } catch (_) {}
+    try {
+      const char = getChar();
+      if (char && typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(char);
+    } catch (_) {}
+  }
+
+  function refreshDerived(char) {
+    if (!char) return;
+    try { if (typeof syncDodge === 'function') syncDodge(char); } catch (_) {}
+    try { if (typeof updateDerivedStatsDisplay === 'function') updateDerivedStatsDisplay(char); } catch (_) {}
+    try { if (typeof renderSkills === 'function') renderSkills(char); } catch (_) {}
+    try { if (typeof updateBars === 'function') updateBars(char); } catch (_) {}
+  }
+
+  function buildRollText(model, value, modText) {
+    if (model === 'pool') return `${Math.max(1, value)}D20`;
+    return `D20 ${modText === '+0' ? '' : modText}`.trim();
+  }
+
+  function renderAttributesV118(char = getChar()) {
+    const grid = $('attributes-grid');
+    if (!grid || !char) return;
+
+    char.attrs = char.attrs || {};
+    const model = getModel(char);
+    grid.innerHTML = '';
+
+    Object.entries(labels).forEach(([key, label]) => {
+      const value = Math.max(1, num(char.attrs[key], 1));
+      const mod = typeof attrMod === 'function' ? attrMod(value) : value;
+      const modText = typeof formatMod === 'function' ? formatMod(mod) : (mod >= 0 ? `+${mod}` : String(mod));
+      const rollText = buildRollText(model, value, modText);
+
+      const card = document.createElement('div');
+      card.className = `od118-attr-card ${model === 'pool' ? 'is-pool' : 'is-d20'}`;
+      card.dataset.attrKey = key;
+      card.innerHTML = `
+        <div class="od118-attr-head">
+          <span class="od118-attr-name">${esc(label)}</span>
+          ${model === 'd20'
+            ? `<span class="od118-attr-bonus" title="Bônus do atributo">${esc(modText)}</span>`
+            : `<span class="od118-attr-bonus od118-pool-chip" title="Pool de dados">${esc(value)}D20</span>`}
+        </div>
+
+        <div class="od118-attr-control">
+          <button type="button" class="od118-step" data-od118-attr-step="${esc(key)}" data-dir="-1" aria-label="Diminuir ${esc(label)}">−</button>
+          <input class="od118-value" data-attr="${esc(key)}" type="number" value="${esc(value)}" min="1" inputmode="numeric" aria-label="Valor total de ${esc(label)}">
+          <button type="button" class="od118-step" data-od118-attr-step="${esc(key)}" data-dir="1" aria-label="Aumentar ${esc(label)}">+</button>
+          <div class="od118-total" title="Valor total do atributo">
+            <small>Total</small>
+            <strong>${esc(value)}</strong>
+          </div>
+        </div>
+
+        <button class="primary-btn small roll-attr od118-roll" data-roll-attr="${esc(key)}" type="button">${esc(rollText)}</button>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function applyAttrChange(key, next) {
+    next = Math.max(1, num(next, 1));
+    try {
+      if (typeof updateChar === 'function') {
+        updateChar(char => {
+          char.attrs = char.attrs || {};
+          char.attrs[key] = next;
+          refreshDerived(char);
+        });
+      }
+    } catch (_) {}
+
+    const char = getChar();
+    if (char) {
+      char.attrs = char.attrs || {};
+      char.attrs[key] = next;
+      refreshDerived(char);
+      renderAttributesV118(char);
+      saveSoft();
+    }
+  }
+
+  if (typeof renderAttributes === 'function') renderAttributes = renderAttributesV118;
+  window.renderAttributesV103 = renderAttributesV118;
+  window.renderAttributesV118 = renderAttributesV118;
+
+  document.addEventListener('click', event => {
+    const btn = event.target.closest('[data-od118-attr-step]');
+    if (!btn) return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+
+    const key = btn.dataset.od118AttrStep;
+    const input = document.querySelector(`input.od118-value[data-attr="${CSS.escape(key)}"]`);
+    const current = input ? num(input.value, 1) : num(getChar()?.attrs?.[key], 1);
+    const next = current + num(btn.dataset.dir, 0);
+    applyAttrChange(key, next);
+  }, true);
+
+  document.addEventListener('change', event => {
+    const input = event.target.closest('input.od118-value[data-attr]');
+    if (!input) return;
+    applyAttrChange(input.dataset.attr, input.value);
+  }, true);
+
+  document.addEventListener('input', event => {
+    const input = event.target.closest('input.od118-value[data-attr]');
+    if (!input) return;
+    const key = input.dataset.attr;
+    const value = Math.max(1, num(input.value, 1));
+    const char = getChar();
+    if (!char) return;
+    char.attrs = char.attrs || {};
+    char.attrs[key] = value;
+    refreshDerived(char);
+    saveSoft();
+  }, true);
+
+  function boot() {
+    const char = getChar();
+    if (char && $('attributes-grid')) renderAttributesV118(char);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+  setTimeout(boot, 150);
+  setTimeout(boot, 800);
+})();
+
+/* =========================
+   V119 - Estabilização das imagens da ficha
+   - Evita flicker depois de salvar/clicar em botões.
+   - Impede que renders antigos troquem a foto por fallback momentâneo.
+   - Atualiza imagens por link direto sem recarregar se o src não mudou.
+========================= */
+(function od119StablePortraits(){
+  'use strict';
+
+  const FALLBACK = 'assets/logo.jpg';
+  const $ = id => document.getElementById(id);
+  const clean = value => String(value || '').trim();
+  const isFallback = src => !src || /(^|\/)assets\/(logo|account-logo|favicon)\.(jpg|png|webp|gif)$/i.test(String(src || '')) || String(src || '').includes('assets/logo');
+  const isRealImage = src => {
+    const value = clean(src);
+    return !!value && !/^(null|undefined|about:blank)$/i.test(value) && !isFallback(value);
+  };
+
+  function chars(){
+    try { return typeof get === 'function' ? get(STORAGE.characters, []) : []; }
+    catch (_) { return []; }
+  }
+
+  function current(){
+    try { return typeof currentChar === 'function' ? currentChar() : null; }
+    catch (_) { return null; }
+  }
+
+  function primary(char = current()){
+    return clean(
+      char?.portrait ||
+      char?.image ||
+      char?.photo ||
+      char?.avatar ||
+      char?.retrato ||
+      char?.picture ||
+      ''
+    );
+  }
+
+  function statePortrait(char = current()){
+    if (!char) return FALLBACK;
+    const pv = Number(char.pvCurrent ?? char.pvAtual ?? char.pv ?? char.hpCurrent ?? 1);
+    const max = Math.max(1, Number(char.pvMax ?? char.pvTotal ?? char.hpMax ?? 1));
+    const icons = char.obsIcons || {};
+    const activeId = char.activeTransformationId || char.activeTransformation || '';
+    const forms = Array.isArray(char.transformations) ? char.transformations : [];
+    const activeForm = forms.find(f => String(f.id) === String(activeId));
+
+    if (pv < 0) return '';
+    if (activeForm && isRealImage(activeForm.portrait)) return clean(activeForm.portrait);
+    if (char.obsTransformationActive && isRealImage(char.obsTransformPortrait || icons.transformation || char.transformationPortrait)) {
+      return clean(char.obsTransformPortrait || icons.transformation || char.transformationPortrait);
+    }
+    if (pv === 0 && isRealImage(icons.zero || char.portraitZero || char.obsIconZero)) {
+      return clean(icons.zero || char.portraitZero || char.obsIconZero);
+    }
+    if (pv > 0 && pv / max < 0.5 && isRealImage(icons.low || char.portraitLow || char.obsIconLow)) {
+      return clean(icons.low || char.portraitLow || char.obsIconLow);
+    }
+    return primary(char) || FALLBACK;
+  }
+
+  function applyCrop(img, char = current()){
+    if (!img || !char) return;
+    const crop = Object.assign({ x: 50, y: 50, scale: 1 }, char.portraitCrop || {});
+    img.style.objectFit = 'cover';
+    img.style.objectPosition = `${Number(crop.x) || 50}% ${Number(crop.y) || 50}%`;
+    img.style.transformOrigin = `${Number(crop.x) || 50}% ${Number(crop.y) || 50}%`;
+    img.style.transform = `scale(${Math.max(1, Math.min(3, Number(crop.scale) || 1))})`;
+  }
+
+  function setStableImage(img, src, char = current(), options = {}){
+    if (!img) return;
+    const wanted = clean(src) || FALLBACK;
+    const currentSrc = img.getAttribute('src') || '';
+    const lastReal = img.dataset.od119LastReal || '';
+
+    // Não deixe fallback antigo apagar uma foto real durante saves/renders intermediários.
+    if (isFallback(wanted) && isRealImage(lastReal) && !options.forceFallback) {
+      applyCrop(img, char);
+      return;
+    }
+
+    if (!wanted) {
+      img.removeAttribute('src');
+      img.style.visibility = 'hidden';
+      return;
+    }
+
+    img.style.visibility = '';
+    img.decoding = 'async';
+    img.loading = 'eager';
+    img.onerror = () => {
+      img.onerror = null;
+      if (isRealImage(lastReal) && img.getAttribute('src') !== lastReal) img.src = lastReal;
+      else if (!isFallback(wanted)) img.src = FALLBACK;
+    };
+
+    if (currentSrc !== wanted) {
+      // Para GIF e links externos, trocar só quando o endereço mudou evita reiniciar animação/flicker.
+      img.src = wanted;
+    }
+    if (isRealImage(wanted)) img.dataset.od119LastReal = wanted;
+    applyCrop(img, char);
+  }
+
+  function writeHidden(char = current()){
+    const value = primary(char);
+    const hidden = $('portrait-url');
+    const modal = $('portrait-modal-url');
+    if (hidden && value && hidden.value !== value) hidden.value = value;
+    if (modal && value && modal.value !== value) modal.value = value;
+  }
+
+  function syncImages(char = current()){
+    if (!char) return;
+    const main = statePortrait(char);
+    const normal = primary(char) || FALLBACK;
+
+    setStableImage($('char-portrait-preview'), main, char);
+    setStableImage($('overlay-portrait'), normal, char);
+    writeHidden(char);
+
+    const id = String(char.id || '');
+    if (id && window.CSS?.escape) {
+      document.querySelectorAll(`img[data-character-id="${CSS.escape(id)}"], img[data-char-id="${CSS.escape(id)}"]`).forEach(img => setStableImage(img, normal, char));
+    }
+
+    document.querySelectorAll('.account-character-card, .od85-character-card, .choose-character-card, .session-character, .character-pill, .campaign-character-preview, .od114-discussion-post, .campaign-card').forEach(card => {
+      if (!char.name || !(card.textContent || '').includes(char.name)) return;
+      const img = card.querySelector('img');
+      if (img) setStableImage(img, normal, char);
+    });
+  }
+
+  let pending = false;
+  function scheduleSync(){
+    if (pending) return;
+    pending = true;
+    requestAnimationFrame(() => {
+      pending = false;
+      syncImages(current());
+    });
+  }
+
+  // Override direto: qualquer render antigo passa por aqui, sem piscar para fallback.
+  try {
+    window.renderPortrait = function od119RenderPortrait(char){ syncImages(char || current()); };
+    globalThis.renderPortrait = window.renderPortrait;
+  } catch (_) {}
+
+  if (typeof updateOverlay === 'function' && !updateOverlay.__od119Wrapped) {
+    const baseOverlay = updateOverlay;
+    updateOverlay = function od119UpdateOverlay(char){
+      const result = baseOverlay.apply(this, arguments);
+      syncImages(char || current());
+      return result;
+    };
+    updateOverlay.__od119Wrapped = true;
+  }
+
+  if (typeof loadCharacter === 'function' && !loadCharacter.__od119Wrapped) {
+    const baseLoad = loadCharacter;
+    loadCharacter = function od119LoadCharacter(){
+      const result = baseLoad.apply(this, arguments);
+      scheduleSync();
+      setTimeout(scheduleSync, 120);
+      return result;
+    };
+    loadCharacter.__od119Wrapped = true;
+  }
+
+  if (typeof saveCurrentCharacter === 'function' && !saveCurrentCharacter.__od119Wrapped) {
+    const baseSave = saveCurrentCharacter;
+    saveCurrentCharacter = function od119SaveCurrentCharacter(){
+      const charBefore = current();
+      const keep = primary(charBefore);
+      const hidden = $('portrait-url');
+      if (hidden && keep && !isRealImage(hidden.value)) hidden.value = keep;
+      const result = baseSave.apply(this, arguments);
+      scheduleSync();
+      return result;
+    };
+    saveCurrentCharacter.__od119Wrapped = true;
+  }
+
+  // Quando salva no modal de fotos, sincroniza uma vez após o save; sem timeouts repetidos.
+  document.addEventListener('click', event => {
+    if (event.target.closest('#od104-photo-save, #od100-photo-save, #od101-photo-save, #od102-photo-save')) {
+      setTimeout(scheduleSync, 80);
+      setTimeout(scheduleSync, 300);
+    }
+  }, true);
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => syncImages(current()), { once: true });
+  else syncImages(current());
+
+  window.od119SyncPortraits = () => syncImages(current());
+})();
+
+
+/* =========================
+   V120 - Discussão dentro da Mesa em abas
+   - Remove a discussão do card de campanha
+   - Cria navegação interna da mesa: Ficha, Discussão, Sessão e Jogadores
+   - Mantém mural, resumos, fotos/GIFs e organização de sessão separados por abas
+========================= */
+(function od120CampaignWorkspaceTabs(){
+  const $ = id => document.getElementById(id);
+  const safe = value => {
+    try { return typeof escapeHtml === 'function' ? escapeHtml(String(value ?? '')) : String(value ?? ''); }
+    catch (_) { return String(value ?? ''); }
+  };
+  const uid = () => `od120-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  let activeTab = localStorage.getItem('od120_active_tab') || 'sheet';
+  let discussionCache = { session: {}, posts: [] };
+  let loadingTableId = null;
+
+  function tables(){ try { return typeof getCampaigns === 'function' ? getCampaigns() : []; } catch (_) { return []; } }
+  function members(){ try { return typeof getMembers === 'function' ? getMembers() : []; } catch (_) { return []; } }
+  function chars(){ try { return typeof getCharacters === 'function' ? getCharacters() : []; } catch (_) { return []; } }
+  function tableId(){ return currentCampaignId || localStorage.getItem(STORAGE?.activeCampaign || 'od_active_campaign') || null; }
+  function table(){ const id = tableId(); return tables().find(t => String(t.id) === String(id)) || null; }
+  function tableMembers(){ const id = tableId(); return members().filter(m => String(m.campaignId) === String(id)); }
+  function currentMember(){ return tableMembers().find(m => String(m.userId) === String(currentUser?.id)); }
+  function canManage(){ return ['mestre','master','mestre_jogador','master_player'].includes(String(currentMember()?.role || '').toLowerCase()); }
+  function localKey(id){ return `od120_discussion_${id}`; }
+  function defaultDiscussion(){ return { session: { date:'', time:'', title:'', objective:'', info:'' }, posts: [] }; }
+  function normalize(value){
+    const d = value && typeof value === 'object' ? value : {};
+    const session = d.session && typeof d.session === 'object' ? d.session : {};
+    const posts = Array.isArray(d.posts) ? d.posts : [];
+    return {
+      session: {
+        date: String(session.date || '').slice(0,20),
+        time: String(session.time || '').slice(0,10),
+        title: String(session.title || '').slice(0,120),
+        objective: String(session.objective || '').slice(0,1000),
+        info: String(session.info || session.notes || '').slice(0,1600),
+        updatedAt: session.updatedAt || null
+      },
+      posts: posts.slice(-160).map(post => ({
+        id: String(post.id || uid()),
+        type: ['resumo','foto','conversa'].includes(post.type) ? post.type : 'conversa',
+        title: String(post.title || '').slice(0,120),
+        text: String(post.text || '').slice(0,3000),
+        imageUrl: String(post.imageUrl || post.image_url || '').slice(0,200000),
+        authorId: post.authorId || post.author_id || '',
+        authorName: String(post.authorName || post.author_name || currentUser?.realName || currentUser?.name || currentUser?.nick || 'Jogador').slice(0,80),
+        authorAvatar: String(post.authorAvatar || post.author_avatar || currentUser?.avatarUrl || currentUser?.avatar_url || '').slice(0,200000),
+        createdAt: post.createdAt || post.created_at || new Date().toISOString()
+      }))
+    };
+  }
+  function getLocal(id){
+    try { return normalize(JSON.parse(localStorage.getItem(localKey(id)) || 'null') || table()?.settings?.discussion || defaultDiscussion()); }
+    catch (_) { return normalize(table()?.settings?.discussion || defaultDiscussion()); }
+  }
+  function setLocal(id, discussion){
+    const clean = normalize(discussion);
+    try { localStorage.setItem(localKey(id), JSON.stringify(clean)); } catch (_) {}
+    try {
+      const list = tables();
+      const found = list.find(t => String(t.id) === String(id));
+      if (found) {
+        found.settings = found.settings || {};
+        found.settings.discussion = clean;
+        if (typeof setCampaigns === 'function') setCampaigns(list);
+      }
+    } catch (_) {}
+    return clean;
+  }
+  async function api(path, options){
+    if (typeof od42Api !== 'function' || typeof od42Token !== 'function' || !od42Token()) throw new Error('offline');
+    return od42Api(path, options);
+  }
+  async function loadDiscussion(force=false){
+    const id = tableId();
+    if (!id) return defaultDiscussion();
+    discussionCache = getLocal(id);
+    renderActiveContent();
+    if (loadingTableId === id && !force) return discussionCache;
+    loadingTableId = id;
+    try {
+      const data = await api(`/api/tables/${id}/discussion`);
+      discussionCache = normalize(data.discussion || {});
+      setLocal(id, discussionCache);
+    } catch (_) {
+      discussionCache = getLocal(id);
+    } finally {
+      loadingTableId = null;
+      renderActiveContent();
+    }
+    return discussionCache;
+  }
+  async function saveSession(){
+    const id = tableId(); if (!id) return;
+    const session = {
+      date: $('od120-session-date')?.value || '',
+      time: $('od120-session-time')?.value || '',
+      title: $('od120-session-title')?.value || '',
+      objective: $('od120-session-objective')?.value || '',
+      info: $('od120-session-info')?.value || ''
+    };
+    discussionCache = normalize({ ...discussionCache, session });
+    setLocal(id, discussionCache);
+    renderActiveContent();
+    try {
+      const data = await api(`/api/tables/${id}/discussion/session`, { method:'PUT', body: JSON.stringify(session) });
+      discussionCache = normalize(data.discussion || discussionCache);
+      setLocal(id, discussionCache);
+      renderActiveContent();
+    } catch (error) {
+      if (String(error.message || '').toLowerCase() !== 'offline') alert(error.message || 'Não foi possível salvar a organização da sessão.');
+    }
+  }
+  async function createPost(){
+    const id = tableId(); if (!id) return;
+    const type = document.querySelector('[data-od120-post-type].active')?.dataset.od120PostType || 'conversa';
+    const cleanPost = {
+      id: uid(), type,
+      title: String($('od120-post-title')?.value || '').trim().slice(0,120),
+      text: String($('od120-post-text')?.value || '').trim().slice(0,3000),
+      imageUrl: String($('od120-post-image')?.value || '').trim().slice(0,200000),
+      authorId: currentUser?.id || '',
+      authorName: currentUser?.realName || currentUser?.name || currentUser?.nick || 'Jogador',
+      authorAvatar: currentUser?.avatarUrl || currentUser?.avatar_url || '',
+      createdAt: new Date().toISOString()
+    };
+    if (!cleanPost.title && !cleanPost.text && !cleanPost.imageUrl) return alert('Escreva uma mensagem, resumo ou adicione uma imagem por link.');
+    discussionCache.posts = [...(discussionCache.posts || []), cleanPost].slice(-160);
+    setLocal(id, discussionCache);
+    renderActiveContent();
+    try {
+      const data = await api(`/api/tables/${id}/discussion/posts`, { method:'POST', body: JSON.stringify(cleanPost) });
+      discussionCache = normalize(data.discussion || discussionCache);
+      setLocal(id, discussionCache);
+      renderActiveContent();
+    } catch (_) {}
+  }
+  async function deletePost(postId){
+    const id = tableId(); if (!id) return;
+    const post = (discussionCache.posts || []).find(p => String(p.id) === String(postId));
+    if (!post) return;
+    if (!canManage() && String(post.authorId) !== String(currentUser?.id)) return alert('Somente o mestre ou o autor pode apagar esta publicação.');
+    if (!confirm('Apagar esta publicação?')) return;
+    discussionCache.posts = (discussionCache.posts || []).filter(p => String(p.id) !== String(postId));
+    setLocal(id, discussionCache);
+    renderActiveContent();
+    try {
+      const data = await api(`/api/tables/${id}/discussion/posts/${encodeURIComponent(postId)}`, { method:'DELETE' });
+      discussionCache = normalize(data.discussion || discussionCache);
+      setLocal(id, discussionCache);
+      renderActiveContent();
+    } catch (_) {}
+  }
+  function formatDate(session){
+    const date = session?.date || ''; const time = session?.time || '';
+    if (!date && !time) return 'Não definida';
+    const out = [];
+    if (date) out.push(date.split('-').reverse().join('/'));
+    if (time) out.push(time);
+    return out.join(' às ');
+  }
+  function typeLabel(type){ return type === 'resumo' ? 'Resumo' : type === 'foto' ? 'Imagem' : 'Conversa'; }
+  function findCharByMember(m){ return chars().find(c => String(c.id) === String(m.characterId)); }
+  function imgUrl(url){ return url || 'assets/logo.jpg'; }
+  function postHtml(post){
+    const created = post.createdAt ? new Date(post.createdAt).toLocaleString('pt-BR') : '';
+    const mayDelete = canManage() || String(post.authorId) === String(currentUser?.id);
+    return `<article class="od120-post od120-post-${safe(post.type)}">
+      <header>
+        <img src="${safe(imgUrl(post.authorAvatar))}" alt="" loading="lazy" />
+        <div><strong>${safe(post.authorName || 'Jogador')}</strong><small>${safe(created)}</small></div>
+        <em>${safe(typeLabel(post.type))}</em>
+        ${mayDelete ? `<button type="button" data-od120-delete-post="${safe(post.id)}" title="Apagar">×</button>` : ''}
+      </header>
+      ${post.title ? `<h4>${safe(post.title)}</h4>` : ''}
+      ${post.text ? `<p>${safe(post.text).replace(/\n/g, '<br>')}</p>` : ''}
+      ${post.imageUrl ? `<figure><img src="${safe(post.imageUrl)}" alt="Imagem da publicação" loading="lazy" /></figure>` : ''}
+    </article>`;
+  }
+  function ensureShell(){
+    if (!$('app-screen')?.classList.contains('active')) return null;
+    let shell = $('od120-campaign-workspace');
+    if (shell) return shell;
+    const sheetArea = document.querySelector('#app-screen .sheet-area');
+    if (!sheetArea) return null;
+    shell = document.createElement('section');
+    shell.id = 'od120-campaign-workspace';
+    shell.className = 'od120-workspace manga-panel';
+    shell.innerHTML = `<div class="od120-tabs">
+      <button type="button" data-od120-tab="sheet">Ficha</button>
+      <button type="button" data-od120-tab="discussion">Discussão</button>
+      <button type="button" data-od120-tab="session">Sessão</button>
+      <button type="button" data-od120-tab="players">Jogadores</button>
+    </div>
+    <div id="od120-content" class="od120-content"></div>`;
+    sheetArea.parentNode.insertBefore(shell, sheetArea);
+    return shell;
+  }
+  function renderSession(){
+    const session = discussionCache.session || {};
+    const master = canManage();
+    return `<div class="od120-session-panel">
+      <div class="od120-panel-head"><p class="eyebrow">Organização</p><h2>Próxima Sessão</h2><span>${safe(formatDate(session))}</span></div>
+      <div class="od120-session-card">
+        <h3>${safe(session.title || 'Sem título definido')}</h3>
+        <p><b>Objetivo:</b> ${safe(session.objective || 'O mestre ainda não definiu o objetivo da próxima sessão.')}</p>
+        <p><b>Informações:</b><br>${safe(session.info || 'Nenhum aviso publicado.').replace(/\n/g, '<br>')}</p>
+      </div>
+      ${master ? `<div class="od120-editor-grid">
+        <label>Data<input id="od120-session-date" type="date" value="${safe(session.date)}" /></label>
+        <label>Horário<input id="od120-session-time" type="time" value="${safe(session.time)}" /></label>
+        <label>Título<input id="od120-session-title" maxlength="120" value="${safe(session.title)}" placeholder="Título da sessão" /></label>
+        <label>Objetivo<input id="od120-session-objective" maxlength="1000" value="${safe(session.objective)}" placeholder="Objetivo principal" /></label>
+        <label class="wide">Avisos / informações<textarea id="od120-session-info" maxlength="1600" placeholder="Recados, preparação e observações para o grupo">${safe(session.info)}</textarea></label>
+        <button type="button" class="primary-btn" id="od120-save-session">Salvar Organização</button>
+      </div>` : ''}
+    </div>`;
+  }
+  function renderDiscussion(){
+    const posts = [...(discussionCache.posts || [])].sort((a,b)=>new Date(b.createdAt || 0)-new Date(a.createdAt || 0));
+    return `<div class="od120-discussion-panel">
+      <div class="od120-panel-head"><p class="eyebrow">Mural da Campanha</p><h2>Discussão</h2><span>Fora de sessão</span></div>
+      <section class="od120-composer">
+        <div class="od120-type-row">
+          <button type="button" class="active" data-od120-post-type="conversa">Conversa</button>
+          <button type="button" data-od120-post-type="resumo">Resumo</button>
+          <button type="button" data-od120-post-type="foto">Foto / GIF</button>
+        </div>
+        <input id="od120-post-title" maxlength="120" placeholder="Título opcional" />
+        <textarea id="od120-post-text" maxlength="3000" placeholder="Escreva recados, teorias, resumos ou conversas da campanha..."></textarea>
+        <input id="od120-post-image" type="url" placeholder="Link direto de imagem ou GIF opcional" />
+        <button type="button" class="primary-btn" id="od120-send-post">Publicar</button>
+      </section>
+      <section class="od120-feed">${posts.length ? posts.map(postHtml).join('') : '<div class="od120-empty">Nenhuma publicação ainda. Use este mural para conversas, resumos e imagens da campanha.</div>'}</section>
+    </div>`;
+  }
+  function renderPlayers(){
+    const list = tableMembers();
+    return `<div class="od120-players-panel">
+      <div class="od120-panel-head"><p class="eyebrow">Grupo</p><h2>Jogadores</h2><span>${list.length} participante${list.length === 1 ? '' : 's'}</span></div>
+      <div class="od120-player-grid">${list.map(m => {
+        const c = findCharByMember(m);
+        const avatar = c?.portrait || c?.image || c?.avatar || 'assets/logo.jpg';
+        return `<article class="od120-player-card">
+          <img src="${safe(imgUrl(avatar))}" alt="" loading="lazy" />
+          <div><strong>${safe(c?.name || m.userName || m.nick || 'Sem ficha')}</strong><span>${safe(m.role || 'jogador')}</span><small>${c ? `PV ${safe(c.pvCurrent ?? 0)}/${safe(c.pvMax ?? 0)} • PE ${safe(c.peCurrent ?? 0)}/${safe(c.peMax ?? 0)}` : 'Entrou sem ficha'}</small></div>
+        </article>`;
+      }).join('') || '<div class="od120-empty">Nenhum jogador na mesa.</div>'}</div>
+    </div>`;
+  }
+  function renderActiveContent(){
+    const shell = ensureShell(); if (!shell) return;
+    const content = $('od120-content'); if (!content) return;
+    shell.querySelectorAll('[data-od120-tab]').forEach(btn => btn.classList.toggle('active', btn.dataset.od120Tab === activeTab));
+    const sheetArea = document.querySelector('#app-screen .sheet-area');
+    document.body.classList.toggle('od120-non-sheet-tab', activeTab !== 'sheet');
+    if (sheetArea) sheetArea.classList.toggle('od120-sheet-hidden', activeTab !== 'sheet');
+    if (activeTab === 'sheet') {
+      content.innerHTML = `<div class="od120-sheet-intro"><strong>Ficha da Mesa</strong><span>Use as abas da ficha para editar personagem, combate, inventário e transformações.</span></div>`;
+      return;
+    }
+    if (activeTab === 'discussion') content.innerHTML = renderDiscussion();
+    else if (activeTab === 'session') content.innerHTML = renderSession();
+    else if (activeTab === 'players') content.innerHTML = renderPlayers();
+  }
+  function activate(tab){
+    activeTab = ['sheet','discussion','session','players'].includes(tab) ? tab : 'sheet';
+    localStorage.setItem('od120_active_tab', activeTab);
+    renderActiveContent();
+    if (activeTab === 'discussion' || activeTab === 'session') loadDiscussion(true);
+  }
+  function boot(){
+    if (!$('app-screen')?.classList.contains('active') || !tableId()) return;
+    ensureShell();
+    renderActiveContent();
+    if (activeTab === 'discussion' || activeTab === 'session') loadDiscussion();
+  }
+  document.addEventListener('click', event => {
+    const tab = event.target.closest('[data-od120-tab]');
+    if (tab) { event.preventDefault(); activate(tab.dataset.od120Tab); return; }
+    const type = event.target.closest('[data-od120-post-type]');
+    if (type) {
+      event.preventDefault();
+      document.querySelectorAll('[data-od120-post-type]').forEach(btn => btn.classList.remove('active'));
+      type.classList.add('active');
+      return;
+    }
+    if (event.target.closest('#od120-send-post')) { event.preventDefault(); createPost(); return; }
+    if (event.target.closest('#od120-save-session')) { event.preventDefault(); saveSession(); return; }
+    const del = event.target.closest('[data-od120-delete-post]');
+    if (del) { event.preventDefault(); deletePost(del.dataset.od120DeletePost); return; }
+  }, true);
+  function bindSocket(){
+    try {
+      const s = typeof socket !== 'undefined' ? socket : window.socket;
+      if (!s || s.__od120Bound) return;
+      s.on?.('discussion:updated', payload => {
+        if (!payload?.tableId || String(payload.tableId) !== String(tableId())) return;
+        discussionCache = normalize(payload.discussion || {});
+        setLocal(payload.tableId, discussionCache);
+        renderActiveContent();
+      });
+      s.__od120Bound = true;
+    } catch (_) {}
+  }
+  function wrap(name){
+    try {
+      const fn = globalThis[name];
+      if (typeof fn !== 'function' || fn.__od120Wrapped) return;
+      globalThis[name] = function(...args){ const out = fn.apply(this, args); setTimeout(boot, 80); return out; };
+      globalThis[name].__od120Wrapped = true;
+    } catch (_) {}
+  }
+  wrap('initApp'); wrap('renderCampaignMiniCard'); wrap('renderCampaignMenu');
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => { boot(); bindSocket(); setInterval(boot, 2500); });
+  else { boot(); bindSocket(); setInterval(boot, 2500); }
+  window.od120ActivateCampaignTab = activate;
 })();
