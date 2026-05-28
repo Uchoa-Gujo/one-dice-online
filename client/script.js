@@ -9680,3 +9680,448 @@ function od66InventoryMutationUnlockSoon() {
   setTimeout(bootV101, 600);
   window.od101RefreshSheetFixes = bootV101;
 })();
+
+
+/* =========================
+   V102 - Beta 5: retratos, atributos, esquiva e entrada sem ficha
+   - Corrige valores/bônus dos atributos cobertos pelos controles
+   - Fotos por link aplicadas em ficha, menus, mesa e OBS
+   - GIF por link preservado sem canvas/conversão
+   - Esquiva = Defesa + bônus/proficiência de Reflexo, sem AGI
+   - Modal de escolher ficha ganha opção Entrar sem ficha
+========================= */
+(function od102Beta5Fixes(){
+  const $ = id => document.getElementById(id);
+  const esc = value => {
+    try { return typeof escapeHtml === 'function' ? escapeHtml(value ?? '') : String(value ?? ''); }
+    catch (_) { return String(value ?? ''); }
+  };
+  const num = (value, fallback = 0) => {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : fallback;
+  };
+  const safeGet = (key, fallback) => { try { return get(key, fallback); } catch (_) { return fallback; } };
+  const safeSet = (key, value) => { try { set(key, value); } catch (_) {} };
+  const safeChar = () => { try { return typeof currentChar === 'function' ? currentChar() : null; } catch (_) { return null; } };
+  const imageFallback = 'assets/logo.jpg';
+
+  function cleanImage(value) { return String(value || '').trim(); }
+  function isUsableImage(value) {
+    const src = cleanImage(value);
+    return !!src && !/^(null|undefined|about:blank)$/i.test(src);
+  }
+  function primaryPortrait(char) {
+    return cleanImage(char?.portrait || char?.image || char?.photo || char?.avatar || char?.retrato || '');
+  }
+  function portraitByState(char = safeChar()) {
+    if (!char) return imageFallback;
+    const pv = num(char.pvCurrent ?? char.pvAtual ?? char.pv ?? char.hpCurrent ?? char.hp, 0);
+    const max = Math.max(1, num(char.pvMax ?? char.pvTotal ?? char.pv_max ?? char.hpMax ?? char.hpTotal, 1));
+    const icons = char.obsIcons || {};
+    if (pv < 0) return '';
+    if (char.obsTransformationActive && isUsableImage(char.obsTransformPortrait || icons.transformation || char.transformationPortrait)) {
+      return cleanImage(char.obsTransformPortrait || icons.transformation || char.transformationPortrait);
+    }
+    if (pv === 0 && isUsableImage(icons.zero || char.portraitZero || char.obsIconZero)) return cleanImage(icons.zero || char.portraitZero || char.obsIconZero);
+    if (pv > 0 && pv / max < .5 && isUsableImage(icons.low || char.portraitLow || char.obsIconLow)) return cleanImage(icons.low || char.portraitLow || char.obsIconLow);
+    return primaryPortrait(char) || imageFallback;
+  }
+  function cropFor(char) { return Object.assign({ x: 50, y: 50, scale: 1 }, char?.portraitCrop || {}); }
+  function applyCrop(img, char = safeChar()) {
+    if (!img) return;
+    const crop = cropFor(char);
+    img.style.objectFit = 'cover';
+    img.style.objectPosition = `${num(crop.x,50)}% ${num(crop.y,50)}%`;
+    img.style.transformOrigin = `${num(crop.x,50)}% ${num(crop.y,50)}%`;
+    img.style.transform = `scale(${Math.max(1, Math.min(3, num(crop.scale,1)))})`;
+  }
+  function setImageElement(img, src, char = safeChar()) {
+    if (!img) return;
+    const value = cleanImage(src);
+    if (!value) {
+      img.removeAttribute('src');
+      img.style.visibility = 'hidden';
+      return;
+    }
+    img.style.visibility = '';
+    if (img.getAttribute('src') !== value) img.src = value;
+    img.onerror = () => { img.onerror = null; img.src = imageFallback; };
+    applyCrop(img, char);
+  }
+  function updateVisiblePortraits(char = safeChar()) {
+    if (!char) return;
+    const normal = primaryPortrait(char) || imageFallback;
+    const state = portraitByState(char);
+    setImageElement($('char-portrait-preview'), state, char);
+    setImageElement($('overlay-portrait'), normal, char);
+    const hidden = $('portrait-url');
+    if (hidden) hidden.value = primaryPortrait(char);
+
+    // Atualiza cards já existentes sem esperar recarregar a página.
+    document.querySelectorAll(`img[data-character-id="${CSS.escape(String(char.id || ''))}"], img[data-char-id="${CSS.escape(String(char.id || ''))}"]`).forEach(img => setImageElement(img, normal, char));
+    document.querySelectorAll('.character-pill, .session-character, .choose-character-card, .account-character-card, .od71-character-card, .od85-character-card').forEach(card => {
+      const text = card.textContent || '';
+      if (char.name && text.includes(char.name)) {
+        const img = card.querySelector('img');
+        if (img) setImageElement(img, normal, char);
+      }
+    });
+  }
+  async function persistCharacterImage(char) {
+    if (!char) return;
+    try { queueSave?.(); } catch (_) {}
+    try {
+      if (typeof od44SaveCharacterOnline === 'function') await od44SaveCharacterOnline(char);
+      else if (typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(char);
+    } catch (error) {
+      console.warn('[One Dice v102] Falha ao salvar foto:', error);
+    }
+  }
+
+  function reflexSkill(char) { return char?.skills?.Reflexo || char?.skills?.Reflexos || { trained: false, bonus: 0 }; }
+  function reflexBonusOnly(char) {
+    const skill = reflexSkill(char);
+    return num(skill.bonus, 0) + (skill.trained ? num(char?.profBonus, 0) : 0);
+  }
+  function dodgeFormula(char = safeChar()) {
+    const def = typeof effectiveDefense === 'function' ? num(effectiveDefense(char), 10) : num(char?.defense ?? char?.defesa, 10);
+    return def + reflexBonusOnly(char);
+  }
+  window.od102DodgeFormula = dodgeFormula;
+  window.od101DodgeFormula = dodgeFormula;
+  window.od100DodgeFormula = dodgeFormula;
+  window.od99DodgeFormula = dodgeFormula;
+  window.od98DodgeFormula = dodgeFormula;
+  if (typeof calculatedDodge === 'function') {
+    calculatedDodge = function od102CalculatedDodge(char = safeChar()) { return dodgeFormula(char); };
+  }
+  function syncDodge(char = safeChar()) {
+    if (!char) return;
+    const value = dodgeFormula(char);
+    char.dodge = value;
+    char.dodgeManual = false;
+    char.dodgeLocked = false;
+    const field = $('dodge');
+    if (field && document.activeElement !== field) {
+      field.value = value;
+      field.removeAttribute('readonly');
+    }
+    const note = $('dodge-formula-note');
+    if (note) note.textContent = '';
+  }
+
+  function renderAttributesV102(char = safeChar()) {
+    const grid = $('attributes-grid');
+    if (!grid || !char) return;
+    const labels = { forca: 'Força', agilidade: 'Agilidade', vigor: 'Vigor', intelecto: 'Intelecto', presenca: 'Presença' };
+    grid.innerHTML = '';
+    Object.entries(labels).forEach(([key, label]) => {
+      const value = num(char.attrs?.[key], 1);
+      const mod = typeof attrMod === 'function' ? attrMod(value) : value;
+      const modText = typeof formatMod === 'function' ? formatMod(mod) : String(mod);
+      const card = document.createElement('div');
+      card.className = 'attr-card-v2 od102-attr-card';
+      card.innerHTML = `
+        <div class="od102-attr-name">${esc(label)}</div>
+        <div class="od102-attr-body">
+          <div class="od102-attr-left">
+            <div class="od102-attr-mod">${esc(modText)}</div>
+            <div class="od102-attr-help">D20</div>
+          </div>
+          <div class="od102-attr-control">
+            <button type="button" class="od102-step" data-od102-attr-step="${esc(key)}" data-dir="-1">−</button>
+            <input data-attr="${esc(key)}" type="number" value="${esc(value)}" min="1" inputmode="numeric">
+            <button type="button" class="od102-step" data-od102-attr-step="${esc(key)}" data-dir="1">+</button>
+          </div>
+        </div>
+        <button class="primary-btn small roll-attr od102-roll" data-roll-attr="${esc(key)}" type="button">D20</button>`;
+      grid.appendChild(card);
+    });
+  }
+  if (typeof renderAttributes === 'function') renderAttributes = renderAttributesV102;
+
+  function ensurePhotoDialog() {
+    let dialog = $('od102-photo-modal');
+    if (dialog) return dialog;
+    dialog = document.createElement('dialog');
+    dialog.id = 'od102-photo-modal';
+    dialog.className = 'od102-photo-modal od-modal';
+    dialog.innerHTML = `
+      <form method="dialog" class="modal-card manga-panel od102-photo-card">
+        <div class="od102-modal-head">
+          <div>
+            <h2>Fotos da Ficha</h2>
+            <p>Cole links diretos. PNG, JPG, WEBP e GIF funcionam. GIF permanece animado.</p>
+          </div>
+          <button type="button" class="icon-btn" id="od102-photo-close">×</button>
+        </div>
+        <div class="od102-photo-grid">
+          <label>Foto normal<input id="od102-photo-normal" type="text" placeholder="https://..." autocomplete="off"></label>
+          <label>Machucado, abaixo de 50% PV<input id="od102-photo-low" type="text" placeholder="opcional" autocomplete="off"></label>
+          <label>Morrendo, 0 PV<input id="od102-photo-zero" type="text" placeholder="opcional" autocomplete="off"></label>
+          <label>Transformação ativa<input id="od102-photo-transform" type="text" placeholder="opcional" autocomplete="off"></label>
+        </div>
+        <div class="od102-preview-wrap">
+          <div id="od102-crop-stage" class="od102-crop-stage" title="Arraste para mover. Roda do mouse para zoom.">
+            <img id="od102-crop-img" alt="Prévia" draggable="false">
+          </div>
+          <small>Prévia da foto principal. Arraste para enquadrar e use a roda do mouse para zoom. Para GIF, o link é salvo direto.</small>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="ghost-btn" id="od102-photo-reset">Centralizar</button>
+          <button type="button" class="ghost-btn" id="od102-photo-cancel">Cancelar</button>
+          <button type="button" class="primary-btn" id="od102-photo-save">Salvar Fotos</button>
+        </div>
+      </form>`;
+    document.body.appendChild(dialog);
+    return dialog;
+  }
+  function refreshPhotoPreview() {
+    const img = $('od102-crop-img');
+    if (!img) return;
+    const src = cleanImage($('od102-photo-normal')?.value || '');
+    const crop = Object.assign({ x: 50, y: 50, scale: 1 }, window.od102CropState || {});
+    if (!src) { img.removeAttribute('src'); return; }
+    if (img.getAttribute('src') !== src) img.src = src;
+    img.onerror = () => { img.removeAttribute('src'); };
+    img.style.objectFit = 'cover';
+    img.style.objectPosition = `${crop.x}% ${crop.y}%`;
+    img.style.transformOrigin = `${crop.x}% ${crop.y}%`;
+    img.style.transform = `scale(${Math.max(1, Math.min(3, num(crop.scale,1)))})`;
+  }
+  function openPhotoDialog() {
+    const char = safeChar();
+    const dialog = ensurePhotoDialog();
+    const icons = char?.obsIcons || {};
+    $('od102-photo-normal').value = primaryPortrait(char) || $('portrait-url')?.value || '';
+    $('od102-photo-low').value = cleanImage(icons.low || char?.portraitLow || char?.obsIconLow || '');
+    $('od102-photo-zero').value = cleanImage(icons.zero || char?.portraitZero || char?.obsIconZero || '');
+    $('od102-photo-transform').value = cleanImage(icons.transformation || char?.obsTransformPortrait || char?.transformationPortrait || '');
+    window.od102CropState = Object.assign({ x: 50, y: 50, scale: 1 }, char?.portraitCrop || {});
+    setupCrop();
+    refreshPhotoPreview();
+    dialog.showModal();
+  }
+  function setupCrop() {
+    const stage = $('od102-crop-stage');
+    if (!stage || stage.dataset.od102Ready === '1') return;
+    stage.dataset.od102Ready = '1';
+    let dragging = false, start = null;
+    stage.addEventListener('pointerdown', ev => {
+      dragging = true;
+      stage.setPointerCapture?.(ev.pointerId);
+      const crop = Object.assign({ x: 50, y: 50, scale: 1 }, window.od102CropState || {});
+      start = { x: ev.clientX, y: ev.clientY, cropX: crop.x, cropY: crop.y };
+    });
+    stage.addEventListener('pointermove', ev => {
+      if (!dragging || !start) return;
+      const rect = stage.getBoundingClientRect();
+      const dx = ((ev.clientX - start.x) / Math.max(1, rect.width)) * -100;
+      const dy = ((ev.clientY - start.y) / Math.max(1, rect.height)) * -100;
+      window.od102CropState = Object.assign({}, window.od102CropState || {}, {
+        x: Math.max(0, Math.min(100, start.cropX + dx)),
+        y: Math.max(0, Math.min(100, start.cropY + dy))
+      });
+      refreshPhotoPreview();
+    });
+    ['pointerup','pointercancel','pointerleave'].forEach(type => stage.addEventListener(type, () => { dragging = false; start = null; }));
+    stage.addEventListener('wheel', ev => {
+      ev.preventDefault();
+      const crop = Object.assign({ x: 50, y: 50, scale: 1 }, window.od102CropState || {});
+      crop.scale = Math.max(1, Math.min(3, crop.scale + (ev.deltaY < 0 ? .08 : -.08)));
+      window.od102CropState = crop;
+      refreshPhotoPreview();
+    }, { passive: false });
+  }
+  async function savePhotoDialog() {
+    const char = safeChar();
+    if (!char) return;
+    const normal = cleanImage($('od102-photo-normal')?.value || '');
+    const low = cleanImage($('od102-photo-low')?.value || '');
+    const zero = cleanImage($('od102-photo-zero')?.value || '');
+    const transformation = cleanImage($('od102-photo-transform')?.value || '');
+    const crop = Object.assign({ x: 50, y: 50, scale: 1 }, window.od102CropState || {});
+    updateChar?.(c => {
+      c.portrait = normal;
+      c.image = normal;
+      c.photo = normal;
+      c.avatar = normal;
+      c.retrato = normal;
+      c.obsIcons = c.obsIcons || {};
+      c.obsIcons.low = low;
+      c.obsIcons.zero = zero;
+      c.obsIcons.transformation = transformation;
+      c.portraitLow = low;
+      c.portraitZero = zero;
+      c.obsIconLow = low;
+      c.obsIconZero = zero;
+      c.obsTransformPortrait = transformation;
+      c.transformationPortrait = transformation;
+      c.portraitCrop = crop;
+      c.updatedAt = Date.now();
+    });
+    const fresh = safeChar();
+    const hidden = $('portrait-url');
+    const modalHidden = $('portrait-modal-url');
+    if (hidden) hidden.value = normal;
+    if (modalHidden) modalHidden.value = normal;
+    updateVisiblePortraits(fresh);
+    try { renderCharacterList?.(); } catch (_) {}
+    try { renderAccountCharacterList?.(); } catch (_) {}
+    try { renderCampaignMenu?.(); } catch (_) {}
+    await persistCharacterImage(fresh);
+  }
+
+  // Escolher ficha: adiciona entrada sem ficha e usa imagens atualizadas nos cards.
+  if (typeof openChooseCharacterModal === 'function' && !openChooseCharacterModal.__od102Wrapped) {
+    const baseOpenChoose = openChooseCharacterModal;
+    openChooseCharacterModal = function od102OpenChooseCharacterModal(campaignId = currentCampaignId) {
+      const result = baseOpenChoose.apply(this, arguments);
+      const list = $('choose-character-list');
+      if (list) {
+        list.querySelectorAll('.choose-character-card').forEach(btn => {
+          const id = btn.dataset.selectCharacterForCampaign;
+          const chars = safeGet(STORAGE.characters, []);
+          const char = chars.find(c => String(c.id) === String(id));
+          if (char) setImageElement(btn.querySelector('img'), primaryPortrait(char) || imageFallback, char);
+        });
+      }
+      const modal = $('choose-character-modal');
+      const actions = modal?.querySelector('.modal-actions');
+      if (actions && !$('od102-enter-without-sheet')) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.id = 'od102-enter-without-sheet';
+        btn.className = 'ghost-btn';
+        btn.textContent = 'Entrar sem ficha';
+        actions.insertBefore(btn, actions.firstChild);
+      }
+      return result;
+    };
+    openChooseCharacterModal.__od102Wrapped = true;
+  }
+
+  async function enterWithoutSheet() {
+    const campaignId = pendingChooseCampaignId || currentCampaignId;
+    if (!campaignId) return;
+    try {
+      if (typeof od42Api === 'function' && typeof od42Token === 'function' && od42Token()) {
+        await od42Api(`/api/tables/${campaignId}/member`, { method: 'PUT', body: JSON.stringify({ characterId: null }) });
+        await od42RefreshTables?.();
+        await od42LoadTableState?.(campaignId);
+      } else {
+        const members = typeof getMembers === 'function' ? getMembers() : [];
+        let member = members.find(m => String(m.campaignId) === String(campaignId) && String(m.userId) === String(currentUser?.id));
+        if (!member) { member = { id: typeof uid === 'function' ? uid('member') : String(Date.now()), campaignId, userId: currentUser?.id, role: 'jogador', characterId: null }; members.push(member); }
+        member.characterId = null;
+        if (typeof setMembers === 'function') setMembers(members); else safeSet(STORAGE.members, members);
+      }
+      $('choose-character-modal')?.close();
+      $('create-first-sheet-modal')?.close();
+      currentCampaignId = campaignId;
+      safeSet(STORAGE.activeCampaign, campaignId);
+      if (typeof initApp === 'function') initApp(campaignId);
+    } catch (error) {
+      alert(error.message || 'Erro ao entrar sem ficha.');
+    }
+  }
+
+  function boot() {
+    $('portrait-modal')?.classList.add('od102-hidden-old-photo-modal');
+    $('od99-portrait-crop-modal')?.classList.add('od102-hidden-old-photo-modal');
+    $('od100-portrait-modal')?.classList.add('od102-hidden-old-photo-modal');
+    $('od101-photo-modal')?.classList.add('od102-hidden-old-photo-modal');
+    const btn = $('portrait-button') || $('od101-portrait-button');
+    if (btn) { btn.id = 'od102-portrait-button'; btn.setAttribute('title', 'Trocar fotos da ficha'); }
+    const char = safeChar();
+    if (char) {
+      if ($('attributes-grid')) renderAttributesV102(char);
+      syncDodge(char);
+      updateVisiblePortraits(char);
+    }
+    try { document.querySelectorAll('[data-skill-bonus], [data-od98-skill-bonus]').forEach(el => el.dispatchEvent(new Event('change', { bubbles: true }))); } catch (_) {}
+  }
+
+  document.addEventListener('click', event => {
+    const portraitBtn = event.target.closest('#od102-portrait-button, #od101-portrait-button, #portrait-button');
+    if (portraitBtn) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      openPhotoDialog();
+      return;
+    }
+    if (event.target.closest('#od102-photo-close, #od102-photo-cancel')) { event.preventDefault(); $('od102-photo-modal')?.close(); return; }
+    if (event.target.closest('#od102-photo-reset')) { event.preventDefault(); window.od102CropState = { x: 50, y: 50, scale: 1 }; refreshPhotoPreview(); return; }
+    if (event.target.closest('#od102-photo-save')) { event.preventDefault(); savePhotoDialog().then(() => $('od102-photo-modal')?.close()); return; }
+    if (event.target.closest('#od102-enter-without-sheet')) { event.preventDefault(); event.stopImmediatePropagation(); enterWithoutSheet(); return; }
+
+    const attrStep = event.target.closest('[data-od102-attr-step]');
+    if (attrStep) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const key = attrStep.dataset.od102AttrStep;
+      const dir = num(attrStep.dataset.dir, 0);
+      const input = document.querySelector(`input[data-attr="${CSS.escape(key)}"]`);
+      if (!input) return;
+      input.value = Math.max(1, num(input.value, 1) + dir);
+      updateChar?.(char => { char.attrs = char.attrs || {}; char.attrs[key] = num(input.value, 1); syncDodge(char); });
+      const char = safeChar();
+      if (char) {
+        renderAttributesV102(char);
+        try { renderSkills?.(char); } catch (_) {}
+        syncDodge(char);
+        try { queueSave?.(); } catch (_) {}
+      }
+      return;
+    }
+  }, true);
+
+  document.addEventListener('input', event => {
+    if (event.target.closest('#od102-photo-normal, #od102-photo-low, #od102-photo-zero, #od102-photo-transform')) { refreshPhotoPreview(); return; }
+    if (event.target.matches?.('[data-skill-bonus], [data-od98-skill-bonus], [data-od88-skill-bonus], [data-od79-skill-bonus], [data-skill-trained], [data-od98-skill-trained], #defense, #prof-bonus')) {
+      setTimeout(() => syncDodge(safeChar()), 0);
+    }
+  }, true);
+  document.addEventListener('change', event => {
+    if (event.target.matches?.('[data-skill-trained], [data-od98-skill-trained], #defense, #prof-bonus')) setTimeout(() => syncDodge(safeChar()), 0);
+  }, true);
+
+  if (typeof renderPortrait === 'function') {
+    renderPortrait = function od102RenderPortrait(char) { updateVisiblePortraits(char || safeChar()); };
+    renderPortrait.__od102Wrapped = true;
+  }
+  if (typeof updateDerivedStatsDisplay === 'function' && !updateDerivedStatsDisplay.__od102Wrapped) {
+    const base = updateDerivedStatsDisplay;
+    updateDerivedStatsDisplay = function od102UpdateDerivedStatsDisplay(char = safeChar()) {
+      const result = base.apply(this, arguments);
+      syncDodge(char);
+      updateVisiblePortraits(char);
+      return result;
+    };
+    updateDerivedStatsDisplay.__od102Wrapped = true;
+  }
+  if (typeof saveCurrentCharacter === 'function' && !saveCurrentCharacter.__od102Wrapped) {
+    const base = saveCurrentCharacter;
+    saveCurrentCharacter = function od102SaveCurrentCharacter() {
+      const char = safeChar();
+      if (char) syncDodge(char);
+      return base.apply(this, arguments);
+    };
+    saveCurrentCharacter.__od102Wrapped = true;
+  }
+  if (typeof loadCharacter === 'function' && !loadCharacter.__od102Wrapped) {
+    const base = loadCharacter;
+    loadCharacter = function od102LoadCharacter(id) {
+      const result = base.apply(this, arguments);
+      setTimeout(boot, 0);
+      return result;
+    };
+    loadCharacter.__od102Wrapped = true;
+  }
+
+  document.addEventListener('DOMContentLoaded', boot);
+  setTimeout(boot, 120);
+  setTimeout(boot, 700);
+  window.od102RefreshBetaFixes = boot;
+})();
