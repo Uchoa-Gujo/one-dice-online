@@ -9104,3 +9104,579 @@ function od66InventoryMutationUnlockSoon() {
   setTimeout(boot, 750);
   window.od100RefreshSheetFixes = boot;
 })();
+
+/* =========================
+   V101 - Beta 4: vitais, atributos, foto por link, esquiva e vínculo em mesa
+   - Remove duplicação dos botões +/- em PV/PE
+   - Reposiciona atributos sem vazamento
+   - Esquiva = Defesa + bônus/proficiência de Reflexo, sem AGI
+   - Foto da ficha somente por link, com GIF aceito e recorte por arrastar/zoom
+   - Vincular em Mesa abre painel com mesas participantes
+========================= */
+(function od101Beta4Fixes(){
+  const $ = id => document.getElementById(id);
+  const esc = value => {
+    try { return typeof escapeHtml === 'function' ? escapeHtml(value ?? '') : String(value ?? ''); }
+    catch (_) { return String(value ?? ''); }
+  };
+  const num = (value, fallback = 0) => {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : fallback;
+  };
+  const safeChar = () => { try { return typeof currentChar === 'function' ? currentChar() : null; } catch (_) { return null; } };
+  const safeUsers = () => { try { return get(STORAGE.users, []); } catch (_) { return []; } };
+  const safeCampaigns = () => { try { return typeof getCampaigns === 'function' ? getCampaigns() : []; } catch (_) { return []; } };
+  const safeMembers = () => { try { return typeof getMembers === 'function' ? getMembers() : []; } catch (_) { return []; } };
+
+  function cleanImageLink(value) {
+    return String(value || '').trim();
+  }
+
+  function reflexForDodgeV101(char = safeChar()) {
+    if (!char) return 0;
+    const skill = char.skills?.Reflexo || char.skills?.Reflexos || { trained: false, bonus: 0 };
+    const prof = skill.trained ? num(char.profBonus, 0) : 0;
+    return prof + num(skill.bonus, 0);
+  }
+
+  function dodgeFormulaV101(char = safeChar()) {
+    if (!char) return 0;
+    const def = typeof effectiveDefense === 'function' ? num(effectiveDefense(char), 10) : num(char.defense ?? char.defesa, 10);
+    return def + reflexForDodgeV101(char);
+  }
+
+  window.od101DodgeFormula = dodgeFormulaV101;
+  window.od100DodgeFormula = dodgeFormulaV101;
+  window.od99DodgeFormula = dodgeFormulaV101;
+  window.od98DodgeFormula = dodgeFormulaV101;
+
+  if (typeof calculatedDodge === 'function') {
+    calculatedDodge = function od101CalculatedDodge(char = safeChar()) {
+      return dodgeFormulaV101(char);
+    };
+  }
+
+  function syncDodgeV101(char = safeChar()) {
+    if (!char) return;
+    const value = dodgeFormulaV101(char);
+    char.dodge = value;
+    char.dodgeManual = false;
+    char.dodgeLocked = false;
+    const field = $('dodge');
+    if (field && document.activeElement !== field) {
+      field.value = value;
+      field.removeAttribute('readonly');
+    }
+    const note = $('dodge-formula-note');
+    if (note) note.textContent = '';
+  }
+
+  function ensureCharacterImageFields(char) {
+    if (!char) return {};
+    char.obsIcons = char.obsIcons || {};
+    return char.obsIcons;
+  }
+
+  function portraitByStateV101(char = safeChar()) {
+    if (!char) return 'assets/logo.jpg';
+    const pv = num(char.pvCurrent ?? char.pvAtual ?? char.pv, 0);
+    const pvMax = Math.max(1, num(char.pvMax ?? char.pvTotal ?? char.pv_max, 1));
+    const icons = ensureCharacterImageFields(char);
+    if (pv < 0) return '';
+    if (char.obsTransformationActive && (char.obsTransformPortrait || icons.transformation)) return char.obsTransformPortrait || icons.transformation;
+    if (pv === 0 && (icons.zero || char.portraitZero)) return icons.zero || char.portraitZero;
+    if (pv > 0 && pv / pvMax < 0.5 && (icons.low || char.portraitLow)) return icons.low || char.portraitLow;
+    return cleanImageLink(char.portrait || char.image || char.photo || char.avatar || '') || 'assets/logo.jpg';
+  }
+
+  function applyObjectCropToImage(img, char = safeChar()) {
+    if (!img || !char) return;
+    const crop = Object.assign({ x: 50, y: 50, scale: 1 }, char.portraitCrop || {});
+    img.style.objectFit = 'cover';
+    img.style.objectPosition = `${num(crop.x, 50)}% ${num(crop.y, 50)}%`;
+    img.style.transformOrigin = `${num(crop.x, 50)}% ${num(crop.y, 50)}%`;
+    img.style.transform = `scale(${Math.max(1, Math.min(3, num(crop.scale, 1)))})`;
+  }
+
+  function updatePortraitV101(char = safeChar()) {
+    const img = $('char-portrait-preview');
+    if (!img || !char) return;
+    const src = portraitByStateV101(char);
+    if (!src) {
+      img.removeAttribute('src');
+      img.style.visibility = 'hidden';
+      return;
+    }
+    img.style.visibility = '';
+    if (img.getAttribute('src') !== src) img.src = src;
+    img.onerror = () => { img.src = 'assets/logo.jpg'; };
+    applyObjectCropToImage(img, char);
+    const hidden = $('portrait-url');
+    if (hidden) hidden.value = cleanImageLink(char.portrait || '');
+  }
+
+  function writeCharacterImageFields() {
+    const char = safeChar();
+    if (!char) return;
+    const normal = cleanImageLink($('od101-photo-normal')?.value || '');
+    const low = cleanImageLink($('od101-photo-low')?.value || '');
+    const zero = cleanImageLink($('od101-photo-zero')?.value || '');
+    const transform = cleanImageLink($('od101-photo-transform')?.value || '');
+    const crop = Object.assign({ x: 50, y: 50, scale: 1 }, window.od101CropState || {});
+
+    updateChar?.(c => {
+      c.portrait = normal;
+      c.image = normal;
+      c.photo = normal;
+      c.avatar = normal;
+      c.obsIcons = c.obsIcons || {};
+      c.obsIcons.low = low;
+      c.obsIcons.zero = zero;
+      c.obsIcons.transformation = transform;
+      c.portraitLow = low;
+      c.portraitZero = zero;
+      c.portraitCrop = crop;
+      c.updatedAt = Date.now();
+    });
+
+    const fresh = safeChar();
+    const hidden = $('portrait-url');
+    const modalHidden = $('portrait-modal-url');
+    if (hidden) hidden.value = normal;
+    if (modalHidden) modalHidden.value = normal;
+    updatePortraitV101(fresh);
+    try { updateOverlay?.(fresh); } catch (_) {}
+    try { queueSave?.(); } catch (_) {}
+    try {
+      if (typeof od44SaveCharacterOnline === 'function' && fresh) od44SaveCharacterOnline(fresh).catch(error => console.warn('Falha ao salvar imagem v101:', error));
+      else if (typeof od42ScheduleCharacterSave === 'function' && fresh) od42ScheduleCharacterSave(fresh);
+    } catch (_) {}
+  }
+
+  function ensurePhotoDialogV101() {
+    let dialog = $('od101-photo-modal');
+    if (dialog) return dialog;
+    dialog = document.createElement('dialog');
+    dialog.id = 'od101-photo-modal';
+    dialog.className = 'od101-photo-modal od-modal';
+    dialog.innerHTML = `
+      <form method="dialog" class="modal-card manga-panel od101-photo-card">
+        <div class="od101-modal-head">
+          <div>
+            <h2>Fotos da Ficha</h2>
+            <p>Use links diretos de imagem. PNG, JPG, WEBP e GIF funcionam. Arraste a prévia para enquadrar e use a roda do mouse para zoom.</p>
+          </div>
+          <button type="button" class="icon-btn" id="od101-photo-close">×</button>
+        </div>
+        <div class="od101-photo-grid">
+          <label>Foto normal<input id="od101-photo-normal" type="url" placeholder="https://..." autocomplete="off"></label>
+          <label>Machucado, abaixo de 50% PV<input id="od101-photo-low" type="url" placeholder="opcional: https://...gif" autocomplete="off"></label>
+          <label>Morrendo, 0 PV<input id="od101-photo-zero" type="url" placeholder="opcional: https://...gif" autocomplete="off"></label>
+          <label>Transformação ativa<input id="od101-photo-transform" type="url" placeholder="opcional: foto/gif da transformação" autocomplete="off"></label>
+        </div>
+        <div class="od101-crop-area">
+          <div id="od101-crop-stage" class="od101-crop-stage" title="Arraste para mover. Roda do mouse para zoom.">
+            <img id="od101-crop-img" alt="Prévia do retrato" draggable="false">
+            <div class="od101-crop-mask"></div>
+          </div>
+          <div class="od101-crop-help">Prévia quadrada da ficha. Para GIF, o recorte visual também é aplicado sem perder a animação.</div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="ghost-btn" id="od101-photo-reset">Centralizar</button>
+          <button type="button" class="ghost-btn" id="od101-photo-cancel">Cancelar</button>
+          <button type="button" class="primary-btn" id="od101-photo-save">Salvar Fotos</button>
+        </div>
+      </form>`;
+    document.body.appendChild(dialog);
+    return dialog;
+  }
+
+  function refreshPhotoPreviewV101() {
+    const img = $('od101-crop-img');
+    if (!img) return;
+    const src = cleanImageLink($('od101-photo-normal')?.value || '');
+    if (!src) {
+      img.removeAttribute('src');
+      return;
+    }
+    if (img.getAttribute('src') !== src) img.src = src;
+    const crop = Object.assign({ x: 50, y: 50, scale: 1 }, window.od101CropState || {});
+    img.style.objectFit = 'cover';
+    img.style.objectPosition = `${crop.x}% ${crop.y}%`;
+    img.style.transformOrigin = `${crop.x}% ${crop.y}%`;
+    img.style.transform = `scale(${Math.max(1, Math.min(3, num(crop.scale, 1)))})`;
+    img.onerror = () => { img.removeAttribute('src'); };
+  }
+
+  function openPhotoDialogV101() {
+    const char = safeChar();
+    const dialog = ensurePhotoDialogV101();
+    const icons = char?.obsIcons || {};
+    $('od101-photo-normal').value = cleanImageLink(char?.portrait || char?.image || char?.photo || $('portrait-url')?.value || '');
+    $('od101-photo-low').value = cleanImageLink(icons.low || char?.portraitLow || char?.obsIconLow || '');
+    $('od101-photo-zero').value = cleanImageLink(icons.zero || char?.portraitZero || char?.obsIconZero || '');
+    $('od101-photo-transform').value = cleanImageLink(icons.transformation || char?.obsTransformPortrait || '');
+    window.od101CropState = Object.assign({ x: 50, y: 50, scale: 1 }, char?.portraitCrop || {});
+    refreshPhotoPreviewV101();
+    setupCropV101();
+    dialog.showModal();
+  }
+
+  function setupCropV101() {
+    const stage = $('od101-crop-stage');
+    if (!stage || stage.dataset.od101Ready === '1') return;
+    stage.dataset.od101Ready = '1';
+    let dragging = false;
+    let start = null;
+    stage.addEventListener('pointerdown', ev => {
+      dragging = true;
+      stage.setPointerCapture?.(ev.pointerId);
+      const crop = Object.assign({ x: 50, y: 50, scale: 1 }, window.od101CropState || {});
+      start = { x: ev.clientX, y: ev.clientY, cropX: crop.x, cropY: crop.y };
+    });
+    stage.addEventListener('pointermove', ev => {
+      if (!dragging || !start) return;
+      const rect = stage.getBoundingClientRect();
+      const dx = ((ev.clientX - start.x) / Math.max(1, rect.width)) * -100;
+      const dy = ((ev.clientY - start.y) / Math.max(1, rect.height)) * -100;
+      window.od101CropState = Object.assign({}, window.od101CropState || {}, {
+        x: Math.max(0, Math.min(100, start.cropX + dx)),
+        y: Math.max(0, Math.min(100, start.cropY + dy))
+      });
+      refreshPhotoPreviewV101();
+    });
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach(type => stage.addEventListener(type, () => { dragging = false; start = null; }));
+    stage.addEventListener('wheel', ev => {
+      ev.preventDefault();
+      const crop = Object.assign({ x: 50, y: 50, scale: 1 }, window.od101CropState || {});
+      crop.scale = Math.max(1, Math.min(3, crop.scale + (ev.deltaY < 0 ? 0.08 : -0.08)));
+      window.od101CropState = crop;
+      refreshPhotoPreviewV101();
+    }, { passive: false });
+  }
+
+  function renderAttributesV101(char = safeChar()) {
+    const grid = $('attributes-grid');
+    if (!grid || !char) return;
+    const labels = { forca: 'Força', agilidade: 'Agilidade', vigor: 'Vigor', intelecto: 'Intelecto', presenca: 'Presença' };
+    grid.innerHTML = '';
+    Object.entries(labels).forEach(([key, label]) => {
+      const value = num(char.attrs?.[key], 1);
+      const card = document.createElement('div');
+      card.className = 'attr-card-v2 od101-attr-card';
+      card.innerHTML = `
+        <div class="od101-attr-top">
+          <div>
+            <div class="attr-name">${esc(label)}</div>
+            <div class="attr-help">D20</div>
+          </div>
+          <div class="attr-mod">${esc(typeof formatMod === 'function' ? formatMod(attrMod(value)) : value)}</div>
+        </div>
+        <div class="od101-attr-control">
+          <button type="button" class="od101-step" data-od101-attr-step="${esc(key)}" data-dir="-1">−</button>
+          <input data-attr="${esc(key)}" type="number" value="${esc(value)}" min="1" inputmode="numeric">
+          <button type="button" class="od101-step" data-od101-attr-step="${esc(key)}" data-dir="1">+</button>
+        </div>
+        <button class="primary-btn small roll-attr od101-roll" data-roll-attr="${esc(key)}" type="button">D20</button>`;
+      grid.appendChild(card);
+    });
+  }
+
+  if (typeof renderAttributes === 'function') renderAttributes = renderAttributesV101;
+
+  function normalizeVitalControl(id) {
+    const input = $(id);
+    if (!input) return;
+    input.type = 'number';
+    const root = input.closest('.od101-vital-wrap, .od100-vital-wrap, .od99-vital-step-wrap');
+    if (root) {
+      let outer = root;
+      while (outer.parentElement?.matches?.('.od101-vital-wrap, .od100-vital-wrap, .od99-vital-step-wrap')) outer = outer.parentElement;
+      outer.parentNode.insertBefore(input, outer);
+      outer.remove();
+    }
+    const container = input.closest('.vital-inputs') || input.parentElement;
+    container?.querySelectorAll(`[data-od100-vital-step="${CSS.escape(id)}"], [data-od99-vital-step="${CSS.escape(id)}"], [data-od101-vital-step="${CSS.escape(id)}"]`).forEach(btn => btn.remove());
+    if (input.closest('.od101-vital-wrap')) return;
+    const wrap = document.createElement('span');
+    wrap.className = 'od101-vital-wrap';
+    input.parentNode.insertBefore(wrap, input);
+    wrap.appendChild(input);
+    wrap.insertAdjacentHTML('afterbegin', `<button type="button" class="od101-vital-step" data-od101-vital-step="${id}" data-dir="-1">−</button>`);
+    wrap.insertAdjacentHTML('beforeend', `<button type="button" class="od101-vital-step" data-od101-vital-step="${id}" data-dir="1">+</button>`);
+  }
+
+  function normalizeVitalsV101() {
+    ['pv-current', 'pv-max', 'pe-current', 'pe-max'].forEach(normalizeVitalControl);
+  }
+
+  function ensureLinkCharacterDialogV101() {
+    let dialog = $('od101-link-campaign-modal');
+    if (dialog) return dialog;
+    dialog = document.createElement('dialog');
+    dialog.id = 'od101-link-campaign-modal';
+    dialog.className = 'od101-link-modal od-modal';
+    dialog.innerHTML = `
+      <form method="dialog" class="modal-card manga-panel od101-link-card">
+        <div class="od101-modal-head">
+          <div>
+            <h2>Vincular em Mesa</h2>
+            <p>Escolha uma das mesas em que você participa para usar esta ficha.</p>
+          </div>
+          <button type="button" class="icon-btn" id="od101-link-close">×</button>
+        </div>
+        <div id="od101-link-list" class="od101-link-list"></div>
+      </form>`;
+    document.body.appendChild(dialog);
+    return dialog;
+  }
+
+  function roleLabel(role) {
+    if (role === 'mestre_jogador') return 'Mestre + Jogador';
+    if (role === 'mestre') return 'Mestre';
+    return 'Jogador';
+  }
+
+  function openLinkCharacterDialogV101() {
+    const char = safeChar();
+    if (!char || !currentCharacterId) return alert('Abra ou crie uma ficha antes de vincular em uma mesa.');
+    const dialog = ensureLinkCharacterDialogV101();
+    const list = $('od101-link-list');
+    const campaigns = safeCampaigns();
+    const members = safeMembers().filter(m => String(m.userId) === String(currentUser?.id));
+    const chars = (() => { try { return get(STORAGE.characters, []); } catch (_) { return []; } })();
+    list.innerHTML = '';
+    if (!members.length) {
+      list.innerHTML = '<div class="campaign-empty">Você ainda não participa de nenhuma mesa.</div>';
+    }
+    members.forEach(member => {
+      const campaign = campaigns.find(c => String(c.id) === String(member.campaignId));
+      if (!campaign) return;
+      const linked = chars.find(c => String(c.id) === String(member.characterId));
+      const isThis = String(member.characterId || '') === String(char.id);
+      const row = document.createElement('div');
+      row.className = 'od101-link-row';
+      row.innerHTML = `
+        <div class="od101-link-info">
+          <strong>${esc(campaign.name || 'Mesa sem nome')}</strong>
+          <span>Código: ${esc(campaign.code || '—')} • ${esc(roleLabel(member.role))}</span>
+          <small>${linked ? `Ficha atual: ${esc(linked.name || 'Sem nome')}` : 'Sem ficha vinculada'}</small>
+        </div>
+        <div class="od101-link-actions">
+          <button type="button" class="${isThis ? 'ghost-btn' : 'primary-btn'}" data-od101-link-campaign="${esc(campaign.id)}">${isThis ? 'Já vinculada' : linked ? 'Trocar por esta ficha' : 'Vincular esta ficha'}</button>
+          ${isThis ? `<button type="button" class="danger-btn small" data-od101-unlink-campaign="${esc(campaign.id)}">Remover vínculo</button>` : ''}
+        </div>`;
+      list.appendChild(row);
+    });
+    dialog.showModal();
+  }
+
+  async function linkCharacterToCampaignV101(campaignId) {
+    const char = safeChar();
+    if (!char) return;
+    try {
+      await Promise.resolve(attachCharacterToCampaign(campaignId, char.id));
+      $('od101-link-campaign-modal')?.close();
+      alert('Ficha vinculada à mesa.');
+    } catch (error) {
+      alert(error.message || 'Erro ao vincular ficha.');
+    }
+  }
+
+  async function unlinkCharacterFromCampaignV101(campaignId) {
+    try {
+      if (typeof od42Api === 'function' && typeof od42Token === 'function' && od42Token()) {
+        await od42Api(`/api/tables/${campaignId}/member`, { method: 'PUT', body: JSON.stringify({ characterId: null }) });
+        await od42RefreshTables?.();
+        await od42LoadTableState?.(campaignId);
+      } else {
+        const members = safeMembers();
+        const member = members.find(m => String(m.campaignId) === String(campaignId) && String(m.userId) === String(currentUser?.id));
+        if (member) member.characterId = null;
+        setMembers(members);
+      }
+      $('od101-link-campaign-modal')?.close();
+      renderCampaignMenu?.();
+      alert('Vínculo removido.');
+    } catch (error) {
+      alert(error.message || 'Erro ao remover vínculo.');
+    }
+  }
+
+  function bootV101() {
+    const portraitBtn = $('portrait-button');
+    if (portraitBtn) {
+      portraitBtn.id = 'od101-portrait-button';
+      portraitBtn.classList.add('portrait-button');
+      portraitBtn.setAttribute('title', 'Trocar fotos da ficha');
+    }
+    $('portrait-modal')?.classList.add('od101-hidden-old-photo-modal');
+    $('od99-portrait-crop-modal')?.classList.add('od101-hidden-old-photo-modal');
+    $('od100-portrait-modal')?.classList.add('od101-hidden-old-photo-modal');
+
+    const char = safeChar();
+    if (char) {
+      if ($('attributes-grid')) renderAttributesV101(char);
+      normalizeVitalsV101();
+      syncDodgeV101(char);
+      updatePortraitV101(char);
+    } else {
+      normalizeVitalsV101();
+    }
+  }
+
+  if (typeof updateDerivedStatsDisplay === 'function' && !updateDerivedStatsDisplay.__od101Wrapped) {
+    const base = updateDerivedStatsDisplay;
+    updateDerivedStatsDisplay = function od101UpdateDerivedStatsDisplay(char = safeChar()) {
+      const result = base.apply(this, arguments);
+      normalizeVitalsV101();
+      syncDodgeV101(char);
+      updatePortraitV101(char);
+      return result;
+    };
+    updateDerivedStatsDisplay.__od101Wrapped = true;
+  }
+
+  if (typeof renderPortrait === 'function') {
+    renderPortrait = function od101RenderPortrait(char) { updatePortraitV101(char || safeChar()); };
+    renderPortrait.__od101Wrapped = true;
+  }
+
+  if (typeof saveCurrentCharacter === 'function' && !saveCurrentCharacter.__od101Wrapped) {
+    const baseSave = saveCurrentCharacter;
+    saveCurrentCharacter = function od101SaveCurrentCharacter() {
+      const char = safeChar();
+      if (char) syncDodgeV101(char);
+      return baseSave.apply(this, arguments);
+    };
+    saveCurrentCharacter.__od101Wrapped = true;
+  }
+
+  if (typeof loadCharacter === 'function' && !loadCharacter.__od101Wrapped) {
+    const baseLoad = loadCharacter;
+    loadCharacter = function od101LoadCharacter(id) {
+      const result = baseLoad.apply(this, arguments);
+      setTimeout(bootV101, 0);
+      return result;
+    };
+    loadCharacter.__od101Wrapped = true;
+  }
+
+  document.addEventListener('click', event => {
+    const portraitBtn = event.target.closest('#od101-portrait-button');
+    if (portraitBtn) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      openPhotoDialogV101();
+      return;
+    }
+
+    const linkBtn = event.target.closest('#campaign-character-btn');
+    if (linkBtn && accountSheetMode) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      openLinkCharacterDialogV101();
+      return;
+    }
+
+    if (event.target.closest('#od101-photo-close, #od101-photo-cancel')) {
+      event.preventDefault();
+      $('od101-photo-modal')?.close();
+      return;
+    }
+    if (event.target.closest('#od101-photo-reset')) {
+      event.preventDefault();
+      window.od101CropState = { x: 50, y: 50, scale: 1 };
+      refreshPhotoPreviewV101();
+      return;
+    }
+    if (event.target.closest('#od101-photo-save')) {
+      event.preventDefault();
+      writeCharacterImageFields();
+      $('od101-photo-modal')?.close();
+      return;
+    }
+    if (event.target.closest('#od101-link-close')) {
+      event.preventDefault();
+      $('od101-link-campaign-modal')?.close();
+      return;
+    }
+
+    const linkCampaign = event.target.closest('[data-od101-link-campaign]');
+    if (linkCampaign) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      linkCharacterToCampaignV101(linkCampaign.dataset.od101LinkCampaign);
+      return;
+    }
+    const unlinkCampaign = event.target.closest('[data-od101-unlink-campaign]');
+    if (unlinkCampaign) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      unlinkCharacterFromCampaignV101(unlinkCampaign.dataset.od101UnlinkCampaign);
+      return;
+    }
+
+    const attrStep = event.target.closest('[data-od101-attr-step]');
+    if (attrStep) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const key = attrStep.dataset.od101AttrStep;
+      const dir = num(attrStep.dataset.dir, 0);
+      const input = document.querySelector(`input[data-attr="${CSS.escape(key)}"]`);
+      if (!input) return;
+      input.value = Math.max(1, num(input.value, 1) + dir);
+      updateChar?.(char => {
+        char.attrs = char.attrs || {};
+        char.attrs[key] = num(input.value, 1);
+        syncDodgeV101(char);
+      });
+      const char = safeChar();
+      if (char) {
+        renderAttributesV101(char);
+        try { renderSkills?.(char); } catch (_) {}
+        syncDodgeV101(char);
+        try { queueSave?.(); } catch (_) {}
+      }
+      return;
+    }
+
+    const vitalStep = event.target.closest('[data-od101-vital-step]');
+    if (vitalStep) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const id = vitalStep.dataset.od101VitalStep;
+      const input = $(id);
+      if (!input) return;
+      input.value = num(input.value, 0) + num(vitalStep.dataset.dir, 0);
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      const char = safeChar();
+      if (char) { syncDodgeV101(char); updatePortraitV101(char); }
+      try { queueSave?.(); } catch (_) {}
+      return;
+    }
+  }, true);
+
+  document.addEventListener('input', event => {
+    if (event.target.closest('#od101-photo-normal, #od101-photo-low, #od101-photo-zero, #od101-photo-transform')) {
+      refreshPhotoPreviewV101();
+      return;
+    }
+    if (event.target.matches?.('[data-skill-bonus], [data-od98-skill-bonus], [data-od88-skill-bonus], [data-od79-skill-bonus], [data-skill-trained], [data-od98-skill-trained], #defense, #prof-bonus')) {
+      setTimeout(() => syncDodgeV101(safeChar()), 0);
+    }
+  }, true);
+
+  document.addEventListener('change', event => {
+    if (event.target.matches?.('[data-skill-trained], [data-od98-skill-trained], #defense, #prof-bonus')) {
+      setTimeout(() => syncDodgeV101(safeChar()), 0);
+    }
+  }, true);
+
+  document.addEventListener('DOMContentLoaded', bootV101);
+  setTimeout(bootV101, 100);
+  setTimeout(bootV101, 600);
+  window.od101RefreshSheetFixes = bootV101;
+})();
