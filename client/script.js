@@ -8147,3 +8147,520 @@ function od66InventoryMutationUnlockSoon() {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
   else boot();
 })();
+
+/* =========================
+   V99 - Beta 2: imagens, ficha em campanha, vitais, esquiva e organização
+   - Troca de foto com crop quadrado e suporte a GIF
+   - Atributos compactos, fórmula D20 e botões +/- menores
+   - PV/PE com botões +/-
+   - Esquiva = Defesa + Reflexo
+   - Sair da mesa volta para Início de verdade
+   - Listas em ordem alfabética
+   - Campanhas em grade de 2 colunas
+   - Corrige fluxo de entrar/criar ficha sem alerta duplicado
+   - Transformação pode informar ao OBS a forma ativa
+========================= */
+(function od99Beta2Fixes(){
+  const $ = id => document.getElementById(id);
+  const escape = value => {
+    try { return typeof escapeHtml === 'function' ? escapeHtml(value ?? '') : String(value ?? ''); }
+    catch (_) { return String(value ?? ''); }
+  };
+  const editableSelector = 'input, textarea, select, [contenteditable="true"]';
+  let od99CropState = null;
+
+  function sortByName(list) {
+    return [...(list || [])].sort((a, b) => String(a?.name || '').localeCompare(String(b?.name || ''), 'pt-BR', { sensitivity: 'base' }));
+  }
+
+  if (typeof userCharacters === 'function' && !userCharacters.__od99Sorted) {
+    const baseUserCharacters = userCharacters;
+    userCharacters = function od99UserCharactersSorted(){ return sortByName(baseUserCharacters.apply(this, arguments)); };
+    userCharacters.__od99Sorted = true;
+  }
+
+  if (typeof getCampaigns === 'function' && !getCampaigns.__od99Sorted) {
+    const baseGetCampaigns = getCampaigns;
+    getCampaigns = function od99GetCampaignsSorted(){ return sortByName(baseGetCampaigns.apply(this, arguments)); };
+    getCampaigns.__od99Sorted = true;
+  }
+
+  function defenseForDodge(char) {
+    if (!char) return 10;
+    if (typeof effectiveDefense === 'function') return Number(effectiveDefense(char) || 10);
+    return Number(char.defense || char.defesa || 10);
+  }
+
+  function reflexForDodge(char) {
+    if (!char) return 0;
+    if (typeof skillTotal === 'function') return Number(skillTotal(char, 'Reflexo', 'agilidade') || 0);
+    return 0;
+  }
+
+  function dodgeFormulaV99(char) {
+    return defenseForDodge(char) + reflexForDodge(char);
+  }
+
+  window.od99DodgeFormula = dodgeFormulaV99;
+  window.od98DodgeFormula = dodgeFormulaV99;
+
+  if (typeof calculatedDodge === 'function') {
+    calculatedDodge = function od99CalculatedDodge(char = currentChar()) {
+      if (!char) return 0;
+      if (char.dodgeManual === true || char.dodgeLocked === true) {
+        const manual = Number(char.dodge);
+        if (Number.isFinite(manual)) return manual;
+      }
+      return dodgeFormulaV99(char);
+    };
+  }
+
+  function updateDodgeNote(char = currentChar && currentChar()) {
+    const note = $('dodge-formula-note');
+    if (!note || !char) return;
+    const def = defenseForDodge(char);
+    const reflex = reflexForDodge(char);
+    const manual = char.dodgeManual === true || char.dodgeLocked === true;
+    const fmt = typeof formatMod === 'function' ? formatMod : (n => String(n));
+    note.textContent = `Defesa ${def} + Reflexo ${fmt(reflex)}${manual ? ' · ajuste manual ativo' : ''}`;
+  }
+
+  if (typeof updateDerivedStatsDisplay === 'function' && !updateDerivedStatsDisplay.__od99Wrapped) {
+    const baseUpdateDerived = updateDerivedStatsDisplay;
+    updateDerivedStatsDisplay = function od99UpdateDerivedStatsDisplay(char = currentChar()) {
+      const result = baseUpdateDerived.apply(this, arguments);
+      updateDodgeNote(char);
+      const dodge = $('dodge');
+      if (dodge && char && document.activeElement !== dodge) dodge.value = calculatedDodge(char);
+      return result;
+    };
+    updateDerivedStatsDisplay.__od99Wrapped = true;
+  }
+
+  function readDodgeIntoCharV99(char) {
+    if (!char) return;
+    const field = $('dodge');
+    const formula = dodgeFormulaV99(char);
+    if (!field) { char.dodge = formula; char.dodgeManual = false; char.dodgeLocked = false; return; }
+    const raw = Number(field.value || formula);
+    char.dodge = Number.isFinite(raw) ? raw : formula;
+    char.dodgeManual = Number.isFinite(raw) && raw !== formula;
+    char.dodgeLocked = char.dodgeManual;
+  }
+
+  function renderAttributesV99(char) {
+    const grid = $('attributes-grid');
+    if (!grid || !char) return;
+    const labels = { forca: 'Força', agilidade: 'Agilidade', vigor: 'Vigor', intelecto: 'Intelecto', presenca: 'Presença' };
+    grid.innerHTML = '';
+    Object.entries(labels).forEach(([key, label]) => {
+      const value = Number(char.attrs?.[key] ?? 10);
+      const card = document.createElement('div');
+      card.className = 'attr-card-v2 od98-attr-card od99-attr-card';
+      card.innerHTML = `
+        <div class="attr-head">
+          <div class="attr-name">${escape(label)}</div>
+          <div class="attr-mod">${escape(typeof formatMod === 'function' ? formatMod(attrMod(value)) : value)}</div>
+          <div class="attr-help">D20</div>
+        </div>
+        <div class="od98-attr-control od99-attr-control">
+          <button type="button" class="od98-attr-step od99-step" data-od99-attr-step="${escape(key)}" data-dir="-1">−</button>
+          <input data-attr="${escape(key)}" type="number" value="${escape(value)}" min="1" inputmode="numeric">
+          <button type="button" class="od98-attr-step od99-step" data-od99-attr-step="${escape(key)}" data-dir="1">+</button>
+        </div>
+        <button class="primary-btn small roll-attr" data-roll-attr="${escape(key)}">D20</button>`;
+      grid.appendChild(card);
+    });
+  }
+
+  if (typeof renderAttributes === 'function') renderAttributes = renderAttributesV99;
+
+  function ensureVitalControls() {
+    [['pv-current', 'PV'], ['pv-max', 'PV Máx'], ['pe-current', 'PE'], ['pe-max', 'PE Máx']].forEach(([id]) => {
+      const input = $(id);
+      if (!input || input.closest('.od99-vital-step-wrap')) return;
+      const wrap = document.createElement('span');
+      wrap.className = 'od99-vital-step-wrap';
+      input.parentNode.insertBefore(wrap, input);
+      wrap.appendChild(input);
+      wrap.insertAdjacentHTML('afterbegin', `<button type="button" class="od99-vital-step" data-od99-vital-step="${id}" data-dir="-1">−</button>`);
+      wrap.insertAdjacentHTML('beforeend', `<button type="button" class="od99-vital-step" data-od99-vital-step="${id}" data-dir="1">+</button>`);
+    });
+  }
+
+  function setPortraitEverywhere(src, shouldSave = true) {
+    const value = String(src || '').trim();
+    const hidden = $('portrait-url');
+    const modalUrl = $('portrait-modal-url');
+    const preview = $('char-portrait-preview');
+    const overlay = $('overlay-portrait');
+    if (hidden) hidden.value = value;
+    if (modalUrl) modalUrl.value = value;
+    if (preview) { preview.src = value || 'assets/logo.jpg'; preview.classList.add('od99-portrait-ok'); }
+    if (overlay) overlay.src = value || 'assets/logo.jpg';
+    updateChar?.(char => {
+      char.portrait = value;
+      char.image = value;
+      char.photo = value;
+      char.updatedAt = Date.now();
+    });
+    const char = currentChar && currentChar();
+    if (char) {
+      try { renderPortrait?.(char); } catch (_) {}
+      try { updateOverlay?.(char); } catch (_) {}
+      if (shouldSave) {
+        try { queueSave?.(); } catch (_) {}
+        try {
+          if (typeof od44SaveCharacterOnline === 'function') od44SaveCharacterOnline(char).catch(error => console.warn('Falha ao salvar retrato v99:', error));
+          else if (typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(char);
+        } catch (_) {}
+      }
+    }
+  }
+
+  function ensureCropDialog() {
+    let dialog = $('od99-portrait-crop-modal');
+    if (dialog) return dialog;
+    dialog = document.createElement('dialog');
+    dialog.id = 'od99-portrait-crop-modal';
+    dialog.className = 'od99-crop-modal od-modal';
+    dialog.innerHTML = `
+      <form method="dialog" class="modal-card manga-panel od99-crop-card">
+        <div class="od99-crop-head">
+          <div>
+            <h2>Imagem da Ficha</h2>
+            <p>Corte a imagem para ficar quadrada. GIFs são aceitos sem corte para manter a animação.</p>
+          </div>
+          <button type="button" class="icon-btn" id="od99-crop-close">×</button>
+        </div>
+        <input id="od99-portrait-file" type="file" accept="image/*,.gif,image/gif" />
+        <input id="od99-portrait-url" type="text" placeholder="URL, data:image ou cole uma imagem" />
+        <div class="od99-crop-stage"><canvas id="od99-crop-canvas" width="512" height="512"></canvas></div>
+        <div class="od99-crop-controls">
+          <label>Zoom <input id="od99-crop-zoom" type="range" min="0.5" max="3" step="0.01" value="1" /></label>
+          <label>Horizontal <input id="od99-crop-x" type="range" min="-512" max="512" step="1" value="0" /></label>
+          <label>Vertical <input id="od99-crop-y" type="range" min="-512" max="512" step="1" value="0" /></label>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="ghost-btn" id="od99-use-url">Usar URL/Imagem sem corte</button>
+          <button type="button" class="ghost-btn" id="od99-crop-cancel">Cancelar</button>
+          <button type="button" class="primary-btn" id="od99-crop-save">Salvar Retrato</button>
+        </div>
+      </form>`;
+    document.body.appendChild(dialog);
+    return dialog;
+  }
+
+  function drawCrop() {
+    const state = od99CropState;
+    const canvas = $('od99-crop-canvas');
+    if (!state || !canvas) return;
+    const ctx = canvas.getContext('2d');
+    const zoom = Number($('od99-crop-zoom')?.value || 1);
+    const offsetX = Number($('od99-crop-x')?.value || 0);
+    const offsetY = Number($('od99-crop-y')?.value || 0);
+    ctx.clearRect(0,0,512,512);
+    ctx.fillStyle = '#111';
+    ctx.fillRect(0,0,512,512);
+    const img = state.img;
+    const base = Math.max(512 / img.width, 512 / img.height);
+    const w = img.width * base * zoom;
+    const h = img.height * base * zoom;
+    const x = (512 - w) / 2 + offsetX;
+    const y = (512 - h) / 2 + offsetY;
+    ctx.drawImage(img, x, y, w, h);
+  }
+
+  function loadCropImage(src) {
+    const img = new Image();
+    img.onload = () => {
+      od99CropState = { img, src };
+      ['od99-crop-zoom','od99-crop-x','od99-crop-y'].forEach(id => { const el = $(id); if (el) el.value = id === 'od99-crop-zoom' ? '1' : '0'; });
+      drawCrop();
+    };
+    img.onerror = () => alert('Não foi possível carregar essa imagem. Tente outra imagem ou use URL direta.');
+    img.src = src;
+  }
+
+  function openPortraitCrop() {
+    const dialog = ensureCropDialog();
+    const url = $('od99-portrait-url');
+    if (url) url.value = $('portrait-url')?.value || currentChar?.()?.portrait || '';
+    if (url?.value) loadCropImage(url.value);
+    dialog.showModal();
+  }
+
+  function fileToDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || ''));
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function handlePortraitFile(file) {
+    if (!file) return;
+    if (!file.type || !file.type.startsWith('image/')) return alert('Escolha um arquivo de imagem.');
+    const dataUrl = await fileToDataUrl(file);
+    const urlInput = $('od99-portrait-url');
+    if (urlInput) urlInput.value = dataUrl;
+    if (/image\/gif/i.test(file.type)) {
+      setPortraitEverywhere(dataUrl, true);
+      $('od99-portrait-crop-modal')?.close();
+      return;
+    }
+    loadCropImage(dataUrl);
+  }
+
+  document.addEventListener('click', async event => {
+    const portraitBtn = event.target.closest('#portrait-button');
+    if (portraitBtn) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      openPortraitCrop();
+      return;
+    }
+
+    const attrStep = event.target.closest('[data-od99-attr-step]');
+    if (attrStep) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const key = attrStep.dataset.od99AttrStep;
+      const dir = Number(attrStep.dataset.dir || 0);
+      const input = document.querySelector(`input[data-attr="${CSS.escape(key)}"]`);
+      if (!input) return;
+      input.value = Math.max(1, Number(input.value || 1) + dir);
+      updateChar?.(char => { char.attrs = char.attrs || {}; char.attrs[key] = Number(input.value || 1); readDodgeIntoCharV99(char); });
+      const char = currentChar && currentChar();
+      if (char) { renderAttributesV99(char); renderSkills?.(char); updateDerivedStatsDisplay?.(char); queueSave?.(); }
+      return;
+    }
+
+    const vitalStep = event.target.closest('[data-od99-vital-step]');
+    if (vitalStep) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const id = vitalStep.dataset.od99VitalStep;
+      const input = $(id);
+      const dir = Number(vitalStep.dataset.dir || 0);
+      if (!input) return;
+      input.value = Math.max(0, Number(input.value || 0) + dir);
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      queueSave?.();
+      return;
+    }
+
+    if (event.target.closest('#od99-crop-close, #od99-crop-cancel')) {
+      event.preventDefault();
+      $('od99-portrait-crop-modal')?.close();
+      return;
+    }
+
+    if (event.target.closest('#od99-use-url')) {
+      event.preventDefault();
+      const value = $('od99-portrait-url')?.value?.trim() || '';
+      setPortraitEverywhere(value, true);
+      $('od99-portrait-crop-modal')?.close();
+      return;
+    }
+
+    if (event.target.closest('#od99-crop-save')) {
+      event.preventDefault();
+      const canvas = $('od99-crop-canvas');
+      if (!canvas || !od99CropState) return setPortraitEverywhere($('od99-portrait-url')?.value || '', true);
+      const dataUrl = canvas.toDataURL('image/png', 0.92);
+      setPortraitEverywhere(dataUrl, true);
+      $('od99-portrait-crop-modal')?.close();
+      return;
+    }
+
+    const leave = event.target.closest('[data-leave-campaign], #back-to-sessions-btn');
+    if (leave && event.target.closest('[data-leave-campaign]')) {
+      try { history.replaceState({ od71Tab: 'home' }, '', '/inicio'); } catch (_) {}
+      try { localStorage.setItem('od71_tab', 'home'); localStorage.removeItem(STORAGE.activeCampaign); } catch (_) {}
+    }
+  }, true);
+
+  document.addEventListener('change', async event => {
+    const file = event.target.closest('#od99-portrait-file');
+    if (file) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      await handlePortraitFile(file.files?.[0]);
+      file.value = '';
+      return;
+    }
+  }, true);
+
+  document.addEventListener('input', event => {
+    if (event.target.closest('#od99-crop-zoom, #od99-crop-x, #od99-crop-y')) drawCrop();
+    if (event.target.closest('#od99-portrait-url')) {
+      const value = event.target.value.trim();
+      if (value && !/^data:image\/gif/i.test(value)) loadCropImage(value);
+    }
+  }, true);
+
+  document.addEventListener('paste', async event => {
+    const dialog = $('od99-portrait-crop-modal');
+    if (!dialog?.open) return;
+    const item = [...(event.clipboardData?.items || [])].find(i => i.type?.startsWith('image/'));
+    if (!item) return;
+    event.preventDefault();
+    await handlePortraitFile(item.getAsFile());
+  }, true);
+
+  // Permite GIF nos campos de ícone OBS criados na v96.
+  function allowGifIconInputs() {
+    document.querySelectorAll('.od96-icon-file').forEach(input => input.setAttribute('accept', 'image/*,.gif,image/gif'));
+  }
+
+  if (typeof saveCurrentCharacter === 'function' && !saveCurrentCharacter.__od99Wrapped) {
+    const baseSave = saveCurrentCharacter;
+    saveCurrentCharacter = function od99SaveCurrentCharacter() {
+      const active = document.activeElement;
+      const editingLongText = active && active.matches?.('textarea, input[type="text"], input[type="url"], input:not([type])');
+      const result = baseSave.apply(this, arguments);
+      const char = currentChar && currentChar();
+      if (char) {
+        const hidden = $('portrait-url');
+        if (hidden?.value) char.portrait = hidden.value;
+        readDodgeIntoCharV99(char);
+      }
+      // preserva foco em campos de texto quando o autosave rodar durante digitação
+      if (editingLongText && active?.isConnected) setTimeout(() => { try { active.focus(); } catch (_) {} }, 0);
+      return result;
+    };
+    saveCurrentCharacter.__od99Wrapped = true;
+  }
+
+  if (typeof renderPortrait === 'function' && !renderPortrait.__od99Wrapped) {
+    renderPortrait = function od99RenderPortrait(char) {
+      const img = $('char-portrait-preview');
+      if (!img) return;
+      img.src = char?.portrait || char?.image || char?.photo || 'assets/logo.jpg';
+      img.onerror = () => { img.src = 'assets/logo.jpg'; };
+    };
+    renderPortrait.__od99Wrapped = true;
+  }
+
+  if (typeof loadCharacter === 'function' && !loadCharacter.__od99Wrapped) {
+    const baseLoadCharacter = loadCharacter;
+    loadCharacter = function od99LoadCharacter(id) {
+      const active = document.activeElement;
+      if (active?.matches?.(editableSelector) && String(id) === String(currentCharacterId || '') && document.getElementById('app-screen')?.classList.contains('active')) {
+        const char = currentChar && currentChar();
+        if (char) { updateBars?.(char); updateDerivedStatsDisplay?.(char); }
+        return;
+      }
+      const result = baseLoadCharacter.apply(this, arguments);
+      const char = currentChar && currentChar();
+      if (char) { ensureVitalControls(); allowGifIconInputs(); updateDodgeNote(char); }
+      return result;
+    };
+    loadCharacter.__od99Wrapped = true;
+  }
+
+  // Fluxo sem alerta duplicado: se não há ficha, abre o modal; se há ficha, pede seleção antes de entrar.
+  if (typeof enterCampaign === 'function' && !enterCampaign.__od99Wrapped) {
+    const baseEnterCampaign = enterCampaign;
+    enterCampaign = async function od99EnterCampaign(campaignId) {
+      await od42RefreshOwnCharacters?.().catch?.(() => {});
+      await od42RefreshTables?.().catch?.(() => {});
+      const member = getMembers().find(m => String(m.campaignId) === String(campaignId) && String(m.userId) === String(currentUser?.id));
+      if (member && !member.characterId) {
+        pendingChooseCampaignId = campaignId;
+        if (!userCharacters().length) document.getElementById('create-first-sheet-modal')?.showModal();
+        else openChooseCharacterModal(campaignId);
+        return;
+      }
+      return baseEnterCampaign.apply(this, arguments);
+    };
+    enterCampaign.__od99Wrapped = true;
+  }
+
+  if (typeof createCharacterForCampaign === 'function' && !createCharacterForCampaign.__od99Wrapped) {
+    createCharacterForCampaign = async function od99CreateCharacterForCampaign() {
+      try {
+        const campaignId = pendingChooseCampaignId || currentCampaignId;
+        const char = (typeof od42Token === 'function' && od42Token()) ? await od42CreateCharacter('Novo Personagem') : createCharacter(currentUser.id, 'Novo Personagem');
+        if (!(typeof od42Token === 'function' && od42Token())) {
+          const all = get(STORAGE.characters, []); all.push(char); set(STORAGE.characters, all);
+        }
+        if (campaignId) await attachCharacterToCampaign(campaignId, char.id);
+        document.getElementById('create-first-sheet-modal')?.close();
+        document.getElementById('choose-character-modal')?.close();
+        currentCharacterId = char.id;
+        if (campaignId) await enterCampaign(campaignId);
+        else loadCharacter(char.id);
+      } catch (error) {
+        alert(error.message || 'Erro ao criar e vincular ficha.');
+      }
+    };
+    createCharacterForCampaign.__od99Wrapped = true;
+  }
+
+  // Marca no personagem base qual transformação está ativa para o OBS não tentar montar várias imagens.
+  document.addEventListener('click', event => {
+    const open = event.target.closest('[data-open-transformation]');
+    const back = event.target.closest('[data-open-base-form]');
+    if (!open && !back) return;
+    const chars = get(STORAGE.characters, []);
+    if (open) {
+      const transformationId = open.dataset.openTransformation;
+      const form = chars.find(c => String(c.id) === String(transformationId));
+      const baseId = form?.baseCharacterId;
+      const base = chars.find(c => String(c.id) === String(baseId));
+      if (base && form) {
+        base.activeTransformationId = form.id;
+        base.obsTransformationActive = true;
+        base.obsTransformPortrait = form.portrait || '';
+        base.updatedAt = Date.now();
+        set(STORAGE.characters, chars);
+        if (typeof od44SaveCharacterOnline === 'function') od44SaveCharacterOnline(base).catch(() => {});
+      }
+    }
+    if (back) {
+      const baseId = back.dataset.openBaseForm;
+      const base = chars.find(c => String(c.id) === String(baseId));
+      if (base) {
+        base.activeTransformationId = '';
+        base.obsTransformationActive = false;
+        base.updatedAt = Date.now();
+        set(STORAGE.characters, chars);
+        if (typeof od44SaveCharacterOnline === 'function') od44SaveCharacterOnline(base).catch(() => {});
+      }
+    }
+  }, true);
+
+  const baseShowSessions = typeof showSessions === 'function' ? showSessions : null;
+  if (baseShowSessions && !baseShowSessions.__od99Wrapped) {
+    showSessions = function od99ShowSessions() {
+      try { localStorage.setItem('od71_tab', 'home'); history.replaceState({ od71Tab: 'home' }, '', '/inicio'); } catch (_) {}
+      const result = baseShowSessions.apply(this, arguments);
+      setTimeout(() => {
+        try {
+          localStorage.setItem('od71_tab', 'home');
+          document.querySelector('[data-od71-tab="home"], [data-od75-tab="home"]')?.click();
+        } catch (_) {}
+      }, 0);
+      return result;
+    };
+    showSessions.__od99Wrapped = true;
+  }
+
+  function boot() {
+    const char = currentChar && currentChar();
+    const dodgeField = $('dodge');
+    if (dodgeField) dodgeField.removeAttribute('readonly');
+    if (char) {
+      if ($('attributes-grid')) renderAttributesV99(char);
+      ensureVitalControls();
+      updateDodgeNote(char);
+    }
+    allowGifIconInputs();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
+  else boot();
+})();

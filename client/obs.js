@@ -72,7 +72,7 @@
 
     const mode = character?.obsPortraitMode || '';
     const stamp = imageStamp(character);
-    setImage(`/api/characters/public/${encodeURIComponent(id)}/portrait?v=97&t=${stamp}&mode=${encodeURIComponent(mode)}&cb=${Date.now()}`);
+    setImage(`/api/characters/public/${encodeURIComponent(id)}/portrait?v=99&t=${stamp}&mode=${encodeURIComponent(mode)}&cb=${Date.now()}`);
   }
 
   function setSegmentedBar(kind, current, max) {
@@ -131,13 +131,14 @@
     const pv = toNumber(pvCurrent, 0);
     const max = Math.max(1, toNumber(pvMax, 1));
     const ratio = pv / max;
-    if (data.isTransformation || data.obsTransformationActive || data.activeTransformation) obsPortraitMode = 'transformation';
+    if (data.isTransformation || data.obsTransformationActive || data.activeTransformation || data.activeTransformationId) obsPortraitMode = 'transformation';
     else if (pv <= 0) obsPortraitMode = 'zero';
     else if (ratio < 0.5) obsPortraitMode = 'low';
 
     return {
       updatedAt: character.updatedAt || character.updated_at || data.updatedAt || data.updated_at || '',
       portrait:
+        (obsPortraitMode === 'transformation' && (data.obsTransformPortrait || data.transformationPortrait)) ||
         data.portrait ||
         data.avatar ||
         data.image ||
@@ -150,7 +151,7 @@
         normal: obsIcons.normal || data.obsIconNormal || data.iconNormal || '',
         low: obsIcons.low || data.obsIconLow || data.iconLow || '',
         zero: obsIcons.zero || data.obsIconZero || data.iconZero || '',
-        transformation: obsIcons.transformation || data.obsIconTransformation || data.iconTransformation || ''
+        transformation: data.obsTransformPortrait || data.transformationPortrait || obsIcons.transformation || data.obsIconTransformation || data.iconTransformation || ''
       },
       pvCurrent,
       pvMax,
@@ -253,7 +254,7 @@
         if (imageErrorCount <= 1) {
           const id = getId();
           if (id) {
-            portrait.setAttribute('src', `/api/characters/public/${encodeURIComponent(id)}/portrait?v=97&fallback=1&cb=${Date.now()}`);
+            portrait.setAttribute('src', `/api/characters/public/${encodeURIComponent(id)}/portrait?v=99&fallback=1&cb=${Date.now()}`);
             return;
           }
         }

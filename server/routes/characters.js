@@ -143,6 +143,10 @@ function getPortraitSource(data, forcedMode = '') {
 
   const icons = getObsIconMap(data);
   const mode = getPortraitMode(data, forcedMode);
+  if (mode === 'transformation') {
+    const transformDirect = firstText(data?.obsTransformPortrait || data?.transformationPortrait || data?.activeTransformationPortrait || '');
+    if (looksLikeImageSource(transformDirect) && !isFallbackLogo(transformDirect)) return transformDirect;
+  }
   const selectedIcon = icons[mode] || '';
 
   // Ícone customizado só vence quando existe de verdade. Se cair em logo/fallback,
@@ -191,7 +195,18 @@ router.get('/public/:id/portrait', async (req, res) => {
   const id = req.params.id;
   const result = await query('select data from characters where id = $1', [id]);
   const data = result.rows[0]?.data || {};
-  const src = getPortraitSource(data, req.query.mode);
+  let src = '';
+
+  const mode = getPortraitMode(data, req.query.mode);
+  if (mode === 'transformation' && data?.activeTransformationId) {
+    try {
+      const transform = await query('select data from characters where id = $1', [data.activeTransformationId]);
+      const transformData = transform.rows[0]?.data || {};
+      src = getPortraitSource(transformData, 'normal') || firstText(transformData.portrait || transformData.image || transformData.photo || '');
+    } catch (_) {}
+  }
+
+  if (!src) src = getPortraitSource(data, req.query.mode);
 
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   return sendImageSource(res, src);

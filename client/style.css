@@ -7621,3 +7621,96 @@ body.od84-session-home #sessions-screen.active .od71-shell {
     width: 34px;
   }
 }
+
+/* =========================
+   V99 - Beta 2: organização visual
+========================= */
+.od99-attr-card { overflow: hidden; }
+.od99-attr-control {
+  grid-template-columns: 28px minmax(52px, 1fr) 28px !important;
+  gap: 5px !important;
+  max-width: 100%;
+}
+.od99-attr-control input[data-attr] {
+  min-height: 34px !important;
+  height: 34px !important;
+  font-size: 1.15rem !important;
+  padding: 2px 4px !important;
+}
+.od99-step,
+.od98-attr-step.od99-step {
+  width: 28px !important;
+  height: 34px !important;
+  min-width: 28px !important;
+  border-radius: 7px !important;
+  font-size: 1rem !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+}
+.od99-attr-card .attr-help { font-size: 0.72rem !important; letter-spacing: 1px !important; }
+.od99-attr-card .roll-attr { width: 100%; }
+
+.vital-inputs { flex-wrap: wrap; gap: 6px !important; }
+.od99-vital-step-wrap {
+  display: inline-grid;
+  grid-template-columns: 24px minmax(48px, 72px) 24px;
+  align-items: center;
+  gap: 4px;
+}
+.od99-vital-step-wrap input {
+  width: 100% !important;
+  min-width: 0 !important;
+  text-align: center;
+}
+.od99-vital-step {
+  width: 24px;
+  height: 30px;
+  border: 1px solid rgba(201, 32, 43, .8);
+  border-radius: 6px;
+  background: rgba(201, 32, 43, .82);
+  color: #fff;
+  font-weight: 900;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+.od99-vital-step:hover { filter: brightness(1.12); }
+
+.od99-crop-card { width: min(680px, calc(100vw - 24px)); }
+.od99-crop-head { display: flex; justify-content: space-between; gap: 14px; align-items: flex-start; }
+.od99-crop-head h2 { margin: 0 0 4px; }
+.od99-crop-head p { margin: 0; opacity: .72; }
+.od99-crop-stage {
+  width: min(512px, 72vw);
+  aspect-ratio: 1 / 1;
+  margin: 12px auto;
+  border: 2px solid rgba(201,32,43,.85);
+  background: #111;
+  overflow: hidden;
+}
+#od99-crop-canvas { width: 100%; height: 100%; display: block; }
+.od99-crop-controls { display: grid; gap: 8px; }
+.od99-crop-controls label { display: grid; gap: 4px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+#od99-portrait-file, #od99-portrait-url { width: 100%; margin-top: 10px; }
+.od99-portrait-ok { object-fit: cover !important; }
+
+/* Campanhas sempre em duas colunas no desktop, sem duas rolagens internas. */
+.od86-campaign-list,
+#od86-campaign-list {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+  overflow: visible !important;
+  max-height: none !important;
+}
+.od86-campaign-card { min-width: 0; }
+.sessions-list-panel,
+.od71-content,
+#od71-content { overflow: visible !important; max-height: none !important; }
+
+@media (max-width: 900px) {
+  .od86-campaign-list,
+  #od86-campaign-list { grid-template-columns: 1fr !important; }
+}
+#dodge { pointer-events: auto !important; }
