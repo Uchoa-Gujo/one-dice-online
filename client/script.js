@@ -13443,3 +13443,112 @@ function od66InventoryMutationUnlockSoon() {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ensureButton);
   else ensureButton();
 })();
+
+/* =========================
+   V123 - Reparo: botão Entrar sem ficha duplicado
+   - Remove botões antigos duplicados criados por patches anteriores
+   - Mantém apenas um botão funcional no modal de escolher ficha
+   - Evita overflow horizontal do modal
+========================= */
+(function od123SingleNoSheetButtonFix() {
+  const BTN_ID = 'od123-enter-without-sheet';
+
+  function $(id) { return document.getElementById(id); }
+
+  function isNoSheetButton(el) {
+    if (!el || el.tagName !== 'BUTTON') return false;
+    const text = String(el.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
+    return el.id === BTN_ID
+      || el.id === 'od122-enter-without-sheet'
+      || el.id === 'od113-enter-without-sheet'
+      || el.id === 'od102-enter-without-sheet'
+      || el.dataset?.enterWithoutSheet === '1'
+      || text === 'entrar sem ficha';
+  }
+
+  function makeButton(oldButton) {
+    const button = oldButton || document.createElement('button');
+    button.id = BTN_ID;
+    button.type = 'button';
+    button.className = 'ghost-btn od123-enter-without-sheet';
+    button.dataset.enterWithoutSheet = '1';
+    button.textContent = 'Entrar sem ficha';
+    return button;
+  }
+
+  function modalActions() {
+    return document.querySelector('#choose-character-modal .modal-actions');
+  }
+
+  function normalizeNoSheetButton() {
+    const actions = modalActions();
+    if (!actions) return;
+
+    const allButtons = [...actions.querySelectorAll('button')];
+    const noSheetButtons = allButtons.filter(isNoSheetButton);
+    let main = noSheetButtons[0] || null;
+
+    noSheetButtons.slice(1).forEach(button => button.remove());
+    main = makeButton(main);
+
+    if (!actions.contains(main)) actions.prepend(main);
+    else if (actions.firstElementChild !== main) actions.prepend(main);
+
+    actions.classList.add('od123-modal-actions-fixed');
+  }
+
+  async function enterWithoutSheetFromButton(button) {
+    const tableId = button?.dataset?.campaignId
+      || button?.dataset?.tableId
+      || (typeof pendingChooseCampaignId !== 'undefined' ? pendingChooseCampaignId : null)
+      || (typeof currentCampaignId !== 'undefined' ? currentCampaignId : null);
+
+    if (typeof od122OpenNoSheetTable === 'function') {
+      await od122OpenNoSheetTable(tableId);
+      return;
+    }
+
+    try { document.getElementById('choose-character-modal')?.close?.(); } catch (_) {}
+    try { document.getElementById('create-first-sheet-modal')?.close?.(); } catch (_) {}
+    if (tableId && typeof currentCampaignId !== 'undefined') currentCampaignId = tableId;
+    if (typeof currentCharacterId !== 'undefined') currentCharacterId = null;
+    try { if (typeof initApp === 'function') initApp(tableId); } catch (_) {}
+  }
+
+  document.addEventListener('click', event => {
+    const button = event.target.closest('button');
+    if (!isNoSheetButton(button)) return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    normalizeNoSheetButton();
+    enterWithoutSheetFromButton(button);
+  }, true);
+
+  const baseOpenChoose = typeof openChooseCharacterModal === 'function' ? openChooseCharacterModal : null;
+  if (baseOpenChoose && !baseOpenChoose.__od123SingleNoSheetButton) {
+    openChooseCharacterModal = function od123OpenChooseCharacterModal() {
+      const result = baseOpenChoose.apply(this, arguments);
+      requestAnimationFrame(normalizeNoSheetButton);
+      setTimeout(normalizeNoSheetButton, 60);
+      setTimeout(normalizeNoSheetButton, 250);
+      return result;
+    };
+    openChooseCharacterModal.__od123SingleNoSheetButton = true;
+  }
+
+  function boot() {
+    normalizeNoSheetButton();
+    const modal = $('choose-character-modal');
+    if (modal && !modal.__od123NoSheetObserver) {
+      modal.__od123NoSheetObserver = true;
+      new MutationObserver(() => requestAnimationFrame(normalizeNoSheetButton)).observe(modal, {
+        childList: true,
+        subtree: true
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
+  else boot();
+})();
