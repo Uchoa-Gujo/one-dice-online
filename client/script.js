@@ -8664,3 +8664,443 @@ function od66InventoryMutationUnlockSoon() {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
   else boot();
 })();
+
+
+/* =========================
+   V100 - Beta 3: ficha, imagens por link, esquiva e vitais
+   - PV/PE alinhados e controles compactos
+   - Atributos sem botão vazando
+   - Esquiva = Defesa + bônus de proficiência se Esquiva treinada + bônus manual de Esquiva
+   - Imagens somente por link, com GIF aceito
+   - Fotos de estado: normal, machucado (-50%) e morrendo (0 PV)
+   - Abaixo de 0 PV a imagem some
+   - Crop visual estilo Discord: arrastar/zoom sem barras
+========================= */
+(function od100Beta3Fixes(){
+  const $ = id => document.getElementById(id);
+  const qs = sel => document.querySelector(sel);
+  const esc = value => {
+    try { return typeof escapeHtml === 'function' ? escapeHtml(value ?? '') : String(value ?? ''); }
+    catch (_) { return String(value ?? ''); }
+  };
+
+  try {
+    if (Array.isArray(SKILLS) && !SKILLS.some(([name]) => name === 'Esquiva')) {
+      SKILLS.push(['Esquiva', 'agilidade']);
+    }
+  } catch (_) {}
+
+  function num(value, fallback = 0) {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : fallback;
+  }
+
+  function safeChar() {
+    try { return typeof currentChar === 'function' ? currentChar() : null; } catch (_) { return null; }
+  }
+
+  function getSkill(char, name) {
+    return char?.skills?.[name] || { trained: false, bonus: 0, disadvantage: false };
+  }
+
+  function od100DodgeFormula(char = safeChar()) {
+    if (!char) return 0;
+    const def = typeof effectiveDefense === 'function' ? num(effectiveDefense(char), 10) : num(char.defense ?? char.defesa, 10);
+    const skill = getSkill(char, 'Esquiva');
+    const prof = skill.trained ? num(char.profBonus, 0) : 0;
+    const bonus = num(skill.bonus, 0);
+    return def + prof + bonus;
+  }
+
+  window.od100DodgeFormula = od100DodgeFormula;
+  window.od99DodgeFormula = od100DodgeFormula;
+  window.od98DodgeFormula = od100DodgeFormula;
+
+  if (typeof calculatedDodge === 'function') {
+    calculatedDodge = function od100CalculatedDodge(char = safeChar()) {
+      if (!char) return 0;
+      return od100DodgeFormula(char);
+    };
+  }
+
+  function syncDodge(char = safeChar()) {
+    if (!char) return;
+    const value = od100DodgeFormula(char);
+    char.dodge = value;
+    char.dodgeManual = false;
+    char.dodgeLocked = false;
+    const field = $('dodge');
+    if (field && document.activeElement !== field) {
+      field.value = value;
+      field.removeAttribute('readonly');
+      field.title = '';
+    }
+    const note = $('dodge-formula-note');
+    if (note) note.textContent = '';
+  }
+
+  function normalizeImageLink(value) {
+    return String(value || '').trim();
+  }
+
+  function ensureObsIcons(char) {
+    if (!char) return {};
+    char.obsIcons = char.obsIcons || {};
+    return char.obsIcons;
+  }
+
+  function selectedPortraitForState(char = safeChar()) {
+    if (!char) return 'assets/logo.jpg';
+    const pv = num(char.pvCurrent ?? char.pvAtual ?? char.pv, 0);
+    const max = Math.max(1, num(char.pvMax ?? char.pvTotal ?? char.pv_max, 1));
+    const icons = ensureObsIcons(char);
+    if (pv < 0) return '';
+    if (char.obsTransformationActive && (char.obsTransformPortrait || icons.transformation)) return char.obsTransformPortrait || icons.transformation;
+    if (pv === 0 && icons.zero) return icons.zero;
+    if (pv > 0 && pv / max < 0.5 && icons.low) return icons.low;
+    return char.portrait || char.image || char.photo || 'assets/logo.jpg';
+  }
+
+  function applyPortraitCrop(img, char = safeChar()) {
+    if (!img || !char) return;
+    const crop = char.portraitCrop || {};
+    img.style.objectFit = 'cover';
+    img.style.objectPosition = `${num(crop.x, 50)}% ${num(crop.y, 50)}%`;
+    img.style.transformOrigin = `${num(crop.x, 50)}% ${num(crop.y, 50)}%`;
+    img.style.transform = `scale(${Math.max(1, num(crop.scale, 1))})`;
+  }
+
+  function updatePortraitPreview(char = safeChar()) {
+    const img = $('char-portrait-preview');
+    if (!img || !char) return;
+    const src = selectedPortraitForState(char);
+    if (src) {
+      img.style.visibility = '';
+      img.src = src;
+      img.onerror = () => { img.src = 'assets/logo.jpg'; };
+      applyPortraitCrop(img, char);
+    } else {
+      img.removeAttribute('src');
+      img.style.visibility = 'hidden';
+    }
+  }
+
+  function savePortraitLinks() {
+    const char = safeChar();
+    if (!char) return;
+    const normal = normalizeImageLink($('od100-portrait-normal')?.value || $('portrait-modal-url')?.value || '');
+    const low = normalizeImageLink($('od100-portrait-low')?.value || '');
+    const zero = normalizeImageLink($('od100-portrait-zero')?.value || '');
+    const crop = window.od100CropState || { x: 50, y: 50, scale: 1 };
+    updateChar?.(c => {
+      c.portrait = normal;
+      c.image = normal;
+      c.photo = normal;
+      c.obsIcons = c.obsIcons || {};
+      c.obsIcons.low = low;
+      c.obsIcons.zero = zero;
+      c.obsIconLow = low;
+      c.obsIconZero = zero;
+      c.portraitCrop = { x: crop.x, y: crop.y, scale: crop.scale };
+      c.updatedAt = Date.now();
+    });
+    const hidden = $('portrait-url');
+    if (hidden) hidden.value = normal;
+    updatePortraitPreview(safeChar());
+    try { queueSave?.(); } catch (_) {}
+    try {
+      const current = safeChar();
+      if (current && typeof od44SaveCharacterOnline === 'function') od44SaveCharacterOnline(current).catch(() => {});
+      else if (current && typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(current);
+    } catch (_) {}
+  }
+
+  function ensurePortraitDialogV100() {
+    let dialog = $('od100-portrait-modal');
+    if (dialog) return dialog;
+    dialog = document.createElement('dialog');
+    dialog.id = 'od100-portrait-modal';
+    dialog.className = 'od100-portrait-modal od-modal';
+    dialog.innerHTML = `
+      <form method="dialog" class="modal-card manga-panel od100-portrait-card">
+        <div class="od100-modal-head">
+          <div>
+            <h2>Fotos da Ficha</h2>
+            <p>Use links diretos de imagem. GIF também funciona.</p>
+          </div>
+          <button type="button" class="icon-btn" id="od100-photo-close">×</button>
+        </div>
+        <label>Foto normal<input id="od100-portrait-normal" type="text" placeholder="https://...jpg, png, webp ou gif" /></label>
+        <label>Foto machucado, abaixo de 50% PV<input id="od100-portrait-low" type="text" placeholder="opcional" /></label>
+        <label>Foto morrendo, 0 PV<input id="od100-portrait-zero" type="text" placeholder="opcional" /></label>
+        <div class="od100-crop-shell">
+          <div id="od100-crop-stage" class="od100-crop-stage" title="Arraste para posicionar. Use a roda do mouse para aproximar.">
+            <img id="od100-crop-img" alt="prévia" draggable="false" />
+          </div>
+          <small>Arraste a imagem para posicionar. Use a roda do mouse para dar zoom. Não há upload local nesta versão.</small>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="ghost-btn" id="od100-photo-reset">Centralizar</button>
+          <button type="button" class="ghost-btn" id="od100-photo-cancel">Cancelar</button>
+          <button type="button" class="primary-btn" id="od100-photo-save">Salvar Fotos</button>
+        </div>
+      </form>`;
+    document.body.appendChild(dialog);
+    return dialog;
+  }
+
+  function refreshCropPreview() {
+    const img = $('od100-crop-img');
+    const src = normalizeImageLink($('od100-portrait-normal')?.value || '');
+    if (!img) return;
+    if (!src) {
+      img.removeAttribute('src');
+      return;
+    }
+    img.src = src;
+    img.style.objectFit = 'cover';
+    const crop = window.od100CropState || { x: 50, y: 50, scale: 1 };
+    img.style.objectPosition = `${crop.x}% ${crop.y}%`;
+    img.style.transform = `scale(${crop.scale})`;
+    img.onerror = () => { img.removeAttribute('src'); };
+  }
+
+  function openPortraitModalV100() {
+    const char = safeChar();
+    const dialog = ensurePortraitDialogV100();
+    const icons = char?.obsIcons || {};
+    $('od100-portrait-normal').value = char?.portrait || char?.image || char?.photo || $('portrait-url')?.value || '';
+    $('od100-portrait-low').value = icons.low || char?.obsIconLow || '';
+    $('od100-portrait-zero').value = icons.zero || char?.obsIconZero || '';
+    window.od100CropState = Object.assign({ x: 50, y: 50, scale: 1 }, char?.portraitCrop || {});
+    refreshCropPreview();
+    dialog.showModal();
+  }
+
+  function renderAttributesV100(char = safeChar()) {
+    const grid = $('attributes-grid');
+    if (!grid || !char) return;
+    const labels = { forca: 'Força', agilidade: 'Agilidade', vigor: 'Vigor', intelecto: 'Intelecto', presenca: 'Presença' };
+    grid.innerHTML = '';
+    Object.entries(labels).forEach(([key, label]) => {
+      const value = num(char.attrs?.[key], 1);
+      const card = document.createElement('div');
+      card.className = 'attr-card-v2 od98-attr-card od99-attr-card od100-attr-card';
+      card.innerHTML = `
+        <div class="attr-head od100-attr-head">
+          <div class="attr-name">${esc(label)}</div>
+          <div class="attr-mod">${esc(typeof formatMod === 'function' ? formatMod(attrMod(value)) : value)}</div>
+          <div class="attr-help">D20</div>
+        </div>
+        <div class="od100-attr-row">
+          <button type="button" class="od100-step" data-od100-attr-step="${esc(key)}" data-dir="-1">−</button>
+          <input data-attr="${esc(key)}" type="number" value="${esc(value)}" min="1" inputmode="numeric">
+          <button type="button" class="od100-step" data-od100-attr-step="${esc(key)}" data-dir="1">+</button>
+        </div>
+        <button class="primary-btn small roll-attr od100-roll" data-roll-attr="${esc(key)}">D20</button>`;
+      grid.appendChild(card);
+    });
+  }
+
+  if (typeof renderAttributes === 'function') renderAttributes = renderAttributesV100;
+
+  function ensureVitalControlsV100() {
+    ['pv-current', 'pv-max', 'pe-current', 'pe-max'].forEach(id => {
+      const input = $(id);
+      if (!input) return;
+      input.type = 'number';
+      if (input.closest('.od100-vital-wrap')) return;
+      const wrap = document.createElement('span');
+      wrap.className = 'od100-vital-wrap';
+      input.parentNode.insertBefore(wrap, input);
+      wrap.appendChild(input);
+      wrap.insertAdjacentHTML('afterbegin', `<button type="button" class="od100-vital-step" data-od100-vital-step="${id}" data-dir="-1">−</button>`);
+      wrap.insertAdjacentHTML('beforeend', `<button type="button" class="od100-vital-step" data-od100-vital-step="${id}" data-dir="1">+</button>`);
+    });
+    document.querySelectorAll('.od99-vital-step-wrap').forEach(wrap => wrap.classList.add('od100-vital-normalized'));
+  }
+
+  if (typeof updateDerivedStatsDisplay === 'function' && !updateDerivedStatsDisplay.__od100Wrapped) {
+    const base = updateDerivedStatsDisplay;
+    updateDerivedStatsDisplay = function od100UpdateDerivedStatsDisplay(char = safeChar()) {
+      const result = base.apply(this, arguments);
+      syncDodge(char);
+      updatePortraitPreview(char);
+      ensureVitalControlsV100();
+      return result;
+    };
+    updateDerivedStatsDisplay.__od100Wrapped = true;
+  }
+
+  if (typeof renderPortrait === 'function') {
+    renderPortrait = function od100RenderPortrait(char) { updatePortraitPreview(char || safeChar()); };
+    renderPortrait.__od100Wrapped = true;
+  }
+
+  if (typeof saveCurrentCharacter === 'function' && !saveCurrentCharacter.__od100Wrapped) {
+    const baseSave = saveCurrentCharacter;
+    saveCurrentCharacter = function od100SaveCurrentCharacter() {
+      const char = safeChar();
+      if (char) syncDodge(char);
+      return baseSave.apply(this, arguments);
+    };
+    saveCurrentCharacter.__od100Wrapped = true;
+  }
+
+  document.addEventListener('click', event => {
+    const portraitBtn = event.target.closest('#portrait-button');
+    if (portraitBtn) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      openPortraitModalV100();
+      return;
+    }
+
+    const close = event.target.closest('#od100-photo-close, #od100-photo-cancel');
+    if (close) {
+      event.preventDefault();
+      $('od100-portrait-modal')?.close();
+      return;
+    }
+
+    if (event.target.closest('#od100-photo-reset')) {
+      event.preventDefault();
+      window.od100CropState = { x: 50, y: 50, scale: 1 };
+      refreshCropPreview();
+      return;
+    }
+
+    if (event.target.closest('#od100-photo-save')) {
+      event.preventDefault();
+      savePortraitLinks();
+      $('od100-portrait-modal')?.close();
+      return;
+    }
+
+    const attrStep = event.target.closest('[data-od100-attr-step]');
+    if (attrStep) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const key = attrStep.dataset.od100AttrStep;
+      const dir = num(attrStep.dataset.dir, 0);
+      const input = document.querySelector(`input[data-attr="${CSS.escape(key)}"]`);
+      if (!input) return;
+      input.value = Math.max(1, num(input.value, 1) + dir);
+      updateChar?.(char => {
+        char.attrs = char.attrs || {};
+        char.attrs[key] = num(input.value, 1);
+        syncDodge(char);
+      });
+      const char = safeChar();
+      if (char) {
+        renderAttributesV100(char);
+        try { renderSkills?.(char); } catch (_) {}
+        syncDodge(char);
+        try { queueSave?.(); } catch (_) {}
+      }
+      return;
+    }
+
+    const vitalStep = event.target.closest('[data-od100-vital-step], [data-od99-vital-step]');
+    if (vitalStep) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      const id = vitalStep.dataset.od100VitalStep || vitalStep.dataset.od99VitalStep;
+      const input = $(id);
+      if (!input) return;
+      input.value = num(input.value, 0) + num(vitalStep.dataset.dir, 0);
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      const char = safeChar();
+      if (char) { syncDodge(char); updatePortraitPreview(char); }
+      try { queueSave?.(); } catch (_) {}
+      return;
+    }
+  }, true);
+
+  document.addEventListener('input', event => {
+    if (event.target.closest('#od100-portrait-normal, #od100-portrait-low, #od100-portrait-zero')) {
+      refreshCropPreview();
+      return;
+    }
+    if (event.target.matches?.('[data-skill-bonus], [data-od98-skill-bonus], [data-od88-skill-bonus], [data-od79-skill-bonus], [data-skill-trained], [data-od98-skill-trained]')) {
+      setTimeout(() => syncDodge(safeChar()), 0);
+    }
+  }, true);
+
+  document.addEventListener('change', event => {
+    if (event.target.matches?.('[data-skill-trained], [data-od98-skill-trained]')) {
+      setTimeout(() => syncDodge(safeChar()), 0);
+    }
+  }, true);
+
+  function setupCropDragging() {
+    const stage = $('od100-crop-stage');
+    if (!stage || stage.dataset.od100Ready === '1') return;
+    stage.dataset.od100Ready = '1';
+    let dragging = false;
+    let start = null;
+    stage.addEventListener('pointerdown', ev => {
+      dragging = true;
+      stage.setPointerCapture?.(ev.pointerId);
+      const crop = window.od100CropState || { x: 50, y: 50, scale: 1 };
+      start = { x: ev.clientX, y: ev.clientY, cropX: crop.x, cropY: crop.y };
+    });
+    stage.addEventListener('pointermove', ev => {
+      if (!dragging || !start) return;
+      const rect = stage.getBoundingClientRect();
+      const dx = ((ev.clientX - start.x) / Math.max(1, rect.width)) * -100;
+      const dy = ((ev.clientY - start.y) / Math.max(1, rect.height)) * -100;
+      window.od100CropState = Object.assign({}, window.od100CropState || {}, {
+        x: Math.max(0, Math.min(100, start.cropX + dx)),
+        y: Math.max(0, Math.min(100, start.cropY + dy))
+      });
+      refreshCropPreview();
+    });
+    ['pointerup','pointercancel','pointerleave'].forEach(type => stage.addEventListener(type, () => { dragging = false; start = null; }));
+    stage.addEventListener('wheel', ev => {
+      ev.preventDefault();
+      const crop = window.od100CropState || { x: 50, y: 50, scale: 1 };
+      const next = Math.max(1, Math.min(3, crop.scale + (ev.deltaY < 0 ? 0.08 : -0.08)));
+      window.od100CropState = Object.assign({}, crop, { scale: next });
+      refreshCropPreview();
+    }, { passive: false });
+  }
+
+  if (typeof loadCharacter === 'function' && !loadCharacter.__od100Wrapped) {
+    const baseLoad = loadCharacter;
+    loadCharacter = function od100LoadCharacter(id) {
+      const result = baseLoad.apply(this, arguments);
+      const char = safeChar();
+      if (char) {
+        if ($('attributes-grid')) renderAttributesV100(char);
+        ensureVitalControlsV100();
+        syncDodge(char);
+        updatePortraitPreview(char);
+      }
+      return result;
+    };
+    loadCharacter.__od100Wrapped = true;
+  }
+
+  function boot() {
+    const oldPortraitModal = $('portrait-modal');
+    if (oldPortraitModal) oldPortraitModal.classList.add('od100-hide-old-portrait-modal');
+    const hidden = $('portrait-url');
+    if (hidden) hidden.type = 'text';
+    const dodge = $('dodge');
+    if (dodge) dodge.removeAttribute('readonly');
+    const char = safeChar();
+    if (char) {
+      if ($('attributes-grid')) renderAttributesV100(char);
+      ensureVitalControlsV100();
+      syncDodge(char);
+      updatePortraitPreview(char);
+    }
+    setupCropDragging();
+  }
+
+  document.addEventListener('DOMContentLoaded', boot);
+  setTimeout(boot, 150);
+  setTimeout(boot, 750);
+  window.od100RefreshSheetFixes = boot;
+})();

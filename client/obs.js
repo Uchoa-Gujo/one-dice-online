@@ -39,6 +39,7 @@
 
   function setImage(src) {
     if (!portrait) return;
+    if (src === '__hide__') { portrait.classList.add('is-hidden'); portrait.removeAttribute('src'); return; }
     const next = safeImagePath(src);
     portrait.classList.remove('is-hidden');
     if (lastImageSrc !== next) {
@@ -46,6 +47,11 @@
       lastImageSrc = next;
     }
     if (portrait.getAttribute('src') !== next) portrait.setAttribute('src', next);
+  }
+
+  function shouldHidePortrait(character) {
+    const pv = toNumber(character?.pvCurrent, 0);
+    return pv < 0;
   }
 
   function imageStamp(character) {
@@ -65,6 +71,7 @@
   }
 
   function setImageFromCharacter(id, character) {
+    if (shouldHidePortrait(character)) { setImage('__hide__'); return; }
     if (!id) {
       setImage(character && character.portrait ? character.portrait : fallbackImage);
       return;
@@ -72,7 +79,7 @@
 
     const mode = character?.obsPortraitMode || '';
     const stamp = imageStamp(character);
-    setImage(`/api/characters/public/${encodeURIComponent(id)}/portrait?v=99&t=${stamp}&mode=${encodeURIComponent(mode)}&cb=${Date.now()}`);
+    setImage(`/api/characters/public/${encodeURIComponent(id)}/portrait?v=100&t=${stamp}&mode=${encodeURIComponent(mode)}&cb=${Date.now()}`);
   }
 
   function setSegmentedBar(kind, current, max) {
@@ -132,7 +139,8 @@
     const max = Math.max(1, toNumber(pvMax, 1));
     const ratio = pv / max;
     if (data.isTransformation || data.obsTransformationActive || data.activeTransformation || data.activeTransformationId) obsPortraitMode = 'transformation';
-    else if (pv <= 0) obsPortraitMode = 'zero';
+    else if (pv < 0) obsPortraitMode = 'hidden';
+    else if (pv === 0) obsPortraitMode = 'zero';
     else if (ratio < 0.5) obsPortraitMode = 'low';
 
     return {
@@ -149,8 +157,8 @@
       obsPortraitMode,
       obsIcons: {
         normal: obsIcons.normal || data.obsIconNormal || data.iconNormal || '',
-        low: obsIcons.low || data.obsIconLow || data.iconLow || '',
-        zero: obsIcons.zero || data.obsIconZero || data.iconZero || '',
+        low: obsIcons.low || data.obsIconLow || data.iconLow || data.iconeMachucado || data.damagedPortrait || '',
+        zero: obsIcons.zero || data.obsIconZero || data.iconZero || data.iconeMorrendo || data.dyingPortrait || '',
         transformation: data.obsTransformPortrait || data.transformationPortrait || obsIcons.transformation || data.obsIconTransformation || data.iconTransformation || ''
       },
       pvCurrent,

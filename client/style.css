@@ -7714,3 +7714,239 @@ body.od84-session-home #sessions-screen.active .od71-shell {
   #od86-campaign-list { grid-template-columns: 1fr !important; }
 }
 #dodge { pointer-events: auto !important; }
+
+
+/* =========================
+   V100 - Polimento ficha beta 3
+========================= */
+.vitals-grid .vital-card {
+  min-height: 126px;
+}
+
+.vital-inputs {
+  display: grid !important;
+  grid-template-columns: minmax(118px, 1fr) 18px minmax(118px, 1fr) !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: 100% !important;
+}
+
+.vital-inputs > span:not(.od100-vital-wrap):not(.od99-vital-step-wrap) {
+  display: grid !important;
+  place-items: center !important;
+  font-size: 1.2rem !important;
+  font-weight: 900 !important;
+}
+
+.od100-vital-wrap,
+.od99-vital-step-wrap.od100-vital-normalized {
+  display: grid !important;
+  grid-template-columns: 26px minmax(58px, 1fr) 26px !important;
+  align-items: center !important;
+  gap: 5px !important;
+  width: 100% !important;
+  max-width: 170px !important;
+}
+
+.od100-vital-wrap input,
+.od99-vital-step-wrap.od100-vital-normalized input {
+  height: 40px !important;
+  min-height: 40px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  text-align: center !important;
+  font-size: 1.05rem !important;
+  font-weight: 900 !important;
+  padding: 3px 4px !important;
+}
+
+.od100-vital-step,
+.od99-vital-step-wrap.od100-vital-normalized .od99-vital-step {
+  width: 26px !important;
+  height: 32px !important;
+  min-width: 26px !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(201, 32, 43, .75) !important;
+  background: linear-gradient(180deg, rgba(201,32,43,.95), rgba(98,8,14,.95)) !important;
+  color: #fff !important;
+  font-size: .95rem !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+  padding: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+  cursor: pointer !important;
+}
+
+.attributes-grid {
+  grid-template-columns: repeat(5, minmax(150px, 1fr)) !important;
+  gap: 14px !important;
+}
+
+.od100-attr-card {
+  overflow: hidden !important;
+  padding: 14px !important;
+  min-width: 0 !important;
+  gap: 8px !important;
+}
+
+.od100-attr-head {
+  display: grid !important;
+  grid-template-columns: 1fr auto !important;
+  align-items: start !important;
+  gap: 4px 8px !important;
+}
+
+.od100-attr-head .attr-help {
+  grid-column: 1 / -1 !important;
+}
+
+.od100-attr-row,
+.od99-attr-control,
+.od98-attr-control {
+  display: grid !important;
+  grid-template-columns: 24px minmax(44px, 1fr) 24px !important;
+  gap: 4px !important;
+  align-items: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.od100-attr-row input[data-attr],
+.od99-attr-control input[data-attr],
+.od98-attr-control input[data-attr] {
+  height: 32px !important;
+  min-height: 32px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  padding: 2px 3px !important;
+  text-align: center !important;
+  font-size: 1.05rem !important;
+}
+
+.od100-step,
+.od99-step,
+.od98-attr-step.od99-step {
+  width: 24px !important;
+  height: 30px !important;
+  min-width: 24px !important;
+  border-radius: 7px !important;
+  padding: 0 !important;
+  font-size: .9rem !important;
+  line-height: 1 !important;
+  display: grid !important;
+  place-items: center !important;
+  border: 1px solid rgba(201,32,43,.75) !important;
+  background: rgba(201,32,43,.82) !important;
+  color: #fff !important;
+  cursor: pointer !important;
+}
+
+.od100-roll,
+.od100-attr-card .roll-attr {
+  height: 34px !important;
+  width: 100% !important;
+  padding: 0 8px !important;
+}
+
+#dodge-formula-note {
+  min-height: 0 !important;
+  opacity: .55 !important;
+}
+
+.od100-hide-old-portrait-modal {
+  display: none !important;
+}
+
+.od100-portrait-modal {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  width: min(620px, calc(100vw - 24px));
+}
+
+.od100-portrait-modal::backdrop {
+  background: rgba(0,0,0,.72);
+  backdrop-filter: blur(4px);
+}
+
+.od100-portrait-card {
+  display: grid;
+  gap: 12px;
+}
+
+.od100-modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.od100-modal-head h2 { margin: 0 0 4px; }
+.od100-modal-head p { margin: 0; opacity: .72; }
+
+.od100-portrait-card label {
+  display: grid;
+  gap: 5px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.od100-portrait-card input[type="text"] {
+  width: 100%;
+}
+
+.od100-crop-shell {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+
+.od100-crop-stage {
+  width: min(300px, 70vw);
+  aspect-ratio: 1 / 1;
+  border-radius: 18px;
+  border: 3px solid rgba(255,255,255,.92);
+  outline: 2px solid rgba(201,32,43,.8);
+  background: rgba(0,0,0,.55);
+  overflow: hidden;
+  cursor: grab;
+  box-shadow: 0 18px 45px rgba(0,0,0,.45), inset 0 0 0 1px rgba(0,0,0,.35);
+}
+
+.od100-crop-stage:active { cursor: grabbing; }
+
+#od100-crop-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  user-select: none;
+  pointer-events: none;
+}
+
+#char-portrait-preview {
+  object-fit: cover !important;
+}
+
+@media (max-width: 1100px) {
+  .attributes-grid { grid-template-columns: repeat(2, minmax(150px, 1fr)) !important; }
+}
+
+@media (max-width: 720px) {
+  .vital-inputs {
+    grid-template-columns: 1fr 14px 1fr !important;
+    gap: 6px !important;
+  }
+  .od100-vital-wrap,
+  .od99-vital-step-wrap.od100-vital-normalized {
+    grid-template-columns: 22px minmax(46px, 1fr) 22px !important;
+    gap: 3px !important;
+  }
+  .od100-vital-step,
+  .od99-vital-step-wrap.od100-vital-normalized .od99-vital-step {
+    width: 22px !important;
+    min-width: 22px !important;
+  }
+}

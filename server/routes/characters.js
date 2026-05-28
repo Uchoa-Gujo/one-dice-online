@@ -108,8 +108,8 @@ function getObsIconMap(data) {
   const icons = data?.obsIcons || data?.obs_icons || {};
   return {
     normal: icons.normal || data?.obsIconNormal || data?.iconNormal || data?.iconeNormal || '',
-    low: icons.low || data?.obsIconLow || data?.iconLow || data?.iconeFerido || data?.iconeBaixo || '',
-    zero: icons.zero || data?.obsIconZero || data?.iconZero || data?.iconeZero || data?.iconeCaido || '',
+    low: icons.low || data?.obsIconLow || data?.iconLow || data?.iconeMachucado || data?.damagedPortrait || data?.iconeFerido || data?.iconeBaixo || '',
+    zero: icons.zero || data?.obsIconZero || data?.iconZero || data?.iconeMorrendo || data?.dyingPortrait || data?.iconeZero || data?.iconeCaido || '',
     transformation: icons.transformation || data?.obsIconTransformation || data?.iconTransformation || data?.iconeTransformacao || ''
   };
 }
@@ -128,7 +128,8 @@ function getPortraitMode(data, forcedMode = '') {
   const pv = toNumber(data?.pvCurrent ?? data?.pvAtual ?? data?.pv_current ?? data?.pv ?? data?.hpCurrent ?? data?.hpAtual ?? data?.hp, 0);
   const max = Math.max(1, toNumber(data?.pvMax ?? data?.pvTotal ?? data?.pv_max ?? data?.hpMax ?? data?.hpTotal ?? data?.hp_max, 1));
 
-  if (pv <= 0) return 'zero';
+  if (pv < 0) return 'hidden';
+  if (pv === 0) return 'zero';
   if ((pv / max) < 0.5) return 'low';
   return 'normal';
 }
@@ -147,6 +148,7 @@ function getPortraitSource(data, forcedMode = '') {
     const transformDirect = firstText(data?.obsTransformPortrait || data?.transformationPortrait || data?.activeTransformationPortrait || '');
     if (looksLikeImageSource(transformDirect) && !isFallbackLogo(transformDirect)) return transformDirect;
   }
+  if (mode === 'hidden') return '';
   const selectedIcon = icons[mode] || '';
 
   // Ícone customizado só vence quando existe de verdade. Se cair em logo/fallback,
