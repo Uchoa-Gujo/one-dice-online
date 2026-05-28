@@ -15,41 +15,93 @@ router.get('/public/:id', async (req, res) => {
 
 
 
+
 function firstText(value) {
   if (typeof value === 'string') return value.trim();
   return '';
 }
 
+function isFallbackLogo(value) {
+  const text = firstText(value).toLowerCase();
+  return !text || text.includes('/assets/logo') || text.includes('assets/logo') || text.includes('/assets/account-logo') || text.includes('assets/account-logo');
+}
+
 function looksLikeImageSource(value) {
   const text = firstText(value);
   if (!text) return false;
-  return /^(data:image\/|https?:\/\/|\/|\.\/|assets\/|uploads\/)/i.test(text) || /^[A-Za-z0-9+/=]{200,}$/.test(text);
+  return /^(data:image\/|https?:\/\/|\/|\.\/|assets\/|uploads\/|blob:)/i.test(text) || /^[A-Za-z0-9+/=]{200,}$/.test(text);
 }
 
-function getDeepImageSource(data, preferredKeys = []) {
-  if (!data || typeof data !== 'object') return '';
+function pushImageCandidate(list, value, score, key = '') {
+  const text = firstText(value);
+  if (!looksLikeImageSource(text)) return;
 
-  for (const key of preferredKeys) {
-    const value = data[key];
-    if (looksLikeImageSource(value)) return firstText(value);
+  let finalScore = score;
+  const lowerKey = String(key || '').toLowerCase();
+  const lowerText = text.toLowerCase();
+
+  if (/(portrait|retrato)/.test(lowerKey)) finalScore += 220;
+  if (/(avatar|photo|foto|picture)/.test(lowerKey)) finalScore += 160;
+  if (/(image|img)/.test(lowerKey)) finalScore += 80;
+  if (/(icon|icone)/.test(lowerKey)) finalScore += 25;
+
+  if (/^data:image\//i.test(text)) finalScore += 260;
+  if (/^uploads\//i.test(text) || /^\/uploads\//i.test(text)) finalScore += 190;
+  if (/^https?:\/\//i.test(text)) finalScore += 120;
+  if (/^[A-Za-z0-9+/=]{200,}$/.test(text)) finalScore += 210;
+
+  if (isFallbackLogo(text)) finalScore -= 1500;
+  if (lowerText.includes('favicon')) finalScore -= 900;
+
+  list.push({ src: text, score: finalScore, key });
+}
+
+function collectImageCandidates(value, list, score = 0, key = '', seen = new Set()) {
+  if (!value) return;
+
+  if (typeof value === 'string') {
+    pushImageCandidate(list, value, score, key);
+    return;
   }
 
-  const seen = new Set();
-  const queue = [data];
-  const keyPattern = /(portrait|avatar|image|photo|foto|picture|icon|icone|retrato)/i;
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => collectImageCandidates(item, list, score - 10, `${key}[${index}]`, seen));
+    return;
+  }
 
-  while (queue.length) {
-    const item = queue.shift();
-    if (!item || typeof item !== 'object' || seen.has(item)) continue;
-    seen.add(item);
+  if (typeof value !== 'object' || seen.has(value)) return;
+  seen.add(value);
 
-    for (const [key, value] of Object.entries(item)) {
-      if (keyPattern.test(key) && looksLikeImageSource(value)) return firstText(value);
-      if (value && typeof value === 'object') queue.push(value);
+  for (const [childKey, childValue] of Object.entries(value)) {
+    const nextKey = key ? `${key}.${childKey}` : childKey;
+    const important = /(portrait|avatar|image|img|photo|foto|picture|icon|icone|retrato)/i.test(childKey);
+    collectImageCandidates(childValue, list, score + (important ? 70 : -18), nextKey, seen);
+  }
+}
+
+function getBestImageSource(data, preferredKeys = []) {
+  if (!data || typeof data !== 'object') return '';
+
+  const candidates = [];
+
+  for (const key of preferredKeys) {
+    if (Object.prototype.hasOwnProperty.call(data, key)) {
+      pushImageCandidate(candidates, data[key], 1200, key);
     }
   }
 
-  return '';
+  collectImageCandidates(data, candidates, 0);
+
+  const unique = [];
+  const seen = new Set();
+  for (const item of candidates) {
+    if (!item.src || seen.has(item.src)) continue;
+    seen.add(item.src);
+    unique.push(item);
+  }
+
+  unique.sort((a, b) => b.score - a.score);
+  return unique[0]?.src || '';
 }
 
 function getObsIconMap(data) {
@@ -84,14 +136,20 @@ function getPortraitMode(data, forcedMode = '') {
 function getPortraitSource(data, forcedMode = '') {
   if (!data || typeof data !== 'object') return '';
 
+  const basePortrait = getBestImageSource(data, [
+    'portrait', 'portraitUrl', 'retrato', 'avatar', 'avatarUrl', 'image', 'imageUrl',
+    'photo', 'photoUrl', 'foto', 'picture', 'pictureUrl', 'characterPortrait', 'characterImage'
+  ]);
+
   const icons = getObsIconMap(data);
   const mode = getPortraitMode(data, forcedMode);
   const selectedIcon = icons[mode] || '';
-  if (looksLikeImageSource(selectedIcon)) return firstText(selectedIcon);
 
-  return getDeepImageSource(data, [
-    'portrait', 'avatar', 'image', 'imageUrl', 'photo', 'foto', 'picture', 'portraitUrl', 'retrato'
-  ]);
+  // Ícone customizado só vence quando existe de verdade. Se cair em logo/fallback,
+  // usa a foto principal da ficha para evitar o OBS travado no logo antigo.
+  if (looksLikeImageSource(selectedIcon) && !isFallbackLogo(selectedIcon)) return firstText(selectedIcon);
+
+  return basePortrait;
 }
 
 function sendImageSource(res, src) {
@@ -103,6 +161,7 @@ function sendImageSource(res, src) {
       const mime = dataMatch[1];
       const buffer = Buffer.from(dataMatch[2], 'base64');
       res.type(mime);
+      res.set('Content-Length', String(buffer.length));
       return res.send(buffer);
     } catch (error) {
       return res.redirect(302, '/assets/logo.jpg');
@@ -114,6 +173,7 @@ function sendImageSource(res, src) {
     try {
       const buffer = Buffer.from(src, 'base64');
       res.type('image/png');
+      res.set('Content-Length', String(buffer.length));
       return res.send(buffer);
     } catch (error) {
       return res.redirect(302, '/assets/logo.jpg');
@@ -121,6 +181,7 @@ function sendImageSource(res, src) {
   }
 
   if (/^https?:\/\//i.test(src)) return res.redirect(302, src);
+  if (/^blob:/i.test(src)) return res.redirect(302, '/assets/logo.jpg');
 
   const safeLocal = `/${src.replace(/^\.\//, '').replace(/^\/+/, '')}`;
   return res.redirect(302, safeLocal || '/assets/logo.jpg');

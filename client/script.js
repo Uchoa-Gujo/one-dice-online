@@ -7780,3 +7780,370 @@ function od66InventoryMutationUnlockSoon() {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
   else boot();
 })();
+
+
+/* =========================
+   V98 - Correções do primeiro beta em campanha/ficha
+   - Perícias não desmarcam outras perícias e não mudam de aba automaticamente
+   - Campos de texto não perdem foco por recarregamento ao salvar em mesa
+   - Esquiva: base 10 + AGI + Reflexo, mas permite ajuste manual
+   - Atributos com botões +/- próprios e sem setas nativas do input
+   - Sair da mesa sempre volta para Início
+========================= */
+(function od98BetaCampaignSheetFixes(){
+  const $ = id => document.getElementById(id);
+  const editableSelector = 'input:not([type="checkbox"]):not([type="radio"]), textarea, select, [contenteditable="true"]';
+  let saving = false;
+
+  function safeEscape(value) {
+    try { return typeof escapeHtml === 'function' ? escapeHtml(value ?? '') : String(value ?? ''); }
+    catch (_) { return String(value ?? ''); }
+  }
+
+  function isAppActive() {
+    return !!document.getElementById('app-screen')?.classList.contains('active');
+  }
+
+  function activeEditable() {
+    const el = document.activeElement;
+    return !!(el && el.matches && el.matches(editableSelector));
+  }
+
+  function attrShort(attrKey) {
+    const map = { forca: 'FOR', agilidade: 'AGI', vigor: 'VIG', intelecto: 'INT', presenca: 'PRE' };
+    return map[attrKey] || String(attrKey || '').slice(0, 3).toUpperCase();
+  }
+
+  function dodgeFormula(char) {
+    if (!char) return 10;
+    const agi = Number(char.attrs?.agilidade ?? 10);
+    const agilityMod = (typeof attrMod === 'function' ? attrMod(agi) : Math.floor((agi - 10) / 2));
+    const reflex = typeof skillTotal === 'function' ? skillTotal(char, 'Reflexo', 'agilidade') : 0;
+    return 10 + agilityMod + reflex;
+  }
+
+  window.od98DodgeFormula = dodgeFormula;
+
+  if (typeof calculatedDodge === 'function') {
+    calculatedDodge = function(char = currentChar()) {
+      if (!char) return 0;
+      if (char.dodgeManual === true || char.dodgeLocked === true) {
+        const manual = Number(char.dodge);
+        if (Number.isFinite(manual)) return manual;
+      }
+      return dodgeFormula(char);
+    };
+  }
+
+  if (typeof syncDodgeField === 'function') {
+    syncDodgeField = function(char = currentChar(), force = false) {
+      const field = $('dodge');
+      if (!field || !char) return;
+      if (document.activeElement === field && !force) return;
+      field.value = calculatedDodge(char);
+    };
+  }
+
+  if (typeof updateDerivedStatsDisplay === 'function') {
+    const baseUpdateDerivedStatsDisplay = updateDerivedStatsDisplay;
+    updateDerivedStatsDisplay = function(char = currentChar()) {
+      baseUpdateDerivedStatsDisplay(char);
+      const dodgeNote = $('dodge-formula-note');
+      if (dodgeNote && char) {
+        const agi = typeof attrMod === 'function' ? attrMod(char.attrs?.agilidade ?? 10) : 0;
+        const reflex = typeof skillTotal === 'function' ? skillTotal(char, 'Reflexo', 'agilidade') : 0;
+        const manual = char.dodgeManual === true || char.dodgeLocked === true;
+        dodgeNote.textContent = `10 + AGI ${typeof formatMod === 'function' ? formatMod(agi) : agi} + Reflexo ${typeof formatMod === 'function' ? formatMod(reflex) : reflex}${manual ? ' · ajuste manual ativo' : ''}`;
+      }
+    };
+  }
+
+  function skillCard(char, skillName, attrKey) {
+    char.skills = char.skills || {};
+    const skill = char.skills[skillName] || { trained: false, bonus: 0, disadvantage: false };
+    const checked = !!skill.trained;
+    const baseMod = (typeof attrMod === 'function' ? attrMod(char.attrs?.[attrKey] ?? 10) : 0) + (typeof agilityOverweightPenalty === 'function' ? agilityOverweightPenalty(char, attrKey) : 0);
+    const prof = checked ? Number(char.profBonus || 0) : 0;
+    const bonus = Number(skill.bonus || 0);
+    const total = baseMod + prof + bonus;
+    return `
+      <article class="od98-skill-card od88-skill-card od79-skill-card ${checked ? 'is-trained' : 'is-untrained'}" data-od98-skill-card="${safeEscape(skillName)}">
+        <div class="od98-skill-top od88-skill-top">
+          <label class="od98-skill-check od88-skill-check od79-skill-check" title="Marcar como treinada">
+            <input data-od98-skill-trained="${safeEscape(skillName)}" type="checkbox" ${checked ? 'checked' : ''}>
+            <span>${checked ? 'Treinada' : 'Treinar'}</span>
+          </label>
+          <span class="od98-skill-attr od88-skill-attr od79-skill-attr">${safeEscape(attrShort(attrKey))}</span>
+        </div>
+        <strong class="od98-skill-name od88-skill-name od79-skill-name">${safeEscape(skillName)}</strong>
+        <div class="od98-skill-math od88-skill-math">
+          <span><small>Mod</small><b>${safeEscape(typeof formatMod === 'function' ? formatMod(baseMod) : baseMod)}</b></span>
+          <span><small>Prof.</small><b>${safeEscape(typeof formatMod === 'function' ? formatMod(prof) : prof)}</b></span>
+          <label><small>Bônus</small><input data-od98-skill-bonus="${safeEscape(skillName)}" type="number" value="${safeEscape(bonus)}"></label>
+          <span><small>Total</small><b class="od98-skill-total od88-skill-total od79-skill-total">${safeEscape(typeof formatMod === 'function' ? formatMod(total) : total)}</b></span>
+        </div>
+        <button class="primary-btn small roll-skill od98-skill-roll od88-skill-roll od79-skill-roll" data-skill="${safeEscape(skillName)}" data-skill-attr="${safeEscape(attrKey)}">D20</button>
+      </article>`;
+  }
+
+  if (typeof renderSkills === 'function') {
+    renderSkills = function(char) {
+      const wrap = $('skills-wrap');
+      if (!wrap || !char || !Array.isArray(SKILLS)) return;
+      char.skills = char.skills || {};
+      window.od79SkillTab = window.od79SkillTab === 'untrained' ? 'untrained' : 'trained';
+      const trained = SKILLS.filter(([name]) => !!char.skills?.[name]?.trained);
+      const untrained = SKILLS.filter(([name]) => !char.skills?.[name]?.trained);
+      const active = window.od79SkillTab;
+      const rows = active === 'trained' ? trained : untrained;
+      const title = active === 'trained' ? 'Perícias Treinadas' : 'Perícias Não Treinadas';
+      const empty = active === 'trained' ? 'Nenhuma perícia treinada marcada.' : 'Todas as perícias estão treinadas.';
+      wrap.className = 'table-wrap od79-skills-wrap od88-skills-wrap od98-skills-wrap';
+      wrap.innerHTML = `
+        <div class="od98-skills-shell od88-skills-shell od79-skills-shell">
+          <div class="od98-skills-tabs od88-skills-tabs od79-skills-tabs" role="tablist" aria-label="Filtro de perícias">
+            <button type="button" class="od98-skill-tab od88-skill-tab od79-skill-tab ${active === 'trained' ? 'active' : ''}" data-od98-skill-tab="trained">Treinadas <span>${trained.length}</span></button>
+            <button type="button" class="od98-skill-tab od88-skill-tab od79-skill-tab ${active === 'untrained' ? 'active' : ''}" data-od98-skill-tab="untrained">Não Treinadas <span>${untrained.length}</span></button>
+          </div>
+          <section class="od98-skill-panel od88-skill-panel od79-skill-panel">
+            <header class="od98-skill-panel-head od88-skill-panel-head od79-skill-panel-head">
+              <h4>${safeEscape(title)}</h4>
+              <small>Marcar ou desmarcar não muda de aba automaticamente.</small>
+            </header>
+            <div class="od98-skills-card-grid od88-skills-card-grid od79-skills-card-grid">
+              ${rows.length ? rows.map(([n, a]) => skillCard(char, n, a)).join('') : `<div class="od98-skill-empty od88-skill-empty od79-skill-empty">${safeEscape(empty)}</div>`}
+            </div>
+          </section>
+        </div>`;
+      const oldBtn = $('compact-skills-toggle');
+      if (oldBtn) oldBtn.remove();
+    };
+  }
+
+  function collectVisibleSkillValues() {
+    const values = {};
+    document.querySelectorAll('[data-od98-skill-trained]').forEach(input => {
+      const name = input.dataset.od98SkillTrained;
+      if (!name) return;
+      values[name] = values[name] || {};
+      values[name].trained = !!input.checked;
+    });
+    document.querySelectorAll('[data-od98-skill-bonus]').forEach(input => {
+      const name = input.dataset.od98SkillBonus;
+      if (!name) return;
+      values[name] = values[name] || {};
+      values[name].bonus = Number(input.value || 0);
+    });
+    return values;
+  }
+
+  function applyVisibleSkillValues(char, values) {
+    if (!char) return;
+    char.skills = char.skills || {};
+    Object.entries(values || {}).forEach(([name, patch]) => {
+      char.skills[name] = char.skills[name] || { trained: false, bonus: 0, disadvantage: false };
+      if (Object.prototype.hasOwnProperty.call(patch, 'trained')) char.skills[name].trained = !!patch.trained;
+      if (Object.prototype.hasOwnProperty.call(patch, 'bonus')) char.skills[name].bonus = Number(patch.bonus || 0);
+      if (!Object.prototype.hasOwnProperty.call(char.skills[name], 'disadvantage')) char.skills[name].disadvantage = false;
+    });
+  }
+
+  function readDodgeIntoChar(char) {
+    if (!char) return;
+    const field = $('dodge');
+    if (!field) return;
+    const raw = Number(field.value || 0);
+    const formula = dodgeFormula(char);
+    char.dodge = Number.isFinite(raw) ? raw : formula;
+    char.dodgeManual = Number.isFinite(raw) && raw !== formula;
+    char.dodgeLocked = char.dodgeManual;
+  }
+
+  const baseSave = typeof saveCurrentCharacter === 'function' ? saveCurrentCharacter : null;
+  if (baseSave && !baseSave.__od98Wrapped) {
+    saveCurrentCharacter = function od98SaveCurrentCharacter() {
+      if (saving) return baseSave.apply(this, arguments);
+      const before = typeof currentChar === 'function' ? currentChar() : null;
+      const beforeSkills = before?.skills ? JSON.parse(JSON.stringify(before.skills)) : {};
+      const visibleSkills = collectVisibleSkillValues();
+      saving = true;
+      try {
+        const result = baseSave.apply(this, arguments);
+        const current = typeof currentChar === 'function' ? currentChar() : null;
+        if (current) {
+          updateChar(char => {
+            char.skills = beforeSkills || char.skills || {};
+            applyVisibleSkillValues(char, visibleSkills);
+            readDodgeIntoChar(char);
+            const portraitField = $('portrait-url');
+            if (portraitField) char.portrait = portraitField.value || '';
+          });
+          const fixed = currentChar();
+          if (fixed && typeof od44SaveCharacterOnline === 'function') {
+            od44SaveCharacterOnline(fixed).catch(error => console.warn('Falha ao salvar ficha online v98:', error));
+          } else if (fixed && typeof od42ScheduleCharacterSave === 'function') {
+            od42ScheduleCharacterSave(fixed);
+          }
+        }
+        return result;
+      } finally {
+        saving = false;
+      }
+    };
+    saveCurrentCharacter.__od98Wrapped = true;
+  }
+
+  if (typeof loadCharacter === 'function') {
+    const baseLoad = loadCharacter;
+    loadCharacter = function od98LoadCharacter(id) {
+      if (isAppActive() && String(id) === String(currentCharacterId || '') && activeEditable()) {
+        const char = typeof currentChar === 'function' ? currentChar() : null;
+        if (char) {
+          updateBars(char);
+          updateOverlay(char);
+          updateDerivedStatsDisplay(char);
+        }
+        return;
+      }
+      const result = baseLoad.apply(this, arguments);
+      const char = typeof currentChar === 'function' ? currentChar() : null;
+      if (char) {
+        const field = $('dodge');
+        if (field) field.value = calculatedDodge(char);
+        updateDerivedStatsDisplay(char);
+      }
+      return result;
+    };
+  }
+
+  if (typeof renderAttributes === 'function') {
+    renderAttributes = function(char) {
+      const grid = $('attributes-grid');
+      if (!grid || !char) return;
+      const labels = { forca: 'Força', agilidade: 'Agilidade', vigor: 'Vigor', intelecto: 'Intelecto', presenca: 'Presença' };
+      grid.innerHTML = '';
+      Object.entries(labels).forEach(([key, label]) => {
+        const value = Number(char.attrs?.[key] ?? 10);
+        const card = document.createElement('div');
+        card.className = 'attr-card-v2 od98-attr-card';
+        card.innerHTML = `
+          <div class="attr-head">
+            <div class="attr-name">${safeEscape(label)}</div>
+            <div class="attr-mod">${safeEscape(typeof formatMod === 'function' ? formatMod(attrMod(value)) : value)}</div>
+            <div class="attr-help">valor ${safeEscape(value)} · fórmula D&D</div>
+          </div>
+          <div class="od98-attr-control">
+            <button type="button" class="od98-attr-step" data-od98-attr-step="${safeEscape(key)}" data-dir="-1">−</button>
+            <input data-attr="${safeEscape(key)}" type="number" value="${safeEscape(value)}" min="1" inputmode="numeric">
+            <button type="button" class="od98-attr-step" data-od98-attr-step="${safeEscape(key)}" data-dir="1">+</button>
+          </div>
+          <button class="primary-btn small roll-attr" data-roll-attr="${safeEscape(key)}">Rolar ${safeEscape(label)}</button>`;
+        grid.appendChild(card);
+      });
+    };
+  }
+
+  document.addEventListener('click', event => {
+    const tab = event.target.closest('[data-od98-skill-tab]');
+    if (tab) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      window.od79SkillTab = tab.dataset.od98SkillTab === 'untrained' ? 'untrained' : 'trained';
+      const char = currentChar && currentChar();
+      if (char) renderSkills(char);
+      return;
+    }
+
+    const attrBtn = event.target.closest('[data-od98-attr-step]');
+    if (attrBtn) {
+      event.preventDefault();
+      const key = attrBtn.dataset.od98AttrStep;
+      const dir = Number(attrBtn.dataset.dir || 0);
+      const input = document.querySelector(`input[data-attr="${CSS.escape(key)}"]`);
+      if (!input) return;
+      input.value = Math.max(1, Number(input.value || 1) + dir);
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      const char = currentChar && currentChar();
+      if (char) {
+        updateChar(c => { c.attrs = c.attrs || {}; c.attrs[key] = Number(input.value || 1); });
+        const updated = currentChar();
+        renderAttributes(updated);
+        renderSkills(updated);
+        updateDerivedStatsDisplay(updated);
+        queueSave();
+      }
+      return;
+    }
+  }, true);
+
+  document.addEventListener('change', event => {
+    const trained = event.target.closest('[data-od98-skill-trained]');
+    const bonus = event.target.closest('[data-od98-skill-bonus]');
+    if (!trained && !bonus) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const name = trained?.dataset.od98SkillTrained || bonus?.dataset.od98SkillBonus;
+    if (!name) return;
+    updateChar(char => {
+      char.skills = char.skills || {};
+      char.skills[name] = char.skills[name] || { trained: false, bonus: 0, disadvantage: false };
+      if (trained) char.skills[name].trained = !!trained.checked;
+      if (bonus) char.skills[name].bonus = Number(bonus.value || 0);
+    });
+    const updated = currentChar && currentChar();
+    if (updated) {
+      renderSkills(updated);
+      updateDerivedStatsDisplay(updated);
+      queueSave();
+    }
+  }, true);
+
+  document.addEventListener('input', event => {
+    const bonus = event.target.closest('[data-od98-skill-bonus]');
+    if (bonus) {
+      event.stopImmediatePropagation();
+      const name = bonus.dataset.od98SkillBonus;
+      updateChar(char => {
+        char.skills = char.skills || {};
+        char.skills[name] = char.skills[name] || { trained: false, bonus: 0, disadvantage: false };
+        char.skills[name].bonus = Number(bonus.value || 0);
+      });
+      updateDerivedStatsDisplay(currentChar());
+      queueSave();
+      return;
+    }
+
+    const dodge = event.target.closest('#dodge');
+    if (dodge) {
+      updateChar(char => readDodgeIntoChar(char));
+      updateDerivedStatsDisplay(currentChar());
+      queueSave();
+    }
+  }, true);
+
+  if (typeof leaveCampaign === 'function') {
+    const baseLeaveCampaign = leaveCampaign;
+    leaveCampaign = async function od98LeaveCampaign(campaignId) {
+      const result = await baseLeaveCampaign.apply(this, arguments);
+      currentCampaignId = null;
+      accountSheetMode = false;
+      try { localStorage.removeItem(STORAGE.activeCampaign); } catch (_) {}
+      try { localStorage.setItem('od71_tab', 'home'); } catch (_) {}
+      if (typeof showSessions === 'function') showSessions();
+      return result;
+    };
+  }
+
+  function boot() {
+    const char = currentChar && currentChar();
+    if (char) {
+      if ($('attributes-grid')) renderAttributes(char);
+      if ($('skills-wrap')) renderSkills(char);
+      if ($('dodge')) $('dodge').value = calculatedDodge(char);
+      updateDerivedStatsDisplay(char);
+    }
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
+  else boot();
+})();

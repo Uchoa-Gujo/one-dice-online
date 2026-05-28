@@ -14,6 +14,8 @@
   const params = new URLSearchParams(window.location.search || '');
 
   const fallbackImage = '/assets/logo.jpg';
+  let lastImageSrc = '';
+  let imageErrorCount = 0;
 
   function setStatus(status) {
     if (root) root.dataset.status = status;
@@ -39,6 +41,10 @@
     if (!portrait) return;
     const next = safeImagePath(src);
     portrait.classList.remove('is-hidden');
+    if (lastImageSrc !== next) {
+      imageErrorCount = 0;
+      lastImageSrc = next;
+    }
     if (portrait.getAttribute('src') !== next) portrait.setAttribute('src', next);
   }
 
@@ -48,6 +54,10 @@
         character.updatedAt ||
         character.updated_at ||
         character.portrait ||
+        character.obsIcons?.normal ||
+        character.obsIcons?.low ||
+        character.obsIcons?.zero ||
+        character.obsIcons?.transformation ||
         character.obsPortraitMode ||
         Date.now()
       )
@@ -62,7 +72,7 @@
 
     const mode = character?.obsPortraitMode || '';
     const stamp = imageStamp(character);
-    setImage(`/api/characters/public/${encodeURIComponent(id)}/portrait?v=96&t=${stamp}&mode=${encodeURIComponent(mode)}`);
+    setImage(`/api/characters/public/${encodeURIComponent(id)}/portrait?v=97&t=${stamp}&mode=${encodeURIComponent(mode)}&cb=${Date.now()}`);
   }
 
   function setSegmentedBar(kind, current, max) {
@@ -239,6 +249,14 @@
 
     if (portrait) {
       portrait.addEventListener('error', () => {
+        imageErrorCount += 1;
+        if (imageErrorCount <= 1) {
+          const id = getId();
+          if (id) {
+            portrait.setAttribute('src', `/api/characters/public/${encodeURIComponent(id)}/portrait?v=97&fallback=1&cb=${Date.now()}`);
+            return;
+          }
+        }
         if (portrait.getAttribute('src') !== fallbackImage) {
           portrait.setAttribute('src', fallbackImage);
         } else {

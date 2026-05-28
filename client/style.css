@@ -7530,3 +7530,94 @@ body.od84-session-home #sessions-screen.active .od71-shell {
   width: 18px;
   height: 18px;
 }
+
+/* =========================
+   V98 - Polimento beta ficha/campanha
+========================= */
+.od98-attr-card input[data-attr]::-webkit-outer-spin-button,
+.od98-attr-card input[data-attr]::-webkit-inner-spin-button,
+#dodge::-webkit-outer-spin-button,
+#dodge::-webkit-inner-spin-button,
+.od98-skill-card input[type="number"]::-webkit-outer-spin-button,
+.od98-skill-card input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.od98-attr-card input[data-attr],
+#dodge,
+.od98-skill-card input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.od98-attr-card {
+  gap: 10px;
+}
+
+.od98-attr-control {
+  display: grid;
+  grid-template-columns: 38px minmax(68px, 1fr) 38px;
+  gap: 8px;
+  align-items: center;
+}
+
+.od98-attr-control input[data-attr] {
+  width: 100%;
+  min-height: 44px;
+  text-align: center;
+  font-size: 1.7rem;
+  font-weight: 900;
+}
+
+.od98-attr-step {
+  width: 38px;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid rgba(201, 32, 43, .85);
+  background: linear-gradient(180deg, rgba(201, 32, 43, .95), rgba(90, 7, 14, .95));
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 900;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 6px 16px rgba(0,0,0,.3);
+}
+
+.od98-attr-step:hover {
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
+
+.od98-skills-wrap {
+  overflow: visible;
+}
+
+.od98-skill-card {
+  min-height: 132px;
+}
+
+.od98-skill-panel-head small {
+  opacity: .8;
+}
+
+.od98-skill-check input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent, #c9202b);
+}
+
+.od98-skill-math input[type="number"] {
+  min-width: 68px;
+  text-align: center;
+}
+
+@media (max-width: 760px) {
+  .od98-attr-control {
+    grid-template-columns: 34px minmax(58px, 1fr) 34px;
+  }
+  .od98-attr-step {
+    width: 34px;
+  }
+}
