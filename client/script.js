@@ -13416,13 +13416,13 @@ function od66InventoryMutationUnlockSoon() {
 })();
 
 
+
 /* =========================
-   V128 - Atributos estáveis sem sobreposição + imagens sem flicker
-   - Remove o render V127 e substitui por um render único.
-   - Layout simples em 3 linhas: cabeçalho, controles, rolagem.
-   - Botões funcionam e mantêm data-attr para o salvamento da ficha.
+   V131 - Atributos limpos e funcionais
+   - Remove o layout antigo que empurrava botões para fora.
+   - Mantém os botões funcionais e o data-attr para o salvamento da ficha.
 ========================= */
-(function od128AttributesAndImageStability() {
+(function od131AttributesClean(){
   'use strict';
 
   const ATTRS = [
@@ -13433,163 +13433,147 @@ function od66InventoryMutationUnlockSoon() {
     ['presenca', 'Presença']
   ];
 
-  let renderingAttrs = false;
+  let rendering = false;
 
-  function $(id) { return document.getElementById(id); }
+  function $(id){ return document.getElementById(id); }
 
-  function esc(value) {
-    try {
-      if (typeof escapeHtml === 'function') return escapeHtml(String(value ?? ''));
-    } catch (_) {}
+  function esc(value){
+    try { if (typeof escapeHtml === 'function') return escapeHtml(String(value ?? '')); } catch (_) {}
     const div = document.createElement('div');
     div.textContent = String(value ?? '');
     return div.innerHTML;
   }
 
-  function numeric(value, fallback = 1) {
+  function number(value, fallback = 1){
     const n = Number(value);
     return Number.isFinite(n) ? n : fallback;
   }
 
-  function charNow() {
-    try { return typeof currentChar === 'function' ? currentChar() : null; }
-    catch (_) { return null; }
+  function current(){
+    try { return typeof currentChar === 'function' ? currentChar() : null; } catch (_) { return null; }
   }
 
-  function charIdNow() {
-    try { return currentCharacterId || charNow()?.id || null; }
-    catch (_) { return charNow()?.id || null; }
+  function currentId(){
+    try { return currentCharacterId || current()?.id || null; } catch (_) { return current()?.id || null; }
   }
 
-  function readCharacters() {
-    try {
-      if (typeof get === 'function' && typeof STORAGE !== 'undefined') return get(STORAGE.characters, []);
-    } catch (_) {}
+  function getChars(){
+    try { if (typeof get === 'function' && typeof STORAGE !== 'undefined') return get(STORAGE.characters, []); } catch (_) {}
     return [];
   }
 
-  function writeCharacters(chars) {
-    try {
-      if (typeof set === 'function' && typeof STORAGE !== 'undefined') set(STORAGE.characters, chars);
-    } catch (_) {}
+  function setChars(chars){
+    try { if (typeof set === 'function' && typeof STORAGE !== 'undefined') set(STORAGE.characters, chars); } catch (_) {}
   }
 
-  function modelOf(char) {
+  function modelOf(char){
     const raw = String(char?.systemModel || char?.sheetModel || char?.fichaModelo || char?.model || 'd20').toLowerCase();
     return raw.includes('pool') ? 'pool' : 'd20';
   }
 
-  function attrValue(char, key) {
-    return Math.max(1, numeric(char?.attrs?.[key], 1));
+  function attrValue(char, key){
+    return Math.max(1, Math.floor(number(char?.attrs?.[key], 1)));
   }
 
-  function attrBonusText(value) {
+  function attrBonus(value){
     const mod = typeof attrMod === 'function' ? attrMod(value) : value;
     if (typeof formatMod === 'function') return formatMod(mod);
     return mod >= 0 ? `+${mod}` : String(mod);
   }
 
-  function rollLabel(model, value) {
-    return model === 'pool' ? `${value}D20` : 'D20';
+  function rollText(char, value){
+    return modelOf(char) === 'pool' ? `${value}D20` : 'D20';
   }
 
-  function persistAttr(key, value) {
-    const id = charIdNow();
+  function saveAttr(key, value){
+    const id = currentId();
     if (!id) return null;
-    const nextValue = Math.max(1, numeric(value, 1));
-    const chars = readCharacters();
+
+    const next = Math.max(1, Math.floor(number(value, 1)));
+    const chars = getChars();
     const index = chars.findIndex(c => c && c.id === id);
     if (index < 0) return null;
 
-    const updated = { ...chars[index], attrs: { ...(chars[index].attrs || {}), [key]: nextValue } };
+    const updated = { ...chars[index], attrs: { ...(chars[index].attrs || {}), [key]: next } };
     chars[index] = updated;
-    writeCharacters(chars);
+    setChars(chars);
 
     try { if (typeof syncDodge === 'function') syncDodge(updated); } catch (_) {}
     try { if (typeof updateDerivedStatsDisplay === 'function') updateDerivedStatsDisplay(updated); } catch (_) {}
     try { if (typeof updateBars === 'function') updateBars(updated); } catch (_) {}
     try { if (typeof updateOverlay === 'function') updateOverlay(updated); } catch (_) {}
-    try {
-      const active = document.activeElement;
-      const typing = active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA');
-      if (!typing && typeof renderSkills === 'function') renderSkills(updated);
-    } catch (_) {}
     try { if (typeof queueSave === 'function') queueSave(); } catch (_) {}
     try { if (typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(updated); } catch (_) {}
     return updated;
   }
 
-  function renderAttributeCard(char, key, label) {
-    const value = attrValue(char, key);
-    const model = modelOf(char);
-    const isPool = model === 'pool';
-    const detail = isPool ? `${value}D` : attrBonusText(value);
-
-    const card = document.createElement('div');
-    card.className = `od128-attr-card ${isPool ? 'is-pool' : 'is-d20'}`;
-    card.dataset.attrKey = key;
-    card.innerHTML = `
-      <div class="od128-attr-head">
-        <div class="od128-attr-title">${esc(label)}</div>
-        <div class="od128-attr-detail" title="${isPool ? 'Quantidade de dados' : 'Bônus'}">${esc(detail)}</div>
-      </div>
-      <div class="od128-attr-meta">${isPool ? 'Pool Dice' : 'D20'}</div>
-      <div class="od128-attr-controls">
-        <button type="button" class="od128-attr-step" data-od128-attr-step="${esc(key)}" data-dir="-1" aria-label="Diminuir ${esc(label)}">−</button>
-        <input class="od128-attr-value" data-attr="${esc(key)}" data-od128-attr="${esc(key)}" type="number" min="1" inputmode="numeric" value="${esc(value)}" aria-label="Valor total de ${esc(label)}">
-        <button type="button" class="od128-attr-step" data-od128-attr-step="${esc(key)}" data-dir="1" aria-label="Aumentar ${esc(label)}">+</button>
-      </div>
-      <button type="button" class="primary-btn small roll-attr od128-attr-roll" data-roll-attr="${esc(key)}">${esc(rollLabel(model, value))}</button>
-    `;
-    return card;
-  }
-
-  function renderAttributesV128(char = charNow()) {
-    const grid = $('attributes-grid');
-    if (!grid || !char || renderingAttrs) return;
-    renderingAttrs = true;
-    try {
-      grid.className = 'attributes-grid od128-attributes-grid';
-      grid.replaceChildren(...ATTRS.map(([key, label]) => renderAttributeCard(char, key, label)));
-    } finally {
-      renderingAttrs = false;
-    }
-  }
-
-  function rollPool(label, value) {
-    const qty = Math.max(1, Math.min(20, Math.floor(value)));
-    const results = Array.from({ length: qty }, () => Math.floor(Math.random() * 20) + 1);
-    const best = Math.max(...results);
-    const text = `${label}: ${qty}D20 → [${results.join(', ')}] melhor = ${best}`;
+  function rollPool(label, value){
+    const qty = Math.max(1, Math.min(30, Math.floor(value)));
+    const rolls = Array.from({ length: qty }, () => Math.floor(Math.random() * 20) + 1);
+    const best = Math.max(...rolls);
+    const text = `${label}: ${qty}D20 → [${rolls.join(', ')}] melhor = ${best}`;
     const last = $('last-roll');
-    if (last) {
-      last.textContent = text;
-      last.classList.remove('shake');
-      void last.offsetWidth;
-      last.classList.add('shake');
-    }
+    if (last) last.textContent = text;
     try { if (typeof addChat === 'function') addChat(text, 'roll'); } catch (_) {}
   }
 
-  document.addEventListener('click', event => {
-    const step = event.target.closest('[data-od128-attr-step]');
+  function card(char, key, label){
+    const value = attrValue(char, key);
+    const model = modelOf(char);
+    const pool = model === 'pool';
+    const detail = pool ? `${value}D` : attrBonus(value);
+
+    const el = document.createElement('div');
+    el.className = `od131-attr-card ${pool ? 'is-pool' : 'is-d20'}`;
+    el.dataset.attrKey = key;
+    el.innerHTML = `
+      <div class="od131-attr-top">
+        <div class="od131-attr-name">${esc(label)}</div>
+        <div class="od131-attr-bonus" title="${pool ? 'Quantidade de dados' : 'Bônus'}">${esc(detail)}</div>
+      </div>
+      <div class="od131-attr-type">${pool ? 'Pool Dice' : 'D20'}</div>
+      <div class="od131-attr-row">
+        <button type="button" class="od131-attr-btn" data-od131-step="${esc(key)}" data-dir="-1" aria-label="Diminuir ${esc(label)}">−</button>
+        <input class="od131-attr-input" data-attr="${esc(key)}" data-od131-attr="${esc(key)}" type="number" min="1" inputmode="numeric" value="${esc(value)}" aria-label="Valor total de ${esc(label)}">
+        <button type="button" class="od131-attr-btn" data-od131-step="${esc(key)}" data-dir="1" aria-label="Aumentar ${esc(label)}">+</button>
+      </div>
+      <button type="button" class="od131-attr-roll roll-attr" data-roll-attr="${esc(key)}">${esc(rollText(char, value))}</button>
+    `;
+    return el;
+  }
+
+  function render(char = current()){
+    const grid = $('attributes-grid');
+    if (!grid || !char || rendering) return;
+    rendering = true;
+    try {
+      grid.className = 'attributes-grid od131-attributes-grid';
+      grid.replaceChildren(...ATTRS.map(([key, label]) => card(char, key, label)));
+    } finally {
+      rendering = false;
+    }
+  }
+
+  document.addEventListener('click', (event) => {
+    const step = event.target.closest('[data-od131-step]');
     if (step) {
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
-      const key = step.dataset.od128AttrStep;
-      const current = attrValue(charNow(), key);
-      const updated = persistAttr(key, current + numeric(step.dataset.dir, 0));
-      if (updated) renderAttributesV128(updated);
+      const char = current();
+      if (!char) return;
+      const key = step.dataset.od131Step;
+      const updated = saveAttr(key, attrValue(char, key) + number(step.dataset.dir, 0));
+      if (updated) render(updated);
       return;
     }
 
-    const roll = event.target.closest('.od128-attr-roll[data-roll-attr]');
+    const roll = event.target.closest('.od131-attr-roll[data-roll-attr]');
     if (roll) {
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
-      const char = charNow();
+      const char = current();
       if (!char) return;
       const key = roll.dataset.rollAttr;
       const label = ATTRS.find(([k]) => k === key)?.[1] || key;
@@ -13602,324 +13586,207 @@ function od66InventoryMutationUnlockSoon() {
     }
   }, true);
 
-  document.addEventListener('input', event => {
-    const input = event.target.closest('input.od128-attr-value[data-od128-attr]');
-    if (!input) return;
-    event.stopPropagation();
-    persistAttr(input.dataset.od128Attr, input.value);
-  }, true);
-
-  document.addEventListener('change', event => {
-    const input = event.target.closest('input.od128-attr-value[data-od128-attr]');
+  document.addEventListener('change', (event) => {
+    const input = event.target.closest('input.od131-attr-input[data-od131-attr]');
     if (!input) return;
     event.preventDefault();
     event.stopPropagation();
     event.stopImmediatePropagation();
-    const updated = persistAttr(input.dataset.od128Attr, input.value);
-    if (updated) renderAttributesV128(updated);
+    const updated = saveAttr(input.dataset.od131Attr, input.value);
+    if (updated) render(updated);
   }, true);
 
-  window.renderAttributes = renderAttributesV128;
-  window.renderAttributesV128 = renderAttributesV128;
-  window.renderAttributesV127 = renderAttributesV128;
-  window.renderAttributesV126 = renderAttributesV128;
-  window.renderAttributesV125 = renderAttributesV128;
-  window.renderAttributesV121 = renderAttributesV128;
-  window.renderAttributesV118 = renderAttributesV128;
-  window.renderAttributesV103 = renderAttributesV128;
+  document.addEventListener('input', (event) => {
+    const input = event.target.closest('input.od131-attr-input[data-od131-attr]');
+    if (!input) return;
+    event.stopPropagation();
+    saveAttr(input.dataset.od131Attr, input.value);
+  }, true);
 
-  const FALLBACKS = new Set(['', 'assets/logo.jpg', 'assets/logo.png', 'assets/favicon.png', 'assets/account-logo.png']);
+  window.renderAttributes = render;
+  window.renderAttributesV131 = render;
+  window.renderAttributesV128 = render;
+  window.renderAttributesV127 = render;
+  window.renderAttributesV126 = render;
+  window.renderAttributesV125 = render;
+  window.renderAttributesV121 = render;
+  window.renderAttributesV118 = render;
+  window.renderAttributesV103 = render;
 
-  function cleanImage(value) {
-    const src = String(value || '').trim();
-    if (!src || FALLBACKS.has(src)) return '';
-    return src;
-  }
-
-  function activeTransformationPortrait(char) {
-    const forms = Array.isArray(char?.transformations) ? char.transformations : [];
-    const activeId = char?.activeTransformationId || char?.activeTransformation || '';
-    const form = forms.find(f => f && (f.id === activeId || f.name === activeId || f.active));
-    return cleanImage(form?.portrait || '');
-  }
-
-  function normalPortrait(char) {
-    return cleanImage(char?.portrait || char?.image || char?.photo || char?.avatar || char?.retrato || '');
-  }
-
-  function portraitForState(char) {
-    if (!char) return '';
-    const transformed = activeTransformationPortrait(char);
-    if (transformed) return transformed;
-
-    const pv = Number(char.pvCurrent ?? char.pv ?? 1);
-    const max = Math.max(1, Number(char.pvMax ?? char.pvTotal ?? 1));
-    const icons = char.obsIcons || {};
-    if (pv < 0) return '';
-    if (pv === 0) return cleanImage(icons.zero || char.portraitZero || char.obsIconZero || '') || normalPortrait(char);
-    if (pv / max < 0.5) return cleanImage(icons.low || char.portraitLow || char.obsIconLow || '') || normalPortrait(char);
-    return normalPortrait(char);
-  }
-
-  function setStableImage(img, src, fallback = 'assets/logo.jpg') {
-    if (!img) return;
-    const wanted = cleanImage(src) || fallback;
-    if (img.dataset.od128Src === wanted && img.getAttribute('src') === wanted) return;
-    if (!cleanImage(src) && img.dataset.od128HadReal === '1') return;
-    img.dataset.od128Src = wanted;
-    if (cleanImage(src)) img.dataset.od128HadReal = '1';
-    img.decoding = 'async';
-    img.loading = 'eager';
-    img.onerror = () => {
-      img.onerror = null;
-      if (img.dataset.od128HadReal === '1' && img.dataset.od128LastGood) img.src = img.dataset.od128LastGood;
-      else img.src = fallback;
-    };
-    img.onload = () => {
-      if (cleanImage(wanted)) img.dataset.od128LastGood = wanted;
-    };
-    img.src = wanted;
-  }
-
-  function refreshStableImages(char = charNow()) {
-    if (!char) return;
-    const main = portraitForState(char);
-    const normal = normalPortrait(char) || main;
-    setStableImage($('char-portrait-preview'), main);
-    setStableImage($('overlay-portrait'), normal);
-    const hidden = $('portrait-url');
-    if (hidden && normal && hidden.value !== normal) hidden.value = normal;
-  }
-
-  window.renderPortrait = function renderPortraitStable(char) {
-    refreshStableImages(char || charNow());
-  };
-
-  const oldUpdateOverlay = typeof updateOverlay === 'function' ? updateOverlay : null;
-  window.updateOverlay = function updateOverlayStable(char) {
-    try { if (oldUpdateOverlay) oldUpdateOverlay(char); } catch (_) {}
-    refreshStableImages(char || charNow());
-    const c = char || charNow();
-    if (!c) return;
-    const name = $('overlay-name');
-    if (name) name.textContent = c.name || '';
-    const pv = $('overlay-pv');
-    const pe = $('overlay-pe');
-    if (pv) pv.style.width = `${Math.max(0, Math.min(100, (Number(c.pvCurrent || 0) / Math.max(1, Number(c.pvMax || 1))) * 100))}%`;
-    if (pe) pe.style.width = `${Math.max(0, Math.min(100, (Number(c.peCurrent || 0) / Math.max(1, Number(c.peMax || 1))) * 100))}%`;
-    const pvText = $('overlay-pv-text');
-    const peText = $('overlay-pe-text');
-    if (pvText) pvText.textContent = `${c.pvCurrent ?? 0}/${c.pvMax ?? 0}`;
-    if (peText) peText.textContent = `${c.peCurrent ?? 0}/${c.peMax ?? 0}`;
-  };
-
-  function boot() {
-    renderAttributesV128();
-    refreshStableImages();
-  }
-
+  function boot(){ render(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
   else boot();
   setTimeout(boot, 150);
 })();
 
 
+
 /* =========================
-   V130 - Modal de fotos retangular, sem rolagem interna
-   - Substitui o fluxo visual antigo de foto por um único modal limpo.
-   - Mantém link direto para PNG/JPG/WEBP/GIF.
-   - Não converte GIF em canvas, preservando animação.
+   V131 - Modal de fotos retangular estável
+   - Remove o <dialog> antigo e usa overlay fixo para não criar barra de rolagem.
+   - Mantém links diretos de PNG/JPG/WEBP/GIF.
 ========================= */
-(function od130PhotoModalClean(){
-  const $ = (id) => document.getElementById(id);
+(function od131PhotoModal(){
+  'use strict';
+
   const FALLBACK = 'assets/logo.jpg';
-  let crop = { x: 50, y: 50, scale: 1 };
+  const OLD_IDS = ['portrait-modal','od99-portrait-crop-modal','od100-portrait-modal','od101-photo-modal','od102-photo-modal','od104-photo-modal','od130-photo-modal'];
+  let state = { x: 50, y: 50, scale: 1 };
   let dragging = false;
-  let dragStart = { x: 0, y: 0, ox: 50, oy: 50 };
+  let dragStart = null;
 
-  function getChar(){
-    try { return typeof currentChar === 'function' ? currentChar() : null; } catch (_) { return null; }
-  }
+  function $(id){ return document.getElementById(id); }
+  function clean(value){ return String(value || '').trim(); }
+  function getChar(){ try { return typeof currentChar === 'function' ? currentChar() : null; } catch (_) { return null; } }
+  function icons(char){ return Object.assign({}, char?.obsIcons || {}, char?.portraitIcons || {}); }
+  function realPortrait(char){ return clean(char?.portrait || char?.image || char?.photo || char?.avatar || char?.retrato || ''); }
 
-  function cleanLink(value){
-    return String(value || '').trim();
-  }
-
-  function getIcons(char){
-    return Object.assign({}, char?.obsIcons || {}, char?.portraitIcons || {});
-  }
-
-  function realPortrait(char){
-    return cleanLink(char?.portrait || char?.image || char?.photo || char?.avatar || '');
-  }
-
-  function setImageIfChanged(img, src){
+  function setSrc(img, src){
     if (!img) return;
-    const next = cleanLink(src) || FALLBACK;
+    const next = clean(src) || FALLBACK;
     if (img.getAttribute('src') !== next) img.setAttribute('src', next);
   }
 
-  function syncPortraitPreview(char = getChar()){
+  function syncPreview(char = getChar()){
     if (!char) return;
     const src = realPortrait(char) || FALLBACK;
-    setImageIfChanged($('char-portrait-preview'), src);
-    setImageIfChanged($('overlay-portrait'), src);
+    setSrc($('char-portrait-preview'), src);
+    setSrc($('overlay-portrait'), src);
     const hidden = $('portrait-url');
     if (hidden && hidden.value !== realPortrait(char)) hidden.value = realPortrait(char);
   }
 
-  function removeOldPhotoModals(){
-    [
-      'portrait-modal',
-      'od99-portrait-crop-modal',
-      'od100-portrait-modal',
-      'od101-photo-modal',
-      'od102-photo-modal',
-      'od104-photo-modal'
-    ].forEach(id => {
+  function closeOld(){
+    OLD_IDS.forEach(id => {
       const el = $(id);
       if (!el) return;
       try { if (typeof el.close === 'function' && el.open) el.close(); } catch (_) {}
-      el.classList.add('od130-old-photo-modal-hidden');
+      el.remove();
     });
+    document.querySelectorAll('.od131-photo-overlay').forEach((el, idx) => { if (idx > 0) el.remove(); });
   }
 
-  function ensureModal(){
-    let dialog = $('od130-photo-modal');
-    if (dialog) return dialog;
+  function ensure(){
+    let overlay = $('od131-photo-overlay');
+    if (overlay) return overlay;
 
-    dialog = document.createElement('dialog');
-    dialog.id = 'od130-photo-modal';
-    dialog.className = 'od130-photo-modal';
-    dialog.innerHTML = `
-      <div class="od130-photo-card" role="document">
-        <button type="button" class="od130-photo-close" id="od130-photo-close" aria-label="Fechar">×</button>
-
-        <header class="od130-photo-head">
-          <h2>Fotos da Ficha</h2>
+    overlay = document.createElement('div');
+    overlay.id = 'od131-photo-overlay';
+    overlay.className = 'od131-photo-overlay';
+    overlay.hidden = true;
+    overlay.innerHTML = `
+      <div class="od131-photo-panel" role="dialog" aria-modal="true" aria-labelledby="od131-photo-title">
+        <button type="button" class="od131-photo-close" id="od131-photo-close" aria-label="Fechar">×</button>
+        <header class="od131-photo-header">
+          <h2 id="od131-photo-title">Fotos da Ficha</h2>
           <p>Cole links diretos. PNG, JPG, WEBP e GIF funcionam. GIF permanece animado.</p>
         </header>
-
-        <section class="od130-photo-grid" aria-label="Links das fotos da ficha">
-          <label>
-            <span>Foto normal</span>
-            <input id="od130-photo-normal" type="text" placeholder="https://..." autocomplete="off" spellcheck="false">
-          </label>
-          <label>
-            <span>Machucado, abaixo de 50% PV</span>
-            <input id="od130-photo-low" type="text" placeholder="opcional: https://...gif" autocomplete="off" spellcheck="false">
-          </label>
-          <label>
-            <span>Morrendo, 0 PV</span>
-            <input id="od130-photo-zero" type="text" placeholder="opcional: https://...gif" autocomplete="off" spellcheck="false">
-          </label>
+        <section class="od131-photo-fields">
+          <label><span>Foto normal</span><input id="od131-photo-normal" type="text" autocomplete="off" spellcheck="false" placeholder="https://..."></label>
+          <label><span>Machucado, abaixo de 50% PV</span><input id="od131-photo-low" type="text" autocomplete="off" spellcheck="false" placeholder="opcional"></label>
+          <label><span>Morrendo, 0 PV</span><input id="od131-photo-zero" type="text" autocomplete="off" spellcheck="false" placeholder="opcional"></label>
         </section>
-
-        <section class="od130-preview-area">
-          <div id="od130-crop-stage" class="od130-crop-stage" title="Arraste para enquadrar. Use a roda do mouse para zoom.">
-            <img id="od130-crop-img" alt="Prévia da foto" draggable="false">
+        <section class="od131-photo-preview-wrap">
+          <div class="od131-photo-preview" id="od131-photo-preview" title="Arraste para enquadrar. Use a roda do mouse para zoom.">
+            <img id="od131-photo-img" alt="Prévia da foto" draggable="false">
           </div>
-          <p>Arraste a imagem para enquadrar e use a roda do mouse para zoom. Para GIF, o link é preservado.</p>
+          <p>Arraste a prévia para enquadrar e use a roda do mouse para zoom. O link do GIF é preservado.</p>
         </section>
-
-        <footer class="od130-photo-actions">
-          <button type="button" class="od130-btn" id="od130-photo-reset">Centralizar</button>
-          <button type="button" class="od130-btn" id="od130-photo-cancel">Cancelar</button>
-          <button type="button" class="od130-btn od130-primary" id="od130-photo-save">Salvar Fotos</button>
+        <footer class="od131-photo-actions">
+          <button type="button" class="od131-photo-btn" id="od131-photo-center">Centralizar</button>
+          <button type="button" class="od131-photo-btn" id="od131-photo-cancel">Cancelar</button>
+          <button type="button" class="od131-photo-btn od131-photo-save" id="od131-photo-save">Salvar Fotos</button>
         </footer>
       </div>
     `;
-    document.body.appendChild(dialog);
-    bindCrop();
-    return dialog;
+    document.body.appendChild(overlay);
+    bindDrag();
+    return overlay;
   }
 
   function updatePreview(){
-    const img = $('od130-crop-img');
+    const img = $('od131-photo-img');
     if (!img) return;
-    const src = cleanLink($('od130-photo-normal')?.value) || FALLBACK;
-    setImageIfChanged(img, src);
-    img.style.width = `${Math.max(100, crop.scale * 100)}%`;
-    img.style.height = `${Math.max(100, crop.scale * 100)}%`;
+    setSrc(img, clean($('od131-photo-normal')?.value) || FALLBACK);
+    img.style.width = `${Math.max(100, state.scale * 100)}%`;
+    img.style.height = `${Math.max(100, state.scale * 100)}%`;
     img.style.objectFit = 'cover';
-    img.style.objectPosition = `${crop.x}% ${crop.y}%`;
+    img.style.objectPosition = `${state.x}% ${state.y}%`;
   }
 
-  function bindCrop(){
-    const stage = $('od130-crop-stage');
-    if (!stage || stage.dataset.od130Ready === '1') return;
-    stage.dataset.od130Ready = '1';
-
-    stage.addEventListener('pointerdown', (event) => {
+  function bindDrag(){
+    const box = $('od131-photo-preview');
+    if (!box || box.dataset.ready === '1') return;
+    box.dataset.ready = '1';
+    box.addEventListener('pointerdown', (event) => {
       dragging = true;
-      stage.setPointerCapture?.(event.pointerId);
-      dragStart = { x: event.clientX, y: event.clientY, ox: crop.x, oy: crop.y };
+      box.setPointerCapture?.(event.pointerId);
+      dragStart = { x: event.clientX, y: event.clientY, ox: state.x, oy: state.y };
       event.preventDefault();
     });
-
-    stage.addEventListener('pointermove', (event) => {
-      if (!dragging) return;
-      const rect = stage.getBoundingClientRect();
-      const dx = ((event.clientX - dragStart.x) / Math.max(1, rect.width)) * 100;
-      const dy = ((event.clientY - dragStart.y) / Math.max(1, rect.height)) * 100;
-      crop.x = Math.max(0, Math.min(100, dragStart.ox - dx));
-      crop.y = Math.max(0, Math.min(100, dragStart.oy - dy));
+    box.addEventListener('pointermove', (event) => {
+      if (!dragging || !dragStart) return;
+      const rect = box.getBoundingClientRect();
+      state.x = Math.max(0, Math.min(100, dragStart.ox - ((event.clientX - dragStart.x) / Math.max(1, rect.width)) * 100));
+      state.y = Math.max(0, Math.min(100, dragStart.oy - ((event.clientY - dragStart.y) / Math.max(1, rect.height)) * 100));
       updatePreview();
     });
-
-    const stopDrag = () => { dragging = false; };
-    stage.addEventListener('pointerup', stopDrag);
-    stage.addEventListener('pointercancel', stopDrag);
-    stage.addEventListener('wheel', (event) => {
+    const stop = () => { dragging = false; dragStart = null; };
+    box.addEventListener('pointerup', stop);
+    box.addEventListener('pointercancel', stop);
+    box.addEventListener('wheel', (event) => {
       event.preventDefault();
-      const step = event.deltaY < 0 ? 0.08 : -0.08;
-      crop.scale = Math.max(1, Math.min(3, Number((crop.scale + step).toFixed(2))));
+      state.scale = Math.max(1, Math.min(3, Number((state.scale + (event.deltaY < 0 ? 0.08 : -0.08)).toFixed(2))));
       updatePreview();
     }, { passive: false });
   }
 
-  function openModal(){
-    removeOldPhotoModals();
-    const dialog = ensureModal();
+  function open(){
+    closeOld();
+    const overlay = ensure();
     const char = getChar();
-    const icons = getIcons(char);
-    crop = Object.assign({ x: 50, y: 50, scale: 1 }, char?.portraitCrop || {});
-
-    $('od130-photo-normal').value = realPortrait(char) || $('portrait-url')?.value || '';
-    $('od130-photo-low').value = cleanLink(icons.low || char?.portraitLow || char?.obsIconLow || '');
-    $('od130-photo-zero').value = cleanLink(icons.zero || char?.portraitZero || char?.obsIconZero || '');
+    const ic = icons(char);
+    state = Object.assign({ x: 50, y: 50, scale: 1 }, char?.portraitCrop || {});
+    $('od131-photo-normal').value = realPortrait(char) || $('portrait-url')?.value || '';
+    $('od131-photo-low').value = clean(ic.low || char?.portraitLow || char?.obsIconLow || '');
+    $('od131-photo-zero').value = clean(ic.zero || char?.portraitZero || char?.obsIconZero || '');
     updatePreview();
-    try { dialog.showModal(); } catch (_) { dialog.setAttribute('open', ''); }
+    overlay.hidden = false;
+    document.body.classList.add('od131-photo-open');
   }
 
-  async function saveModal(){
+  function close(){
+    const overlay = $('od131-photo-overlay');
+    if (overlay) overlay.hidden = true;
+    document.body.classList.remove('od131-photo-open');
+  }
+
+  async function save(){
     const char = getChar();
     if (!char) return;
-    const normal = cleanLink($('od130-photo-normal')?.value);
-    const low = cleanLink($('od130-photo-low')?.value);
-    const zero = cleanLink($('od130-photo-zero')?.value);
+    const normal = clean($('od131-photo-normal')?.value);
+    const low = clean($('od131-photo-low')?.value);
+    const zero = clean($('od131-photo-zero')?.value);
 
-    char.portrait = normal;
-    char.image = normal;
-    char.photo = normal;
-    char.avatar = normal;
-    char.portraitLow = low;
-    char.portraitZero = zero;
-    char.obsIconLow = low;
-    char.obsIconZero = zero;
+    Object.assign(char, {
+      portrait: normal,
+      image: normal,
+      photo: normal,
+      avatar: normal,
+      portraitLow: low,
+      portraitZero: zero,
+      obsIconLow: low,
+      obsIconZero: zero,
+      portraitCrop: Object.assign({}, state),
+      updatedAt: new Date().toISOString()
+    });
     char.obsIcons = Object.assign({}, char.obsIcons || {}, { low, zero });
-    char.portraitCrop = Object.assign({}, crop);
-    char.updatedAt = new Date().toISOString();
 
     const hidden = $('portrait-url');
     if (hidden) hidden.value = normal;
-    syncPortraitPreview(char);
+    syncPreview(char);
 
-    try {
-      if (typeof saveCurrentCharacter === 'function') await saveCurrentCharacter();
-    } catch (error) {
-      console.warn('[One Dice v130] Falha ao salvar fotos:', error);
-    }
+    try { if (typeof saveCurrentCharacter === 'function') await saveCurrentCharacter(); } catch (error) { console.warn('[One Dice v131] Falha ao salvar fotos:', error); }
     try { if (typeof renderCharacterCards === 'function') renderCharacterCards(); } catch (_) {}
     try { if (typeof renderCharacterList === 'function') renderCharacterList(); } catch (_) {}
     try { if (typeof renderTableExperience === 'function') renderTableExperience(); } catch (_) {}
@@ -13927,38 +13794,41 @@ function od66InventoryMutationUnlockSoon() {
   }
 
   document.addEventListener('click', (event) => {
-    if (event.target.closest('#portrait-button')) {
+    const portraitButton = event.target.closest('#portrait-button, #od101-portrait-button, #od102-portrait-button, #od104-portrait-button, .portrait-button');
+    if (portraitButton) {
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
-      openModal();
+      open();
       return;
     }
-    if (event.target.closest('#od130-photo-close, #od130-photo-cancel')) {
+
+    if (event.target.closest('#od131-photo-close, #od131-photo-cancel')) {
       event.preventDefault();
-      $('od130-photo-modal')?.close?.();
+      close();
       return;
     }
-    if (event.target.closest('#od130-photo-reset')) {
+
+    if (event.target.closest('#od131-photo-center')) {
       event.preventDefault();
-      crop = { x: 50, y: 50, scale: 1 };
+      state = { x: 50, y: 50, scale: 1 };
       updatePreview();
       return;
     }
-    if (event.target.closest('#od130-photo-save')) {
+
+    if (event.target.closest('#od131-photo-save')) {
       event.preventDefault();
-      saveModal().then(() => $('od130-photo-modal')?.close?.());
+      save().then(close);
     }
   }, true);
 
   document.addEventListener('input', (event) => {
-    if (event.target.closest('#od130-photo-normal')) updatePreview();
+    if (event.target.closest('#od131-photo-normal')) updatePreview();
   });
 
-  document.addEventListener('DOMContentLoaded', () => {
-    removeOldPhotoModals();
-    syncPortraitPreview();
-  });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => { closeOld(); syncPreview(); }, { once: true });
+  else { closeOld(); syncPreview(); }
 
-  window.od130OpenPhotoModal = openModal;
+  window.od131OpenPhotoModal = open;
 })();
+
