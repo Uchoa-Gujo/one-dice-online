@@ -83,7 +83,9 @@ app.use(express.static(clientDir, {
   setHeaders(res, filePath) {
     const ext = path.extname(filePath).toLowerCase();
     if (['.html', '.js', '.css'].includes(ext)) {
-      res.set('Cache-Control', 'no-cache, must-revalidate');
+      res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+      res.set('Pragma', 'no-cache');
+      res.set('Expires', '0');
       return;
     }
     res.set('Cache-Control', 'public, max-age=86400');

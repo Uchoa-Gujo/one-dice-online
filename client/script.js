@@ -1,3 +1,5 @@
+/* One Dice v135 cache marker */
+window.ONE_DICE_CLIENT_VERSION = '1.35.0';
 
 /* =========================
    V134 - Captura limpa do botão de retrato
@@ -13920,4 +13922,194 @@ function od66InventoryMutationUnlockSoon() {
   window.renderAttributesV134 = renderAttrs;
   window.od134OpenPhotoModal = openPhoto;
   window.od134SyncPortrait = syncPortrait;
+})();
+
+
+/* =========================
+   V135 - Cache bust e controle definitivo do retrato/atributos
+   Este bloco substitui a interação antiga sem depender de eventos antigos.
+========================= */
+(function od135FinalRuntimeFix(){
+  'use strict';
+  console.info('[One Dice] v135 carregado');
+  window.ONE_DICE_CLIENT_VERSION = '1.35.0';
+  const $ = (id) => document.getElementById(id);
+  const esc = (v) => String(v ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+  const ATTRS = [['str','Força'],['agi','Agilidade'],['vig','Vigor'],['int','Intelecto'],['pre','Presença']];
+  const FALLBACK = 'assets/logo.jpg';
+  let crop = { x: 50, y: 50, scale: 1 };
+
+  function current(){
+    try { if (typeof currentChar === 'function') return currentChar(); } catch(_) {}
+    try { if (window.currentCharacter) return window.currentCharacter; } catch(_) {}
+    return null;
+  }
+  function clean(v){ return String(v || '').trim(); }
+  function modelOf(char){ return clean(char?.systemModel || char?.model || char?.sheetModel || 'D20') || 'D20'; }
+  function attrVal(char,key){
+    const attrs = char?.attrs || char?.attributes || {};
+    const raw = attrs[key];
+    const n = Number(raw);
+    return Number.isFinite(n) ? n : 1;
+  }
+  function mod(v){ return Math.floor((Number(v || 10) - 10) / 2); }
+  function queue(){ try { if (typeof queueSave === 'function') queueSave(); } catch(_) {} }
+  function update(fn){
+    try { if (typeof updateChar === 'function') return updateChar(fn); } catch(_) {}
+    const c = current(); if (c) fn(c); queue(); return c;
+  }
+  function renderAttrs(char = current()){
+    const grid = $('attributes-grid'); if (!grid || !char) return;
+    const isPool = /pool/i.test(modelOf(char));
+    grid.className = 'attributes-grid od135-attributes-grid';
+    grid.innerHTML = ATTRS.map(([key,label]) => {
+      const v = attrVal(char,key);
+      const top = isPool ? `${v}D20` : `${mod(v) >= 0 ? '+' : ''}${mod(v)}`;
+      const type = isPool ? 'Pool Dice' : 'D20';
+      return `<article class="od135-attr-card" data-od135-card="${esc(key)}">
+        <div class="od135-attr-title"><strong>${esc(label)}</strong><span>${esc(top)}</span></div>
+        <div class="od135-attr-main">
+          <small>${esc(type)}</small>
+          <button type="button" class="od135-step" data-od135-step="${esc(key)}" data-dir="-1">−</button>
+          <input class="od135-value" data-attr="${esc(key)}" data-od135-input="${esc(key)}" type="number" min="1" value="${esc(v)}" inputmode="numeric">
+          <button type="button" class="od135-step" data-od135-step="${esc(key)}" data-dir="1">+</button>
+        </div>
+        <button type="button" class="od135-roll roll-attr" data-roll-attr="${esc(key)}">${esc(type)}</button>
+      </article>`;
+    }).join('');
+  }
+  function saveAttr(key, value){
+    const n = Math.max(1, Number(value || 1));
+    update(char => { char.attrs = char.attrs || {}; char.attrs[key] = n; });
+    const c = current();
+    renderAttrs(c);
+    try { if (typeof updateDerivedStatsDisplay === 'function') updateDerivedStatsDisplay(c); } catch(_) {}
+  }
+  function primary(char){ return clean(char?.portrait || char?.portraitUrl || char?.avatar || char?.image || char?.photo || char?.foto || char?.retrato || ''); }
+  function normalizePhotoButton(){
+    const candidates = document.querySelectorAll('#portrait-button,#od99-portrait-button,#od100-portrait-button,#od101-portrait-button,#od102-portrait-button,#od104-portrait-button,#od130-portrait-button,#od131-portrait-button,#od132-portrait-button,#od133-portrait-button,#od134-portrait-button,.portrait-button,.portrait-wrap,#char-portrait-preview');
+    candidates.forEach(el => {
+      el.classList?.add('portrait-button');
+      el.setAttribute?.('title','Trocar fotos da ficha');
+      if (el.dataset) el.dataset.od135Photo = '1';
+    });
+  }
+  function closeOldPhotoModals(){
+    document.querySelectorAll('#portrait-modal,#od99-portrait-crop-modal,#od100-portrait-modal,#od101-photo-modal,#od102-photo-modal,#od104-photo-modal,#od130-photo-modal,#od131-photo-overlay,#od132-photo-overlay,#od133-photo-overlay,#od134-photo-overlay,.portrait-modal,.od99-crop-modal,.od100-portrait-modal,.od101-photo-modal,.od102-photo-modal,.od104-photo-modal,.od130-photo-modal,.od131-photo-overlay,.od132-photo-overlay,.od133-photo-overlay,.od134-photo-overlay').forEach(el => {
+      try { if (typeof el.close === 'function') el.close(); } catch(_) {}
+      if (el.id !== 'od135-photo-overlay') el.remove();
+    });
+  }
+  function ensureModal(){
+    let overlay = $('od135-photo-overlay');
+    if (overlay) return overlay;
+    overlay = document.createElement('div');
+    overlay.id = 'od135-photo-overlay';
+    overlay.className = 'od135-photo-overlay';
+    overlay.hidden = true;
+    overlay.innerHTML = `<section class="od135-photo-panel" role="dialog" aria-modal="true" aria-labelledby="od135-photo-title">
+      <button type="button" id="od135-photo-close" class="od135-photo-close">×</button>
+      <div class="od135-photo-fields-wrap">
+        <header class="od135-photo-head">
+          <h2 id="od135-photo-title">Fotos da ficha</h2>
+          <p>Cole links diretos. PNG, JPG, WEBP e GIF funcionam. GIF permanece animado.</p>
+        </header>
+        <div class="od135-photo-grid">
+          <label><span>Foto normal</span><input id="od135-photo-normal" type="text" autocomplete="off" spellcheck="false" placeholder="https://..."></label>
+          <label><span>Machucado, abaixo de 50% PV</span><input id="od135-photo-low" type="text" autocomplete="off" spellcheck="false" placeholder="opcional"></label>
+          <label><span>Morrendo, 0 PV</span><input id="od135-photo-zero" type="text" autocomplete="off" spellcheck="false" placeholder="opcional"></label>
+        </div>
+        <footer class="od135-photo-actions">
+          <button type="button" id="od135-photo-center" class="od135-photo-btn">Centralizar</button>
+          <button type="button" id="od135-photo-cancel" class="od135-photo-btn">Cancelar</button>
+          <button type="button" id="od135-photo-save" class="od135-photo-btn primary">Salvar fotos</button>
+        </footer>
+      </div>
+      <aside class="od135-photo-preview-wrap">
+        <div id="od135-photo-preview" class="od135-photo-preview"><img id="od135-photo-preview-img" draggable="false" alt="Prévia"></div>
+        <p>Arraste a imagem para enquadrar e use a roda do mouse para zoom.</p>
+      </aside>
+    </section>`;
+    document.body.appendChild(overlay);
+    setupPreviewDrag();
+    return overlay;
+  }
+  function applyPreview(){
+    const img = $('od135-photo-preview-img'); if (!img) return;
+    const src = clean($('od135-photo-normal')?.value || '') || FALLBACK;
+    if (img.dataset.src !== src) { img.src = src; img.dataset.src = src; }
+    img.style.objectPosition = `${crop.x}% ${crop.y}%`;
+    img.style.transform = `scale(${crop.scale})`;
+  }
+  function setupPreviewDrag(){
+    const box = $('od135-photo-preview'); if (!box || box.dataset.ready === '1') return;
+    box.dataset.ready = '1';
+    let dragging = false, startX = 0, startY = 0, base = {x:50,y:50};
+    box.addEventListener('pointerdown', e => { dragging = true; startX = e.clientX; startY = e.clientY; base = {...crop}; box.setPointerCapture?.(e.pointerId); });
+    box.addEventListener('pointermove', e => { if (!dragging) return; const r = box.getBoundingClientRect(); crop.x = Math.max(0, Math.min(100, base.x + ((e.clientX-startX)/r.width)*100)); crop.y = Math.max(0, Math.min(100, base.y + ((e.clientY-startY)/r.height)*100)); applyPreview(); });
+    box.addEventListener('pointerup', () => dragging = false);
+    box.addEventListener('wheel', e => { e.preventDefault(); crop.scale = Math.max(1, Math.min(3, crop.scale + (e.deltaY < 0 ? .08 : -.08))); applyPreview(); }, { passive:false });
+  }
+  function openPhoto(){
+    closeOldPhotoModals();
+    const c = current();
+    const overlay = ensureModal();
+    $('od135-photo-normal').value = primary(c) || '';
+    $('od135-photo-low').value = clean(c?.portraitLow || c?.obsIcons?.low || c?.icons?.low || '');
+    $('od135-photo-zero').value = clean(c?.portraitZero || c?.obsIcons?.zero || c?.icons?.zero || '');
+    crop = c?.portraitCrop || {x:50,y:50,scale:1};
+    applyPreview();
+    overlay.hidden = false;
+    document.body.classList.add('od135-photo-open');
+  }
+  function closePhoto(){
+    const overlay = $('od135-photo-overlay'); if (overlay) overlay.hidden = true;
+    document.body.classList.remove('od135-photo-open');
+  }
+  function syncPortrait(char = current()){
+    if (!char) return;
+    const src = primary(char) || FALLBACK;
+    document.querySelectorAll('#char-portrait-preview, #portrait-button img, .portrait-button img, .character-portrait img, .sheet-portrait img').forEach(img => {
+      if (img && img.tagName === 'IMG' && img.dataset.od135Src !== src) { img.src = src; img.dataset.od135Src = src; }
+      if (char.portraitCrop) {
+        img.style.objectFit = 'cover';
+        img.style.objectPosition = `${char.portraitCrop.x || 50}% ${char.portraitCrop.y || 50}%`;
+      }
+    });
+  }
+  async function savePhoto(){
+    const normal = clean($('od135-photo-normal')?.value || '');
+    const low = clean($('od135-photo-low')?.value || '');
+    const zero = clean($('od135-photo-zero')?.value || '');
+    update(char => {
+      char.portrait = normal; char.portraitUrl = normal; char.image = normal; char.avatar = normal; char.photo = normal; char.foto = normal; char.retrato = normal;
+      char.portraitLow = low; char.portraitZero = zero; char.portraitCrop = {...crop};
+      char.obsIcons = char.obsIcons || {}; char.obsIcons.low = low; char.obsIcons.zero = zero;
+    });
+    const c = current(); syncPortrait(c);
+    try { if (typeof saveCurrentCharacter === 'function') await saveCurrentCharacter(); } catch(_) {}
+    try { if (typeof renderCharacterList === 'function') renderCharacterList(); } catch(_) {}
+    closePhoto();
+  }
+  document.addEventListener('click', e => {
+    const photoTarget = e.target.closest?.('[data-od135-photo="1"],#portrait-button,#od99-portrait-button,#od100-portrait-button,#od101-portrait-button,#od102-portrait-button,#od104-portrait-button,#od130-portrait-button,#od131-portrait-button,#od132-portrait-button,#od133-portrait-button,#od134-portrait-button,.portrait-button,.portrait-wrap,#char-portrait-preview');
+    if (photoTarget) { e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); openPhoto(); return; }
+    if (e.target.closest?.('#od135-photo-close,#od135-photo-cancel')) { e.preventDefault(); e.stopImmediatePropagation(); closePhoto(); return; }
+    if (e.target.closest?.('#od135-photo-center')) { e.preventDefault(); e.stopImmediatePropagation(); crop = {x:50,y:50,scale:1}; applyPreview(); return; }
+    if (e.target.closest?.('#od135-photo-save')) { e.preventDefault(); e.stopImmediatePropagation(); savePhoto(); return; }
+    const step = e.target.closest?.('[data-od135-step]');
+    if (step) { e.preventDefault(); e.stopImmediatePropagation(); const key = step.dataset.od135Step; const input = document.querySelector(`input[data-od135-input="${CSS.escape(key)}"]`); const next = Math.max(1, Number(input?.value || 1) + Number(step.dataset.dir || 0)); if (input) input.value = next; saveAttr(key,next); return; }
+  }, true);
+  document.addEventListener('input', e => {
+    if (e.target.closest?.('#od135-photo-normal')) applyPreview();
+    const input = e.target.closest?.('input[data-od135-input]');
+    if (input) saveAttr(input.dataset.od135Input, input.value);
+  }, true);
+  function boot(){ normalizePhotoButton(); renderAttrs(); syncPortrait(); }
+  document.addEventListener('DOMContentLoaded', boot);
+  setTimeout(boot, 100); setTimeout(boot, 800); setTimeout(boot, 1600);
+  window.renderAttributes = renderAttrs;
+  window.renderAttributesV135 = renderAttrs;
+  window.od135OpenPhotoModal = openPhoto;
+  window.od135SyncPortrait = syncPortrait;
 })();
