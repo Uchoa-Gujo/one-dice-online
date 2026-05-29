@@ -13722,3 +13722,243 @@ function od66InventoryMutationUnlockSoon() {
   else boot();
   setTimeout(boot, 150);
 })();
+
+
+/* =========================
+   V130 - Modal de fotos retangular, sem rolagem interna
+   - Substitui o fluxo visual antigo de foto por um único modal limpo.
+   - Mantém link direto para PNG/JPG/WEBP/GIF.
+   - Não converte GIF em canvas, preservando animação.
+========================= */
+(function od130PhotoModalClean(){
+  const $ = (id) => document.getElementById(id);
+  const FALLBACK = 'assets/logo.jpg';
+  let crop = { x: 50, y: 50, scale: 1 };
+  let dragging = false;
+  let dragStart = { x: 0, y: 0, ox: 50, oy: 50 };
+
+  function getChar(){
+    try { return typeof currentChar === 'function' ? currentChar() : null; } catch (_) { return null; }
+  }
+
+  function cleanLink(value){
+    return String(value || '').trim();
+  }
+
+  function getIcons(char){
+    return Object.assign({}, char?.obsIcons || {}, char?.portraitIcons || {});
+  }
+
+  function realPortrait(char){
+    return cleanLink(char?.portrait || char?.image || char?.photo || char?.avatar || '');
+  }
+
+  function setImageIfChanged(img, src){
+    if (!img) return;
+    const next = cleanLink(src) || FALLBACK;
+    if (img.getAttribute('src') !== next) img.setAttribute('src', next);
+  }
+
+  function syncPortraitPreview(char = getChar()){
+    if (!char) return;
+    const src = realPortrait(char) || FALLBACK;
+    setImageIfChanged($('char-portrait-preview'), src);
+    setImageIfChanged($('overlay-portrait'), src);
+    const hidden = $('portrait-url');
+    if (hidden && hidden.value !== realPortrait(char)) hidden.value = realPortrait(char);
+  }
+
+  function removeOldPhotoModals(){
+    [
+      'portrait-modal',
+      'od99-portrait-crop-modal',
+      'od100-portrait-modal',
+      'od101-photo-modal',
+      'od102-photo-modal',
+      'od104-photo-modal'
+    ].forEach(id => {
+      const el = $(id);
+      if (!el) return;
+      try { if (typeof el.close === 'function' && el.open) el.close(); } catch (_) {}
+      el.classList.add('od130-old-photo-modal-hidden');
+    });
+  }
+
+  function ensureModal(){
+    let dialog = $('od130-photo-modal');
+    if (dialog) return dialog;
+
+    dialog = document.createElement('dialog');
+    dialog.id = 'od130-photo-modal';
+    dialog.className = 'od130-photo-modal';
+    dialog.innerHTML = `
+      <div class="od130-photo-card" role="document">
+        <button type="button" class="od130-photo-close" id="od130-photo-close" aria-label="Fechar">×</button>
+
+        <header class="od130-photo-head">
+          <h2>Fotos da Ficha</h2>
+          <p>Cole links diretos. PNG, JPG, WEBP e GIF funcionam. GIF permanece animado.</p>
+        </header>
+
+        <section class="od130-photo-grid" aria-label="Links das fotos da ficha">
+          <label>
+            <span>Foto normal</span>
+            <input id="od130-photo-normal" type="text" placeholder="https://..." autocomplete="off" spellcheck="false">
+          </label>
+          <label>
+            <span>Machucado, abaixo de 50% PV</span>
+            <input id="od130-photo-low" type="text" placeholder="opcional: https://...gif" autocomplete="off" spellcheck="false">
+          </label>
+          <label>
+            <span>Morrendo, 0 PV</span>
+            <input id="od130-photo-zero" type="text" placeholder="opcional: https://...gif" autocomplete="off" spellcheck="false">
+          </label>
+        </section>
+
+        <section class="od130-preview-area">
+          <div id="od130-crop-stage" class="od130-crop-stage" title="Arraste para enquadrar. Use a roda do mouse para zoom.">
+            <img id="od130-crop-img" alt="Prévia da foto" draggable="false">
+          </div>
+          <p>Arraste a imagem para enquadrar e use a roda do mouse para zoom. Para GIF, o link é preservado.</p>
+        </section>
+
+        <footer class="od130-photo-actions">
+          <button type="button" class="od130-btn" id="od130-photo-reset">Centralizar</button>
+          <button type="button" class="od130-btn" id="od130-photo-cancel">Cancelar</button>
+          <button type="button" class="od130-btn od130-primary" id="od130-photo-save">Salvar Fotos</button>
+        </footer>
+      </div>
+    `;
+    document.body.appendChild(dialog);
+    bindCrop();
+    return dialog;
+  }
+
+  function updatePreview(){
+    const img = $('od130-crop-img');
+    if (!img) return;
+    const src = cleanLink($('od130-photo-normal')?.value) || FALLBACK;
+    setImageIfChanged(img, src);
+    img.style.width = `${Math.max(100, crop.scale * 100)}%`;
+    img.style.height = `${Math.max(100, crop.scale * 100)}%`;
+    img.style.objectFit = 'cover';
+    img.style.objectPosition = `${crop.x}% ${crop.y}%`;
+  }
+
+  function bindCrop(){
+    const stage = $('od130-crop-stage');
+    if (!stage || stage.dataset.od130Ready === '1') return;
+    stage.dataset.od130Ready = '1';
+
+    stage.addEventListener('pointerdown', (event) => {
+      dragging = true;
+      stage.setPointerCapture?.(event.pointerId);
+      dragStart = { x: event.clientX, y: event.clientY, ox: crop.x, oy: crop.y };
+      event.preventDefault();
+    });
+
+    stage.addEventListener('pointermove', (event) => {
+      if (!dragging) return;
+      const rect = stage.getBoundingClientRect();
+      const dx = ((event.clientX - dragStart.x) / Math.max(1, rect.width)) * 100;
+      const dy = ((event.clientY - dragStart.y) / Math.max(1, rect.height)) * 100;
+      crop.x = Math.max(0, Math.min(100, dragStart.ox - dx));
+      crop.y = Math.max(0, Math.min(100, dragStart.oy - dy));
+      updatePreview();
+    });
+
+    const stopDrag = () => { dragging = false; };
+    stage.addEventListener('pointerup', stopDrag);
+    stage.addEventListener('pointercancel', stopDrag);
+    stage.addEventListener('wheel', (event) => {
+      event.preventDefault();
+      const step = event.deltaY < 0 ? 0.08 : -0.08;
+      crop.scale = Math.max(1, Math.min(3, Number((crop.scale + step).toFixed(2))));
+      updatePreview();
+    }, { passive: false });
+  }
+
+  function openModal(){
+    removeOldPhotoModals();
+    const dialog = ensureModal();
+    const char = getChar();
+    const icons = getIcons(char);
+    crop = Object.assign({ x: 50, y: 50, scale: 1 }, char?.portraitCrop || {});
+
+    $('od130-photo-normal').value = realPortrait(char) || $('portrait-url')?.value || '';
+    $('od130-photo-low').value = cleanLink(icons.low || char?.portraitLow || char?.obsIconLow || '');
+    $('od130-photo-zero').value = cleanLink(icons.zero || char?.portraitZero || char?.obsIconZero || '');
+    updatePreview();
+    try { dialog.showModal(); } catch (_) { dialog.setAttribute('open', ''); }
+  }
+
+  async function saveModal(){
+    const char = getChar();
+    if (!char) return;
+    const normal = cleanLink($('od130-photo-normal')?.value);
+    const low = cleanLink($('od130-photo-low')?.value);
+    const zero = cleanLink($('od130-photo-zero')?.value);
+
+    char.portrait = normal;
+    char.image = normal;
+    char.photo = normal;
+    char.avatar = normal;
+    char.portraitLow = low;
+    char.portraitZero = zero;
+    char.obsIconLow = low;
+    char.obsIconZero = zero;
+    char.obsIcons = Object.assign({}, char.obsIcons || {}, { low, zero });
+    char.portraitCrop = Object.assign({}, crop);
+    char.updatedAt = new Date().toISOString();
+
+    const hidden = $('portrait-url');
+    if (hidden) hidden.value = normal;
+    syncPortraitPreview(char);
+
+    try {
+      if (typeof saveCurrentCharacter === 'function') await saveCurrentCharacter();
+    } catch (error) {
+      console.warn('[One Dice v130] Falha ao salvar fotos:', error);
+    }
+    try { if (typeof renderCharacterCards === 'function') renderCharacterCards(); } catch (_) {}
+    try { if (typeof renderCharacterList === 'function') renderCharacterList(); } catch (_) {}
+    try { if (typeof renderTableExperience === 'function') renderTableExperience(); } catch (_) {}
+    try { if (window.od119SyncPortraits) window.od119SyncPortraits(); } catch (_) {}
+  }
+
+  document.addEventListener('click', (event) => {
+    if (event.target.closest('#portrait-button')) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      openModal();
+      return;
+    }
+    if (event.target.closest('#od130-photo-close, #od130-photo-cancel')) {
+      event.preventDefault();
+      $('od130-photo-modal')?.close?.();
+      return;
+    }
+    if (event.target.closest('#od130-photo-reset')) {
+      event.preventDefault();
+      crop = { x: 50, y: 50, scale: 1 };
+      updatePreview();
+      return;
+    }
+    if (event.target.closest('#od130-photo-save')) {
+      event.preventDefault();
+      saveModal().then(() => $('od130-photo-modal')?.close?.());
+    }
+  }, true);
+
+  document.addEventListener('input', (event) => {
+    if (event.target.closest('#od130-photo-normal')) updatePreview();
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    removeOldPhotoModals();
+    syncPortraitPreview();
+  });
+
+  window.od130OpenPhotoModal = openModal;
+})();
