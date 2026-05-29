@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <title>One Dice OBS</title>
+  <link rel="stylesheet" href="/obs.css?v=111" />
+</head>
+<body>
+  <main id="obs-root" class="obs-root" data-status="loading">
+    <section id="obs-hud" class="od-obs-hud" aria-label="Status do personagem">
+      <div id="obs-portrait-box" class="od-obs-photo-box">
+        <img id="obs-portrait" class="od-obs-photo" src="/assets/logo.jpg" alt="" draggable="false" />
+      </div>
+
+      <div class="od-obs-bars">
+        <div class="od-obs-bar od-obs-bar-pv" aria-label="Pontos de Vida">
+          <div id="obs-pv-base" class="od-obs-fill od-obs-fill-base"></div>
+          <div id="obs-pv-extra" class="od-obs-fill od-obs-fill-extra"></div>
+          <div class="od-obs-text">
+            <span>PV</span>
+            <strong id="obs-pv-text">0 / 0</strong>
+          </div>
+        </div>
+
+        <div class="od-obs-bar od-obs-bar-pe" aria-label="Pontos de Esforço">
+          <div id="obs-pe-base" class="od-obs-fill od-obs-fill-base"></div>
+          <div id="obs-pe-extra" class="od-obs-fill od-obs-fill-extra"></div>
+          <div class="od-obs-text">
+            <span>PE</span>
+            <strong id="obs-pe-text">0 / 0</strong>
+          </div>
+        </div>
+      </div>
+      <div id="obs-conditions" class="od-obs-conditions" aria-label="Condições do personagem"></div>
+    </section>
+  </main>
+  <script src="/obs.js?v=111" defer></script>
+</body>
+</html>
