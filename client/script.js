@@ -1,3 +1,26 @@
+
+/* =========================
+   V134 - Captura limpa do botão de retrato
+   Este bloco fica antes dos listeners antigos para impedir que modais legados abram.
+========================= */
+(function od134EarlyPortraitCapture(){
+  'use strict';
+  function isPortraitTarget(target){
+    return !!(target && target.closest && target.closest('#portrait-button,#od99-portrait-button,#od100-portrait-button,#od101-portrait-button,#od102-portrait-button,#od104-portrait-button,#od130-portrait-button,#od131-portrait-button,#od132-portrait-button,#od133-portrait-button,#od134-portrait-button,.portrait-button,.portrait-wrap,#char-portrait-preview'));
+  }
+  document.addEventListener('click', function(event){
+    if (!isPortraitTarget(event.target)) return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    const open = () => {
+      if (typeof window.od134OpenPhotoModal === 'function') window.od134OpenPhotoModal();
+      else setTimeout(open, 25);
+    };
+    open();
+  }, true);
+})();
+
 const STORAGE = {
   users: "od_users",
   session: "od_session",
@@ -969,10 +992,7 @@ function events() {
     if (char) renderSkills(char);
   };
   const portraitButton = byId("portrait-button");
-  if (portraitButton) portraitButton.onclick = () => {
-    byId("portrait-modal-url").value = byId("portrait-url").value;
-    byId("portrait-modal").showModal();
-  };
+  if (portraitButton) portraitButton.onclick = null;
   const savePortraitUrlBtn = byId("save-portrait-url");
   if (savePortraitUrlBtn) savePortraitUrlBtn.onclick = () => {
     byId("portrait-url").value = byId("portrait-modal-url").value.trim();
@@ -7743,9 +7763,7 @@ function od66InventoryMutationUnlockSoon() {
   }
 
   document.addEventListener('click', event => {
-    if (event.target.closest('#portrait-button')) {
-      setTimeout(() => fillPanel(current()), 0);
-    }
+    /* v132: menu antigo de ícones OBS desativado para não interceptar o menu novo de fotos. */
   }, true);
 
   document.addEventListener('change', event => {
@@ -8414,13 +8432,8 @@ function od66InventoryMutationUnlockSoon() {
   }
 
   document.addEventListener('click', async event => {
-    const portraitBtn = event.target.closest('#portrait-button');
-    if (portraitBtn) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      openPortraitCrop();
-      return;
-    }
+    const portraitBtn = null;
+    if (portraitBtn) { return; }
 
     const attrStep = event.target.closest('[data-od99-attr-step]');
     if (attrStep) {
@@ -8948,13 +8961,8 @@ function od66InventoryMutationUnlockSoon() {
   }
 
   document.addEventListener('click', event => {
-    const portraitBtn = event.target.closest('#portrait-button');
-    if (portraitBtn) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      openPortraitModalV100();
-      return;
-    }
+    const portraitBtn = null;
+    if (portraitBtn) { return; }
 
     const close = event.target.closest('#od100-photo-close, #od100-photo-cancel');
     if (close) {
@@ -9563,14 +9571,8 @@ function od66InventoryMutationUnlockSoon() {
   }
 
   document.addEventListener('click', event => {
-    const portraitBtn = event.target.closest('#od101-portrait-button');
-    if (portraitBtn) {
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopImmediatePropagation();
-      openPhotoDialogV101();
-      return;
-    }
+    const portraitBtn = null;
+    if (portraitBtn) { return; }
 
     const linkBtn = event.target.closest('#campaign-character-btn');
     if (linkBtn && accountSheetMode) {
@@ -10043,14 +10045,8 @@ function od66InventoryMutationUnlockSoon() {
   }
 
   document.addEventListener('click', event => {
-    const portraitBtn = event.target.closest('#od102-portrait-button, #od101-portrait-button, #portrait-button');
-    if (portraitBtn) {
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopImmediatePropagation();
-      openPhotoDialog();
-      return;
-    }
+    const portraitBtn = null;
+    if (portraitBtn) { return; }
     if (event.target.closest('#od102-photo-close, #od102-photo-cancel')) { event.preventDefault(); $('od102-photo-modal')?.close(); return; }
     if (event.target.closest('#od102-photo-reset')) { event.preventDefault(); window.od102CropState = { x: 50, y: 50, scale: 1 }; refreshPhotoPreview(); return; }
     if (event.target.closest('#od102-photo-save')) { event.preventDefault(); savePhotoDialog().then(() => $('od102-photo-modal')?.close()); return; }
@@ -10557,14 +10553,8 @@ function od66InventoryMutationUnlockSoon() {
   }
 
   document.addEventListener('click', event => {
-    const portraitBtn = event.target.closest('#portrait-button, #od101-portrait-button, #od102-portrait-button, .portrait-button');
-    if (portraitBtn) {
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopImmediatePropagation();
-      openDialog();
-      return;
-    }
+    const portraitBtn = null;
+    if (portraitBtn) { return; }
     if (event.target.closest('#od104-photo-close, #od104-photo-cancel')) { event.preventDefault(); $('od104-photo-modal')?.close(); return; }
     if (event.target.closest('#od104-photo-reset')) { event.preventDefault(); window.od104CropState = { x: 50, y: 50, scale: 1 }; refreshPreview(); return; }
     if (event.target.closest('#od104-photo-save')) { event.preventDefault(); saveDialog().then(() => $('od104-photo-modal')?.close()); return; }
@@ -13620,215 +13610,314 @@ function od66InventoryMutationUnlockSoon() {
 })();
 
 
-
 /* =========================
-   V131 - Modal de fotos retangular estável
-   - Remove o <dialog> antigo e usa overlay fixo para não criar barra de rolagem.
-   - Mantém links diretos de PNG/JPG/WEBP/GIF.
+   V134 - Retrato e atributos limpos
+   - Um único modal de fotos ativo.
+   - Remove modais antigos antes de abrir.
+   - Layout de atributos sem render antigo competindo.
 ========================= */
-(function od131PhotoModal(){
+(function od134CleanPortraitAndAttributes(){
   'use strict';
 
+  const $ = id => document.getElementById(id);
+  const ATTRS = [
+    ['forca', 'Força'],
+    ['agilidade', 'Agilidade'],
+    ['vigor', 'Vigor'],
+    ['intelecto', 'Intelecto'],
+    ['presenca', 'Presença']
+  ];
   const FALLBACK = 'assets/logo.jpg';
-  const OLD_IDS = ['portrait-modal','od99-portrait-crop-modal','od100-portrait-modal','od101-photo-modal','od102-photo-modal','od104-photo-modal','od130-photo-modal'];
-  let state = { x: 50, y: 50, scale: 1 };
-  let dragging = false;
-  let dragStart = null;
+  const OLD_PHOTO_SELECTORS = [
+    '#portrait-modal', '#od99-portrait-crop-modal', '#od100-portrait-modal', '#od101-photo-modal', '#od102-photo-modal', '#od104-photo-modal', '#od130-photo-modal', '#od131-photo-overlay', '#od132-photo-overlay', '#od133-photo-overlay',
+    '.portrait-modal', '.od99-crop-modal', '.od100-portrait-modal', '.od101-photo-modal', '.od102-photo-modal', '.od104-photo-modal', '.od130-photo-modal', '.od131-photo-overlay', '.od132-photo-overlay', '.od133-photo-overlay'
+  ];
 
-  function $(id){ return document.getElementById(id); }
-  function clean(value){ return String(value || '').trim(); }
-  function getChar(){ try { return typeof currentChar === 'function' ? currentChar() : null; } catch (_) { return null; } }
-  function icons(char){ return Object.assign({}, char?.obsIcons || {}, char?.portraitIcons || {}); }
-  function realPortrait(char){ return clean(char?.portrait || char?.image || char?.photo || char?.avatar || char?.retrato || ''); }
-
-  function setSrc(img, src){
+  const esc = value => {
+    if (typeof escapeHtml === 'function') return escapeHtml(String(value ?? ''));
+    return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  };
+  const num = (value, fallback = 0) => {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : fallback;
+  };
+  const clean = value => String(value || '').trim();
+  const chars = () => { try { return typeof get === 'function' && STORAGE ? get(STORAGE.characters, []) : []; } catch (_) { return []; } };
+  const setChars = list => { try { if (typeof set === 'function' && STORAGE) set(STORAGE.characters, list); } catch (_) {} };
+  const currentId = () => { try { return typeof currentCharacterId !== 'undefined' ? currentCharacterId : null; } catch (_) { return null; } };
+  const current = () => chars().find(c => String(c.id) === String(currentId())) || null;
+  const modelOf = c => String(c?.sheetModel || c?.systemModel || c?.model || 'd20').toLowerCase().includes('pool') ? 'pool' : 'd20';
+  const attrVal = (c, key) => Math.max(1, num(c?.attrs?.[key], key === 'vigor' ? 10 : 10));
+  const attrBonus = (c, key) => {
+    const value = attrVal(c, key);
+    if (typeof attrMod === 'function') return attrMod(value);
+    return Math.floor((value - 10) / 2);
+  };
+  const fmt = value => value >= 0 ? `+${value}` : String(value);
+  const primary = c => clean(c?.portrait || c?.image || c?.photo || c?.avatar || c?.retrato || '');
+  const statePhoto = c => {
+    if (!c) return FALLBACK;
+    const pv = num(c.pvCurrent ?? c.pvAtual ?? c.pv ?? c.hpCurrent ?? c.hp, 0);
+    const max = Math.max(1, num(c.pvMax ?? c.pvTotal ?? c.pv_max ?? c.hpMax ?? c.hpTotal, 1));
+    const icons = c.obsIcons || {};
+    if (pv < 0) return '';
+    const activeForm = Array.isArray(c.transformations) ? c.transformations.find(f => f && f.active) : null;
+    if (activeForm && clean(activeForm.portrait || activeForm.image || activeForm.photo)) return clean(activeForm.portrait || activeForm.image || activeForm.photo);
+    if (pv === 0 && clean(c.portraitZero || icons.zero || c.obsIconZero)) return clean(c.portraitZero || icons.zero || c.obsIconZero);
+    if (pv > 0 && pv / max < 0.5 && clean(c.portraitLow || icons.low || c.obsIconLow)) return clean(c.portraitLow || icons.low || c.obsIconLow);
+    return primary(c) || FALLBACK;
+  };
+  function setImg(img, src){
     if (!img) return;
-    const next = clean(src) || FALLBACK;
-    if (img.getAttribute('src') !== next) img.setAttribute('src', next);
+    const value = clean(src);
+    if (!value) {
+      img.removeAttribute('src');
+      img.style.visibility = 'hidden';
+      return;
+    }
+    img.style.visibility = '';
+    img.onerror = () => { img.onerror = null; if (img.getAttribute('src') !== FALLBACK) img.src = FALLBACK; };
+    if (img.getAttribute('src') !== value) img.src = value;
+  }
+  function persist(c){
+    if (!c) return;
+    try { if (typeof od44SaveCharacterOnline === 'function') od44SaveCharacterOnline(c); }
+    catch (_) {}
+    try { if (typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(c); }
+    catch (_) {}
+    try { if (typeof queueSave === 'function') queueSave(); }
+    catch (_) {}
+  }
+  function mutate(mutator){
+    const list = chars();
+    const id = currentId();
+    const index = list.findIndex(c => String(c.id) === String(id));
+    if (index < 0) return null;
+    mutator(list[index]);
+    list[index].updatedAt = Date.now();
+    setChars(list);
+    persist(list[index]);
+    return list[index];
   }
 
-  function syncPreview(char = getChar()){
-    if (!char) return;
-    const src = realPortrait(char) || FALLBACK;
-    setSrc($('char-portrait-preview'), src);
-    setSrc($('overlay-portrait'), src);
-    const hidden = $('portrait-url');
-    if (hidden && hidden.value !== realPortrait(char)) hidden.value = realPortrait(char);
-  }
-
-  function closeOld(){
-    OLD_IDS.forEach(id => {
-      const el = $(id);
-      if (!el) return;
-      try { if (typeof el.close === 'function' && el.open) el.close(); } catch (_) {}
-      el.remove();
+  function killOldPhotoUi(){
+    OLD_PHOTO_SELECTORS.forEach(selector => {
+      document.querySelectorAll(selector).forEach(el => {
+        if (el.id === 'od134-photo-overlay') return;
+        try { if (typeof el.close === 'function' && el.open) el.close(); } catch (_) {}
+        el.remove();
+      });
     });
-    document.querySelectorAll('.od131-photo-overlay').forEach((el, idx) => { if (idx > 0) el.remove(); });
+    const btns = document.querySelectorAll('#portrait-button,#od99-portrait-button,#od100-portrait-button,#od101-portrait-button,#od102-portrait-button,#od104-portrait-button,#od130-portrait-button,#od131-portrait-button,#od132-portrait-button,#od133-portrait-button,.portrait-button,.portrait-wrap');
+    btns.forEach(btn => {
+      if (btn.id === 'od134-portrait-button' && btn.dataset.od134Clean === '1') return;
+      const clone = btn.cloneNode(true);
+      clone.id = 'od134-portrait-button';
+      clone.dataset.od134Clean = '1';
+      clone.classList.add('portrait-button');
+      clone.setAttribute('role', 'button');
+      clone.setAttribute('tabindex', '0');
+      clone.setAttribute('title', 'Editar fotos da ficha');
+      try { btn.replaceWith(clone); } catch (_) {}
+    });
   }
 
-  function ensure(){
-    let overlay = $('od131-photo-overlay');
+  let crop = { x: 50, y: 50, scale: 1 };
+  let dragging = null;
+  function ensurePhotoModal(){
+    killOldPhotoUi();
+    let overlay = $('od134-photo-overlay');
     if (overlay) return overlay;
-
     overlay = document.createElement('div');
-    overlay.id = 'od131-photo-overlay';
-    overlay.className = 'od131-photo-overlay';
+    overlay.id = 'od134-photo-overlay';
+    overlay.className = 'od134-photo-overlay';
     overlay.hidden = true;
     overlay.innerHTML = `
-      <div class="od131-photo-panel" role="dialog" aria-modal="true" aria-labelledby="od131-photo-title">
-        <button type="button" class="od131-photo-close" id="od131-photo-close" aria-label="Fechar">×</button>
-        <header class="od131-photo-header">
-          <h2 id="od131-photo-title">Fotos da Ficha</h2>
-          <p>Cole links diretos. PNG, JPG, WEBP e GIF funcionam. GIF permanece animado.</p>
-        </header>
-        <section class="od131-photo-fields">
-          <label><span>Foto normal</span><input id="od131-photo-normal" type="text" autocomplete="off" spellcheck="false" placeholder="https://..."></label>
-          <label><span>Machucado, abaixo de 50% PV</span><input id="od131-photo-low" type="text" autocomplete="off" spellcheck="false" placeholder="opcional"></label>
-          <label><span>Morrendo, 0 PV</span><input id="od131-photo-zero" type="text" autocomplete="off" spellcheck="false" placeholder="opcional"></label>
-        </section>
-        <section class="od131-photo-preview-wrap">
-          <div class="od131-photo-preview" id="od131-photo-preview" title="Arraste para enquadrar. Use a roda do mouse para zoom.">
-            <img id="od131-photo-img" alt="Prévia da foto" draggable="false">
+      <section class="od134-photo-panel" role="dialog" aria-modal="true" aria-labelledby="od134-photo-title">
+        <button type="button" id="od134-photo-close" class="od134-photo-close">×</button>
+        <div class="od134-photo-left">
+          <header class="od134-photo-head">
+            <h2 id="od134-photo-title">Fotos da ficha</h2>
+            <p>Cole links diretos de imagem. PNG, JPG, WEBP e GIF funcionam. GIF permanece animado.</p>
+          </header>
+          <div class="od134-photo-grid">
+            <label><span>Foto normal</span><input id="od134-photo-normal" type="text" autocomplete="off" spellcheck="false" placeholder="https://..."></label>
+            <label><span>Machucado, abaixo de 50% PV</span><input id="od134-photo-low" type="text" autocomplete="off" spellcheck="false" placeholder="opcional"></label>
+            <label><span>Morrendo, 0 PV</span><input id="od134-photo-zero" type="text" autocomplete="off" spellcheck="false" placeholder="opcional"></label>
           </div>
-          <p>Arraste a prévia para enquadrar e use a roda do mouse para zoom. O link do GIF é preservado.</p>
-        </section>
-        <footer class="od131-photo-actions">
-          <button type="button" class="od131-photo-btn" id="od131-photo-center">Centralizar</button>
-          <button type="button" class="od131-photo-btn" id="od131-photo-cancel">Cancelar</button>
-          <button type="button" class="od131-photo-btn od131-photo-save" id="od131-photo-save">Salvar Fotos</button>
-        </footer>
-      </div>
-    `;
+          <footer class="od134-photo-actions">
+            <button type="button" id="od134-photo-center" class="od134-photo-btn">Centralizar</button>
+            <button type="button" id="od134-photo-cancel" class="od134-photo-btn">Cancelar</button>
+            <button type="button" id="od134-photo-save" class="od134-photo-btn primary">Salvar fotos</button>
+          </footer>
+        </div>
+        <aside class="od134-photo-right">
+          <div id="od134-photo-preview" class="od134-photo-preview"><img id="od134-photo-preview-img" draggable="false" alt="Prévia"></div>
+          <p>Arraste a imagem para enquadrar e use a roda do mouse para aproximar.</p>
+        </aside>
+      </section>`;
     document.body.appendChild(overlay);
-    bindDrag();
+    bindPhotoPreview();
     return overlay;
   }
-
-  function updatePreview(){
-    const img = $('od131-photo-img');
+  function previewSrc(){ return clean($('od134-photo-normal')?.value || FALLBACK); }
+  function applyPreview(){
+    const img = $('od134-photo-preview-img');
     if (!img) return;
-    setSrc(img, clean($('od131-photo-normal')?.value) || FALLBACK);
-    img.style.width = `${Math.max(100, state.scale * 100)}%`;
-    img.style.height = `${Math.max(100, state.scale * 100)}%`;
+    setImg(img, previewSrc());
     img.style.objectFit = 'cover';
-    img.style.objectPosition = `${state.x}% ${state.y}%`;
+    img.style.objectPosition = `${crop.x}% ${crop.y}%`;
+    img.style.transform = `scale(${Math.max(1, Math.min(3, crop.scale))})`;
+    img.style.transformOrigin = `${crop.x}% ${crop.y}%`;
   }
-
-  function bindDrag(){
-    const box = $('od131-photo-preview');
-    if (!box || box.dataset.ready === '1') return;
-    box.dataset.ready = '1';
-    box.addEventListener('pointerdown', (event) => {
-      dragging = true;
+  function bindPhotoPreview(){
+    const box = $('od134-photo-preview');
+    if (!box || box.dataset.od134Ready === '1') return;
+    box.dataset.od134Ready = '1';
+    box.addEventListener('pointerdown', event => {
+      dragging = { sx: event.clientX, sy: event.clientY, x: crop.x, y: crop.y };
       box.setPointerCapture?.(event.pointerId);
-      dragStart = { x: event.clientX, y: event.clientY, ox: state.x, oy: state.y };
       event.preventDefault();
     });
-    box.addEventListener('pointermove', (event) => {
-      if (!dragging || !dragStart) return;
+    box.addEventListener('pointermove', event => {
+      if (!dragging) return;
       const rect = box.getBoundingClientRect();
-      state.x = Math.max(0, Math.min(100, dragStart.ox - ((event.clientX - dragStart.x) / Math.max(1, rect.width)) * 100));
-      state.y = Math.max(0, Math.min(100, dragStart.oy - ((event.clientY - dragStart.y) / Math.max(1, rect.height)) * 100));
-      updatePreview();
+      crop.x = Math.max(0, Math.min(100, dragging.x - ((event.clientX - dragging.sx) / Math.max(1, rect.width)) * 100));
+      crop.y = Math.max(0, Math.min(100, dragging.y - ((event.clientY - dragging.sy) / Math.max(1, rect.height)) * 100));
+      applyPreview();
     });
-    const stop = () => { dragging = false; dragStart = null; };
+    const stop = () => { dragging = null; };
     box.addEventListener('pointerup', stop);
     box.addEventListener('pointercancel', stop);
-    box.addEventListener('wheel', (event) => {
+    box.addEventListener('wheel', event => {
       event.preventDefault();
-      state.scale = Math.max(1, Math.min(3, Number((state.scale + (event.deltaY < 0 ? 0.08 : -0.08)).toFixed(2))));
-      updatePreview();
+      crop.scale = Math.max(1, Math.min(3, Number((crop.scale + (event.deltaY < 0 ? 0.08 : -0.08)).toFixed(2))));
+      applyPreview();
     }, { passive: false });
   }
-
-  function open(){
-    closeOld();
-    const overlay = ensure();
-    const char = getChar();
-    const ic = icons(char);
-    state = Object.assign({ x: 50, y: 50, scale: 1 }, char?.portraitCrop || {});
-    $('od131-photo-normal').value = realPortrait(char) || $('portrait-url')?.value || '';
-    $('od131-photo-low').value = clean(ic.low || char?.portraitLow || char?.obsIconLow || '');
-    $('od131-photo-zero').value = clean(ic.zero || char?.portraitZero || char?.obsIconZero || '');
-    updatePreview();
+  function openPhoto(){
+    const c = current();
+    const overlay = ensurePhotoModal();
+    const icons = c?.obsIcons || {};
+    $('od134-photo-normal').value = primary(c) || '';
+    $('od134-photo-low').value = clean(c?.portraitLow || icons.low || c?.obsIconLow || '');
+    $('od134-photo-zero').value = clean(c?.portraitZero || icons.zero || c?.obsIconZero || '');
+    crop = Object.assign({ x: 50, y: 50, scale: 1 }, c?.portraitCrop || {});
+    applyPreview();
     overlay.hidden = false;
-    document.body.classList.add('od131-photo-open');
+    document.body.classList.add('od134-photo-open');
   }
-
-  function close(){
-    const overlay = $('od131-photo-overlay');
+  function closePhoto(){
+    const overlay = $('od134-photo-overlay');
     if (overlay) overlay.hidden = true;
-    document.body.classList.remove('od131-photo-open');
+    document.body.classList.remove('od134-photo-open');
   }
-
-  async function save(){
-    const char = getChar();
-    if (!char) return;
-    const normal = clean($('od131-photo-normal')?.value);
-    const low = clean($('od131-photo-low')?.value);
-    const zero = clean($('od131-photo-zero')?.value);
-
-    Object.assign(char, {
-      portrait: normal,
-      image: normal,
-      photo: normal,
-      avatar: normal,
-      portraitLow: low,
-      portraitZero: zero,
-      obsIconLow: low,
-      obsIconZero: zero,
-      portraitCrop: Object.assign({}, state),
-      updatedAt: new Date().toISOString()
+  function savePhoto(){
+    const normal = clean($('od134-photo-normal')?.value || '');
+    const low = clean($('od134-photo-low')?.value || '');
+    const zero = clean($('od134-photo-zero')?.value || '');
+    const updated = mutate(c => {
+      c.portrait = normal; c.image = normal; c.photo = normal; c.avatar = normal; c.retrato = normal;
+      c.obsIcons = c.obsIcons || {};
+      c.obsIcons.low = low; c.obsIcons.zero = zero;
+      c.portraitLow = low; c.portraitZero = zero;
+      c.obsIconLow = low; c.obsIconZero = zero;
+      c.portraitCrop = { x: crop.x, y: crop.y, scale: crop.scale };
     });
-    char.obsIcons = Object.assign({}, char.obsIcons || {}, { low, zero });
-
-    const hidden = $('portrait-url');
-    if (hidden) hidden.value = normal;
-    syncPreview(char);
-
-    try { if (typeof saveCurrentCharacter === 'function') await saveCurrentCharacter(); } catch (error) { console.warn('[One Dice v131] Falha ao salvar fotos:', error); }
-    try { if (typeof renderCharacterCards === 'function') renderCharacterCards(); } catch (_) {}
+    syncPortrait(updated || current());
     try { if (typeof renderCharacterList === 'function') renderCharacterList(); } catch (_) {}
-    try { if (typeof renderTableExperience === 'function') renderTableExperience(); } catch (_) {}
-    try { if (window.od119SyncPortraits) window.od119SyncPortraits(); } catch (_) {}
+    try { if (typeof renderCampaignMenu === 'function') renderCampaignMenu(); } catch (_) {}
+    closePhoto();
+  }
+  function syncPortrait(c = current()){
+    if (!c) return;
+    const src = statePhoto(c);
+    const hidden = $('portrait-url');
+    if (hidden && hidden.value !== primary(c)) hidden.value = primary(c);
+    setImg($('char-portrait-preview'), src);
+    setImg($('overlay-portrait'), src);
+    const id = String(c.id || '');
+    if (id && window.CSS && CSS.escape) document.querySelectorAll(`img[data-character-id="${CSS.escape(id)}"], img[data-char-id="${CSS.escape(id)}"]`).forEach(img => setImg(img, src));
   }
 
-  document.addEventListener('click', (event) => {
-    const portraitButton = event.target.closest('#portrait-button, #od101-portrait-button, #od102-portrait-button, #od104-portrait-button, .portrait-button');
-    if (portraitButton) {
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopImmediatePropagation();
-      open();
-      return;
-    }
+  function saveAttr(key, value){
+    return mutate(c => {
+      c.attrs = c.attrs || {};
+      c.attrs[key] = Math.max(1, num(value, attrVal(c, key)));
+    });
+  }
+  function card(c, key, label){
+    const value = attrVal(c, key);
+    const pool = modelOf(c) === 'pool';
+    const topValue = pool ? `${value}D` : fmt(attrBonus(c, key));
+    const rollText = pool ? 'Pool Dice' : 'D20';
+    const el = document.createElement('article');
+    el.className = 'od134-attr-card';
+    el.innerHTML = `
+      <div class="od134-attr-head">
+        <strong>${esc(label)}</strong>
+        <span class="od134-attr-bonus">${esc(topValue)}</span>
+      </div>
+      <div class="od134-attr-mid">
+        <span class="od134-attr-kind">${esc(rollText)}</span>
+        <div class="od134-attr-controls">
+          <button type="button" class="od134-attr-step" data-od134-attr="${esc(key)}" data-dir="-1">−</button>
+          <input class="od134-attr-input" data-attr="${esc(key)}" data-od134-attr-input="${esc(key)}" type="number" min="1" value="${esc(value)}" inputmode="numeric">
+          <button type="button" class="od134-attr-step" data-od134-attr="${esc(key)}" data-dir="1">+</button>
+        </div>
+      </div>
+      <button type="button" class="od134-attr-roll roll-attr" data-roll-attr="${esc(key)}">${esc(rollText)}</button>`;
+    return el;
+  }
+  function renderAttrs(c = current()){
+    const grid = $('attributes-grid');
+    if (!grid || !c) return;
+    grid.className = 'attributes-grid od134-attributes-grid';
+    grid.replaceChildren(...ATTRS.map(([key, label]) => card(c, key, label)));
+  }
 
-    if (event.target.closest('#od131-photo-close, #od131-photo-cancel')) {
-      event.preventDefault();
-      close();
+  document.addEventListener('click', event => {
+    if (event.target.closest('#od134-photo-close,#od134-photo-cancel')) { event.preventDefault(); event.stopImmediatePropagation(); closePhoto(); return; }
+    if (event.target.closest('#od134-photo-center')) { event.preventDefault(); event.stopImmediatePropagation(); crop = { x: 50, y: 50, scale: 1 }; applyPreview(); return; }
+    if (event.target.closest('#od134-photo-save')) { event.preventDefault(); event.stopImmediatePropagation(); savePhoto(); return; }
+    const step = event.target.closest('[data-od134-attr]');
+    if (step) {
+      event.preventDefault(); event.stopPropagation(); event.stopImmediatePropagation();
+      const key = step.dataset.od134Attr;
+      const input = document.querySelector(`input[data-od134-attr-input="${CSS.escape(key)}"]`);
+      const value = Math.max(1, num(input?.value, 1) + num(step.dataset.dir, 0));
+      const updated = saveAttr(key, value);
+      renderAttrs(updated || current());
       return;
-    }
-
-    if (event.target.closest('#od131-photo-center')) {
-      event.preventDefault();
-      state = { x: 50, y: 50, scale: 1 };
-      updatePreview();
-      return;
-    }
-
-    if (event.target.closest('#od131-photo-save')) {
-      event.preventDefault();
-      save().then(close);
     }
   }, true);
+  document.addEventListener('input', event => {
+    if (event.target.closest('#od134-photo-normal')) { applyPreview(); return; }
+    const input = event.target.closest('input[data-od134-attr-input]');
+    if (!input) return;
+    event.stopPropagation();
+    saveAttr(input.dataset.od134AttrInput, input.value);
+  }, true);
+  document.addEventListener('change', event => {
+    const input = event.target.closest('input[data-od134-attr-input]');
+    if (!input) return;
+    event.preventDefault(); event.stopImmediatePropagation();
+    const updated = saveAttr(input.dataset.od134AttrInput, input.value);
+    renderAttrs(updated || current());
+  }, true);
 
-  document.addEventListener('input', (event) => {
-    if (event.target.closest('#od131-photo-normal')) updatePreview();
-  });
+  function boot(){
+    killOldPhotoUi();
+    ensurePhotoModal();
+    renderAttrs();
+    syncPortrait();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true }); else boot();
+  setTimeout(boot, 200);
+  setTimeout(boot, 1000);
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => { closeOld(); syncPreview(); }, { once: true });
-  else { closeOld(); syncPreview(); }
-
-  window.od131OpenPhotoModal = open;
+  window.renderAttributes = renderAttrs;
+  window.renderAttributesV134 = renderAttrs;
+  window.od134OpenPhotoModal = openPhoto;
+  window.od134SyncPortrait = syncPortrait;
 })();
-
