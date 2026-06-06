@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>One Dice Mesa Online</title>
+  <link rel="stylesheet" href="block-inventory/style.css" />
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="shortcut icon" href="assets/favicon.png" />
+  <link rel="stylesheet" href="style.css?v=1.46.0" />
+</head>
+<body>
+  <div class="paper-bg"></div>
+
+  <section id="auth-screen" class="screen active">
+    <div class="auth-card manga-panel reveal">
+      <img src="assets/logo-completa.png" class="main-logo" alt="One Dice" />
+      <h1>Mesa Online</h1>
+      <p class="subtitle">Ficha digital, rolagens, chat da mesa e controle de PV/PE.</p>
+
+      <div class="auth-tabs">
+        <button class="tab-btn active" data-auth="login">Entrar</button>
+        <button class="tab-btn" data-auth="register">Criar conta</button>
+      </div>
+
+      <form id="login-form" class="auth-form active">
+        <label>Nick / Login</label>
+        <input id="login-nick" type="text" placeholder="mestre" autocomplete="username" required />
+        <label>Senha</label>
+        <input id="login-password" type="password" placeholder="6 dígitos" inputmode="numeric" maxlength="6" autocomplete="current-password" required />
+        <label class="remember-login-line">
+          <input id="remember-login" type="checkbox" checked />
+          <span>Manter logado neste navegador</span>
+        </label>
+        <button type="submit" class="primary-btn">Entrar</button>
+      </form>
+
+      <form id="register-form" class="auth-form">
+        <label>Nick / Login</label>
+        <input id="register-nick" type="text" placeholder="ex: luiz" autocomplete="username" required />
+        <label>Nome real</label>
+        <input id="register-real-name" type="text" placeholder="Seu nome real" required />
+        <label>Senha de 6 dígitos</label>
+        <input id="register-password" type="password" placeholder="123456" inputmode="numeric" maxlength="6" autocomplete="new-password" required />
+        <label>Confirmar senha</label>
+        <input id="register-password-confirm" type="password" placeholder="repita os 6 dígitos" inputmode="numeric" maxlength="6" autocomplete="new-password" required />
+        <button type="submit" class="primary-btn">Criar Conta</button>
+      </form>
+    </div>
+  </section>
+
+
+
+  <section id="sessions-screen" class="screen">
+    <div class="sessions-shell reveal">
+      <div class="sessions-head manga-panel">
+        <div>
+          <img src="assets/logo-texto.png" class="sessions-logo" alt="One Dice" />
+          <p class="eyebrow">Mesas e Campanhas</p>
+          <h1>Escolha uma Mesa</h1>
+          <p class="subtitle">Crie mesas, entre por código e escolha qual ficha vai usar em cada campanha. Seu papel é definido dentro de cada mesa.</p>
+        </div>
+        <div class="sessions-head-actions">
+          <button id="sessions-menu-btn" class="ghost-btn sessions-menu-btn" type="button" aria-expanded="false" aria-controls="sessions-menu-panel">☰</button>
+          <button id="toggle-account-panel-btn" class="ghost-btn sessions-sheet-toggle" type="button" title="Abrir Minhas Fichas">▣</button>
+          <div id="sessions-menu-panel" class="sessions-menu-panel hidden">
+            <button id="sessions-theme-toggle" class="ghost-btn menu-entry" type="button">Tema Escuro</button>
+            <label class="menu-setting-label">Cor do tema
+              <select id="sessions-accent-select" class="accent-select">
+                <option value="black">Preto</option>
+                <option value="green">Verde</option>
+                <option value="red">Vermelho</option>
+                <option value="blue">Azul</option>
+                <option value="gold">Dourado</option>
+                <option value="purple">Roxo</option>
+              </select>
+            </label>
+            <label class="menu-setting-label">Fonte
+              <select id="sessions-font-select" class="accent-select">
+                <option value="impact">Fonte Manga</option>
+                <option value="medieval">Fonte Medieval</option>
+                <option value="clean">Fonte Limpa</option>
+                <option value="mono">Fonte Técnica</option>
+              </select>
+            </label>
+            <button id="open-account-settings-btn" class="ghost-btn menu-entry" type="button">Configurações da Conta</button>
+            <button id="sessions-logout" class="danger-btn menu-entry" type="button">Sair da Conta</button>
+          </div>
+        </div>
+      </div>
+
+
+      <div id="account-sheets-panel" class="manga-panel account-sheets-panel collapsed-account-panel hidden">
+        <div class="account-sheets-head">
+          <div>
+            <p class="eyebrow">Fichas da Conta</p>
+            <h2>Minhas Fichas</h2>
+            <p class="subtitle">Crie e edite suas fichas antes de entrar em uma mesa. Depois você escolhe qual delas vai usar na campanha.</p>
+          </div>
+          <button id="create-account-character-btn" class="primary-btn" type="button">+ Criar Ficha</button>
+        </div>
+        <div id="account-character-list" class="account-character-list"></div>
+      </div>
+
+      <div class="sessions-actions manga-panel">
+        <div class="session-action-box master-only" id="create-campaign-box">
+          <h2>Criar mesa</h2>
+          <p>Quem cria a mesa vira mestre dela. O sistema gera um código de convite com 5 letras.</p>
+          <div class="session-inline-form">
+            <input id="new-campaign-name" type="text" placeholder="Nome da campanha" />
+            <button id="create-campaign-btn" class="primary-btn" type="button">Criar Mesa</button>
+          </div>
+        </div>
+
+        <div class="session-action-box">
+          <h2>Entrar com código</h2>
+          <p>Use o código enviado pelo mestre. Ao entrar em uma mesa de outra pessoa, você entra como jogador.</p>
+          <div class="session-inline-form">
+            <input id="join-campaign-code" type="text" placeholder="ABCDE" maxlength="5" />
+            <button id="join-campaign-btn" class="ghost-btn" type="button">Entrar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="manga-panel sessions-list-panel">
+        <h2>Minhas Mesas</h2>
+        <div id="campaign-list" class="campaign-list"></div>
+      </div>
+    </div>
+  </section>
+
+  <dialog id="choose-character-modal" class="od-modal">
+    <form method="dialog" class="modal-card">
+      <h2>Escolher ficha para a mesa</h2>
+      <p class="modal-hint">Você pode usar uma ficha existente ou criar uma nova para esta campanha.</p>
+      <div id="choose-character-list" class="choose-character-list"></div>
+      <div class="modal-actions">
+        <button id="create-character-for-campaign" class="primary-btn" type="button">+ Nova Ficha</button>
+        <button class="ghost-btn" value="cancel" type="submit">Cancelar</button>
+      </div>
+    </form>
+  </dialog>
+
+
+  <dialog id="create-first-sheet-modal" class="od-modal">
+    <form method="dialog" class="modal-card">
+      <h2>Você ainda não tem uma ficha</h2>
+      <p class="modal-hint">Quer criar uma agora para entrar na mesa?</p>
+      <div class="modal-actions">
+        <button id="confirm-create-first-sheet" class="primary-btn" type="button">Sim, criar ficha</button>
+        <button id="cancel-create-first-sheet" class="ghost-btn" value="cancel" type="submit">Não nesse momento</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="account-settings-modal" class="od-modal">
+    <form method="dialog" class="modal-card account-settings-card">
+      <h2>Configurações da Conta</h2>
+      <div class="account-settings-grid">
+        <label>Nome da Conta<input id="account-settings-real-name" type="text" maxlength="60" /></label>
+        <label>Login<input id="account-settings-nick" type="text" maxlength="24" /></label>
+        <label>Nova Senha (6 dígitos)<input id="account-settings-password" type="password" inputmode="numeric" maxlength="6" /></label>
+        <label>Confirmar Nova Senha<input id="account-settings-password-confirm" type="password" inputmode="numeric" maxlength="6" /></label>
+        <label class="account-avatar-field">Foto da Conta
+          <input id="account-settings-avatar-file" type="file" accept="image/*" />
+        </label>
+        <div class="account-avatar-preview-wrap">
+          <img id="account-settings-avatar-preview" src="assets/logo.jpg" alt="Prévia da foto da conta" />
+          <small>Essa foto aparece ao lado do seu nome no chat.</small>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button id="save-account-settings-btn" class="primary-btn" type="button">Salvar</button>
+        <button class="ghost-btn" value="cancel" type="submit">Fechar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <section id="app-screen" class="screen">
+    <header id="main-topbar" class="topbar collapsed">
+      <button id="topbar-menu-toggle" class="topbar-menu-toggle" type="button" title="Abrir menu">☰</button>
+      <button id="master-dashboard-dock-btn" class="master-dashboard-dock-btn hidden" type="button" title="Voltar ao painel do mestre">▣</button>
+      <button id="sidebar-dock-btn" class="sidebar-dock-btn hidden" type="button" title="Mostrar jogadores" aria-label="Mostrar jogadores"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 11c1.66 0 2.99-1.57 2.99-3.5S17.66 4 16 4s-3 1.57-3 3.5S14.34 11 16 11Zm-8 0c1.66 0 2.99-1.57 2.99-3.5S9.66 4 8 4 5 5.57 5 7.5 6.34 11 8 11Zm0 2c-2.33 0-7 1.17-7 3.5V20h14v-3.5C15 14.17 10.33 13 8 13Zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.96 1.97 3.45V20h6v-3.5c0-2.33-4.67-3.5-7-3.5Z"/></svg></button>
+      <div id="campaign-mini-card" class="campaign-mini-card hidden"></div>
+
+      <div class="topbar-content">
+        <div class="brand">
+          <img src="assets/logo-texto.png" alt="One Dice" />
+          <div>
+            <strong>One Dice</strong>
+            <span id="current-user-label">Mesa Online</span>
+          </div>
+        </div>
+
+        <nav class="top-actions">
+          <button id="back-to-sessions-btn" class="ghost-btn" type="button">Mesas</button>
+          <button id="campaign-character-btn" class="ghost-btn" type="button">Minha Ficha na Mesa</button>
+          <button id="theme-toggle" class="ghost-btn">Tema Escuro</button>
+          <select id="accent-select" class="accent-select" title="Cor principal">
+            <option value="black">Preto</option>
+            <option value="green">Verde</option>
+            <option value="red">Vermelho</option>
+            <option value="blue">Azul</option>
+            <option value="gold">Dourado</option>
+            <option value="purple">Roxo</option>
+          </select>
+          <select id="font-select" class="accent-select" title="Fonte do site">
+            <option value="impact">Fonte Manga</option>
+            <option value="medieval">Fonte Medieval</option>
+            <option value="clean">Fonte Limpa</option>
+            <option value="mono">Fonte Técnica</option>
+          </select>
+          <button id="toggle-history-btn" class="ghost-btn" type="button">Histórico</button>
+          <button id="copy-sheet-obs-btn" class="ghost-btn" type="button">OBS</button>
+          <button id="logout-btn" class="danger-btn">Sair da Mesa</button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="app-grid">
+      <aside id="players-sidebar" class="sidebar manga-panel reveal">
+        <div class="sidebar-title-row">
+          <h2 id="sidebar-title">Mesa</h2>
+          <button id="sidebar-toggle-btn" class="sidebar-toggle-btn" type="button" title="Minimizar jogadores">—</button>
+        </div>
+        <div id="campaign-info" class="campaign-info-box"></div>
+        <div id="character-list" class="character-list"></div>
+      </aside>
+
+
+      <section id="master-dashboard" class="table-dashboard manga-panel hidden">
+        <div class="dashboard-head">
+          <div>
+            <p class="eyebrow">Painel do Mestre</p>
+            <h2>Controle da Mesa</h2>
+            <p class="subtitle">Acompanhe jogadores, PV, PE, nível, condições e iniciativa sem abrir ficha por ficha.</p>
+          </div>
+          <div class="dashboard-actions">
+            <button id="master-close-sheet" class="ghost-btn small hidden" type="button">Voltar ao Painel</button>
+            <button id="combat-toggle-btn" class="primary-btn small" type="button">Iniciar Combate</button>
+          </div>
+        </div>
+        <div id="master-characters-grid" class="master-characters-grid"></div>
+        <div id="initiative-panel" class="initiative-panel hidden">
+          <div class="section-title-row">
+            <div>
+              <h3>Iniciativa</h3>
+              <p class="helper-text">Quando o combate estiver ativo, rolagens de Iniciativa entram automaticamente aqui. O mestre pode editar valores manuais.</p>
+            </div>
+            <button id="add-manual-initiative" class="ghost-btn small" type="button">+ Manual</button>
+          </div>
+          <div id="initiative-list" class="initiative-list"></div>
+        </div>
+      </section>
+
+      <section id="player-dashboard" class="table-dashboard manga-panel hidden">
+        <div class="dashboard-head">
+          <div>
+            <p class="eyebrow">Grupo</p>
+            <h2>Personagens da Mesa</h2>
+            <p class="subtitle">Visão pública: nome, retrato, PV, PE e condições.</p>
+          </div>
+        </div>
+        <div id="public-party-grid" class="public-party-grid"></div>
+      </section>
+
+      <section class="sheet-area reveal">
+        <div class="sheet manga-panel">
+          <details class="mobile-identity-details" open>
+            <summary class="mobile-identity-summary">
+              <span>Identidade do Personagem</span>
+              <strong>abrir / fechar</strong>
+            </summary>
+            <div class="sheet-header" id="mobile-identity-panel">
+            <div class="portrait-wrap">
+              <button id="portrait-button" class="portrait-button" title="Clique para trocar o retrato" type="button">
+                <img id="char-portrait-preview" src="" alt="Retrato" />
+                <span>Alterar retrato</span>
+              </button>
+              <input id="portrait-url" class="hidden-field" type="url" placeholder="URL do retrato" />
+            </div>
+            <div class="identity-grid">
+              <label>Nome do Personagem<input id="char-name" type="text" /></label>
+              <label>Raça<input id="char-race" type="text" /></label>
+              <label>Classe<input id="char-class" type="text" /></label>
+              <label>Origem<input id="char-origin" type="text" /></label>
+              <label>Nível<input id="char-level" type="number" min="1" /></label>
+              <label>Bônus de Proficiência<input id="prof-bonus" type="number" min="0" /></label>
+              <label>XP<input id="char-xp" type="number" min="0" /></label>
+              <label>Deslocamento<input id="char-speed" type="text" /></label>
+            </div>
+          </div>
+          </details>
+
+          <div class="vitals-grid">
+            <div class="vital-card pv-card">
+              <div class="vital-title">Pontos de Vida</div>
+              <div class="vital-inputs">
+                <input id="pv-current" type="number" />
+                <span>/</span>
+                <input id="pv-max" type="number" />
+              </div>
+              <div class="bar-shell"><div id="pv-bar" class="bar-fill"></div></div>
+            </div>
+            <div class="vital-card pe-card">
+              <div class="vital-title">Pontos de Esforço</div>
+              <div class="vital-inputs">
+                <input id="pe-current" type="number" />
+                <span>/</span>
+                <input id="pe-max" type="number" />
+              </div>
+              <div class="bar-shell"><div id="pe-bar" class="bar-fill"></div></div>
+            </div>
+            <div class="stat-card"><span>Defesa</span><input id="defense" type="number" /><small id="defense-effective-note" class="derived-note">Manual</small></div>
+            <div class="stat-card"><span>Esquiva</span><input id="dodge" type="number" title="Campo manual independente" /><small id="dodge-formula-note" class="derived-note">Manual</small></div>
+          </div>
+
+          <div class="tabs">
+            <button class="sheet-tab active" data-tab="resumo">Resumo</button>
+            <button class="sheet-tab" data-tab="pericias">Perícias</button>
+            <button class="sheet-tab" data-tab="combate">Combate</button>
+            <button class="sheet-tab" data-tab="equipamentos">Equipamentos</button>
+            <button class="sheet-tab" data-tab="magias">Magias</button>
+            <button class="sheet-tab" data-tab="habilidades">Habilidades</button>
+            <button class="sheet-tab" data-tab="transformacoes">Transformações</button>
+          </div>
+
+          <div id="tab-resumo" class="tab-panel active">
+            <h3>Atributos</h3>
+            <div id="attributes-grid" class="attributes-grid"></div>
+            <h3>Resistências</h3>
+            <div id="resistances-grid" class="resistances-grid"></div>
+          </div>
+
+          <div id="tab-pericias" class="tab-panel">
+            <div class="table-tools">
+              <div>
+                <h3>Perícias</h3>
+                <p class="helper-text">No modo compacto aparecem apenas as perícias treinadas. O total soma atributo + bônus manual + proficiência. Com sobrepeso, perícias de Agilidade recebem -5.</p>
+              </div>
+              <button id="compact-skills-toggle" class="ghost-btn small">Mostrar Todas</button>
+            </div>
+            <div id="skills-wrap" class="table-wrap compact"><table id="skills-table"></table></div>
+          </div>
+
+          <div id="tab-combate" class="tab-panel">
+            <div class="section-title-row"><h3>Ataques</h3><button id="add-attack" class="ghost-btn small">+ Ataque</button></div>
+            <div id="attacks-list" class="cards-list"></div>
+          </div>
+
+          <div id="tab-equipamentos" class="tab-panel">
+            <div class="section-title-row">
+              <div>
+                <h3>Inventário</h3>
+                <p class="helper-text">Use o modo simples em texto ou alterne para o inventário modular por slots.</p>
+              </div>
+              <button id="block-inventory-toggle" class="ghost-btn small" type="button">Modo Block Inventory</button>
+            </div>
+
+            <div class="equipment-grid inventory-summary-grid">
+              <label>Dinheiro<input id="money" type="text" /></label>
+              <label class="weight-field">Peso Atual<input id="weight-current" type="text" readonly /></label>
+              <label class="weight-field">Peso Máximo<input id="weight-max" type="number" /></label>
+            </div>
+            <div id="weight-status" class="weight-status-line">Peso dentro do limite.</div>
+
+            <div id="simple-inventory-panel" class="inventory-mode-panel active">
+              <div class="section-title-row inventory-text-head">
+                <div>
+                  <h3>Inventário em Texto</h3>
+                  <p class="helper-text">Adicione itens em blocos com peso e uma descrição curta.</p>
+                </div>
+                <div class="inventory-text-actions">
+                  <button id="simple-inventory-compact-toggle" class="ghost-btn small" type="button">Reduzir Cards</button>
+                  <button id="add-simple-inventory-item" class="ghost-btn small" type="button">+ Item</button>
+                </div>
+              </div>
+              <div id="simple-inventory-list" class="simple-inventory-list"></div>
+            </div>
+
+            <div id="block-inventory-panel" class="inventory-mode-panel">
+              <div class="advanced-inventory-shell manga-panel inner-panel integrated-block-shell">
+                <header class="topbar">
+      <div class="topbar-left">
+        <div class="brand">
+          <h1 id="brandTitle">Inventário Modular</h1>
+          <p id="brandSubtitle">Slots, corpo e prateleira</p>
+        </div>
+        <div class="character-avatar-card hidden">
+          <label for="characterAvatarInput" class="character-avatar-label" title="Adicionar ícone do personagem">
+            <div id="characterAvatarPreview" class="character-avatar-preview"><span>+</span></div>
+          </label>
+          <input id="characterAvatarInput" type="file" accept="image/png,image/*" hidden />
+        </div>
+      </div>
+
+      <div class="toolbar inventory-command-bar">
+        <button class="btn" id="openAddItemDrawerBtn" type="button">+ Item</button>
+        <button class="btn" id="openBackpackDrawerBtn" type="button">+ Mochila</button>
+        <span class="command-separator"></span>
+        <button class="btn secondary" id="rotateLeftBtn" type="button" title="Tecla padrão: Q">↺</button>
+        <button class="btn secondary" id="rotateRightBtn" type="button" title="Tecla padrão: R">↻</button>
+        <button class="btn secondary danger-btn" id="deleteItemBtn" type="button">Excluir</button>
+        <button class="icon-btn" id="settingsToggleBtn" type="button" title="Configurações, slots e controles">⚙</button>
+        <span id="saveStatus" class="save-status">Tudo salvo</span>
+        <span id="loggedUserText" class="logged-user-text"></span>
+        <button class="btn secondary danger-btn hidden" id="logoutBtn" type="button">Sair</button>
+      </div>
+    </header>
+
+    <div id="settingsPanel" class="settings-panel hidden">
+      <div class="settings-card">
+        <div class="settings-head">
+          <h3>Configurações</h3>
+          <button id="closeSettingsBtn" class="btn secondary" type="button">Fechar</button>
+        </div>
+
+        <div class="settings-section utility-section hidden">
+          <h4>Aparência do módulo</h4>
+          <label for="brandTitleInput" class="field-label">Título</label>
+          <input id="brandTitleInput" class="field-input" type="text" placeholder="Título" />
+
+          <label for="brandSubtitleInput" class="field-label">Subtítulo</label>
+          <input id="brandSubtitleInput" class="field-input" type="text" placeholder="Subtítulo" />
+
+          <div class="toolbar mini-toolbar">
+            <button id="saveBrandTextBtn" class="btn" type="button">Salvar título</button>
+          </div>
+        </div>
+
+        <div class="settings-section utility-section hidden">
+          <h4>Tema</h4>
+          <div class="theme-switcher">
+            <button class="theme-dot active" data-theme="blue" type="button" title="Azul"></button>
+            <button class="theme-dot" data-theme="green" type="button" title="Verde"></button>
+            <button class="theme-dot" data-theme="red" type="button" title="Vermelho"></button>
+            <button class="theme-dot" data-theme="purple" type="button" title="Roxo"></button>
+          </div>
+        </div>
+
+        <div class="settings-section inventory-actions-settings">
+          <h4>Ações do inventário</h4>
+          <div class="toolbar mini-toolbar settings-action-grid">
+            <button class="btn secondary" id="toggleSlotsLockBtn" type="button">🔒 Slots</button>
+            <button class="btn secondary" id="unequipBtn" type="button">Desequipar</button>
+            <button class="btn secondary" id="moveToShelfBtn" type="button">Prateleira</button>
+            <button class="btn secondary" id="resetBtn" type="button">Resetar</button>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <h4>Som</h4>
+          <label class="switch-line">
+            <input id="soundEnabledInput" type="checkbox" checked />
+            <span>Ativar efeitos sonoros</span>
+          </label>
+        </div>
+
+        <div class="settings-section">
+          <h4>Controles</h4>
+          <div class="toolbar mini-toolbar">
+            <button id="toggleControlsPanelBtn" class="btn secondary" type="button">Minimizar / Expandir</button>
+          </div>
+
+          <div id="controlsConfigPanel" class="controls-config-panel">
+            <div class="keybind-warning" id="keybindWarning">Nenhum conflito.</div>
+            <div id="keybindsList" class="keybinds-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="confirmModal" class="confirm-modal hidden">
+      <div class="confirm-card">
+        <h3>Excluir item</h3>
+        <p id="confirmModalText">Tem certeza que deseja excluir este item?</p>
+        <div class="toolbar">
+          <button id="confirmDeleteBtn" class="btn danger-btn" type="button">Excluir</button>
+          <button id="cancelDeleteBtn" class="btn secondary" type="button">Cancelar</button>
+        </div>
+      </div>
+    </div>
+
+    <section class="layout">
+      <aside id="leftPanel" class="panel left-panel">
+        <div class="panel-topline">
+          <h2>Ajustes</h2>
+          <button class="collapse-btn" id="toggleLeftPanelBtn" type="button">—</button>
+        </div>
+
+        <div id="leftPanelBody" class="panel-body card-stack">
+          <section class="card dock-card" data-card-id="strength">
+            <div class="dock-card-head">
+              <h3>Força</h3>
+              <div class="dock-card-actions">
+                <button class="card-move-btn" data-move="up" type="button">↑</button>
+                <button class="card-move-btn" data-move="down" type="button">↓</button>
+                <button class="card-toggle-btn" type="button">—</button>
+              </div>
+            </div>
+            <div class="dock-card-body">
+              <label for="strengthInput" class="field-label">Força</label>
+              <input
+                id="strengthInput"
+                class="field-input"
+                type="number"
+                min="1"
+                step="1"
+                value="8"
+              />
+              <p class="hint">
+                Menor que 8 = 1 slot<br />
+                8–9 = 2 slots<br />
+                10–11 = 4 slots<br />
+                12–13 = 8 slots<br />
+                14–15 = 12 slots
+              </p>
+            </div>
+          </section>
+
+          <section class="card dock-card" data-card-id="description">
+            <div class="dock-card-head">
+              <h3>Descrição</h3>
+              <div class="dock-card-actions">
+                <button class="card-move-btn" data-move="up" type="button">↑</button>
+                <button class="card-move-btn" data-move="down" type="button">↓</button>
+                <button class="card-toggle-btn" type="button">—</button>
+              </div>
+            </div>
+            <div class="dock-card-body">
+              <div id="selectedInfo" class="hint">Nenhum item selecionado.</div>
+            </div>
+          </section>
+
+          <section class="card dock-card" data-card-id="editItem">
+            <div class="dock-card-head">
+              <h3>Editar item selecionado</h3>
+              <div class="dock-card-actions">
+                <button class="card-move-btn" data-move="up" type="button">↑</button>
+                <button class="card-move-btn" data-move="down" type="button">↓</button>
+                <button class="card-toggle-btn" type="button">—</button>
+              </div>
+            </div>
+            <div class="dock-card-body">
+              <label for="itemNameInput" class="field-label">Nome</label>
+              <input id="itemNameInput" class="field-input" type="text" placeholder="Nome do item" />
+
+              <label for="itemDescInput" class="field-label">Descrição</label>
+              <textarea id="itemDescInput" class="field-textarea" rows="5" placeholder="Descrição do item"></textarea>
+
+              <div class="toolbar mini-toolbar">
+                <button class="btn" id="saveItemTextBtn" type="button">Salvar texto</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="card dock-card tool-drawer hidden" data-card-id="addItem">
+            <div class="dock-card-head">
+              <h3>Adicionar item</h3>
+              <div class="dock-card-actions"><button class="drawer-close-btn" type="button" data-close-drawer="addItem">×</button>
+                <button class="card-move-btn" data-move="up" type="button">↑</button>
+                <button class="card-move-btn" data-move="down" type="button">↓</button>
+                <button class="card-toggle-btn" type="button">—</button>
+              </div>
+            </div>
+            <div class="dock-card-body">
+              <label for="newItemNameInput" class="field-label">Nome</label>
+              <input id="newItemNameInput" class="field-input" type="text" placeholder="Nome do item" />
+
+              <label for="newItemDescInput" class="field-label">Descrição base</label>
+              <textarea id="newItemDescInput" class="field-textarea" rows="4" placeholder="Descrição do item"></textarea>
+
+              <label for="newItemWidthInput" class="field-label">Largura</label>
+              <input id="newItemWidthInput" class="field-input" type="number" min="1" max="6" value="1" />
+
+              <label for="newItemHeightInput" class="field-label">Altura</label>
+              <input id="newItemHeightInput" class="field-input" type="number" min="1" max="6" value="1" />
+
+              <label for="newItemTypeInput" class="field-label">Tipo</label>
+              <select id="newItemTypeInput" class="field-input">
+                <option value="misc">Geral</option>
+                <option value="cabeca">Cabeça</option>
+                <option value="bracos">Braços</option>
+                <option value="tronco">Tronco</option>
+                <option value="pernas">Pernas</option>
+              </select>
+
+              <label for="newItemImageInput" class="field-label">PNG do item</label>
+              <input id="newItemImageInput" class="field-input" type="file" accept="image/png,image/*" />
+
+              <div class="toolbar mini-toolbar">
+                <button class="btn" id="addItemBtn" type="button">Adicionar item</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="card dock-card tool-drawer hidden" data-card-id="backpack">
+            <div class="dock-card-head">
+              <h3>Criar mochila</h3>
+              <div class="dock-card-actions"><button class="drawer-close-btn" type="button" data-close-drawer="backpack">×</button>
+                <button class="card-move-btn" data-move="up" type="button">↑</button>
+                <button class="card-move-btn" data-move="down" type="button">↓</button>
+                <button class="card-toggle-btn" type="button">—</button>
+              </div>
+            </div>
+            <div class="dock-card-body">
+              <div class="hint">
+                Clique nas células para desenhar o formato da mochila.<br />
+                Depois clique em <strong>Adicionar mochila</strong>.
+              </div>
+
+              <div id="shapeEditor" class="shape-editor"></div>
+
+              <div class="toolbar mini-toolbar">
+                <button class="btn" id="clearShapeBtn" type="button">Limpar desenho</button>
+                <button class="btn secondary" id="fillRectShapeBtn" type="button">Retângulo 2x2</button>
+              </div>
+
+              <div class="toolbar mini-toolbar">
+                <button class="btn" id="addBackpackBtn" type="button">Adicionar mochila</button>
+                <button class="btn secondary" id="removeBackpackBtn" type="button">Remover mochila</button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </aside>
+
+      <main class="panel center-panel">
+        <div class="section-head">
+          <div>
+            <h2>Slots</h2>
+            <div class="hint">
+              Os slots fixos ficam em A1 e A2. Os grupos de slots e mochilas só movem com o cadeado destravado.
+            </div>
+          </div>
+        </div>
+
+        <div class="inventory-stage">
+          <div class="inventory-board">
+            <div id="inventoryGrid" class="inventory-grid"></div>
+            <div id="inventoryItemsLayer" class="inventory-items-layer"></div>
+          </div>
+        </div>
+
+      </main>
+
+      <aside id="rightPanel" class="panel right-panel">
+        <div class="panel-topline">
+          <h2>Corpo</h2>
+          <button class="collapse-btn" id="toggleRightPanelBtn" type="button">—</button>
+        </div>
+
+        <div class="panel-body">
+          <div class="body-stage">
+            <div class="body-silhouette">
+              <div class="body-core"></div>
+
+              <div class="equip-slot slot-head" data-slot="cabeca">Cabeça</div>
+              <div class="equip-slot slot-arms" data-slot="bracos">Braços</div>
+              <div class="equip-slot slot-torso" data-slot="tronco">Tronco</div>
+              <div class="equip-slot slot-legs" data-slot="pernas">Pernas</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <section class="panel shelf-panel">
+        <div class="section-head">
+          <div>
+            <h2>Prateleira</h2>
+            <div class="hint">Itens novos e itens desequipados vão para cá.</div>
+          </div>
+        </div>
+        <div class="shelf-stage">
+          <div id="shelfArea" class="shelf-area"></div>
+        </div>
+      </section>
+    </section>
+              </div>
+            </div>
+          </div>
+
+          <div id="tab-magias" class="tab-panel">
+            <div class="magic-grid">
+              <label>Classe<input id="caster-class" type="text" /></label>
+              <label>Identidade de Conjurador<input id="caster-identity" type="text" /></label>
+              <label>Afinidade Primária<input id="affinity-primary" type="text" /></label>
+              <label>Afinidade Secundária<input id="affinity-secondary" type="text" /></label>
+              <label>Atributo-chave<input id="key-attribute" type="text" /></label>
+              <label>Bônus de Poder<input id="power-bonus" type="number" /></label>
+              <label>Classe de Conjuração<input id="spell-dc" type="number" /></label>
+              <label>Limite de Poder<input id="power-limit" type="number" /></label>
+            </div>
+            <div class="section-title-row"><h3>Magias</h3><button id="add-spell" class="ghost-btn small">+ Magia</button></div>
+            <div id="spells-list" class="cards-list"></div>
+          </div>
+
+          <div id="tab-habilidades" class="tab-panel">
+            <div class="section-title-row">
+              <div>
+                <h3>Habilidades</h3>
+                <p class="helper-text">Cards de habilidades com custo, ação e descrição ocultável.</p>
+              </div>
+              <button id="add-ability" class="ghost-btn small">+ Habilidade</button>
+            </div>
+            <div class="ability-tools">
+              <button id="toggle-ability-desc" class="ghost-btn small" type="button">Ocultar descrições</button>
+            </div>
+            <div id="abilities-list" class="cards-list ability-cards-list"></div>
+          </div>
+
+          <div id="tab-transformacoes" class="tab-panel">
+            <div class="section-title-row">
+              <div>
+                <h3>Transformações</h3>
+                <p class="helper-text">Cada transformação é uma segunda ficha completa e editável. Ela não altera a forma base.</p>
+              </div>
+              <button id="create-transformation-btn" class="ghost-btn small" type="button">+ Transformação</button>
+            </div>
+            <div id="active-form-banner" class="form-banner hidden"></div>
+            <div id="transformations-list" class="cards-list transformation-cards-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="right-panel reveal">
+        <section class="dice-box manga-panel">
+          <h2>Rolagens</h2>
+          <div class="dice-row">
+            <select id="dice-type">
+              <option value="4">D4</option>
+              <option value="6">D6</option>
+              <option value="8">D8</option>
+              <option value="10">D10</option>
+              <option value="12">D12</option>
+              <option value="20" selected>D20</option>
+              <option value="100">D100</option>
+            </select>
+            <input id="dice-qty" type="number" value="1" min="1" max="20" />
+            <input id="dice-mod" type="number" value="0" />
+          </div>
+          <button id="roll-dice" class="primary-btn">Rolar Dados</button>
+          <div id="last-roll" class="last-roll">—</div>
+        </section>
+
+        <section class="session-history-box manga-panel hidden" id="session-history-box">
+          <div class="chat-title-row"><h2>Histórico Curto</h2><button class="chat-minimize-btn" data-toggle-chat="session-history-box" type="button" title="Minimizar histórico">—</button></div>
+          <div id="session-history-list" class="session-history-list"></div>
+        </section>
+
+        <section class="chat-box manga-panel split-chat-box" id="conversation-chat-box">
+          <div class="chat-title-row"><h2>Chat de Conversa</h2><button class="chat-minimize-btn" data-toggle-chat="conversation-chat-box" type="button" title="Minimizar chat">—</button></div>
+          <div id="chat-log" class="chat-log conversation-log"></div>
+          <form id="chat-form" class="chat-form">
+            <input id="chat-input" type="text" placeholder="Mensagem para a mesa..." autocomplete="off" />
+            <button class="primary-btn small">Enviar</button>
+          </form>
+        </section>
+
+        <section class="chat-box manga-panel split-chat-box roll-chat-box" id="rolls-chat-box">
+          <div class="chat-title-row"><h2>Chat de Rolagens</h2><button class="chat-minimize-btn" data-toggle-chat="rolls-chat-box" type="button" title="Minimizar chat">—</button></div>
+          <div id="roll-chat-log" class="chat-log roll-log"></div>
+        </section>
+      </aside>
+    </main>
+    <nav id="mobile-bottom-nav" class="mobile-bottom-nav" aria-label="Navegação mobile">
+      <button type="button" data-mobile-jump=".sheet-area">Ficha</button>
+      <button type="button" data-mobile-tab="pericias">Perícias</button>
+      <button type="button" data-mobile-jump=".right-panel.reveal">Dados</button>
+      <button type="button" data-mobile-jump="#conversation-chat-box">Chat</button>
+      <button type="button" data-mobile-jump="#players-sidebar">Mesa</button>
+    </nav>
+  </section>
+
+  <section id="overlay-screen" class="overlay-mode">
+    <div class="overlay-card">
+      <img id="overlay-portrait" src="" alt="Portrait" />
+      <div class="overlay-info">
+        <strong id="overlay-name">Personagem</strong>
+        <div class="overlay-bar"><span>PV</span><div><i id="overlay-pv"></i></div><b id="overlay-pv-text"></b></div>
+        <div class="overlay-bar"><span>PE</span><div><i id="overlay-pe"></i></div><b id="overlay-pe-text"></b></div>
+      </div>
+    </div>
+    <button id="close-overlay" class="ghost-btn overlay-close">Voltar</button>
+  </section>
+
+  <template id="attack-template">
+    <article class="mini-card attack-card">
+      <input class="attack-name" placeholder="Nome do ataque" />
+      <input class="attack-bonus" type="number" placeholder="Bônus" />
+      <input class="attack-damage" placeholder="Dano: 1d8+2" />
+      <input class="attack-crit" placeholder="Crítico: 2d8+2" />
+      <textarea class="attack-desc" placeholder="Descrição"></textarea>
+      <button class="roll-attack primary-btn small">Rolar ataque</button>
+      <button class="remove-card danger-btn small">Remover</button>
+    </article>
+  </template>
+
+  <template id="spell-template">
+    <article class="mini-card spell-card spell-card-layout">
+      <input class="spell-name spell-name-full" placeholder="Nome da magia" />
+
+      <div class="spell-fields-grid">
+        <label>Círculo<input class="spell-circle" placeholder="Ex: 1º" /></label>
+        <label>Execução<input class="spell-exec" placeholder="Ex: Ação" /></label>
+        <label>Alcance<input class="spell-range" placeholder="Ex: 9 m" /></label>
+        <label>Custo<input class="spell-cost" placeholder="Ex: 2 PE" /></label>
+        <label>Componentes<input class="spell-components" placeholder="Ex: V, S, M" /></label>
+      </div>
+
+      <label class="spell-text-label">Descrição
+        <textarea class="spell-description" placeholder="Descrição da magia"></textarea>
+      </label>
+
+      <label class="spell-text-label">Aprimoramentos
+        <textarea class="spell-upgrades" placeholder="Aprimoramentos, versões superiores ou gastos extras"></textarea>
+      </label>
+
+      <button class="remove-card danger-btn small">Remover</button>
+    </article>
+  </template>
+
+  <template id="ability-template">
+    <article class="mini-card ability-card ability-card-layout">
+      <input class="ability-name ability-name-full" placeholder="Nome da habilidade" />
+
+      <div class="ability-fields-grid ability-fields-grid-v27">
+        <label>Custo
+          <div class="ability-cost-row">
+            <button class="ghost-btn small ability-cost-minus" type="button">−</button>
+            <input class="ability-cost-amount" type="number" min="0" step="1" value="0" />
+            <button class="ghost-btn small ability-cost-plus" type="button">+</button>
+          </div>
+        </label>
+        <label>Tipo de custo
+          <select class="ability-cost-resource">
+            <option value="PE">PE</option>
+            <option value="PV">PV</option>
+          </select>
+        </label>
+        <label>Bônus<input class="ability-bonus" placeholder="Ex: +2, +1d6, vantagem" /></label>
+        <label>Ação
+          <select class="ability-action">
+            <option value="Padrão">Padrão</option>
+            <option value="Movimento">Movimento</option>
+            <option value="Reação">Reação</option>
+            <option value="Livre">Livre</option>
+          </select>
+        </label>
+      </div>
+
+      <label class="ability-text-label ability-description-wrap">Descrição
+        <textarea class="ability-description" placeholder="Descrição da habilidade"></textarea>
+      </label>
+
+      <div class="ability-card-actions">
+        <button class="use-ability primary-btn small" type="button">Usar</button>
+        <button class="remove-card danger-btn small" type="button">Remover</button>
+      </div>
+    </article>
+  </template>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="script.js?v=1.46.0"></script>
+  <script type="module" src="block-inventory/script.js"></script>
+</body>
+</html>
