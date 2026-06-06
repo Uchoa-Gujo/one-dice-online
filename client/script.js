@@ -5,7 +5,7 @@
 ========================= */
 (function od139EarlyGuards(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.49.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.50.0';
   if (!window.CSS) window.CSS = {};
   if (typeof window.CSS.escape !== 'function') {
     window.CSS.escape = function(value) {
@@ -3004,7 +3004,7 @@ function od44EnsureSocket() {
   if (od44Socket) {
     try { od44Socket.disconnect(); } catch (_) {}
   }
-  od44Socket = io({ auth: { token: od42Token() }, transports: ['websocket', 'polling'] });
+  od44Socket = io({ auth: { token: od42Token() }, transports: ['websocket'], reconnectionAttempts: 3, timeout: 5000 });
 
   od44Socket.on('connect', () => {
     if (currentCampaignId) od44Socket.emit('table:join', { tableId: currentCampaignId });
@@ -7756,2327 +7756,8 @@ function od66InventoryMutationUnlockSoon() {
 })();
 
 
-/* =========================
-   V98 - Correções do primeiro beta em campanha/ficha
-   - Perícias não desmarcam outras perícias e não mudam de aba automaticamente
-   - Campos de texto não perdem foco por recarregamento ao salvar em mesa
-   - Esquiva: base 10 + AGI + Reflexo, mas permite ajuste manual
-   - Atributos com botões +/- próprios e sem setas nativas do input
-   - Sair da mesa sempre volta para Início
-========================= */
-(function od98BetaCampaignSheetFixes(){
-  const $ = id => document.getElementById(id);
-  const editableSelector = 'input:not([type="checkbox"]):not([type="radio"]), textarea, select, [contenteditable="true"]';
-  let saving = false;
 
-  function safeEscape(value) {
-    try { return typeof escapeHtml === 'function' ? escapeHtml(value ?? '') : String(value ?? ''); }
-    catch (_) { return String(value ?? ''); }
-  }
-
-  function isAppActive() {
-    return !!document.getElementById('app-screen')?.classList.contains('active');
-  }
-
-  function activeEditable() {
-    const el = document.activeElement;
-    return !!(el && el.matches && el.matches(editableSelector));
-  }
-
-  function attrShort(attrKey) {
-    const map = { forca: 'FOR', agilidade: 'AGI', vigor: 'VIG', intelecto: 'INT', presenca: 'PRE' };
-    return map[attrKey] || String(attrKey || '').slice(0, 3).toUpperCase();
-  }
-
-  function dodgeFormula(char) {
-    if (!char) return 10;
-    const agi = Number(char.attrs?.agilidade ?? 10);
-    const agilityMod = (typeof attrMod === 'function' ? attrMod(agi) : Math.floor((agi - 10) / 2));
-    const reflex = typeof skillTotal === 'function' ? skillTotal(char, 'Reflexo', 'agilidade') : 0;
-    return 10 + agilityMod + reflex;
-  }
-
-  window.od98DodgeFormula = dodgeFormula;
-
-  if (typeof calculatedDodge === 'function') {
-    calculatedDodge = function(char = currentChar()) {
-      if (!char) return 0;
-      if (char.dodgeManual === true || char.dodgeLocked === true) {
-        const manual = Number(char.dodge);
-        if (Number.isFinite(manual)) return manual;
-      }
-      return dodgeFormula(char);
-    };
-  }
-
-  if (typeof syncDodgeField === 'function') {
-    syncDodgeField = function(char = currentChar(), force = false) {
-      const field = $('dodge');
-      if (!field || !char) return;
-      if (document.activeElement === field && !force) return;
-      field.value = calculatedDodge(char);
-    };
-  }
-
-  if (typeof updateDerivedStatsDisplay === 'function') {
-    const baseUpdateDerivedStatsDisplay = updateDerivedStatsDisplay;
-    updateDerivedStatsDisplay = function(char = currentChar()) {
-      baseUpdateDerivedStatsDisplay(char);
-      const dodgeNote = $('dodge-formula-note');
-      if (dodgeNote && char) {
-        const agi = typeof attrMod === 'function' ? attrMod(char.attrs?.agilidade ?? 10) : 0;
-        const reflex = typeof skillTotal === 'function' ? skillTotal(char, 'Reflexo', 'agilidade') : 0;
-        const manual = char.dodgeManual === true || char.dodgeLocked === true;
-        dodgeNote.textContent = `10 + AGI ${typeof formatMod === 'function' ? formatMod(agi) : agi} + Reflexo ${typeof formatMod === 'function' ? formatMod(reflex) : reflex}${manual ? ' · ajuste manual ativo' : ''}`;
-      }
-    };
-  }
-
-  function skillCard(char, skillName, attrKey) {
-    char.skills = char.skills || {};
-    const skill = char.skills[skillName] || { trained: false, bonus: 0, disadvantage: false };
-    const checked = !!skill.trained;
-    const baseMod = (typeof attrMod === 'function' ? attrMod(char.attrs?.[attrKey] ?? 10) : 0) + (typeof agilityOverweightPenalty === 'function' ? agilityOverweightPenalty(char, attrKey) : 0);
-    const prof = checked ? Number(char.profBonus || 0) : 0;
-    const bonus = Number(skill.bonus || 0);
-    const total = baseMod + prof + bonus;
-    return `
-      <article class="od98-skill-card od88-skill-card od79-skill-card ${checked ? 'is-trained' : 'is-untrained'}" data-od98-skill-card="${safeEscape(skillName)}">
-        <div class="od98-skill-top od88-skill-top">
-          <label class="od98-skill-check od88-skill-check od79-skill-check" title="Marcar como treinada">
-            <input data-od98-skill-trained="${safeEscape(skillName)}" type="checkbox" ${checked ? 'checked' : ''}>
-            <span>${checked ? 'Treinada' : 'Treinar'}</span>
-          </label>
-          <span class="od98-skill-attr od88-skill-attr od79-skill-attr">${safeEscape(attrShort(attrKey))}</span>
-        </div>
-        <strong class="od98-skill-name od88-skill-name od79-skill-name">${safeEscape(skillName)}</strong>
-        <div class="od98-skill-math od88-skill-math">
-          <span><small>Mod</small><b>${safeEscape(typeof formatMod === 'function' ? formatMod(baseMod) : baseMod)}</b></span>
-          <span><small>Prof.</small><b>${safeEscape(typeof formatMod === 'function' ? formatMod(prof) : prof)}</b></span>
-          <label><small>Bônus</small><input data-od98-skill-bonus="${safeEscape(skillName)}" type="number" value="${safeEscape(bonus)}"></label>
-          <span><small>Total</small><b class="od98-skill-total od88-skill-total od79-skill-total">${safeEscape(typeof formatMod === 'function' ? formatMod(total) : total)}</b></span>
-        </div>
-        <button class="primary-btn small roll-skill od98-skill-roll od88-skill-roll od79-skill-roll" data-skill="${safeEscape(skillName)}" data-skill-attr="${safeEscape(attrKey)}">D20</button>
-      </article>`;
-  }
-
-  if (typeof renderSkills === 'function') {
-    renderSkills = function(char) {
-      const wrap = $('skills-wrap');
-      if (!wrap || !char || !Array.isArray(SKILLS)) return;
-      char.skills = char.skills || {};
-      window.od79SkillTab = window.od79SkillTab === 'untrained' ? 'untrained' : 'trained';
-      const trained = SKILLS.filter(([name]) => !!char.skills?.[name]?.trained);
-      const untrained = SKILLS.filter(([name]) => !char.skills?.[name]?.trained);
-      const active = window.od79SkillTab;
-      const rows = active === 'trained' ? trained : untrained;
-      const title = active === 'trained' ? 'Perícias Treinadas' : 'Perícias Não Treinadas';
-      const empty = active === 'trained' ? 'Nenhuma perícia treinada marcada.' : 'Todas as perícias estão treinadas.';
-      wrap.className = 'table-wrap od79-skills-wrap od88-skills-wrap od98-skills-wrap';
-      wrap.innerHTML = `
-        <div class="od98-skills-shell od88-skills-shell od79-skills-shell">
-          <div class="od98-skills-tabs od88-skills-tabs od79-skills-tabs" role="tablist" aria-label="Filtro de perícias">
-            <button type="button" class="od98-skill-tab od88-skill-tab od79-skill-tab ${active === 'trained' ? 'active' : ''}" data-od98-skill-tab="trained">Treinadas <span>${trained.length}</span></button>
-            <button type="button" class="od98-skill-tab od88-skill-tab od79-skill-tab ${active === 'untrained' ? 'active' : ''}" data-od98-skill-tab="untrained">Não Treinadas <span>${untrained.length}</span></button>
-          </div>
-          <section class="od98-skill-panel od88-skill-panel od79-skill-panel">
-            <header class="od98-skill-panel-head od88-skill-panel-head od79-skill-panel-head">
-              <h4>${safeEscape(title)}</h4>
-              <small>Marcar ou desmarcar não muda de aba automaticamente.</small>
-            </header>
-            <div class="od98-skills-card-grid od88-skills-card-grid od79-skills-card-grid">
-              ${rows.length ? rows.map(([n, a]) => skillCard(char, n, a)).join('') : `<div class="od98-skill-empty od88-skill-empty od79-skill-empty">${safeEscape(empty)}</div>`}
-            </div>
-          </section>
-        </div>`;
-      const oldBtn = $('compact-skills-toggle');
-      if (oldBtn) oldBtn.remove();
-    };
-  }
-
-  function collectVisibleSkillValues() {
-    const values = {};
-    document.querySelectorAll('[data-od98-skill-trained]').forEach(input => {
-      const name = input.dataset.od98SkillTrained;
-      if (!name) return;
-      values[name] = values[name] || {};
-      values[name].trained = !!input.checked;
-    });
-    document.querySelectorAll('[data-od98-skill-bonus]').forEach(input => {
-      const name = input.dataset.od98SkillBonus;
-      if (!name) return;
-      values[name] = values[name] || {};
-      values[name].bonus = Number(input.value || 0);
-    });
-    return values;
-  }
-
-  function applyVisibleSkillValues(char, values) {
-    if (!char) return;
-    char.skills = char.skills || {};
-    Object.entries(values || {}).forEach(([name, patch]) => {
-      char.skills[name] = char.skills[name] || { trained: false, bonus: 0, disadvantage: false };
-      if (Object.prototype.hasOwnProperty.call(patch, 'trained')) char.skills[name].trained = !!patch.trained;
-      if (Object.prototype.hasOwnProperty.call(patch, 'bonus')) char.skills[name].bonus = Number(patch.bonus || 0);
-      if (!Object.prototype.hasOwnProperty.call(char.skills[name], 'disadvantage')) char.skills[name].disadvantage = false;
-    });
-  }
-
-  function readDodgeIntoChar(char) {
-    if (!char) return;
-    const field = $('dodge');
-    if (!field) return;
-    const raw = Number(field.value || 0);
-    const formula = dodgeFormula(char);
-    char.dodge = Number.isFinite(raw) ? raw : formula;
-    char.dodgeManual = Number.isFinite(raw) && raw !== formula;
-    char.dodgeLocked = char.dodgeManual;
-  }
-
-  const baseSave = typeof saveCurrentCharacter === 'function' ? saveCurrentCharacter : null;
-  if (baseSave && !baseSave.__od98Wrapped) {
-    saveCurrentCharacter = function od98SaveCurrentCharacter() {
-      if (saving) return baseSave.apply(this, arguments);
-      const before = typeof currentChar === 'function' ? currentChar() : null;
-      const beforeSkills = before?.skills ? JSON.parse(JSON.stringify(before.skills)) : {};
-      const visibleSkills = collectVisibleSkillValues();
-      saving = true;
-      try {
-        const result = baseSave.apply(this, arguments);
-        const current = typeof currentChar === 'function' ? currentChar() : null;
-        if (current) {
-          updateChar(char => {
-            char.skills = beforeSkills || char.skills || {};
-            applyVisibleSkillValues(char, visibleSkills);
-            readDodgeIntoChar(char);
-            const portraitField = $('portrait-url');
-            if (portraitField) char.portrait = portraitField.value || '';
-          });
-          const fixed = currentChar();
-          if (fixed && typeof od44SaveCharacterOnline === 'function') {
-            od44SaveCharacterOnline(fixed).catch(error => console.warn('Falha ao salvar ficha online v98:', error));
-          } else if (fixed && typeof od42ScheduleCharacterSave === 'function') {
-            od42ScheduleCharacterSave(fixed);
-          }
-        }
-        return result;
-      } finally {
-        saving = false;
-      }
-    };
-    saveCurrentCharacter.__od98Wrapped = true;
-  }
-
-  if (typeof loadCharacter === 'function') {
-    const baseLoad = loadCharacter;
-    loadCharacter = function od98LoadCharacter(id) {
-      if (isAppActive() && String(id) === String(currentCharacterId || '') && activeEditable()) {
-        const char = typeof currentChar === 'function' ? currentChar() : null;
-        if (char) {
-          updateBars(char);
-          updateOverlay(char);
-          updateDerivedStatsDisplay(char);
-        }
-        return;
-      }
-      const result = baseLoad.apply(this, arguments);
-      const char = typeof currentChar === 'function' ? currentChar() : null;
-      if (char) {
-        const field = $('dodge');
-        if (field) field.value = calculatedDodge(char);
-        updateDerivedStatsDisplay(char);
-      }
-      return result;
-    };
-  }
-
-  if (typeof renderAttributes === 'function') {
-    renderAttributes = function(char) {
-      const grid = $('attributes-grid');
-      if (!grid || !char) return;
-      const labels = { forca: 'Força', agilidade: 'Agilidade', vigor: 'Vigor', intelecto: 'Intelecto', presenca: 'Presença' };
-      grid.innerHTML = '';
-      Object.entries(labels).forEach(([key, label]) => {
-        const value = Number(char.attrs?.[key] ?? 10);
-        const card = document.createElement('div');
-        card.className = 'attr-card-v2 od98-attr-card';
-        card.innerHTML = `
-          <div class="attr-head">
-            <div class="attr-name">${safeEscape(label)}</div>
-            <div class="attr-mod">${safeEscape(typeof formatMod === 'function' ? formatMod(attrMod(value)) : value)}</div>
-            <div class="attr-help">valor ${safeEscape(value)} · fórmula D&D</div>
-          </div>
-          <div class="od98-attr-control">
-            <button type="button" class="od98-attr-step" data-od98-attr-step="${safeEscape(key)}" data-dir="-1">−</button>
-            <input data-attr="${safeEscape(key)}" type="number" value="${safeEscape(value)}" min="1" inputmode="numeric">
-            <button type="button" class="od98-attr-step" data-od98-attr-step="${safeEscape(key)}" data-dir="1">+</button>
-          </div>
-          <button class="primary-btn small roll-attr" data-roll-attr="${safeEscape(key)}">Rolar ${safeEscape(label)}</button>`;
-        grid.appendChild(card);
-      });
-    };
-  }
-
-  document.addEventListener('click', event => {
-    const tab = event.target.closest('[data-od98-skill-tab]');
-    if (tab) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      window.od79SkillTab = tab.dataset.od98SkillTab === 'untrained' ? 'untrained' : 'trained';
-      const char = currentChar && currentChar();
-      if (char) renderSkills(char);
-      return;
-    }
-
-    const attrBtn = event.target.closest('[data-od98-attr-step]');
-    if (attrBtn) {
-      event.preventDefault();
-      const key = attrBtn.dataset.od98AttrStep;
-      const dir = Number(attrBtn.dataset.dir || 0);
-      const input = document.querySelector(`input[data-attr="${CSS.escape(key)}"]`);
-      if (!input) return;
-      input.value = Math.max(1, Number(input.value || 1) + dir);
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-      const char = currentChar && currentChar();
-      if (char) {
-        updateChar(c => { c.attrs = c.attrs || {}; c.attrs[key] = Number(input.value || 1); });
-        const updated = currentChar();
-        renderAttributes(updated);
-        renderSkills(updated);
-        updateDerivedStatsDisplay(updated);
-        queueSave();
-      }
-      return;
-    }
-  }, true);
-
-  document.addEventListener('change', event => {
-    const trained = event.target.closest('[data-od98-skill-trained]');
-    const bonus = event.target.closest('[data-od98-skill-bonus]');
-    if (!trained && !bonus) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    const name = trained?.dataset.od98SkillTrained || bonus?.dataset.od98SkillBonus;
-    if (!name) return;
-    updateChar(char => {
-      char.skills = char.skills || {};
-      char.skills[name] = char.skills[name] || { trained: false, bonus: 0, disadvantage: false };
-      if (trained) char.skills[name].trained = !!trained.checked;
-      if (bonus) char.skills[name].bonus = Number(bonus.value || 0);
-    });
-    const updated = currentChar && currentChar();
-    if (updated) {
-      renderSkills(updated);
-      updateDerivedStatsDisplay(updated);
-      queueSave();
-    }
-  }, true);
-
-  document.addEventListener('input', event => {
-    const bonus = event.target.closest('[data-od98-skill-bonus]');
-    if (bonus) {
-      event.stopImmediatePropagation();
-      const name = bonus.dataset.od98SkillBonus;
-      updateChar(char => {
-        char.skills = char.skills || {};
-        char.skills[name] = char.skills[name] || { trained: false, bonus: 0, disadvantage: false };
-        char.skills[name].bonus = Number(bonus.value || 0);
-      });
-      updateDerivedStatsDisplay(currentChar());
-      queueSave();
-      return;
-    }
-
-    const dodge = event.target.closest('#dodge');
-    if (dodge) {
-      updateChar(char => readDodgeIntoChar(char));
-      updateDerivedStatsDisplay(currentChar());
-      queueSave();
-    }
-  }, true);
-
-  if (typeof leaveCampaign === 'function') {
-    const baseLeaveCampaign = leaveCampaign;
-    leaveCampaign = async function od98LeaveCampaign(campaignId) {
-      const result = await baseLeaveCampaign.apply(this, arguments);
-      currentCampaignId = null;
-      accountSheetMode = false;
-      try { localStorage.removeItem(STORAGE.activeCampaign); } catch (_) {}
-      try { localStorage.setItem('od71_tab', 'home'); } catch (_) {}
-      if (typeof showSessions === 'function') showSessions();
-      return result;
-    };
-  }
-
-  function boot() {
-    const char = currentChar && currentChar();
-    if (char) {
-      if ($('attributes-grid')) renderAttributes(char);
-      if ($('skills-wrap')) renderSkills(char);
-      if ($('dodge')) $('dodge').value = calculatedDodge(char);
-      updateDerivedStatsDisplay(char);
-    }
-  }
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
-  else boot();
-})();
-
-/* =========================
-   V99 - Beta 2: imagens, ficha em campanha, vitais, esquiva e organização
-   - Troca de foto com crop quadrado e suporte a GIF
-   - Atributos compactos, fórmula D20 e botões +/- menores
-   - PV/PE com botões +/-
-   - Esquiva = Defesa + Reflexo
-   - Sair da mesa volta para Início de verdade
-   - Listas em ordem alfabética
-   - Campanhas em grade de 2 colunas
-   - Corrige fluxo de entrar/criar ficha sem alerta duplicado
-   - Transformação pode informar ao OBS a forma ativa
-========================= */
-(function od99Beta2Fixes(){
-  const $ = id => document.getElementById(id);
-  const escape = value => {
-    try { return typeof escapeHtml === 'function' ? escapeHtml(value ?? '') : String(value ?? ''); }
-    catch (_) { return String(value ?? ''); }
-  };
-  const editableSelector = 'input, textarea, select, [contenteditable="true"]';
-  let od99CropState = null;
-
-  function sortByName(list) {
-    return [...(list || [])].sort((a, b) => String(a?.name || '').localeCompare(String(b?.name || ''), 'pt-BR', { sensitivity: 'base' }));
-  }
-
-  if (typeof userCharacters === 'function' && !userCharacters.__od99Sorted) {
-    const baseUserCharacters = userCharacters;
-    userCharacters = function od99UserCharactersSorted(){ return sortByName(baseUserCharacters.apply(this, arguments)); };
-    userCharacters.__od99Sorted = true;
-  }
-
-  if (typeof getCampaigns === 'function' && !getCampaigns.__od99Sorted) {
-    const baseGetCampaigns = getCampaigns;
-    getCampaigns = function od99GetCampaignsSorted(){ return sortByName(baseGetCampaigns.apply(this, arguments)); };
-    getCampaigns.__od99Sorted = true;
-  }
-
-  function defenseForDodge(char) {
-    if (!char) return 10;
-    if (typeof effectiveDefense === 'function') return Number(effectiveDefense(char) || 10);
-    return Number(char.defense || char.defesa || 10);
-  }
-
-  function reflexForDodge(char) {
-    if (!char) return 0;
-    if (typeof skillTotal === 'function') return Number(skillTotal(char, 'Reflexo', 'agilidade') || 0);
-    return 0;
-  }
-
-  function dodgeFormulaV99(char) {
-    return defenseForDodge(char) + reflexForDodge(char);
-  }
-
-  window.od99DodgeFormula = dodgeFormulaV99;
-  window.od98DodgeFormula = dodgeFormulaV99;
-
-  if (typeof calculatedDodge === 'function') {
-    calculatedDodge = function od99CalculatedDodge(char = currentChar()) {
-      if (!char) return 0;
-      if (char.dodgeManual === true || char.dodgeLocked === true) {
-        const manual = Number(char.dodge);
-        if (Number.isFinite(manual)) return manual;
-      }
-      return dodgeFormulaV99(char);
-    };
-  }
-
-  function updateDodgeNote(char = currentChar && currentChar()) {
-    const note = $('dodge-formula-note');
-    if (!note || !char) return;
-    const def = defenseForDodge(char);
-    const reflex = reflexForDodge(char);
-    const manual = char.dodgeManual === true || char.dodgeLocked === true;
-    const fmt = typeof formatMod === 'function' ? formatMod : (n => String(n));
-    note.textContent = `Defesa ${def} + Reflexo ${fmt(reflex)}${manual ? ' · ajuste manual ativo' : ''}`;
-  }
-
-  if (typeof updateDerivedStatsDisplay === 'function' && !updateDerivedStatsDisplay.__od99Wrapped) {
-    const baseUpdateDerived = updateDerivedStatsDisplay;
-    updateDerivedStatsDisplay = function od99UpdateDerivedStatsDisplay(char = currentChar()) {
-      const result = baseUpdateDerived.apply(this, arguments);
-      updateDodgeNote(char);
-      const dodge = $('dodge');
-      if (dodge && char && document.activeElement !== dodge) dodge.value = calculatedDodge(char);
-      return result;
-    };
-    updateDerivedStatsDisplay.__od99Wrapped = true;
-  }
-
-  function readDodgeIntoCharV99(char) {
-    if (!char) return;
-    const field = $('dodge');
-    const formula = dodgeFormulaV99(char);
-    if (!field) { char.dodge = formula; char.dodgeManual = false; char.dodgeLocked = false; return; }
-    const raw = Number(field.value || formula);
-    char.dodge = Number.isFinite(raw) ? raw : formula;
-    char.dodgeManual = Number.isFinite(raw) && raw !== formula;
-    char.dodgeLocked = char.dodgeManual;
-  }
-
-  function renderAttributesV99(char) {
-    const grid = $('attributes-grid');
-    if (!grid || !char) return;
-    const labels = { forca: 'Força', agilidade: 'Agilidade', vigor: 'Vigor', intelecto: 'Intelecto', presenca: 'Presença' };
-    grid.innerHTML = '';
-    Object.entries(labels).forEach(([key, label]) => {
-      const value = Number(char.attrs?.[key] ?? 10);
-      const card = document.createElement('div');
-      card.className = 'attr-card-v2 od98-attr-card od99-attr-card';
-      card.innerHTML = `
-        <div class="attr-head">
-          <div class="attr-name">${escape(label)}</div>
-          <div class="attr-mod">${escape(typeof formatMod === 'function' ? formatMod(attrMod(value)) : value)}</div>
-          <div class="attr-help">D20</div>
-        </div>
-        <div class="od98-attr-control od99-attr-control">
-          <button type="button" class="od98-attr-step od99-step" data-od99-attr-step="${escape(key)}" data-dir="-1">−</button>
-          <input data-attr="${escape(key)}" type="number" value="${escape(value)}" min="1" inputmode="numeric">
-          <button type="button" class="od98-attr-step od99-step" data-od99-attr-step="${escape(key)}" data-dir="1">+</button>
-        </div>
-        <button class="primary-btn small roll-attr" data-roll-attr="${escape(key)}">D20</button>`;
-      grid.appendChild(card);
-    });
-  }
-
-  if (typeof renderAttributes === 'function') renderAttributes = renderAttributesV99;
-
-  function ensureVitalControls() {
-    [['pv-current', 'PV'], ['pv-max', 'PV Máx'], ['pe-current', 'PE'], ['pe-max', 'PE Máx']].forEach(([id]) => {
-      const input = $(id);
-      if (!input || input.closest('.od99-vital-step-wrap')) return;
-      const wrap = document.createElement('span');
-      wrap.className = 'od99-vital-step-wrap';
-      input.parentNode.insertBefore(wrap, input);
-      wrap.appendChild(input);
-      wrap.insertAdjacentHTML('afterbegin', `<button type="button" class="od99-vital-step" data-od99-vital-step="${id}" data-dir="-1">−</button>`);
-      wrap.insertAdjacentHTML('beforeend', `<button type="button" class="od99-vital-step" data-od99-vital-step="${id}" data-dir="1">+</button>`);
-    });
-  }
-
-  function setPortraitEverywhere(src, shouldSave = true) {
-    const value = String(src || '').trim();
-    const hidden = $('portrait-url');
-    const modalUrl = $('portrait-modal-url');
-    const preview = $('char-portrait-preview');
-    const overlay = $('overlay-portrait');
-    if (hidden) hidden.value = value;
-    if (modalUrl) modalUrl.value = value;
-    if (preview) { preview.src = value || 'assets/logo.jpg'; preview.classList.add('od99-portrait-ok'); }
-    if (overlay) overlay.src = value || 'assets/logo.jpg';
-    updateChar?.(char => {
-      char.portrait = value;
-      char.image = value;
-      char.photo = value;
-      char.updatedAt = Date.now();
-    });
-    const char = currentChar && currentChar();
-    if (char) {
-      try { renderPortrait?.(char); } catch (_) {}
-      try { updateOverlay?.(char); } catch (_) {}
-      if (shouldSave) {
-        try { queueSave?.(); } catch (_) {}
-        try {
-          if (typeof od44SaveCharacterOnline === 'function') od44SaveCharacterOnline(char).catch(error => console.warn('Falha ao salvar retrato v99:', error));
-          else if (typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(char);
-        } catch (_) {}
-      }
-    }
-  }
-
-  function ensureCropDialog() {
-    let dialog = $('od99-portrait-crop-modal');
-    if (dialog) return dialog;
-    dialog = document.createElement('dialog');
-    dialog.id = 'od99-portrait-crop-modal';
-    dialog.className = 'od99-crop-modal od-modal';
-    dialog.innerHTML = `
-      <form method="dialog" class="modal-card manga-panel od99-crop-card">
-        <div class="od99-crop-head">
-          <div>
-            <h2>Imagem da Ficha</h2>
-            <p>Corte a imagem para ficar quadrada. GIFs são aceitos sem corte para manter a animação.</p>
-          </div>
-          <button type="button" class="icon-btn" id="od99-crop-close">×</button>
-        </div>
-        <input id="od99-portrait-file" type="file" accept="image/*,.gif,image/gif" />
-        <input id="od99-portrait-url" type="text" placeholder="URL, data:image ou cole uma imagem" />
-        <div class="od99-crop-stage"><canvas id="od99-crop-canvas" width="512" height="512"></canvas></div>
-        <div class="od99-crop-controls">
-          <label>Zoom <input id="od99-crop-zoom" type="range" min="0.5" max="3" step="0.01" value="1" /></label>
-          <label>Horizontal <input id="od99-crop-x" type="range" min="-512" max="512" step="1" value="0" /></label>
-          <label>Vertical <input id="od99-crop-y" type="range" min="-512" max="512" step="1" value="0" /></label>
-        </div>
-        <div class="modal-actions">
-          <button type="button" class="ghost-btn" id="od99-use-url">Usar URL/Imagem sem corte</button>
-          <button type="button" class="ghost-btn" id="od99-crop-cancel">Cancelar</button>
-          <button type="button" class="primary-btn" id="od99-crop-save">Salvar Retrato</button>
-        </div>
-      </form>`;
-    document.body.appendChild(dialog);
-    return dialog;
-  }
-
-  function drawCrop() {
-    const state = od99CropState;
-    const canvas = $('od99-crop-canvas');
-    if (!state || !canvas) return;
-    const ctx = canvas.getContext('2d');
-    const zoom = Number($('od99-crop-zoom')?.value || 1);
-    const offsetX = Number($('od99-crop-x')?.value || 0);
-    const offsetY = Number($('od99-crop-y')?.value || 0);
-    ctx.clearRect(0,0,512,512);
-    ctx.fillStyle = '#111';
-    ctx.fillRect(0,0,512,512);
-    const img = state.img;
-    const base = Math.max(512 / img.width, 512 / img.height);
-    const w = img.width * base * zoom;
-    const h = img.height * base * zoom;
-    const x = (512 - w) / 2 + offsetX;
-    const y = (512 - h) / 2 + offsetY;
-    ctx.drawImage(img, x, y, w, h);
-  }
-
-  function loadCropImage(src) {
-    const img = new Image();
-    img.onload = () => {
-      od99CropState = { img, src };
-      ['od99-crop-zoom','od99-crop-x','od99-crop-y'].forEach(id => { const el = $(id); if (el) el.value = id === 'od99-crop-zoom' ? '1' : '0'; });
-      drawCrop();
-    };
-    img.onerror = () => alert('Não foi possível carregar essa imagem. Tente outra imagem ou use URL direta.');
-    img.src = src;
-  }
-
-  function openPortraitCrop() {
-    const dialog = ensureCropDialog();
-    const url = $('od99-portrait-url');
-    if (url) url.value = $('portrait-url')?.value || currentChar?.()?.portrait || '';
-    if (url?.value) loadCropImage(url.value);
-    dialog.showModal();
-  }
-
-  function fileToDataUrl(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(String(reader.result || ''));
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  }
-
-  async function handlePortraitFile(file) {
-    if (!file) return;
-    if (!file.type || !file.type.startsWith('image/')) return alert('Escolha um arquivo de imagem.');
-    const dataUrl = await fileToDataUrl(file);
-    const urlInput = $('od99-portrait-url');
-    if (urlInput) urlInput.value = dataUrl;
-    if (/image\/gif/i.test(file.type)) {
-      setPortraitEverywhere(dataUrl, true);
-      $('od99-portrait-crop-modal')?.close();
-      return;
-    }
-    loadCropImage(dataUrl);
-  }
-
-  document.addEventListener('click', async event => {
-    const portraitBtn = null;
-    if (portraitBtn) { return; }
-
-    const attrStep = event.target.closest('[data-od99-attr-step]');
-    if (attrStep) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      const key = attrStep.dataset.od99AttrStep;
-      const dir = Number(attrStep.dataset.dir || 0);
-      const input = document.querySelector(`input[data-attr="${CSS.escape(key)}"]`);
-      if (!input) return;
-      input.value = Math.max(1, Number(input.value || 1) + dir);
-      updateChar?.(char => { char.attrs = char.attrs || {}; char.attrs[key] = Number(input.value || 1); readDodgeIntoCharV99(char); });
-      const char = currentChar && currentChar();
-      if (char) { renderAttributesV99(char); renderSkills?.(char); updateDerivedStatsDisplay?.(char); queueSave?.(); }
-      return;
-    }
-
-    const vitalStep = event.target.closest('[data-od99-vital-step]');
-    if (vitalStep) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      const id = vitalStep.dataset.od99VitalStep;
-      const input = $(id);
-      const dir = Number(vitalStep.dataset.dir || 0);
-      if (!input) return;
-      input.value = Math.max(0, Number(input.value || 0) + dir);
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-      queueSave?.();
-      return;
-    }
-
-    if (event.target.closest('#od99-crop-close, #od99-crop-cancel')) {
-      event.preventDefault();
-      $('od99-portrait-crop-modal')?.close();
-      return;
-    }
-
-    if (event.target.closest('#od99-use-url')) {
-      event.preventDefault();
-      const value = $('od99-portrait-url')?.value?.trim() || '';
-      setPortraitEverywhere(value, true);
-      $('od99-portrait-crop-modal')?.close();
-      return;
-    }
-
-    if (event.target.closest('#od99-crop-save')) {
-      event.preventDefault();
-      const canvas = $('od99-crop-canvas');
-      if (!canvas || !od99CropState) return setPortraitEverywhere($('od99-portrait-url')?.value || '', true);
-      const dataUrl = canvas.toDataURL('image/png', 0.92);
-      setPortraitEverywhere(dataUrl, true);
-      $('od99-portrait-crop-modal')?.close();
-      return;
-    }
-
-    const leave = event.target.closest('[data-leave-campaign], #back-to-sessions-btn');
-    if (leave && event.target.closest('[data-leave-campaign]')) {
-      try { history.replaceState({ od71Tab: 'home' }, '', '/inicio'); } catch (_) {}
-      try { localStorage.setItem('od71_tab', 'home'); localStorage.removeItem(STORAGE.activeCampaign); } catch (_) {}
-    }
-  }, true);
-
-  document.addEventListener('change', async event => {
-    const file = event.target.closest('#od99-portrait-file');
-    if (file) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      await handlePortraitFile(file.files?.[0]);
-      file.value = '';
-      return;
-    }
-  }, true);
-
-  document.addEventListener('input', event => {
-    if (event.target.closest('#od99-crop-zoom, #od99-crop-x, #od99-crop-y')) drawCrop();
-    if (event.target.closest('#od99-portrait-url')) {
-      const value = event.target.value.trim();
-      if (value && !/^data:image\/gif/i.test(value)) loadCropImage(value);
-    }
-  }, true);
-
-  document.addEventListener('paste', async event => {
-    const dialog = $('od99-portrait-crop-modal');
-    if (!dialog?.open) return;
-    const item = [...(event.clipboardData?.items || [])].find(i => i.type?.startsWith('image/'));
-    if (!item) return;
-    event.preventDefault();
-    await handlePortraitFile(item.getAsFile());
-  }, true);
-
-  // Permite GIF nos campos de ícone OBS criados na v96.
-  function allowGifIconInputs() {
-    document.querySelectorAll('.od96-icon-file').forEach(input => input.setAttribute('accept', 'image/*,.gif,image/gif'));
-  }
-
-  if (typeof saveCurrentCharacter === 'function' && !saveCurrentCharacter.__od99Wrapped) {
-    const baseSave = saveCurrentCharacter;
-    saveCurrentCharacter = function od99SaveCurrentCharacter() {
-      const active = document.activeElement;
-      const editingLongText = active && active.matches?.('textarea, input[type="text"], input[type="url"], input:not([type])');
-      const result = baseSave.apply(this, arguments);
-      const char = currentChar && currentChar();
-      if (char) {
-        const hidden = $('portrait-url');
-        if (hidden?.value) char.portrait = hidden.value;
-        readDodgeIntoCharV99(char);
-      }
-      // preserva foco em campos de texto quando o autosave rodar durante digitação
-      if (editingLongText && active?.isConnected) setTimeout(() => { try { active.focus(); } catch (_) {} }, 0);
-      return result;
-    };
-    saveCurrentCharacter.__od99Wrapped = true;
-  }
-
-  if (typeof renderPortrait === 'function' && !renderPortrait.__od99Wrapped) {
-    renderPortrait = function od99RenderPortrait(char) {
-      const img = $('char-portrait-preview');
-      if (!img) return;
-      img.src = char?.portrait || char?.image || char?.photo || 'assets/logo.jpg';
-      img.onerror = () => { img.src = 'assets/logo.jpg'; };
-    };
-    renderPortrait.__od99Wrapped = true;
-  }
-
-  if (typeof loadCharacter === 'function' && !loadCharacter.__od99Wrapped) {
-    const baseLoadCharacter = loadCharacter;
-    loadCharacter = function od99LoadCharacter(id) {
-      const active = document.activeElement;
-      if (active?.matches?.(editableSelector) && String(id) === String(currentCharacterId || '') && document.getElementById('app-screen')?.classList.contains('active')) {
-        const char = currentChar && currentChar();
-        if (char) { updateBars?.(char); updateDerivedStatsDisplay?.(char); }
-        return;
-      }
-      const result = baseLoadCharacter.apply(this, arguments);
-      const char = currentChar && currentChar();
-      if (char) { ensureVitalControls(); allowGifIconInputs(); updateDodgeNote(char); }
-      return result;
-    };
-    loadCharacter.__od99Wrapped = true;
-  }
-
-  // Fluxo sem alerta duplicado: se não há ficha, abre o modal; se há ficha, pede seleção antes de entrar.
-  if (typeof enterCampaign === 'function' && !enterCampaign.__od99Wrapped) {
-    const baseEnterCampaign = enterCampaign;
-    enterCampaign = async function od99EnterCampaign(campaignId) {
-      await od42RefreshOwnCharacters?.().catch?.(() => {});
-      await od42RefreshTables?.().catch?.(() => {});
-      const member = getMembers().find(m => String(m.campaignId) === String(campaignId) && String(m.userId) === String(currentUser?.id));
-      if (member && !member.characterId) {
-        pendingChooseCampaignId = campaignId;
-        if (!userCharacters().length) document.getElementById('create-first-sheet-modal')?.showModal();
-        else openChooseCharacterModal(campaignId);
-        return;
-      }
-      return baseEnterCampaign.apply(this, arguments);
-    };
-    enterCampaign.__od99Wrapped = true;
-  }
-
-  if (typeof createCharacterForCampaign === 'function' && !createCharacterForCampaign.__od99Wrapped) {
-    createCharacterForCampaign = async function od99CreateCharacterForCampaign() {
-      try {
-        const campaignId = pendingChooseCampaignId || currentCampaignId;
-        const char = (typeof od42Token === 'function' && od42Token()) ? await od42CreateCharacter('Novo Personagem') : createCharacter(currentUser.id, 'Novo Personagem');
-        if (!(typeof od42Token === 'function' && od42Token())) {
-          const all = get(STORAGE.characters, []); all.push(char); set(STORAGE.characters, all);
-        }
-        if (campaignId) await attachCharacterToCampaign(campaignId, char.id);
-        document.getElementById('create-first-sheet-modal')?.close();
-        document.getElementById('choose-character-modal')?.close();
-        currentCharacterId = char.id;
-        if (campaignId) await enterCampaign(campaignId);
-        else loadCharacter(char.id);
-      } catch (error) {
-        alert(error.message || 'Erro ao criar e vincular ficha.');
-      }
-    };
-    createCharacterForCampaign.__od99Wrapped = true;
-  }
-
-  // Marca no personagem base qual transformação está ativa para o OBS não tentar montar várias imagens.
-  document.addEventListener('click', event => {
-    const open = event.target.closest('[data-open-transformation]');
-    const back = event.target.closest('[data-open-base-form]');
-    if (!open && !back) return;
-    const chars = get(STORAGE.characters, []);
-    if (open) {
-      const transformationId = open.dataset.openTransformation;
-      const form = chars.find(c => String(c.id) === String(transformationId));
-      const baseId = form?.baseCharacterId;
-      const base = chars.find(c => String(c.id) === String(baseId));
-      if (base && form) {
-        base.activeTransformationId = form.id;
-        base.obsTransformationActive = true;
-        base.obsTransformPortrait = form.portrait || '';
-        base.updatedAt = Date.now();
-        set(STORAGE.characters, chars);
-        if (typeof od44SaveCharacterOnline === 'function') od44SaveCharacterOnline(base).catch(() => {});
-      }
-    }
-    if (back) {
-      const baseId = back.dataset.openBaseForm;
-      const base = chars.find(c => String(c.id) === String(baseId));
-      if (base) {
-        base.activeTransformationId = '';
-        base.obsTransformationActive = false;
-        base.updatedAt = Date.now();
-        set(STORAGE.characters, chars);
-        if (typeof od44SaveCharacterOnline === 'function') od44SaveCharacterOnline(base).catch(() => {});
-      }
-    }
-  }, true);
-
-  const baseShowSessions = typeof showSessions === 'function' ? showSessions : null;
-  if (baseShowSessions && !baseShowSessions.__od99Wrapped) {
-    showSessions = function od99ShowSessions() {
-      try { localStorage.setItem('od71_tab', 'home'); history.replaceState({ od71Tab: 'home' }, '', '/inicio'); } catch (_) {}
-      const result = baseShowSessions.apply(this, arguments);
-      setTimeout(() => {
-        try {
-          localStorage.setItem('od71_tab', 'home');
-          document.querySelector('[data-od71-tab="home"], [data-od75-tab="home"]')?.click();
-        } catch (_) {}
-      }, 0);
-      return result;
-    };
-    showSessions.__od99Wrapped = true;
-  }
-
-  function boot() {
-    const char = currentChar && currentChar();
-    const dodgeField = $('dodge');
-    if (dodgeField) dodgeField.removeAttribute('readonly');
-    if (char) {
-      if ($('attributes-grid')) renderAttributesV99(char);
-      ensureVitalControls();
-      updateDodgeNote(char);
-    }
-    allowGifIconInputs();
-  }
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
-  else boot();
-})();
-
-
-/* =========================
-   V100 - Beta 3: ficha, imagens por link, esquiva e vitais
-   - PV/PE alinhados e controles compactos
-   - Atributos sem botão vazando
-   - Esquiva = Defesa + bônus de proficiência se Esquiva treinada + bônus manual de Esquiva
-   - Imagens somente por link, com GIF aceito
-   - Fotos de estado: normal, machucado (-50%) e morrendo (0 PV)
-   - Abaixo de 0 PV a imagem some
-   - Crop visual estilo Discord: arrastar/zoom sem barras
-========================= */
-(function od100Beta3Fixes(){
-  const $ = id => document.getElementById(id);
-  const qs = sel => document.querySelector(sel);
-  const esc = value => {
-    try { return typeof escapeHtml === 'function' ? escapeHtml(value ?? '') : String(value ?? ''); }
-    catch (_) { return String(value ?? ''); }
-  };
-
-  try {
-    if (Array.isArray(SKILLS) && !SKILLS.some(([name]) => name === 'Esquiva')) {
-      SKILLS.push(['Esquiva', 'agilidade']);
-    }
-  } catch (_) {}
-
-  function num(value, fallback = 0) {
-    const n = Number(value);
-    return Number.isFinite(n) ? n : fallback;
-  }
-
-  function safeChar() {
-    try { return typeof currentChar === 'function' ? currentChar() : null; } catch (_) { return null; }
-  }
-
-  function getSkill(char, name) {
-    return char?.skills?.[name] || { trained: false, bonus: 0, disadvantage: false };
-  }
-
-  function od100DodgeFormula(char = safeChar()) {
-    if (!char) return 0;
-    const def = typeof effectiveDefense === 'function' ? num(effectiveDefense(char), 10) : num(char.defense ?? char.defesa, 10);
-    const skill = getSkill(char, 'Esquiva');
-    const prof = skill.trained ? num(char.profBonus, 0) : 0;
-    const bonus = num(skill.bonus, 0);
-    return def + prof + bonus;
-  }
-
-  window.od100DodgeFormula = od100DodgeFormula;
-  window.od99DodgeFormula = od100DodgeFormula;
-  window.od98DodgeFormula = od100DodgeFormula;
-
-  if (typeof calculatedDodge === 'function') {
-    calculatedDodge = function od100CalculatedDodge(char = safeChar()) {
-      if (!char) return 0;
-      return od100DodgeFormula(char);
-    };
-  }
-
-  function syncDodge(char = safeChar()) {
-    if (!char) return;
-    const value = od100DodgeFormula(char);
-    char.dodge = value;
-    char.dodgeManual = false;
-    char.dodgeLocked = false;
-    const field = $('dodge');
-    if (field && document.activeElement !== field) {
-      field.value = value;
-      field.removeAttribute('readonly');
-      field.title = '';
-    }
-    const note = $('dodge-formula-note');
-    if (note) note.textContent = '';
-  }
-
-  function normalizeImageLink(value) {
-    return String(value || '').trim();
-  }
-
-  function ensureObsIcons(char) {
-    if (!char) return {};
-    char.obsIcons = char.obsIcons || {};
-    return char.obsIcons;
-  }
-
-  function selectedPortraitForState(char = safeChar()) {
-    if (!char) return 'assets/logo.jpg';
-    const pv = num(char.pvCurrent ?? char.pvAtual ?? char.pv, 0);
-    const max = Math.max(1, num(char.pvMax ?? char.pvTotal ?? char.pv_max, 1));
-    const icons = ensureObsIcons(char);
-    if (pv < 0) return '';
-    if (char.obsTransformationActive && (char.obsTransformPortrait || icons.transformation)) return char.obsTransformPortrait || icons.transformation;
-    if (pv === 0 && icons.zero) return icons.zero;
-    if (pv > 0 && pv / max < 0.5 && icons.low) return icons.low;
-    return char.portrait || char.image || char.photo || 'assets/logo.jpg';
-  }
-
-  function applyPortraitCrop(img, char = safeChar()) {
-    if (!img || !char) return;
-    const crop = char.portraitCrop || {};
-    img.style.objectFit = 'cover';
-    img.style.objectPosition = `${num(crop.x, 50)}% ${num(crop.y, 50)}%`;
-    img.style.transformOrigin = `${num(crop.x, 50)}% ${num(crop.y, 50)}%`;
-    img.style.transform = `scale(${Math.max(1, num(crop.scale, 1))})`;
-  }
-
-  function updatePortraitPreview(char = safeChar()) {
-    const img = $('char-portrait-preview');
-    if (!img || !char) return;
-    const src = selectedPortraitForState(char);
-    if (src) {
-      img.style.visibility = '';
-      img.src = src;
-      img.onerror = () => { img.src = 'assets/logo.jpg'; };
-      applyPortraitCrop(img, char);
-    } else {
-      img.removeAttribute('src');
-      img.style.visibility = 'hidden';
-    }
-  }
-
-  function savePortraitLinks() {
-    const char = safeChar();
-    if (!char) return;
-    const normal = normalizeImageLink($('od100-portrait-normal')?.value || $('portrait-modal-url')?.value || '');
-    const low = normalizeImageLink($('od100-portrait-low')?.value || '');
-    const zero = normalizeImageLink($('od100-portrait-zero')?.value || '');
-    const crop = window.od100CropState || { x: 50, y: 50, scale: 1 };
-    updateChar?.(c => {
-      c.portrait = normal;
-      c.image = normal;
-      c.photo = normal;
-      c.obsIcons = c.obsIcons || {};
-      c.obsIcons.low = low;
-      c.obsIcons.zero = zero;
-      c.obsIconLow = low;
-      c.obsIconZero = zero;
-      c.portraitCrop = { x: crop.x, y: crop.y, scale: crop.scale };
-      c.updatedAt = Date.now();
-    });
-    const hidden = $('portrait-url');
-    if (hidden) hidden.value = normal;
-    updatePortraitPreview(safeChar());
-    try { queueSave?.(); } catch (_) {}
-    try {
-      const current = safeChar();
-      if (current && typeof od44SaveCharacterOnline === 'function') od44SaveCharacterOnline(current).catch(() => {});
-      else if (current && typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(current);
-    } catch (_) {}
-  }
-
-  function ensurePortraitDialogV100() {
-    let dialog = $('od100-portrait-modal');
-    if (dialog) return dialog;
-    dialog = document.createElement('dialog');
-    dialog.id = 'od100-portrait-modal';
-    dialog.className = 'od100-portrait-modal od-modal';
-    dialog.innerHTML = `
-      <form method="dialog" class="modal-card manga-panel od100-portrait-card">
-        <div class="od100-modal-head">
-          <div>
-            <h2>Fotos da Ficha</h2>
-            <p>Use links diretos de imagem. GIF também funciona.</p>
-          </div>
-          <button type="button" class="icon-btn" id="od100-photo-close">×</button>
-        </div>
-        <label>Foto normal<input id="od100-portrait-normal" type="text" placeholder="https://...jpg, png, webp ou gif" /></label>
-        <label>Foto machucado, abaixo de 50% PV<input id="od100-portrait-low" type="text" placeholder="opcional" /></label>
-        <label>Foto morrendo, 0 PV<input id="od100-portrait-zero" type="text" placeholder="opcional" /></label>
-        <div class="od100-crop-shell">
-          <div id="od100-crop-stage" class="od100-crop-stage" title="Arraste para posicionar. Use a roda do mouse para aproximar.">
-            <img id="od100-crop-img" alt="prévia" draggable="false" />
-          </div>
-          <small>Arraste a imagem para posicionar. Use a roda do mouse para dar zoom. Não há upload local nesta versão.</small>
-        </div>
-        <div class="modal-actions">
-          <button type="button" class="ghost-btn" id="od100-photo-reset">Centralizar</button>
-          <button type="button" class="ghost-btn" id="od100-photo-cancel">Cancelar</button>
-          <button type="button" class="primary-btn" id="od100-photo-save">Salvar Fotos</button>
-        </div>
-      </form>`;
-    document.body.appendChild(dialog);
-    return dialog;
-  }
-
-  function refreshCropPreview() {
-    const img = $('od100-crop-img');
-    const src = normalizeImageLink($('od100-portrait-normal')?.value || '');
-    if (!img) return;
-    if (!src) {
-      img.removeAttribute('src');
-      return;
-    }
-    img.src = src;
-    img.style.objectFit = 'cover';
-    const crop = window.od100CropState || { x: 50, y: 50, scale: 1 };
-    img.style.objectPosition = `${crop.x}% ${crop.y}%`;
-    img.style.transform = `scale(${crop.scale})`;
-    img.onerror = () => { img.removeAttribute('src'); };
-  }
-
-  function openPortraitModalV100() {
-    const char = safeChar();
-    const dialog = ensurePortraitDialogV100();
-    const icons = char?.obsIcons || {};
-    $('od100-portrait-normal').value = char?.portrait || char?.image || char?.photo || $('portrait-url')?.value || '';
-    $('od100-portrait-low').value = icons.low || char?.obsIconLow || '';
-    $('od100-portrait-zero').value = icons.zero || char?.obsIconZero || '';
-    window.od100CropState = Object.assign({ x: 50, y: 50, scale: 1 }, char?.portraitCrop || {});
-    refreshCropPreview();
-    dialog.showModal();
-  }
-
-  function renderAttributesV100(char = safeChar()) {
-    const grid = $('attributes-grid');
-    if (!grid || !char) return;
-    const labels = { forca: 'Força', agilidade: 'Agilidade', vigor: 'Vigor', intelecto: 'Intelecto', presenca: 'Presença' };
-    grid.innerHTML = '';
-    Object.entries(labels).forEach(([key, label]) => {
-      const value = num(char.attrs?.[key], 1);
-      const card = document.createElement('div');
-      card.className = 'attr-card-v2 od98-attr-card od99-attr-card od100-attr-card';
-      card.innerHTML = `
-        <div class="attr-head od100-attr-head">
-          <div class="attr-name">${esc(label)}</div>
-          <div class="attr-mod">${esc(typeof formatMod === 'function' ? formatMod(attrMod(value)) : value)}</div>
-          <div class="attr-help">D20</div>
-        </div>
-        <div class="od100-attr-row">
-          <button type="button" class="od100-step" data-od100-attr-step="${esc(key)}" data-dir="-1">−</button>
-          <input data-attr="${esc(key)}" type="number" value="${esc(value)}" min="1" inputmode="numeric">
-          <button type="button" class="od100-step" data-od100-attr-step="${esc(key)}" data-dir="1">+</button>
-        </div>
-        <button class="primary-btn small roll-attr od100-roll" data-roll-attr="${esc(key)}">D20</button>`;
-      grid.appendChild(card);
-    });
-  }
-
-  if (typeof renderAttributes === 'function') renderAttributes = renderAttributesV100;
-
-  function ensureVitalControlsV100() {
-    ['pv-current', 'pv-max', 'pe-current', 'pe-max'].forEach(id => {
-      const input = $(id);
-      if (!input) return;
-      input.type = 'number';
-      if (input.closest('.od100-vital-wrap')) return;
-      const wrap = document.createElement('span');
-      wrap.className = 'od100-vital-wrap';
-      input.parentNode.insertBefore(wrap, input);
-      wrap.appendChild(input);
-      wrap.insertAdjacentHTML('afterbegin', `<button type="button" class="od100-vital-step" data-od100-vital-step="${id}" data-dir="-1">−</button>`);
-      wrap.insertAdjacentHTML('beforeend', `<button type="button" class="od100-vital-step" data-od100-vital-step="${id}" data-dir="1">+</button>`);
-    });
-    document.querySelectorAll('.od99-vital-step-wrap').forEach(wrap => wrap.classList.add('od100-vital-normalized'));
-  }
-
-  if (typeof updateDerivedStatsDisplay === 'function' && !updateDerivedStatsDisplay.__od100Wrapped) {
-    const base = updateDerivedStatsDisplay;
-    updateDerivedStatsDisplay = function od100UpdateDerivedStatsDisplay(char = safeChar()) {
-      const result = base.apply(this, arguments);
-      syncDodge(char);
-      updatePortraitPreview(char);
-      ensureVitalControlsV100();
-      return result;
-    };
-    updateDerivedStatsDisplay.__od100Wrapped = true;
-  }
-
-  if (typeof renderPortrait === 'function') {
-    renderPortrait = function od100RenderPortrait(char) { updatePortraitPreview(char || safeChar()); };
-    renderPortrait.__od100Wrapped = true;
-  }
-
-  if (typeof saveCurrentCharacter === 'function' && !saveCurrentCharacter.__od100Wrapped) {
-    const baseSave = saveCurrentCharacter;
-    saveCurrentCharacter = function od100SaveCurrentCharacter() {
-      const char = safeChar();
-      if (char) syncDodge(char);
-      return baseSave.apply(this, arguments);
-    };
-    saveCurrentCharacter.__od100Wrapped = true;
-  }
-
-  document.addEventListener('click', event => {
-    const portraitBtn = null;
-    if (portraitBtn) { return; }
-
-    const close = event.target.closest('#od100-photo-close, #od100-photo-cancel');
-    if (close) {
-      event.preventDefault();
-      $('od100-portrait-modal')?.close();
-      return;
-    }
-
-    if (event.target.closest('#od100-photo-reset')) {
-      event.preventDefault();
-      window.od100CropState = { x: 50, y: 50, scale: 1 };
-      refreshCropPreview();
-      return;
-    }
-
-    if (event.target.closest('#od100-photo-save')) {
-      event.preventDefault();
-      savePortraitLinks();
-      $('od100-portrait-modal')?.close();
-      return;
-    }
-
-    const attrStep = event.target.closest('[data-od100-attr-step]');
-    if (attrStep) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      const key = attrStep.dataset.od100AttrStep;
-      const dir = num(attrStep.dataset.dir, 0);
-      const input = document.querySelector(`input[data-attr="${CSS.escape(key)}"]`);
-      if (!input) return;
-      input.value = Math.max(1, num(input.value, 1) + dir);
-      updateChar?.(char => {
-        char.attrs = char.attrs || {};
-        char.attrs[key] = num(input.value, 1);
-        syncDodge(char);
-      });
-      const char = safeChar();
-      if (char) {
-        renderAttributesV100(char);
-        try { renderSkills?.(char); } catch (_) {}
-        syncDodge(char);
-        try { queueSave?.(); } catch (_) {}
-      }
-      return;
-    }
-
-    const vitalStep = event.target.closest('[data-od100-vital-step], [data-od99-vital-step]');
-    if (vitalStep) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      const id = vitalStep.dataset.od100VitalStep || vitalStep.dataset.od99VitalStep;
-      const input = $(id);
-      if (!input) return;
-      input.value = num(input.value, 0) + num(vitalStep.dataset.dir, 0);
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-      const char = safeChar();
-      if (char) { syncDodge(char); updatePortraitPreview(char); }
-      try { queueSave?.(); } catch (_) {}
-      return;
-    }
-  }, true);
-
-  document.addEventListener('input', event => {
-    if (event.target.closest('#od100-portrait-normal, #od100-portrait-low, #od100-portrait-zero')) {
-      refreshCropPreview();
-      return;
-    }
-    if (event.target.matches?.('[data-skill-bonus], [data-od98-skill-bonus], [data-od88-skill-bonus], [data-od79-skill-bonus], [data-skill-trained], [data-od98-skill-trained]')) {
-      setTimeout(() => syncDodge(safeChar()), 0);
-    }
-  }, true);
-
-  document.addEventListener('change', event => {
-    if (event.target.matches?.('[data-skill-trained], [data-od98-skill-trained]')) {
-      setTimeout(() => syncDodge(safeChar()), 0);
-    }
-  }, true);
-
-  function setupCropDragging() {
-    const stage = $('od100-crop-stage');
-    if (!stage || stage.dataset.od100Ready === '1') return;
-    stage.dataset.od100Ready = '1';
-    let dragging = false;
-    let start = null;
-    stage.addEventListener('pointerdown', ev => {
-      dragging = true;
-      stage.setPointerCapture?.(ev.pointerId);
-      const crop = window.od100CropState || { x: 50, y: 50, scale: 1 };
-      start = { x: ev.clientX, y: ev.clientY, cropX: crop.x, cropY: crop.y };
-    });
-    stage.addEventListener('pointermove', ev => {
-      if (!dragging || !start) return;
-      const rect = stage.getBoundingClientRect();
-      const dx = ((ev.clientX - start.x) / Math.max(1, rect.width)) * -100;
-      const dy = ((ev.clientY - start.y) / Math.max(1, rect.height)) * -100;
-      window.od100CropState = Object.assign({}, window.od100CropState || {}, {
-        x: Math.max(0, Math.min(100, start.cropX + dx)),
-        y: Math.max(0, Math.min(100, start.cropY + dy))
-      });
-      refreshCropPreview();
-    });
-    ['pointerup','pointercancel','pointerleave'].forEach(type => stage.addEventListener(type, () => { dragging = false; start = null; }));
-    stage.addEventListener('wheel', ev => {
-      ev.preventDefault();
-      const crop = window.od100CropState || { x: 50, y: 50, scale: 1 };
-      const next = Math.max(1, Math.min(3, crop.scale + (ev.deltaY < 0 ? 0.08 : -0.08)));
-      window.od100CropState = Object.assign({}, crop, { scale: next });
-      refreshCropPreview();
-    }, { passive: false });
-  }
-
-  if (typeof loadCharacter === 'function' && !loadCharacter.__od100Wrapped) {
-    const baseLoad = loadCharacter;
-    loadCharacter = function od100LoadCharacter(id) {
-      const result = baseLoad.apply(this, arguments);
-      const char = safeChar();
-      if (char) {
-        if ($('attributes-grid')) renderAttributesV100(char);
-        ensureVitalControlsV100();
-        syncDodge(char);
-        updatePortraitPreview(char);
-      }
-      return result;
-    };
-    loadCharacter.__od100Wrapped = true;
-  }
-
-  function boot() {
-    const oldPortraitModal = $('portrait-modal');
-    if (oldPortraitModal) oldPortraitModal.classList.add('od100-hide-old-portrait-modal');
-    const hidden = $('portrait-url');
-    if (hidden) hidden.type = 'text';
-    const dodge = $('dodge');
-    if (dodge) dodge.removeAttribute('readonly');
-    const char = safeChar();
-    if (char) {
-      if ($('attributes-grid')) renderAttributesV100(char);
-      ensureVitalControlsV100();
-      syncDodge(char);
-      updatePortraitPreview(char);
-    }
-    setupCropDragging();
-  }
-
-  document.addEventListener('DOMContentLoaded', boot);
-  setTimeout(boot, 150);
-  setTimeout(boot, 750);
-  window.od100RefreshSheetFixes = boot;
-})();
-
-/* =========================
-   V101 - Beta 4: vitais, atributos, foto por link, esquiva e vínculo em mesa
-   - Remove duplicação dos botões +/- em PV/PE
-   - Reposiciona atributos sem vazamento
-   - Esquiva = Defesa + bônus/proficiência de Reflexo, sem AGI
-   - Foto da ficha somente por link, com GIF aceito e recorte por arrastar/zoom
-   - Vincular em Mesa abre painel com mesas participantes
-========================= */
-(function od101Beta4Fixes(){
-  const $ = id => document.getElementById(id);
-  const esc = value => {
-    try { return typeof escapeHtml === 'function' ? escapeHtml(value ?? '') : String(value ?? ''); }
-    catch (_) { return String(value ?? ''); }
-  };
-  const num = (value, fallback = 0) => {
-    const n = Number(value);
-    return Number.isFinite(n) ? n : fallback;
-  };
-  const safeChar = () => { try { return typeof currentChar === 'function' ? currentChar() : null; } catch (_) { return null; } };
-  const safeUsers = () => { try { return get(STORAGE.users, []); } catch (_) { return []; } };
-  const safeCampaigns = () => { try { return typeof getCampaigns === 'function' ? getCampaigns() : []; } catch (_) { return []; } };
-  const safeMembers = () => { try { return typeof getMembers === 'function' ? getMembers() : []; } catch (_) { return []; } };
-
-  function cleanImageLink(value) {
-    return String(value || '').trim();
-  }
-
-  function reflexForDodgeV101(char = safeChar()) {
-    if (!char) return 0;
-    const skill = char.skills?.Reflexo || char.skills?.Reflexos || { trained: false, bonus: 0 };
-    const prof = skill.trained ? num(char.profBonus, 0) : 0;
-    return prof + num(skill.bonus, 0);
-  }
-
-  function dodgeFormulaV101(char = safeChar()) {
-    if (!char) return 0;
-    const def = typeof effectiveDefense === 'function' ? num(effectiveDefense(char), 10) : num(char.defense ?? char.defesa, 10);
-    return def + reflexForDodgeV101(char);
-  }
-
-  window.od101DodgeFormula = dodgeFormulaV101;
-  window.od100DodgeFormula = dodgeFormulaV101;
-  window.od99DodgeFormula = dodgeFormulaV101;
-  window.od98DodgeFormula = dodgeFormulaV101;
-
-  if (typeof calculatedDodge === 'function') {
-    calculatedDodge = function od101CalculatedDodge(char = safeChar()) {
-      return dodgeFormulaV101(char);
-    };
-  }
-
-  function syncDodgeV101(char = safeChar()) {
-    if (!char) return;
-    const value = dodgeFormulaV101(char);
-    char.dodge = value;
-    char.dodgeManual = false;
-    char.dodgeLocked = false;
-    const field = $('dodge');
-    if (field && document.activeElement !== field) {
-      field.value = value;
-      field.removeAttribute('readonly');
-    }
-    const note = $('dodge-formula-note');
-    if (note) note.textContent = '';
-  }
-
-  function ensureCharacterImageFields(char) {
-    if (!char) return {};
-    char.obsIcons = char.obsIcons || {};
-    return char.obsIcons;
-  }
-
-  function portraitByStateV101(char = safeChar()) {
-    if (!char) return 'assets/logo.jpg';
-    const pv = num(char.pvCurrent ?? char.pvAtual ?? char.pv, 0);
-    const pvMax = Math.max(1, num(char.pvMax ?? char.pvTotal ?? char.pv_max, 1));
-    const icons = ensureCharacterImageFields(char);
-    if (pv < 0) return '';
-    if (char.obsTransformationActive && (char.obsTransformPortrait || icons.transformation)) return char.obsTransformPortrait || icons.transformation;
-    if (pv === 0 && (icons.zero || char.portraitZero)) return icons.zero || char.portraitZero;
-    if (pv > 0 && pv / pvMax < 0.5 && (icons.low || char.portraitLow)) return icons.low || char.portraitLow;
-    return cleanImageLink(char.portrait || char.image || char.photo || char.avatar || '') || 'assets/logo.jpg';
-  }
-
-  function applyObjectCropToImage(img, char = safeChar()) {
-    if (!img || !char) return;
-    const crop = Object.assign({ x: 50, y: 50, scale: 1 }, char.portraitCrop || {});
-    img.style.objectFit = 'cover';
-    img.style.objectPosition = `${num(crop.x, 50)}% ${num(crop.y, 50)}%`;
-    img.style.transformOrigin = `${num(crop.x, 50)}% ${num(crop.y, 50)}%`;
-    img.style.transform = `scale(${Math.max(1, Math.min(3, num(crop.scale, 1)))})`;
-  }
-
-  function updatePortraitV101(char = safeChar()) {
-    const img = $('char-portrait-preview');
-    if (!img || !char) return;
-    const src = portraitByStateV101(char);
-    if (!src) {
-      img.removeAttribute('src');
-      img.style.visibility = 'hidden';
-      return;
-    }
-    img.style.visibility = '';
-    if (img.getAttribute('src') !== src) img.src = src;
-    img.onerror = () => { img.src = 'assets/logo.jpg'; };
-    applyObjectCropToImage(img, char);
-    const hidden = $('portrait-url');
-    if (hidden) hidden.value = cleanImageLink(char.portrait || '');
-  }
-
-  function writeCharacterImageFields() {
-    const char = safeChar();
-    if (!char) return;
-    const normal = cleanImageLink($('od101-photo-normal')?.value || '');
-    const low = cleanImageLink($('od101-photo-low')?.value || '');
-    const zero = cleanImageLink($('od101-photo-zero')?.value || '');
-    const transform = cleanImageLink($('od101-photo-transform')?.value || '');
-    const crop = Object.assign({ x: 50, y: 50, scale: 1 }, window.od101CropState || {});
-
-    updateChar?.(c => {
-      c.portrait = normal;
-      c.image = normal;
-      c.photo = normal;
-      c.avatar = normal;
-      c.obsIcons = c.obsIcons || {};
-      c.obsIcons.low = low;
-      c.obsIcons.zero = zero;
-      c.obsIcons.transformation = transform;
-      c.portraitLow = low;
-      c.portraitZero = zero;
-      c.portraitCrop = crop;
-      c.updatedAt = Date.now();
-    });
-
-    const fresh = safeChar();
-    const hidden = $('portrait-url');
-    const modalHidden = $('portrait-modal-url');
-    if (hidden) hidden.value = normal;
-    if (modalHidden) modalHidden.value = normal;
-    updatePortraitV101(fresh);
-    try { updateOverlay?.(fresh); } catch (_) {}
-    try { queueSave?.(); } catch (_) {}
-    try {
-      if (typeof od44SaveCharacterOnline === 'function' && fresh) od44SaveCharacterOnline(fresh).catch(error => console.warn('Falha ao salvar imagem v101:', error));
-      else if (typeof od42ScheduleCharacterSave === 'function' && fresh) od42ScheduleCharacterSave(fresh);
-    } catch (_) {}
-  }
-
-  function ensurePhotoDialogV101() {
-    let dialog = $('od101-photo-modal');
-    if (dialog) return dialog;
-    dialog = document.createElement('dialog');
-    dialog.id = 'od101-photo-modal';
-    dialog.className = 'od101-photo-modal od-modal';
-    dialog.innerHTML = `
-      <form method="dialog" class="modal-card manga-panel od101-photo-card">
-        <div class="od101-modal-head">
-          <div>
-            <h2>Fotos da Ficha</h2>
-            <p>Use links diretos de imagem. PNG, JPG, WEBP e GIF funcionam. Arraste a prévia para enquadrar e use a roda do mouse para zoom.</p>
-          </div>
-          <button type="button" class="icon-btn" id="od101-photo-close">×</button>
-        </div>
-        <div class="od101-photo-grid">
-          <label>Foto normal<input id="od101-photo-normal" type="url" placeholder="https://..." autocomplete="off"></label>
-          <label>Machucado, abaixo de 50% PV<input id="od101-photo-low" type="url" placeholder="opcional: https://...gif" autocomplete="off"></label>
-          <label>Morrendo, 0 PV<input id="od101-photo-zero" type="url" placeholder="opcional: https://...gif" autocomplete="off"></label>
-          <label>Transformação ativa<input id="od101-photo-transform" type="url" placeholder="opcional: foto/gif da transformação" autocomplete="off"></label>
-        </div>
-        <div class="od101-crop-area">
-          <div id="od101-crop-stage" class="od101-crop-stage" title="Arraste para mover. Roda do mouse para zoom.">
-            <img id="od101-crop-img" alt="Prévia do retrato" draggable="false">
-            <div class="od101-crop-mask"></div>
-          </div>
-          <div class="od101-crop-help">Prévia quadrada da ficha. Para GIF, o recorte visual também é aplicado sem perder a animação.</div>
-        </div>
-        <div class="modal-actions">
-          <button type="button" class="ghost-btn" id="od101-photo-reset">Centralizar</button>
-          <button type="button" class="ghost-btn" id="od101-photo-cancel">Cancelar</button>
-          <button type="button" class="primary-btn" id="od101-photo-save">Salvar Fotos</button>
-        </div>
-      </form>`;
-    document.body.appendChild(dialog);
-    return dialog;
-  }
-
-  function refreshPhotoPreviewV101() {
-    const img = $('od101-crop-img');
-    if (!img) return;
-    const src = cleanImageLink($('od101-photo-normal')?.value || '');
-    if (!src) {
-      img.removeAttribute('src');
-      return;
-    }
-    if (img.getAttribute('src') !== src) img.src = src;
-    const crop = Object.assign({ x: 50, y: 50, scale: 1 }, window.od101CropState || {});
-    img.style.objectFit = 'cover';
-    img.style.objectPosition = `${crop.x}% ${crop.y}%`;
-    img.style.transformOrigin = `${crop.x}% ${crop.y}%`;
-    img.style.transform = `scale(${Math.max(1, Math.min(3, num(crop.scale, 1)))})`;
-    img.onerror = () => { img.removeAttribute('src'); };
-  }
-
-  function openPhotoDialogV101() {
-    const char = safeChar();
-    const dialog = ensurePhotoDialogV101();
-    const icons = char?.obsIcons || {};
-    $('od101-photo-normal').value = cleanImageLink(char?.portrait || char?.image || char?.photo || $('portrait-url')?.value || '');
-    $('od101-photo-low').value = cleanImageLink(icons.low || char?.portraitLow || char?.obsIconLow || '');
-    $('od101-photo-zero').value = cleanImageLink(icons.zero || char?.portraitZero || char?.obsIconZero || '');
-    $('od101-photo-transform').value = cleanImageLink(icons.transformation || char?.obsTransformPortrait || '');
-    window.od101CropState = Object.assign({ x: 50, y: 50, scale: 1 }, char?.portraitCrop || {});
-    refreshPhotoPreviewV101();
-    setupCropV101();
-    dialog.showModal();
-  }
-
-  function setupCropV101() {
-    const stage = $('od101-crop-stage');
-    if (!stage || stage.dataset.od101Ready === '1') return;
-    stage.dataset.od101Ready = '1';
-    let dragging = false;
-    let start = null;
-    stage.addEventListener('pointerdown', ev => {
-      dragging = true;
-      stage.setPointerCapture?.(ev.pointerId);
-      const crop = Object.assign({ x: 50, y: 50, scale: 1 }, window.od101CropState || {});
-      start = { x: ev.clientX, y: ev.clientY, cropX: crop.x, cropY: crop.y };
-    });
-    stage.addEventListener('pointermove', ev => {
-      if (!dragging || !start) return;
-      const rect = stage.getBoundingClientRect();
-      const dx = ((ev.clientX - start.x) / Math.max(1, rect.width)) * -100;
-      const dy = ((ev.clientY - start.y) / Math.max(1, rect.height)) * -100;
-      window.od101CropState = Object.assign({}, window.od101CropState || {}, {
-        x: Math.max(0, Math.min(100, start.cropX + dx)),
-        y: Math.max(0, Math.min(100, start.cropY + dy))
-      });
-      refreshPhotoPreviewV101();
-    });
-    ['pointerup', 'pointercancel', 'pointerleave'].forEach(type => stage.addEventListener(type, () => { dragging = false; start = null; }));
-    stage.addEventListener('wheel', ev => {
-      ev.preventDefault();
-      const crop = Object.assign({ x: 50, y: 50, scale: 1 }, window.od101CropState || {});
-      crop.scale = Math.max(1, Math.min(3, crop.scale + (ev.deltaY < 0 ? 0.08 : -0.08)));
-      window.od101CropState = crop;
-      refreshPhotoPreviewV101();
-    }, { passive: false });
-  }
-
-  function renderAttributesV101(char = safeChar()) {
-    const grid = $('attributes-grid');
-    if (!grid || !char) return;
-    const labels = { forca: 'Força', agilidade: 'Agilidade', vigor: 'Vigor', intelecto: 'Intelecto', presenca: 'Presença' };
-    grid.innerHTML = '';
-    Object.entries(labels).forEach(([key, label]) => {
-      const value = num(char.attrs?.[key], 1);
-      const card = document.createElement('div');
-      card.className = 'attr-card-v2 od101-attr-card';
-      card.innerHTML = `
-        <div class="od101-attr-top">
-          <div>
-            <div class="attr-name">${esc(label)}</div>
-            <div class="attr-help">D20</div>
-          </div>
-          <div class="attr-mod">${esc(typeof formatMod === 'function' ? formatMod(attrMod(value)) : value)}</div>
-        </div>
-        <div class="od101-attr-control">
-          <button type="button" class="od101-step" data-od101-attr-step="${esc(key)}" data-dir="-1">−</button>
-          <input data-attr="${esc(key)}" type="number" value="${esc(value)}" min="1" inputmode="numeric">
-          <button type="button" class="od101-step" data-od101-attr-step="${esc(key)}" data-dir="1">+</button>
-        </div>
-        <button class="primary-btn small roll-attr od101-roll" data-roll-attr="${esc(key)}" type="button">D20</button>`;
-      grid.appendChild(card);
-    });
-  }
-
-  if (typeof renderAttributes === 'function') renderAttributes = renderAttributesV101;
-
-  function normalizeVitalControl(id) {
-    const input = $(id);
-    if (!input) return;
-    input.type = 'number';
-    const root = input.closest('.od101-vital-wrap, .od100-vital-wrap, .od99-vital-step-wrap');
-    if (root) {
-      let outer = root;
-      while (outer.parentElement?.matches?.('.od101-vital-wrap, .od100-vital-wrap, .od99-vital-step-wrap')) outer = outer.parentElement;
-      outer.parentNode.insertBefore(input, outer);
-      outer.remove();
-    }
-    const container = input.closest('.vital-inputs') || input.parentElement;
-    container?.querySelectorAll(`[data-od100-vital-step="${CSS.escape(id)}"], [data-od99-vital-step="${CSS.escape(id)}"], [data-od101-vital-step="${CSS.escape(id)}"]`).forEach(btn => btn.remove());
-    if (input.closest('.od101-vital-wrap')) return;
-    const wrap = document.createElement('span');
-    wrap.className = 'od101-vital-wrap';
-    input.parentNode.insertBefore(wrap, input);
-    wrap.appendChild(input);
-    wrap.insertAdjacentHTML('afterbegin', `<button type="button" class="od101-vital-step" data-od101-vital-step="${id}" data-dir="-1">−</button>`);
-    wrap.insertAdjacentHTML('beforeend', `<button type="button" class="od101-vital-step" data-od101-vital-step="${id}" data-dir="1">+</button>`);
-  }
-
-  function normalizeVitalsV101() {
-    ['pv-current', 'pv-max', 'pe-current', 'pe-max'].forEach(normalizeVitalControl);
-  }
-
-  function ensureLinkCharacterDialogV101() {
-    let dialog = $('od101-link-campaign-modal');
-    if (dialog) return dialog;
-    dialog = document.createElement('dialog');
-    dialog.id = 'od101-link-campaign-modal';
-    dialog.className = 'od101-link-modal od-modal';
-    dialog.innerHTML = `
-      <form method="dialog" class="modal-card manga-panel od101-link-card">
-        <div class="od101-modal-head">
-          <div>
-            <h2>Vincular em Mesa</h2>
-            <p>Escolha uma das mesas em que você participa para usar esta ficha.</p>
-          </div>
-          <button type="button" class="icon-btn" id="od101-link-close">×</button>
-        </div>
-        <div id="od101-link-list" class="od101-link-list"></div>
-      </form>`;
-    document.body.appendChild(dialog);
-    return dialog;
-  }
-
-  function roleLabel(role) {
-    if (role === 'mestre_jogador') return 'Mestre + Jogador';
-    if (role === 'mestre') return 'Mestre';
-    return 'Jogador';
-  }
-
-  function openLinkCharacterDialogV101() {
-    const char = safeChar();
-    if (!char || !currentCharacterId) return alert('Abra ou crie uma ficha antes de vincular em uma mesa.');
-    const dialog = ensureLinkCharacterDialogV101();
-    const list = $('od101-link-list');
-    const campaigns = safeCampaigns();
-    const members = safeMembers().filter(m => String(m.userId) === String(currentUser?.id));
-    const chars = (() => { try { return get(STORAGE.characters, []); } catch (_) { return []; } })();
-    list.innerHTML = '';
-    if (!members.length) {
-      list.innerHTML = '<div class="campaign-empty">Você ainda não participa de nenhuma mesa.</div>';
-    }
-    members.forEach(member => {
-      const campaign = campaigns.find(c => String(c.id) === String(member.campaignId));
-      if (!campaign) return;
-      const linked = chars.find(c => String(c.id) === String(member.characterId));
-      const isThis = String(member.characterId || '') === String(char.id);
-      const row = document.createElement('div');
-      row.className = 'od101-link-row';
-      row.innerHTML = `
-        <div class="od101-link-info">
-          <strong>${esc(campaign.name || 'Mesa sem nome')}</strong>
-          <span>Código: ${esc(campaign.code || '—')} • ${esc(roleLabel(member.role))}</span>
-          <small>${linked ? `Ficha atual: ${esc(linked.name || 'Sem nome')}` : 'Sem ficha vinculada'}</small>
-        </div>
-        <div class="od101-link-actions">
-          <button type="button" class="${isThis ? 'ghost-btn' : 'primary-btn'}" data-od101-link-campaign="${esc(campaign.id)}">${isThis ? 'Já vinculada' : linked ? 'Trocar por esta ficha' : 'Vincular esta ficha'}</button>
-          ${isThis ? `<button type="button" class="danger-btn small" data-od101-unlink-campaign="${esc(campaign.id)}">Remover vínculo</button>` : ''}
-        </div>`;
-      list.appendChild(row);
-    });
-    dialog.showModal();
-  }
-
-  async function linkCharacterToCampaignV101(campaignId) {
-    const char = safeChar();
-    if (!char) return;
-    try {
-      await Promise.resolve(attachCharacterToCampaign(campaignId, char.id));
-      $('od101-link-campaign-modal')?.close();
-      alert('Ficha vinculada à mesa.');
-    } catch (error) {
-      alert(error.message || 'Erro ao vincular ficha.');
-    }
-  }
-
-  async function unlinkCharacterFromCampaignV101(campaignId) {
-    try {
-      if (typeof od42Api === 'function' && typeof od42Token === 'function' && od42Token()) {
-        await od42Api(`/api/tables/${campaignId}/member`, { method: 'PUT', body: JSON.stringify({ characterId: null }) });
-        await od42RefreshTables?.();
-        await od42LoadTableState?.(campaignId);
-      } else {
-        const members = safeMembers();
-        const member = members.find(m => String(m.campaignId) === String(campaignId) && String(m.userId) === String(currentUser?.id));
-        if (member) member.characterId = null;
-        setMembers(members);
-      }
-      $('od101-link-campaign-modal')?.close();
-      renderCampaignMenu?.();
-      alert('Vínculo removido.');
-    } catch (error) {
-      alert(error.message || 'Erro ao remover vínculo.');
-    }
-  }
-
-  function bootV101() {
-    const portraitBtn = $('portrait-button');
-    if (portraitBtn) {
-      portraitBtn.id = 'od101-portrait-button';
-      portraitBtn.classList.add('portrait-button');
-      portraitBtn.setAttribute('title', 'Trocar fotos da ficha');
-    }
-    $('portrait-modal')?.classList.add('od101-hidden-old-photo-modal');
-    $('od99-portrait-crop-modal')?.classList.add('od101-hidden-old-photo-modal');
-    $('od100-portrait-modal')?.classList.add('od101-hidden-old-photo-modal');
-
-    const char = safeChar();
-    if (char) {
-      if ($('attributes-grid')) renderAttributesV101(char);
-      normalizeVitalsV101();
-      syncDodgeV101(char);
-      updatePortraitV101(char);
-    } else {
-      normalizeVitalsV101();
-    }
-  }
-
-  if (typeof updateDerivedStatsDisplay === 'function' && !updateDerivedStatsDisplay.__od101Wrapped) {
-    const base = updateDerivedStatsDisplay;
-    updateDerivedStatsDisplay = function od101UpdateDerivedStatsDisplay(char = safeChar()) {
-      const result = base.apply(this, arguments);
-      normalizeVitalsV101();
-      syncDodgeV101(char);
-      updatePortraitV101(char);
-      return result;
-    };
-    updateDerivedStatsDisplay.__od101Wrapped = true;
-  }
-
-  if (typeof renderPortrait === 'function') {
-    renderPortrait = function od101RenderPortrait(char) { updatePortraitV101(char || safeChar()); };
-    renderPortrait.__od101Wrapped = true;
-  }
-
-  if (typeof saveCurrentCharacter === 'function' && !saveCurrentCharacter.__od101Wrapped) {
-    const baseSave = saveCurrentCharacter;
-    saveCurrentCharacter = function od101SaveCurrentCharacter() {
-      const char = safeChar();
-      if (char) syncDodgeV101(char);
-      return baseSave.apply(this, arguments);
-    };
-    saveCurrentCharacter.__od101Wrapped = true;
-  }
-
-  if (typeof loadCharacter === 'function' && !loadCharacter.__od101Wrapped) {
-    const baseLoad = loadCharacter;
-    loadCharacter = function od101LoadCharacter(id) {
-      const result = baseLoad.apply(this, arguments);
-      setTimeout(bootV101, 0);
-      return result;
-    };
-    loadCharacter.__od101Wrapped = true;
-  }
-
-  document.addEventListener('click', event => {
-    const portraitBtn = null;
-    if (portraitBtn) { return; }
-
-    const linkBtn = event.target.closest('#campaign-character-btn');
-    if (linkBtn && accountSheetMode) {
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopImmediatePropagation();
-      openLinkCharacterDialogV101();
-      return;
-    }
-
-    if (event.target.closest('#od101-photo-close, #od101-photo-cancel')) {
-      event.preventDefault();
-      $('od101-photo-modal')?.close();
-      return;
-    }
-    if (event.target.closest('#od101-photo-reset')) {
-      event.preventDefault();
-      window.od101CropState = { x: 50, y: 50, scale: 1 };
-      refreshPhotoPreviewV101();
-      return;
-    }
-    if (event.target.closest('#od101-photo-save')) {
-      event.preventDefault();
-      writeCharacterImageFields();
-      $('od101-photo-modal')?.close();
-      return;
-    }
-    if (event.target.closest('#od101-link-close')) {
-      event.preventDefault();
-      $('od101-link-campaign-modal')?.close();
-      return;
-    }
-
-    const linkCampaign = event.target.closest('[data-od101-link-campaign]');
-    if (linkCampaign) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      linkCharacterToCampaignV101(linkCampaign.dataset.od101LinkCampaign);
-      return;
-    }
-    const unlinkCampaign = event.target.closest('[data-od101-unlink-campaign]');
-    if (unlinkCampaign) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      unlinkCharacterFromCampaignV101(unlinkCampaign.dataset.od101UnlinkCampaign);
-      return;
-    }
-
-    const attrStep = event.target.closest('[data-od101-attr-step]');
-    if (attrStep) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      const key = attrStep.dataset.od101AttrStep;
-      const dir = num(attrStep.dataset.dir, 0);
-      const input = document.querySelector(`input[data-attr="${CSS.escape(key)}"]`);
-      if (!input) return;
-      input.value = Math.max(1, num(input.value, 1) + dir);
-      updateChar?.(char => {
-        char.attrs = char.attrs || {};
-        char.attrs[key] = num(input.value, 1);
-        syncDodgeV101(char);
-      });
-      const char = safeChar();
-      if (char) {
-        renderAttributesV101(char);
-        try { renderSkills?.(char); } catch (_) {}
-        syncDodgeV101(char);
-        try { queueSave?.(); } catch (_) {}
-      }
-      return;
-    }
-
-    const vitalStep = event.target.closest('[data-od101-vital-step]');
-    if (vitalStep) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      const id = vitalStep.dataset.od101VitalStep;
-      const input = $(id);
-      if (!input) return;
-      input.value = num(input.value, 0) + num(vitalStep.dataset.dir, 0);
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-      const char = safeChar();
-      if (char) { syncDodgeV101(char); updatePortraitV101(char); }
-      try { queueSave?.(); } catch (_) {}
-      return;
-    }
-  }, true);
-
-  document.addEventListener('input', event => {
-    if (event.target.closest('#od101-photo-normal, #od101-photo-low, #od101-photo-zero, #od101-photo-transform')) {
-      refreshPhotoPreviewV101();
-      return;
-    }
-    if (event.target.matches?.('[data-skill-bonus], [data-od98-skill-bonus], [data-od88-skill-bonus], [data-od79-skill-bonus], [data-skill-trained], [data-od98-skill-trained], #defense, #prof-bonus')) {
-      setTimeout(() => syncDodgeV101(safeChar()), 0);
-    }
-  }, true);
-
-  document.addEventListener('change', event => {
-    if (event.target.matches?.('[data-skill-trained], [data-od98-skill-trained], #defense, #prof-bonus')) {
-      setTimeout(() => syncDodgeV101(safeChar()), 0);
-    }
-  }, true);
-
-  document.addEventListener('DOMContentLoaded', bootV101);
-  setTimeout(bootV101, 100);
-  setTimeout(bootV101, 600);
-  window.od101RefreshSheetFixes = bootV101;
-})();
-
-
-/* =========================
-   V102 - Beta 5: retratos, atributos, esquiva e entrada sem ficha
-   - Corrige valores/bônus dos atributos cobertos pelos controles
-   - Fotos por link aplicadas em ficha, menus, mesa e OBS
-   - GIF por link preservado sem canvas/conversão
-   - Esquiva = Defesa + bônus/proficiência de Reflexo, sem AGI
-   - Modal de escolher ficha ganha opção Entrar sem ficha
-========================= */
-(function od102Beta5Fixes(){
-  const $ = id => document.getElementById(id);
-  const esc = value => {
-    try { return typeof escapeHtml === 'function' ? escapeHtml(value ?? '') : String(value ?? ''); }
-    catch (_) { return String(value ?? ''); }
-  };
-  const num = (value, fallback = 0) => {
-    const n = Number(value);
-    return Number.isFinite(n) ? n : fallback;
-  };
-  const safeGet = (key, fallback) => { try { return get(key, fallback); } catch (_) { return fallback; } };
-  const safeSet = (key, value) => { try { set(key, value); } catch (_) {} };
-  const safeChar = () => { try { return typeof currentChar === 'function' ? currentChar() : null; } catch (_) { return null; } };
-  const imageFallback = 'assets/logo.jpg';
-
-  function cleanImage(value) { return String(value || '').trim(); }
-  function isUsableImage(value) {
-    const src = cleanImage(value);
-    return !!src && !/^(null|undefined|about:blank)$/i.test(src);
-  }
-  function primaryPortrait(char) {
-    return cleanImage(char?.portrait || char?.image || char?.photo || char?.avatar || char?.retrato || '');
-  }
-  function portraitByState(char = safeChar()) {
-    if (!char) return imageFallback;
-    const pv = num(char.pvCurrent ?? char.pvAtual ?? char.pv ?? char.hpCurrent ?? char.hp, 0);
-    const max = Math.max(1, num(char.pvMax ?? char.pvTotal ?? char.pv_max ?? char.hpMax ?? char.hpTotal, 1));
-    const icons = char.obsIcons || {};
-    if (pv < 0) return '';
-    if (char.obsTransformationActive && isUsableImage(char.obsTransformPortrait || icons.transformation || char.transformationPortrait)) {
-      return cleanImage(char.obsTransformPortrait || icons.transformation || char.transformationPortrait);
-    }
-    if (pv === 0 && isUsableImage(icons.zero || char.portraitZero || char.obsIconZero)) return cleanImage(icons.zero || char.portraitZero || char.obsIconZero);
-    if (pv > 0 && pv / max < .5 && isUsableImage(icons.low || char.portraitLow || char.obsIconLow)) return cleanImage(icons.low || char.portraitLow || char.obsIconLow);
-    return primaryPortrait(char) || imageFallback;
-  }
-  function cropFor(char) { return Object.assign({ x: 50, y: 50, scale: 1 }, char?.portraitCrop || {}); }
-  function applyCrop(img, char = safeChar()) {
-    if (!img) return;
-    const crop = cropFor(char);
-    img.style.objectFit = 'cover';
-    img.style.objectPosition = `${num(crop.x,50)}% ${num(crop.y,50)}%`;
-    img.style.transformOrigin = `${num(crop.x,50)}% ${num(crop.y,50)}%`;
-    img.style.transform = `scale(${Math.max(1, Math.min(3, num(crop.scale,1)))})`;
-  }
-  function setImageElement(img, src, char = safeChar()) {
-    if (!img) return;
-    const value = cleanImage(src);
-    if (!value) {
-      img.removeAttribute('src');
-      img.style.visibility = 'hidden';
-      return;
-    }
-    img.style.visibility = '';
-    if (img.getAttribute('src') !== value) img.src = value;
-    img.onerror = () => { img.onerror = null; img.src = imageFallback; };
-    applyCrop(img, char);
-  }
-  function updateVisiblePortraits(char = safeChar()) {
-    if (!char) return;
-    const normal = primaryPortrait(char) || imageFallback;
-    const state = portraitByState(char);
-    setImageElement($('char-portrait-preview'), state, char);
-    setImageElement($('overlay-portrait'), normal, char);
-    const hidden = $('portrait-url');
-    if (hidden) hidden.value = primaryPortrait(char);
-
-    // Atualiza cards já existentes sem esperar recarregar a página.
-    document.querySelectorAll(`img[data-character-id="${CSS.escape(String(char.id || ''))}"], img[data-char-id="${CSS.escape(String(char.id || ''))}"]`).forEach(img => setImageElement(img, normal, char));
-    document.querySelectorAll('.character-pill, .session-character, .choose-character-card, .account-character-card, .od71-character-card, .od85-character-card').forEach(card => {
-      const text = card.textContent || '';
-      if (char.name && text.includes(char.name)) {
-        const img = card.querySelector('img');
-        if (img) setImageElement(img, normal, char);
-      }
-    });
-  }
-  async function persistCharacterImage(char) {
-    if (!char) return;
-    try { queueSave?.(); } catch (_) {}
-    try {
-      if (typeof od44SaveCharacterOnline === 'function') await od44SaveCharacterOnline(char);
-      else if (typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(char);
-    } catch (error) {
-      console.warn('[One Dice v102] Falha ao salvar foto:', error);
-    }
-  }
-
-  function reflexSkill(char) { return char?.skills?.Reflexo || char?.skills?.Reflexos || { trained: false, bonus: 0 }; }
-  function reflexBonusOnly(char) {
-    const skill = reflexSkill(char);
-    return num(skill.bonus, 0) + (skill.trained ? num(char?.profBonus, 0) : 0);
-  }
-  function dodgeFormula(char = safeChar()) {
-    const def = typeof effectiveDefense === 'function' ? num(effectiveDefense(char), 10) : num(char?.defense ?? char?.defesa, 10);
-    return def + reflexBonusOnly(char);
-  }
-  window.od102DodgeFormula = dodgeFormula;
-  window.od101DodgeFormula = dodgeFormula;
-  window.od100DodgeFormula = dodgeFormula;
-  window.od99DodgeFormula = dodgeFormula;
-  window.od98DodgeFormula = dodgeFormula;
-  if (typeof calculatedDodge === 'function') {
-    calculatedDodge = function od102CalculatedDodge(char = safeChar()) { return dodgeFormula(char); };
-  }
-  function syncDodge(char = safeChar()) {
-    if (!char) return;
-    const value = dodgeFormula(char);
-    char.dodge = value;
-    char.dodgeManual = false;
-    char.dodgeLocked = false;
-    const field = $('dodge');
-    if (field && document.activeElement !== field) {
-      field.value = value;
-      field.removeAttribute('readonly');
-    }
-    const note = $('dodge-formula-note');
-    if (note) note.textContent = '';
-  }
-
-  function renderAttributesV102(char = safeChar()) {
-    const grid = $('attributes-grid');
-    if (!grid || !char) return;
-    const labels = { forca: 'Força', agilidade: 'Agilidade', vigor: 'Vigor', intelecto: 'Intelecto', presenca: 'Presença' };
-    grid.innerHTML = '';
-    Object.entries(labels).forEach(([key, label]) => {
-      const value = num(char.attrs?.[key], 1);
-      const mod = typeof attrMod === 'function' ? attrMod(value) : value;
-      const modText = typeof formatMod === 'function' ? formatMod(mod) : String(mod);
-      const card = document.createElement('div');
-      card.className = 'attr-card-v2 od102-attr-card';
-      card.innerHTML = `
-        <div class="od102-attr-name">${esc(label)}</div>
-        <div class="od102-attr-body">
-          <div class="od102-attr-left">
-            <div class="od102-attr-mod">${esc(modText)}</div>
-            <div class="od102-attr-help">D20</div>
-          </div>
-          <div class="od102-attr-control">
-            <button type="button" class="od102-step" data-od102-attr-step="${esc(key)}" data-dir="-1">−</button>
-            <input data-attr="${esc(key)}" type="number" value="${esc(value)}" min="1" inputmode="numeric">
-            <button type="button" class="od102-step" data-od102-attr-step="${esc(key)}" data-dir="1">+</button>
-          </div>
-        </div>
-        <button class="primary-btn small roll-attr od102-roll" data-roll-attr="${esc(key)}" type="button">D20</button>`;
-      grid.appendChild(card);
-    });
-  }
-  if (typeof renderAttributes === 'function') renderAttributes = renderAttributesV102;
-
-  function ensurePhotoDialog() {
-    let dialog = $('od102-photo-modal');
-    if (dialog) return dialog;
-    dialog = document.createElement('dialog');
-    dialog.id = 'od102-photo-modal';
-    dialog.className = 'od102-photo-modal od-modal';
-    dialog.innerHTML = `
-      <form method="dialog" class="modal-card manga-panel od102-photo-card">
-        <div class="od102-modal-head">
-          <div>
-            <h2>Fotos da Ficha</h2>
-            <p>Cole links diretos. PNG, JPG, WEBP e GIF funcionam. GIF permanece animado.</p>
-          </div>
-          <button type="button" class="icon-btn" id="od102-photo-close">×</button>
-        </div>
-        <div class="od102-photo-grid">
-          <label>Foto normal<input id="od102-photo-normal" type="text" placeholder="https://..." autocomplete="off"></label>
-          <label>Machucado, abaixo de 50% PV<input id="od102-photo-low" type="text" placeholder="opcional" autocomplete="off"></label>
-          <label>Morrendo, 0 PV<input id="od102-photo-zero" type="text" placeholder="opcional" autocomplete="off"></label>
-          <label>Transformação ativa<input id="od102-photo-transform" type="text" placeholder="opcional" autocomplete="off"></label>
-        </div>
-        <div class="od102-preview-wrap">
-          <div id="od102-crop-stage" class="od102-crop-stage" title="Arraste para mover. Roda do mouse para zoom.">
-            <img id="od102-crop-img" alt="Prévia" draggable="false">
-          </div>
-          <small>Prévia da foto principal. Arraste para enquadrar e use a roda do mouse para zoom. Para GIF, o link é salvo direto.</small>
-        </div>
-        <div class="modal-actions">
-          <button type="button" class="ghost-btn" id="od102-photo-reset">Centralizar</button>
-          <button type="button" class="ghost-btn" id="od102-photo-cancel">Cancelar</button>
-          <button type="button" class="primary-btn" id="od102-photo-save">Salvar Fotos</button>
-        </div>
-      </form>`;
-    document.body.appendChild(dialog);
-    return dialog;
-  }
-  function refreshPhotoPreview() {
-    const img = $('od102-crop-img');
-    if (!img) return;
-    const src = cleanImage($('od102-photo-normal')?.value || '');
-    const crop = Object.assign({ x: 50, y: 50, scale: 1 }, window.od102CropState || {});
-    if (!src) { img.removeAttribute('src'); return; }
-    if (img.getAttribute('src') !== src) img.src = src;
-    img.onerror = () => { img.removeAttribute('src'); };
-    img.style.objectFit = 'cover';
-    img.style.objectPosition = `${crop.x}% ${crop.y}%`;
-    img.style.transformOrigin = `${crop.x}% ${crop.y}%`;
-    img.style.transform = `scale(${Math.max(1, Math.min(3, num(crop.scale,1)))})`;
-  }
-  function openPhotoDialog() {
-    const char = safeChar();
-    const dialog = ensurePhotoDialog();
-    const icons = char?.obsIcons || {};
-    $('od102-photo-normal').value = primaryPortrait(char) || $('portrait-url')?.value || '';
-    $('od102-photo-low').value = cleanImage(icons.low || char?.portraitLow || char?.obsIconLow || '');
-    $('od102-photo-zero').value = cleanImage(icons.zero || char?.portraitZero || char?.obsIconZero || '');
-    $('od102-photo-transform').value = cleanImage(icons.transformation || char?.obsTransformPortrait || char?.transformationPortrait || '');
-    window.od102CropState = Object.assign({ x: 50, y: 50, scale: 1 }, char?.portraitCrop || {});
-    setupCrop();
-    refreshPhotoPreview();
-    dialog.showModal();
-  }
-  function setupCrop() {
-    const stage = $('od102-crop-stage');
-    if (!stage || stage.dataset.od102Ready === '1') return;
-    stage.dataset.od102Ready = '1';
-    let dragging = false, start = null;
-    stage.addEventListener('pointerdown', ev => {
-      dragging = true;
-      stage.setPointerCapture?.(ev.pointerId);
-      const crop = Object.assign({ x: 50, y: 50, scale: 1 }, window.od102CropState || {});
-      start = { x: ev.clientX, y: ev.clientY, cropX: crop.x, cropY: crop.y };
-    });
-    stage.addEventListener('pointermove', ev => {
-      if (!dragging || !start) return;
-      const rect = stage.getBoundingClientRect();
-      const dx = ((ev.clientX - start.x) / Math.max(1, rect.width)) * -100;
-      const dy = ((ev.clientY - start.y) / Math.max(1, rect.height)) * -100;
-      window.od102CropState = Object.assign({}, window.od102CropState || {}, {
-        x: Math.max(0, Math.min(100, start.cropX + dx)),
-        y: Math.max(0, Math.min(100, start.cropY + dy))
-      });
-      refreshPhotoPreview();
-    });
-    ['pointerup','pointercancel','pointerleave'].forEach(type => stage.addEventListener(type, () => { dragging = false; start = null; }));
-    stage.addEventListener('wheel', ev => {
-      ev.preventDefault();
-      const crop = Object.assign({ x: 50, y: 50, scale: 1 }, window.od102CropState || {});
-      crop.scale = Math.max(1, Math.min(3, crop.scale + (ev.deltaY < 0 ? .08 : -.08)));
-      window.od102CropState = crop;
-      refreshPhotoPreview();
-    }, { passive: false });
-  }
-  async function savePhotoDialog() {
-    const char = safeChar();
-    if (!char) return;
-    const normal = cleanImage($('od102-photo-normal')?.value || '');
-    const low = cleanImage($('od102-photo-low')?.value || '');
-    const zero = cleanImage($('od102-photo-zero')?.value || '');
-    const transformation = cleanImage($('od102-photo-transform')?.value || '');
-    const crop = Object.assign({ x: 50, y: 50, scale: 1 }, window.od102CropState || {});
-    updateChar?.(c => {
-      c.portrait = normal;
-      c.image = normal;
-      c.photo = normal;
-      c.avatar = normal;
-      c.retrato = normal;
-      c.obsIcons = c.obsIcons || {};
-      c.obsIcons.low = low;
-      c.obsIcons.zero = zero;
-      c.obsIcons.transformation = transformation;
-      c.portraitLow = low;
-      c.portraitZero = zero;
-      c.obsIconLow = low;
-      c.obsIconZero = zero;
-      c.obsTransformPortrait = transformation;
-      c.transformationPortrait = transformation;
-      c.portraitCrop = crop;
-      c.updatedAt = Date.now();
-    });
-    const fresh = safeChar();
-    const hidden = $('portrait-url');
-    const modalHidden = $('portrait-modal-url');
-    if (hidden) hidden.value = normal;
-    if (modalHidden) modalHidden.value = normal;
-    updateVisiblePortraits(fresh);
-    try { renderCharacterList?.(); } catch (_) {}
-    try { renderAccountCharacterList?.(); } catch (_) {}
-    try { renderCampaignMenu?.(); } catch (_) {}
-    await persistCharacterImage(fresh);
-  }
-
-  // Escolher ficha: adiciona entrada sem ficha e usa imagens atualizadas nos cards.
-  if (typeof openChooseCharacterModal === 'function' && !openChooseCharacterModal.__od102Wrapped) {
-    const baseOpenChoose = openChooseCharacterModal;
-    openChooseCharacterModal = function od102OpenChooseCharacterModal(campaignId = currentCampaignId) {
-      const result = baseOpenChoose.apply(this, arguments);
-      const list = $('choose-character-list');
-      if (list) {
-        list.querySelectorAll('.choose-character-card').forEach(btn => {
-          const id = btn.dataset.selectCharacterForCampaign;
-          const chars = safeGet(STORAGE.characters, []);
-          const char = chars.find(c => String(c.id) === String(id));
-          if (char) setImageElement(btn.querySelector('img'), primaryPortrait(char) || imageFallback, char);
-        });
-      }
-      const modal = $('choose-character-modal');
-      const actions = modal?.querySelector('.modal-actions');
-      if (actions && !$('od102-enter-without-sheet')) {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.id = 'od102-enter-without-sheet';
-        btn.className = 'ghost-btn';
-        btn.textContent = 'Entrar sem ficha';
-        actions.insertBefore(btn, actions.firstChild);
-      }
-      return result;
-    };
-    openChooseCharacterModal.__od102Wrapped = true;
-  }
-
-  async function enterWithoutSheet() {
-    const campaignId = pendingChooseCampaignId || currentCampaignId;
-    if (!campaignId) return;
-    try {
-      if (typeof od42Api === 'function' && typeof od42Token === 'function' && od42Token()) {
-        await od42Api(`/api/tables/${campaignId}/member`, { method: 'PUT', body: JSON.stringify({ characterId: null }) });
-        await od42RefreshTables?.();
-        await od42LoadTableState?.(campaignId);
-      } else {
-        const members = typeof getMembers === 'function' ? getMembers() : [];
-        let member = members.find(m => String(m.campaignId) === String(campaignId) && String(m.userId) === String(currentUser?.id));
-        if (!member) { member = { id: typeof uid === 'function' ? uid('member') : String(Date.now()), campaignId, userId: currentUser?.id, role: 'jogador', characterId: null }; members.push(member); }
-        member.characterId = null;
-        if (typeof setMembers === 'function') setMembers(members); else safeSet(STORAGE.members, members);
-      }
-      $('choose-character-modal')?.close();
-      $('create-first-sheet-modal')?.close();
-      currentCampaignId = campaignId;
-      safeSet(STORAGE.activeCampaign, campaignId);
-      if (typeof initApp === 'function') initApp(campaignId);
-    } catch (error) {
-      alert(error.message || 'Erro ao entrar sem ficha.');
-    }
-  }
-
-  function boot() {
-    $('portrait-modal')?.classList.add('od102-hidden-old-photo-modal');
-    $('od99-portrait-crop-modal')?.classList.add('od102-hidden-old-photo-modal');
-    $('od100-portrait-modal')?.classList.add('od102-hidden-old-photo-modal');
-    $('od101-photo-modal')?.classList.add('od102-hidden-old-photo-modal');
-    const btn = $('portrait-button') || $('od101-portrait-button');
-    if (btn) { btn.id = 'od102-portrait-button'; btn.setAttribute('title', 'Trocar fotos da ficha'); }
-    const char = safeChar();
-    if (char) {
-      if ($('attributes-grid')) renderAttributesV102(char);
-      syncDodge(char);
-      updateVisiblePortraits(char);
-    }
-    try { document.querySelectorAll('[data-skill-bonus], [data-od98-skill-bonus]').forEach(el => el.dispatchEvent(new Event('change', { bubbles: true }))); } catch (_) {}
-  }
-
-  document.addEventListener('click', event => {
-    const portraitBtn = null;
-    if (portraitBtn) { return; }
-    if (event.target.closest('#od102-photo-close, #od102-photo-cancel')) { event.preventDefault(); $('od102-photo-modal')?.close(); return; }
-    if (event.target.closest('#od102-photo-reset')) { event.preventDefault(); window.od102CropState = { x: 50, y: 50, scale: 1 }; refreshPhotoPreview(); return; }
-    if (event.target.closest('#od102-photo-save')) { event.preventDefault(); savePhotoDialog().then(() => $('od102-photo-modal')?.close()); return; }
-    if (event.target.closest('#od102-enter-without-sheet')) { event.preventDefault(); event.stopImmediatePropagation(); enterWithoutSheet(); return; }
-
-    const attrStep = event.target.closest('[data-od102-attr-step]');
-    if (attrStep) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      const key = attrStep.dataset.od102AttrStep;
-      const dir = num(attrStep.dataset.dir, 0);
-      const input = document.querySelector(`input[data-attr="${CSS.escape(key)}"]`);
-      if (!input) return;
-      input.value = Math.max(1, num(input.value, 1) + dir);
-      updateChar?.(char => { char.attrs = char.attrs || {}; char.attrs[key] = num(input.value, 1); syncDodge(char); });
-      const char = safeChar();
-      if (char) {
-        renderAttributesV102(char);
-        try { renderSkills?.(char); } catch (_) {}
-        syncDodge(char);
-        try { queueSave?.(); } catch (_) {}
-      }
-      return;
-    }
-  }, true);
-
-  document.addEventListener('input', event => {
-    if (event.target.closest('#od102-photo-normal, #od102-photo-low, #od102-photo-zero, #od102-photo-transform')) { refreshPhotoPreview(); return; }
-    if (event.target.matches?.('[data-skill-bonus], [data-od98-skill-bonus], [data-od88-skill-bonus], [data-od79-skill-bonus], [data-skill-trained], [data-od98-skill-trained], #defense, #prof-bonus')) {
-      setTimeout(() => syncDodge(safeChar()), 0);
-    }
-  }, true);
-  document.addEventListener('change', event => {
-    if (event.target.matches?.('[data-skill-trained], [data-od98-skill-trained], #defense, #prof-bonus')) setTimeout(() => syncDodge(safeChar()), 0);
-  }, true);
-
-  if (typeof renderPortrait === 'function') {
-    renderPortrait = function od102RenderPortrait(char) { updateVisiblePortraits(char || safeChar()); };
-    renderPortrait.__od102Wrapped = true;
-  }
-  if (typeof updateDerivedStatsDisplay === 'function' && !updateDerivedStatsDisplay.__od102Wrapped) {
-    const base = updateDerivedStatsDisplay;
-    updateDerivedStatsDisplay = function od102UpdateDerivedStatsDisplay(char = safeChar()) {
-      const result = base.apply(this, arguments);
-      syncDodge(char);
-      updateVisiblePortraits(char);
-      return result;
-    };
-    updateDerivedStatsDisplay.__od102Wrapped = true;
-  }
-  if (typeof saveCurrentCharacter === 'function' && !saveCurrentCharacter.__od102Wrapped) {
-    const base = saveCurrentCharacter;
-    saveCurrentCharacter = function od102SaveCurrentCharacter() {
-      const char = safeChar();
-      if (char) syncDodge(char);
-      return base.apply(this, arguments);
-    };
-    saveCurrentCharacter.__od102Wrapped = true;
-  }
-  if (typeof loadCharacter === 'function' && !loadCharacter.__od102Wrapped) {
-    const base = loadCharacter;
-    loadCharacter = function od102LoadCharacter(id) {
-      const result = base.apply(this, arguments);
-      setTimeout(boot, 0);
-      return result;
-    };
-    loadCharacter.__od102Wrapped = true;
-  }
-
-  document.addEventListener('DOMContentLoaded', boot);
-  setTimeout(boot, 120);
-  setTimeout(boot, 700);
-  window.od102RefreshBetaFixes = boot;
-})();
+/* V98-V102 legacy beta blocks removed in v1.50: old dodge auto-sync, old portrait/link controls and duplicated handlers. */
 
 /* =========================
    V103 - Ajuste isolado do painel de atributos
@@ -13621,7 +11302,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od136AttributesClean(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.49.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.50.0';
 
   const ATTRS = [
     ['forca', 'Força'], ['agilidade', 'Agilidade'], ['vigor', 'Vigor'], ['intelecto', 'Intelecto'], ['presenca', 'Presença']
@@ -13789,7 +11470,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od137SheetStabilityAndManualDefenseDodge(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.49.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.50.0';
 
   const $ = id => document.getElementById(id);
   const EDITABLE = 'input, textarea, select, [contenteditable="true"]';
@@ -14151,7 +11832,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od138AuditAndDuplicateSheetInstalled) return;
   window.__od138AuditAndDuplicateSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.49.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.50.0';
 
   const DUP_SELECTOR = '[data-od138-duplicate-character], [data-od71-copy-character], [data-copy-account-character]';
 
@@ -14344,7 +12025,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od139ExtraErrorFixesInstalled) return;
   window.__od139ExtraErrorFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.49.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.50.0';
 
   const IMAGE_KEYS = [
     'portrait','portraitUrl','image','imageUrl','photo','photoUrl','avatar','avatarUrl','retrato','foto',
@@ -14499,9 +12180,9 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od140GeneralImprovementsInstalled) return;
   window.__od140GeneralImprovementsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.49.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.50.0';
 
-  const VERSION = '1.49.0';
+  const VERSION = '1.50.0';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   const IMPORT_INPUT_ID = 'od140-import-json-input';
   const MAX_BACKUPS_PER_CHAR = 5;
@@ -14980,7 +12661,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od141AuditHardeningInstalled) return;
   window.__od141AuditHardeningInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.49.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.50.0';
 
   function pruneBackups(){
     try {
@@ -15031,7 +12712,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od142FinalCleanupInstalled) return;
   window.__od142FinalCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.49.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.50.0';
 
   function keepFirst(selector){
     const nodes = Array.from(document.querySelectorAll(selector));
@@ -15117,7 +12798,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od148SafeRollbackPatchInstalled) return;
   window.__od148SafeRollbackPatchInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.49.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.50.0';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   function hideManualNotes(){
     ['defense-effective-note','dodge-formula-note'].forEach(id => {
@@ -15155,69 +12836,66 @@ function od66InventoryMutationUnlockSoon() {
   try { new MutationObserver(hideManualNotes).observe(document.body, {childList:true, subtree:true}); } catch (_) {}
 })();
 
+
 /* =========================
-   V149 - correção controlada pós-rollback
-   - Defesa e Esquiva totalmente independentes, sem espelhamento.
-   - Abrir ficha pelo menu Personagens sempre abre ficha avulsa, não grupo da mesa.
-   - Reduz flicker dentro da sessão evitando re-render lateral durante digitação.
-   - Barra rápida fica minimizada por padrão e pode ser alternada no menu ☰.
-   - Perfil da sessão abre configurações da conta.
+   V150 - limpeza real pós-rollback
+   - Remove dependência prática dos blocos beta antigos V98-V102.
+   - Defesa e Esquiva ficam manuais e independentes.
+   - Evita flicker/re-render enquanto o usuário digita na ficha dentro da mesa.
+   - Ficha aberta por Personagens abre em modo ficha, não como grupo da mesa.
+   - Barra rápida fica recolhida por padrão e controlada pelo menu.
+   - Perfil da sessão vira atalho útil para configurações da conta.
+   - Evita requests pendentes por socket/polling quando não estiver em mesa.
 ========================= */
-(function od149ControlledFixes(){
+(function od150CleanStablePatch(){
   'use strict';
-  if (window.__od149ControlledFixesInstalled) return;
-  window.__od149ControlledFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.49.0';
+  if (window.__od150CleanStablePatchInstalled) return;
+  window.__od150CleanStablePatchInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.50.0';
 
-  const QUICKBAR_PREF = 'od149_quickbar_visible';
-  let editingManualStatUntil = 0;
-  let lastDefenseValue = null;
-  let lastDodgeValue = null;
-
-  function $(id){ return document.getElementById(id); }
-  function n(value, fallback = 0){
-    const num = Number(value);
-    return Number.isFinite(num) ? num : fallback;
-  }
-  function listChars(){
+  const $ = id => document.getElementById(id);
+  const n = (value, fallback = 0) => {
+    const v = Number(String(value ?? '').replace(',', '.'));
+    return Number.isFinite(v) ? v : fallback;
+  };
+  const getChars = () => {
     try { return typeof get === 'function' ? get(STORAGE.characters, []) : JSON.parse(localStorage.getItem('od_characters') || '[]'); }
     catch (_) { return []; }
-  }
-  function writeChars(chars){
-    try { if (typeof set === 'function') set(STORAGE.characters, chars); else localStorage.setItem('od_characters', JSON.stringify(chars)); }
+  };
+  const setChars = list => {
+    try { if (typeof set === 'function') set(STORAGE.characters, list); else localStorage.setItem('od_characters', JSON.stringify(list)); }
     catch (_) {}
+  };
+  const activeId = () => String(window.currentCharacterId || (typeof currentCharacterId !== 'undefined' ? currentCharacterId : '') || '');
+  const activeChar = () => getChars().find(c => String(c.id) === activeId()) || null;
+  const esc = value => {
+    try { return typeof escapeHtml === 'function' ? escapeHtml(String(value ?? '')) : String(value ?? ''); }
+    catch (_) { return String(value ?? ''); }
+  };
+
+  let editingCriticalUntil = 0;
+  function isTypingInSheet(){
+    const el = document.activeElement;
+    return !!(el && el.closest && el.closest('#app-screen input,#app-screen textarea,#app-screen select'));
   }
-  function activeChar(){
-    try {
-      const id = typeof currentCharacterId !== 'undefined' ? currentCharacterId : null;
-      return listChars().find(c => String(c.id) === String(id));
-    } catch (_) { return null; }
-  }
+  function markCriticalEditing(){ editingCriticalUntil = Date.now() + 1200; }
+  function inCriticalEdit(){ return Date.now() < editingCriticalUntil || isTypingInSheet(); }
+
   function mutateActive(mutator){
-    try {
-      const id = typeof currentCharacterId !== 'undefined' ? currentCharacterId : null;
-      if (!id) return null;
-      const chars = listChars();
-      const idx = chars.findIndex(c => String(c.id) === String(id));
-      if (idx < 0) return null;
-      const next = { ...chars[idx] };
-      mutator(next);
-      chars[idx] = next;
-      writeChars(chars);
-      return next;
-    } catch (_) { return null; }
+    const id = activeId();
+    if (!id) return null;
+    const chars = getChars();
+    const idx = chars.findIndex(c => String(c.id) === id);
+    if (idx < 0) return null;
+    const char = { ...chars[idx] };
+    mutator(char);
+    char.updatedAt = Date.now();
+    chars[idx] = { ...chars[idx], ...char };
+    setChars(chars);
+    return chars[idx];
   }
-  function setManualNotesHidden(){
-    ['defense-effective-note', 'dodge-formula-note'].forEach(id => {
-      const note = $(id);
-      if (!note) return;
-      note.textContent = '';
-      note.style.display = 'none';
-      note.setAttribute('aria-hidden', 'true');
-      note.classList.remove('danger');
-    });
-  }
-  function readManualFieldsToChar(char){
+
+  function readDefenseDodgeIntoChar(char){
     if (!char) return char;
     const defense = $('defense');
     const dodge = $('dodge');
@@ -15227,215 +12905,252 @@ function od66InventoryMutationUnlockSoon() {
     char.dodgeLocked = true;
     return char;
   }
-  function syncManualFieldsFromChar(char = activeChar(), opts = {}){
+
+  function syncDefenseDodgeFields(char = activeChar(), force = false){
     if (!char) return;
     const defense = $('defense');
     const dodge = $('dodge');
     if (defense) {
       defense.removeAttribute('readonly');
-      defense.dataset.manualOnly = 'true';
-      defense.title = 'Campo manual independente.';
-      if (opts.force || document.activeElement !== defense) defense.value = n(char.defense, 10);
+      defense.dataset.od150Manual = 'defense';
+      defense.autocomplete = 'off';
+      if (force || document.activeElement !== defense) defense.value = String(n(char.defense, 10));
     }
     if (dodge) {
       dodge.removeAttribute('readonly');
-      dodge.dataset.manualOnly = 'true';
-      dodge.title = 'Campo manual independente. Não copia Defesa.';
-      if (opts.force || document.activeElement !== dodge) dodge.value = n(char.dodge, 10);
+      dodge.dataset.od150Manual = 'dodge';
+      dodge.autocomplete = 'off';
+      dodge.title = 'Esquiva manual independente da Defesa.';
+      if (force || document.activeElement !== dodge) dodge.value = String(n(char.dodge, 10));
     }
-    setManualNotesHidden();
+    ['defense-effective-note','dodge-formula-note'].forEach(id => {
+      const note = $(id);
+      if (!note) return;
+      note.textContent = '';
+      note.style.display = 'none';
+      note.setAttribute('aria-hidden','true');
+      note.classList.remove('danger');
+    });
   }
 
-  // Neutraliza fórmulas antigas: Esquiva passa a ser somente o valor salvo em char.dodge.
-  try { calculatedDodge = function od149CalculatedDodge(char = activeChar()){ return n(char?.dodge, 10); }; window.calculatedDodge = calculatedDodge; } catch (_) {}
-  try { syncDodgeField = function od149SyncDodgeField(char = activeChar()){ syncManualFieldsFromChar(char); }; window.syncDodgeField = syncDodgeField; } catch (_) {}
+  // Neutraliza as funções globais de cálculo que camadas antigas chamam.
+  try { window.calculatedDodge = calculatedDodge = function od150CalculatedDodge(char = activeChar()){ return n(char?.dodge, 10); }; } catch (_) {}
+  try { window.syncDodgeField = syncDodgeField = function od150SyncDodgeField(char = activeChar()){ syncDefenseDodgeFields(char); }; } catch (_) {}
+  ['od98DodgeFormula','od99DodgeFormula','od100DodgeFormula','od101DodgeFormula','od102DodgeFormula'].forEach(name => {
+    try { window[name] = function(char = activeChar()){ return n(char?.dodge, 10); }; } catch (_) {}
+  });
 
-  // Defesa/Esquiva: intercepta no início da captura para impedir handlers antigos de espelharem valores.
-  window.addEventListener('input', function(event){
-    const target = event.target;
-    if (!(target instanceof HTMLElement)) return;
-    if (!target.matches('#defense, #dodge')) return;
-
-    event.stopImmediatePropagation();
-    editingManualStatUntil = Date.now() + 1600;
-
-    const defense = $('defense');
-    const dodge = $('dodge');
-    const beforeDefense = defense?.value ?? lastDefenseValue ?? '';
-    const beforeDodge = dodge?.value ?? lastDodgeValue ?? '';
-
-    const char = mutateActive(c => {
-      if (target.id === 'defense') c.defense = n(target.value, n(c.defense, 10));
-      if (target.id === 'dodge') c.dodge = n(target.value, n(c.dodge, 10));
-      c.dodgeManual = true;
-      c.dodgeLocked = true;
-    });
-
-    // Restaura o campo irmão, caso alguma camada antiga já tenha tentado copiar o valor.
-    queueMicrotask(() => {
-      if (target.id === 'defense' && dodge && document.activeElement !== dodge) dodge.value = char ? n(char.dodge, n(beforeDodge, 10)) : beforeDodge;
-      if (target.id === 'dodge' && defense && document.activeElement !== defense) defense.value = char ? n(char.defense, n(beforeDefense, 10)) : beforeDefense;
-      lastDefenseValue = defense?.value ?? lastDefenseValue;
-      lastDodgeValue = dodge?.value ?? lastDodgeValue;
-      setManualNotesHidden();
-    });
-
-    try { if (char && typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(char); } catch (_) {}
-  }, true);
-
-  window.addEventListener('change', function(event){
-    const target = event.target;
-    if (!(target instanceof HTMLElement)) return;
-    if (!target.matches('#defense, #dodge')) return;
-    event.stopImmediatePropagation();
-    const char = mutateActive(c => readManualFieldsToChar(c));
-    syncManualFieldsFromChar(char);
-    try { if (char && typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(char); } catch (_) {}
-  }, true);
-
-  // Depois de qualquer load antigo, corrige os campos para os valores independentes salvos.
-  if (typeof loadCharacter === 'function' && !loadCharacter.__od149ManualLoad) {
-    const baseLoad = loadCharacter;
-    loadCharacter = function od149LoadCharacter(id){
-      const out = baseLoad.apply(this, arguments);
-      const char = listChars().find(c => String(c.id) === String(id)) || activeChar();
-      setTimeout(() => syncManualFieldsFromChar(char, { force: false }), 0);
-      setTimeout(() => syncManualFieldsFromChar(char, { force: false }), 80);
-      return out;
+  const previousLoad = typeof loadCharacter === 'function' ? loadCharacter : null;
+  if (previousLoad && !previousLoad.__od150Wrapped) {
+    loadCharacter = function od150LoadCharacter(id){
+      const result = previousLoad.apply(this, arguments);
+      const char = activeChar();
+      syncDefenseDodgeFields(char, true);
+      return result;
     };
-    loadCharacter.__od149ManualLoad = true;
+    loadCharacter.__od150Wrapped = true;
     window.loadCharacter = loadCharacter;
   }
 
-  // Abre ficha avulsa de modo explícito; não reaproveita currentCampaignId nem lista de personagens da mesa.
-  function openAccountCharacterOnly(charId){
-    try {
-      if (typeof saveCurrentCharacter === 'function' && currentCharacterId) saveCurrentCharacter();
-    } catch (_) {}
-    try { accountSheetMode = true; } catch (_) {}
-    try { currentCampaignId = null; } catch (_) {}
-    try { localStorage.removeItem(STORAGE.activeCampaign); } catch (_) {}
-    try { if (typeof showApp === 'function') showApp(); } catch (_) {}
-    try { currentCharacterId = charId || currentCharacterId || listChars().find(c => c.ownerId === currentUser?.id)?.id || null; } catch (_) {}
-    try {
-      const label = $('current-user-label');
-      if (label && typeof userDisplayName === 'function') label.textContent = `${userDisplayName(currentUser)} • Minhas Fichas`;
-    } catch (_) {}
-    try { const info = $('campaign-info'); if (info) info.innerHTML = ''; } catch (_) {}
-    try { const title = $('sidebar-title'); if (title) title.textContent = 'Minhas Fichas'; } catch (_) {}
-    try { const btn = $('campaign-character-btn'); if (btn) btn.textContent = 'Vincular em Mesa'; } catch (_) {}
-    try { if (typeof renderCampaignMiniCard === 'function') renderCampaignMiniCard(); } catch (_) {}
-    try { if (typeof renderAccountCharacterSidebar === 'function') renderAccountCharacterSidebar(); } catch (_) {}
-    try { if (currentCharacterId && typeof loadCharacter === 'function') loadCharacter(currentCharacterId); } catch (_) {}
-    try { if (typeof renderChat === 'function') renderChat(); } catch (_) {}
-    setTimeout(() => {
-      try { if (typeof currentCampaignId !== 'undefined' && !currentCampaignId && typeof renderAccountCharacterSidebar === 'function') renderAccountCharacterSidebar(); } catch (_) {}
-      syncManualFieldsFromChar(activeChar(), { force:false });
-      setManualNotesHidden();
-    }, 60);
-  }
-
-  if (typeof initAccountCharacterEditor === 'function' && !initAccountCharacterEditor.__od149AccountOnly) {
-    initAccountCharacterEditor = function od149InitAccountCharacterEditor(charId = null){
-      openAccountCharacterOnly(charId);
-    };
-    initAccountCharacterEditor.__od149AccountOnly = true;
-    window.initAccountCharacterEditor = initAccountCharacterEditor;
-  }
-
-  window.addEventListener('click', function(event){
-    const open = event.target.closest?.('[data-od71-open-character], [data-open-account-character], [data-edit-account-character]');
-    if (open) {
-      const id = open.dataset.od71OpenCharacter || open.dataset.openAccountCharacter || open.dataset.editAccountCharacter;
-      if (id) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        openAccountCharacterOnly(id);
-      }
-      return;
-    }
-  }, true);
-
-  // Reduz flicker: se a ficha está sendo editada, não deixa renders de lista lateral ocorrerem a cada tecla.
-  if (typeof renderCharacterList === 'function' && !renderCharacterList.__od149NoFlicker) {
-    const baseRenderList = renderCharacterList;
-    renderCharacterList = function od149RenderCharacterList(){
-      if (Date.now() < editingManualStatUntil) return;
-      return baseRenderList.apply(this, arguments);
-    };
-    renderCharacterList.__od149NoFlicker = true;
-    window.renderCharacterList = renderCharacterList;
-  }
-  if (typeof saveCurrentCharacter === 'function' && !saveCurrentCharacter.__od149ManualSafe) {
-    const baseSave = saveCurrentCharacter;
-    saveCurrentCharacter = function od149SaveCurrentCharacter(){
-      const result = baseSave.apply(this, arguments);
-      const char = mutateActive(c => readManualFieldsToChar(c));
-      syncManualFieldsFromChar(char);
+  const previousSave = typeof saveCurrentCharacter === 'function' ? saveCurrentCharacter : null;
+  if (previousSave && !previousSave.__od150Wrapped) {
+    saveCurrentCharacter = function od150SaveCurrentCharacter(){
+      const result = previousSave.apply(this, arguments);
+      const char = mutateActive(c => readDefenseDodgeIntoChar(c));
+      syncDefenseDodgeFields(char);
+      try { if (char && typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(char); } catch (_) {}
       return result;
     };
-    saveCurrentCharacter.__od149ManualSafe = true;
+    saveCurrentCharacter.__od150Wrapped = true;
     window.saveCurrentCharacter = saveCurrentCharacter;
   }
 
-  // Barra rápida: minimizada por padrão; alternância no menu de três traços.
-  function quickbarWanted(){ return localStorage.getItem(QUICKBAR_PREF) === '1'; }
-  function applyQuickbarState(){
-    const bar = $('od140-quickbar');
-    if (bar) bar.classList.toggle('hidden', !quickbarWanted());
-    const btn = $('od149-toggle-quickbar');
-    if (btn) btn.textContent = quickbarWanted() ? 'Ocultar barra de ações' : 'Mostrar barra de ações';
+  // Captura Defesa/Esquiva no alvo, salva só o campo editado e bloqueia handlers antigos.
+  function criticalFieldHandler(event){
+    const target = event.target;
+    if (!target || !target.matches || !target.matches('#defense,#dodge')) return;
+    markCriticalEditing();
+    const id = target.id;
+    const value = n(target.value, 10);
+    const char = mutateActive(c => {
+      if (id === 'defense') c.defense = value;
+      if (id === 'dodge') c.dodge = value;
+      c.dodgeManual = true;
+      c.dodgeLocked = true;
+    });
+    syncDefenseDodgeFields(char);
+    try { if (char && typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(char); } catch (_) {}
+    event.stopImmediatePropagation();
+    event.stopPropagation();
   }
-  function ensureQuickbarMenuButton(){
-    const panel = $('sessions-menu-panel');
-    if (!panel || $('od149-toggle-quickbar')) return;
-    const btn = document.createElement('button');
-    btn.id = 'od149-toggle-quickbar';
-    btn.className = 'ghost-btn menu-entry';
-    btn.type = 'button';
-    btn.dataset.od149ToggleQuickbar = '1';
-    const logout = $('sessions-logout');
-    if (logout && logout.parentElement === panel) panel.insertBefore(btn, logout);
-    else panel.appendChild(btn);
-    applyQuickbarState();
+  ['input','change','keyup'].forEach(type => document.addEventListener(type, criticalFieldHandler, true));
+
+  // Reduz flicker: não redesenha lista lateral enquanto está digitando.
+  if (typeof renderCharacterList === 'function' && !renderCharacterList.__od150NoFlicker) {
+    const baseRenderCharacterList = renderCharacterList;
+    renderCharacterList = function od150RenderCharacterList(){
+      if (inCriticalEdit()) return;
+      return baseRenderCharacterList.apply(this, arguments);
+    };
+    renderCharacterList.__od150NoFlicker = true;
+    window.renderCharacterList = renderCharacterList;
   }
-  window.addEventListener('click', function(event){
-    if (event.target.closest?.('#od149-toggle-quickbar, [data-od149-toggle-quickbar]')) {
+
+  // Abrir ficha pela aba Personagens não deve entrar no grupo/mesa.
+  if (typeof initAccountCharacterEditor === 'function' && !initAccountCharacterEditor.__od150AccountMode) {
+    const baseInitAccount = initAccountCharacterEditor;
+    initAccountCharacterEditor = function od150InitAccountCharacterEditor(charId = null){
+      try { accountSheetMode = true; } catch (_) {}
+      try { currentCampaignId = null; } catch (_) {}
+      try { localStorage.removeItem(STORAGE.activeCampaign); } catch (_) {}
+      const result = baseInitAccount.apply(this, arguments);
+      try { accountSheetMode = true; } catch (_) {}
+      syncDefenseDodgeFields(activeChar(), true);
+      return result;
+    };
+    initAccountCharacterEditor.__od150AccountMode = true;
+    window.initAccountCharacterEditor = initAccountCharacterEditor;
+  }
+
+  // Perfil da sessão: clique abre configurações da conta.
+  function openAccountSettingsSafe(){
+    const btn = $('open-account-settings-btn') || $('od71-account-btn') || $('od90-account-btn');
+    if (btn && btn.id !== 'current-user-label') { try { btn.click(); return; } catch (_) {} }
+    const modal = $('account-settings-modal');
+    if (modal) { try { modal.showModal(); } catch (_) { modal.setAttribute('open',''); } }
+  }
+  document.addEventListener('click', event => {
+    if (event.target.closest('#main-topbar .brand,.od108-info-card,#current-user-label')) {
       event.preventDefault();
-      event.stopImmediatePropagation();
-      localStorage.setItem(QUICKBAR_PREF, quickbarWanted() ? '0' : '1');
-      applyQuickbarState();
-      return;
-    }
-    // Perfil da sessão agora é atalho para configurações da conta.
-    if (event.target.closest?.('#main-topbar .brand, .od108-info-card, .od90-user-menu-card, .od75-account-menu-card')) {
-      const settings = $('open-account-settings-btn');
-      const modal = $('account-settings-modal');
-      if (settings || modal) {
-        event.preventDefault();
-        event.stopPropagation();
-        try { settings?.click(); }
-        catch (_) { try { modal?.showModal(); } catch (__) {} }
-      }
+      openAccountSettingsSafe();
     }
   }, true);
 
-  // V140 reabre a barra sempre que app-screen está ativo; este observer corrige logo depois.
-  const quickbarObserver = new MutationObserver(() => {
-    ensureQuickbarMenuButton();
+  // Barra rápida recolhida por padrão + botão no menu de três traços.
+  const QUICK_KEY = 'od150_quickbar_visible';
+  function quickVisible(){ return localStorage.getItem(QUICK_KEY) === '1'; }
+  function setQuickVisible(value){ localStorage.setItem(QUICK_KEY, value ? '1' : '0'); applyQuickbarState(); }
+  function applyQuickbarState(){
+    const bar = $('od140-quickbar');
+    if (bar) {
+      const visible = quickVisible();
+      bar.classList.toggle('hidden', !visible);
+      bar.style.display = visible ? '' : 'none';
+    }
+    const btn = $('od150-toggle-quickbar');
+    if (btn) btn.textContent = quickVisible() ? 'Ocultar barra de ações' : 'Mostrar barra de ações';
+  }
+  function ensureQuickbarMenuButton(){
+    const panels = [$('sessions-menu-panel'), document.querySelector('#main-topbar .top-actions'), document.querySelector('.topbar-menu-panel')].filter(Boolean);
+    panels.forEach(panel => {
+      if (panel.querySelector('#od150-toggle-quickbar')) return;
+      const btn = document.createElement('button');
+      btn.id = 'od150-toggle-quickbar';
+      btn.type = 'button';
+      btn.className = 'ghost-btn menu-entry';
+      btn.addEventListener('click', () => setQuickVisible(!quickVisible()));
+      panel.appendChild(btn);
+    });
     applyQuickbarState();
-    setManualNotesHidden();
-  });
+  }
+
+  // Render único e simples das mesas quando o hub normal estiver ativo.
+  if (typeof renderCampaignMenu === 'function' && !renderCampaignMenu.__od150Clean) {
+    const cleanRender = function od150RenderCampaignMenu(){
+      const list = $('campaign-list');
+      if (!list || !currentUser) return;
+      const campaigns = typeof getCampaigns === 'function' ? getCampaigns() : [];
+      const members = typeof getMembers === 'function' ? getMembers().filter(m => String(m.userId) === String(currentUser.id)) : [];
+      const chars = getChars();
+      list.innerHTML = '';
+      if (!members.length) {
+        list.innerHTML = '<div class="campaign-empty">Você ainda não criou ou entrou em nenhuma mesa.</div>';
+        return;
+      }
+      members.forEach(member => {
+        const campaign = campaigns.find(c => String(c.id) === String(member.campaignId));
+        if (!campaign) return;
+        const char = chars.find(c => String(c.id) === String(member.characterId));
+        const card = document.createElement('div');
+        card.className = 'campaign-card od150-campaign-card';
+        card.innerHTML = `
+          <div class="campaign-main">
+            <div><strong>${esc(campaign.name || 'Mesa')}</strong><span>Código: <b>${esc(campaign.code || '')}</b></span><small>Papel: ${esc(member.role || 'jogador')}</small></div>
+            <div class="campaign-character-preview"><img src="${esc(char?.portrait || 'assets/logo.jpg')}" alt="" /><span>${char ? esc(char.name) : 'Sem ficha escolhida'}</span></div>
+          </div>
+          <div class="campaign-actions">
+            <button class="primary-btn" data-enter-campaign="${esc(campaign.id)}" type="button">Entrar</button>
+            <button class="ghost-btn" data-choose-campaign-char="${esc(campaign.id)}" type="button">Escolher Ficha</button>
+            ${String(campaign.ownerId) === String(currentUser.id)
+              ? `<button class="ghost-btn" data-copy-code="${esc(campaign.code || '')}" type="button">Copiar Código</button><button class="danger-btn small" data-delete-campaign="${esc(campaign.id)}" type="button">Excluir Mesa</button>`
+              : `<button class="danger-btn small" data-leave-campaign="${esc(campaign.id)}" type="button">Sair da Mesa</button>`}
+          </div>`;
+        list.appendChild(card);
+      });
+      if (!list.children.length) list.innerHTML = '<div class="campaign-empty">Nenhuma mesa válida encontrada.</div>';
+    };
+    cleanRender.__od150Clean = true;
+    renderCampaignMenu = cleanRender;
+    window.renderCampaignMenu = renderCampaignMenu;
+  }
+
+  // Evita socket/polling carregando no hub e reduz spinner por conexões pendentes.
+  function closeSocketOutsideTable(){
+    try {
+      const appActive = $('app-screen')?.classList.contains('active');
+      if (!appActive && window.od44Socket) { window.od44Socket.disconnect?.(); window.od44Socket = null; }
+    } catch (_) {}
+  }
 
   function boot(){
+    syncDefenseDodgeFields(activeChar());
     ensureQuickbarMenuButton();
     applyQuickbarState();
-    syncManualFieldsFromChar(activeChar());
-    setManualNotesHidden();
-    try { lastDefenseValue = $('defense')?.value ?? lastDefenseValue; lastDodgeValue = $('dodge')?.value ?? lastDodgeValue; } catch (_) {}
-    try { if (document.body && !quickbarObserver.__started) { quickbarObserver.__started = true; quickbarObserver.observe(document.body, { childList:true, subtree:true, attributes:true, attributeFilter:['class'] }); } } catch (_) {}
+    closeSocketOutsideTable();
+    try { if ($('sessions-screen')?.classList.contains('active') && typeof renderCampaignMenu === 'function') renderCampaignMenu(); } catch (_) {}
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once:true }); else boot();
-  [80, 250, 800, 1600].forEach(ms => setTimeout(boot, ms));
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true }); else boot();
+  [80, 250, 700, 1500, 3000].forEach(ms => setTimeout(boot, ms));
+  try { new MutationObserver(() => { syncDefenseDodgeFields(activeChar()); ensureQuickbarMenuButton(); applyQuickbarState(); }).observe(document.body, { childList:true, subtree:true }); } catch (_) {}
+
+  // Limpeza de backups: manter apenas 5 por ficha.
+  try {
+    const key = 'od_sheet_backups_v140';
+    const store = JSON.parse(localStorage.getItem(key) || '{}');
+    Object.keys(store || {}).forEach(id => { if (Array.isArray(store[id])) store[id] = store[id].slice(0, 5); });
+    localStorage.setItem(key, JSON.stringify(store));
+  } catch (_) {}
 })();
 
+/* =========================
+   V150b - desativação do dashboard legado intermitente
+   Mantém apenas o hub nativo do index.html em /inicio.
+========================= */
+(function od150DisableLegacyDashboard(){
+  'use strict';
+  if (window.__od150DisableLegacyDashboardInstalled) return;
+  window.__od150DisableLegacyDashboardInstalled = true;
+  function removeLegacyShell(){
+    try { document.querySelectorAll('#od71-shell,.od71-shell').forEach(el => el.remove()); } catch (_) {}
+  }
+  try { window.od71RenderShell = function(){ removeLegacyShell(); }; } catch (_) {}
+  try { window.od71RenderContent = function(){ removeLegacyShell(); }; } catch (_) {}
+  if (typeof showSessions === 'function' && !showSessions.__od150NativeHub) {
+    showSessions = function od150ShowSessionsNative(){
+      try { document.getElementById('auth-screen')?.classList.remove('active'); } catch (_) {}
+      try { document.getElementById('sessions-screen')?.classList.add('active'); } catch (_) {}
+      try { document.getElementById('app-screen')?.classList.remove('active'); } catch (_) {}
+      try { document.getElementById('overlay-screen')?.classList.remove('active'); } catch (_) {}
+      try { currentCampaignId = null; accountSheetMode = false; localStorage.removeItem(STORAGE.activeCampaign); } catch (_) {}
+      removeLegacyShell();
+      try { if (typeof renderAccountCharacterMenu === 'function') renderAccountCharacterMenu(); } catch (_) {}
+      try { if (typeof renderCampaignMenu === 'function') renderCampaignMenu(); } catch (_) {}
+    };
+    showSessions.__od150NativeHub = true;
+    window.showSessions = showSessions;
+  }
+  function boot(){ removeLegacyShell(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once:true }); else boot();
+  [100, 400, 1000, 2500].forEach(ms => setTimeout(boot, ms));
+  try { new MutationObserver(removeLegacyShell).observe(document.body, { childList:true, subtree:true }); } catch (_) {}
+})();

@@ -11001,12 +11001,3 @@ body.od134-photo-open{overflow:hidden!important;}
 #dodge-formula-note {
   display: none !important;
 }
-
-
-/* V149 - ajustes de estabilidade visual */
-#defense-effective-note,
-#dodge-formula-note { display: none !important; }
-#od140-quickbar.hidden { display: none !important; }
-#main-topbar .brand.od108-info-card,
-#sessions-menu-panel .od90-user-menu-card,
-#sessions-menu-panel .od75-account-menu-card { cursor: pointer; }
