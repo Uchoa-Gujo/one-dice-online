@@ -5,7 +5,7 @@
 ========================= */
 (function od139EarlyGuards(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.69.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
   if (!window.CSS) window.CSS = {};
   if (typeof window.CSS.escape !== 'function') {
     window.CSS.escape = function(value) {
@@ -12035,7 +12035,7 @@ function od66InventoryMutationUnlockSoon() {
    Este bloco não altera regras de ficha; apenas melhora autonomia e experiência.
 ========================= */
 (function od115Maintenance(){
-  const VERSION = '1.69.11';
+  const VERSION = '1.70.0';
   const STORAGE_PREFIX = 'od_';
   const routeMap = {
     home: '/inicio',
@@ -13636,7 +13636,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od136AttributesClean(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.69.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
 
   const ATTRS = [
     ['forca', 'Força'], ['agilidade', 'Agilidade'], ['vigor', 'Vigor'], ['intelecto', 'Intelecto'], ['presenca', 'Presença']
@@ -13804,7 +13804,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od137SheetStabilityAndManualDefenseDodge(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.69.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
 
   const $ = id => document.getElementById(id);
   const EDITABLE = 'input, textarea, select, [contenteditable="true"]';
@@ -14166,7 +14166,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od138AuditAndDuplicateSheetInstalled) return;
   window.__od138AuditAndDuplicateSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.69.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
 
   const DUP_SELECTOR = '[data-od138-duplicate-character], [data-od71-copy-character], [data-copy-account-character]';
 
@@ -14359,7 +14359,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od139ExtraErrorFixesInstalled) return;
   window.__od139ExtraErrorFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.69.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
 
   const IMAGE_KEYS = [
     'portrait','portraitUrl','image','imageUrl','photo','photoUrl','avatar','avatarUrl','retrato','foto',
@@ -14514,9 +14514,9 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od140GeneralImprovementsInstalled) return;
   window.__od140GeneralImprovementsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.69.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
 
-  const VERSION = '1.69.11';
+  const VERSION = '1.70.0';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   const IMPORT_INPUT_ID = 'od140-import-json-input';
   const MAX_BACKUPS_PER_CHAR = 5;
@@ -14995,7 +14995,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od141AuditHardeningInstalled) return;
   window.__od141AuditHardeningInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.69.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
 
   function pruneBackups(){
     try {
@@ -15046,7 +15046,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od142FinalCleanupInstalled) return;
   window.__od142FinalCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.69.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
 
   function keepFirst(selector){
     const nodes = Array.from(document.querySelectorAll(selector));
@@ -15132,7 +15132,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od148SafeRollbackPatchInstalled) return;
   window.__od148SafeRollbackPatchInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.69.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   function hideManualNotes(){
     ['defense-effective-note','dodge-formula-note'].forEach(id => {
@@ -15185,7 +15185,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od152StableLayoutFixesInstalled) return;
   window.__od152StableLayoutFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.69.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
 
   const $ = id => document.getElementById(id);
   const n = (value, fallback = 0) => {
@@ -15377,7 +15377,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od155SessionDashboardStability(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.69.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
 
   const STORE_PREFIX = 'od155_dashboard_collapsed_';
   const lastSig = { player: '', master: '' };
@@ -15533,7 +15533,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od156ProtectOtherPlayersSheetsInstalled) return;
   window.__od156ProtectOtherPlayersSheetsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.69.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
 
   const PROTECTED_ARRAYS = ['inventoryItems','blockInventory','abilities','spells','attacks','conditions','transformations','dropItems'];
   const PROTECTED_OBJECTS = ['skills','resistances','attrs','caster','obsIcons','portraitCrop','settings'];
@@ -15638,7 +15638,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od157ProtectOwnSheetPartialAutosaveInstalled) return;
   window.__od157ProtectOwnSheetPartialAutosaveInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.69.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
 
   function clone(value){
     try { return structuredClone(value); } catch (_) {
@@ -15794,7 +15794,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od159StableSessionRenderInstalled) return;
   window.__od159StableSessionRenderInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.69.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
 
   const $ = id => document.getElementById(id);
   const last = { tableSig: '', tableAt: 0, playerSig: '', masterSig: '' };
@@ -15927,7 +15927,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od160AccountSheetIsolationInstalled) return;
   window.__od160AccountSheetIsolationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.69.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
 
   const $ = id => document.getElementById(id);
 
@@ -16078,7 +16078,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od161EquipmentProficienciesInstalled) return;
   window.__od161EquipmentProficienciesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.69.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
 
   const GROUPS = {
     weapons: [
@@ -16245,9 +16245,9 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od164StableCleanRoutesInstalled) return;
   window.__od164StableCleanRoutesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.69.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
 
-  const VERSION = '1.69.11';
+  const VERSION = '1.70.0';
   let applyingRoute = false;
   let routeTimer = null;
 
@@ -16453,7 +16453,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od165ExactPortraitCrop(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.69.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
   if (window.__od165ExactPortraitCropInstalled) return;
   window.__od165ExactPortraitCropInstalled = true;
 
@@ -16575,7 +16575,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1685AreaSeparationInstalled) return;
   window.__od1685AreaSeparationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.69.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
 
   const AREA = {
     AUTH: 'login',
@@ -16764,7 +16764,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1699StableSkillUntrainInstalled) return;
   window.__od1699StableSkillUntrainInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.69.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
 
   const pending = new Map();
   let flushTimer = null;
@@ -16992,7 +16992,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16910SkillSaveMergeInstalled) return;
   window.__od16910SkillSaveMergeInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.69.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
 
   let lastExplicit = {};
   let lastExplicitAt = 0;
@@ -17208,7 +17208,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16911StablePortraitDuringResourcesInstalled) return;
   window.__od16911StablePortraitDuringResourcesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.69.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
 
   const RESOURCE_SELECTOR = '#pv-current, #pv-max, #pe-current, #pe-max';
   const MAIN_SELECTOR = '#char-portrait-preview';
@@ -17366,4 +17366,248 @@ function od66InventoryMutationUnlockSoon() {
   }
 
   window.od16911StablePortrait = { lock, restore, snapshot: () => snapshot(mainImg()) };
+})();
+
+
+/* =========================
+   V170 - Ficha modular e reduzível
+   Foco:
+   - transformar blocos grandes da ficha em módulos recolhíveis;
+   - reduzir poluição visual;
+   - melhorar desempenho com módulos fechados sem mexer em salvamento/banco/mesa.
+========================= */
+(function od170ModularSheet(){
+  'use strict';
+  if (window.__od170ModularSheetInstalled) return;
+  window.__od170ModularSheetInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
+
+  const STORE_KEY = 'od170_modules_state_v1';
+  const DENSE_KEY = 'od170_dense_sheet_v1';
+  let booted = false;
+
+  function $(id){ return document.getElementById(id); }
+  function readState(){
+    try { return JSON.parse(localStorage.getItem(STORE_KEY) || '{}') || {}; } catch (_) { return {}; }
+  }
+  function writeState(state){
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(state || {})); } catch (_) {}
+  }
+  function isDense(){
+    try { return localStorage.getItem(DENSE_KEY) === '1'; } catch (_) { return false; }
+  }
+  function setDense(value){
+    try { localStorage.setItem(DENSE_KEY, value ? '1' : '0'); } catch (_) {}
+    document.body.classList.toggle('od170-dense-sheet', !!value);
+    const btn = $('od170-dense-toggle');
+    if (btn) btn.textContent = value ? 'Modo confortável' : 'Modo denso';
+  }
+  function titleOf(header, fallback){
+    const h = header?.querySelector?.('h1,h2,h3,h4,strong') || (header?.matches?.('h1,h2,h3,h4,strong') ? header : null);
+    return String(h?.textContent || fallback || 'Módulo').trim();
+  }
+  function createHeader(title){
+    const header = document.createElement('div');
+    header.className = 'od170-module-head od170-generated-head';
+    header.innerHTML = `<div><h3>${escapeText(title)}</h3></div>`;
+    return header;
+  }
+  function escapeText(value){
+    return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+  }
+  function ensureToggle(module, key, title){
+    const header = module.querySelector(':scope > .od170-module-head, :scope > .section-title-row, :scope > .table-tools, :scope > h3, :scope > h2, :scope > header');
+    if (!header) return;
+    header.classList.add('od170-module-head');
+    if (!header.querySelector(':scope > .od170-module-toggle')) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'ghost-btn small od170-module-toggle';
+      btn.dataset.od170Toggle = key;
+      btn.setAttribute('aria-label', `Reduzir ${title}`);
+      btn.textContent = 'Reduzir';
+      header.appendChild(btn);
+    }
+  }
+  function setCollapsed(module, collapsed){
+    if (!module) return;
+    const key = module.dataset.od170Key;
+    module.classList.toggle('od170-collapsed', !!collapsed);
+    const btn = module.querySelector(':scope > .od170-module-head .od170-module-toggle');
+    if (btn) {
+      btn.textContent = collapsed ? 'Expandir' : 'Reduzir';
+      btn.setAttribute('aria-expanded', String(!collapsed));
+    }
+    if (key) {
+      const state = readState();
+      state[key] = !!collapsed;
+      writeState(state);
+    }
+  }
+  function collapseAll(value){
+    document.querySelectorAll('.od170-module').forEach(module => setCollapsed(module, value));
+  }
+  function wrapModule(key, title, headerEl, bodyEls, options = {}){
+    const bodies = (Array.isArray(bodyEls) ? bodyEls : [bodyEls]).filter(Boolean);
+    if (!bodies.length) return null;
+    if (bodies[0].closest?.('.od170-module')) return bodies[0].closest('.od170-module');
+
+    const first = headerEl || bodies[0];
+    const parent = first.parentElement;
+    if (!parent) return null;
+
+    const module = document.createElement('section');
+    module.className = 'od170-module';
+    module.dataset.od170Key = key;
+    module.dataset.od170Title = title;
+
+    parent.insertBefore(module, first);
+
+    let header = headerEl;
+    if (!header) header = createHeader(title);
+    module.appendChild(header);
+    header.classList.add('od170-module-head');
+
+    bodies.forEach(body => {
+      body.classList.add('od170-module-body');
+      module.appendChild(body);
+    });
+
+    ensureToggle(module, key, title);
+
+    const state = readState();
+    const collapsed = key in state ? !!state[key] : !!options.defaultCollapsed;
+    setCollapsed(module, collapsed);
+
+    return module;
+  }
+  function wrapByBody(key, title, bodySelector, options = {}){
+    const body = document.querySelector(bodySelector);
+    if (!body) return null;
+    let header = null;
+    const prev = body.previousElementSibling;
+    if (prev && (prev.matches('h2,h3,h4,.section-title-row,.table-tools,.inventory-text-head,.equipment-prof-head'))) {
+      header = prev;
+    }
+    return wrapModule(key, title, header, body, options);
+  }
+  function wrapResumo(){
+    const tab = $('tab-resumo');
+    if (!tab) return;
+    const attrs = $('attributes-grid');
+    const res = $('resistances-grid');
+    if (attrs) wrapModule('resumo-atributos', 'Atributos', attrs.previousElementSibling?.matches('h3') ? attrs.previousElementSibling : null, attrs);
+    if (res) wrapModule('resumo-resistencias', 'Resistências', res.previousElementSibling?.matches('h3') ? res.previousElementSibling : null, res);
+  }
+  function wrapEquipamentos(){
+    const summary = document.querySelector('#tab-equipamentos .inventory-summary-grid');
+    const weight = $('weight-status');
+    if (summary && !summary.closest('.od170-module')) {
+      wrapModule('equip-resumo', 'Resumo do Inventário', null, weight ? [summary, weight] : summary);
+    }
+    const profPanel = $('equipment-proficiency-panel');
+    if (profPanel && !profPanel.closest('.od170-module')) {
+      const head = profPanel.querySelector('.equipment-prof-head');
+      const body = profPanel.querySelector('.equipment-prof-grid');
+      if (head && body) wrapModule('equip-proficiencias', 'Proficiências', head, body);
+    }
+    const simple = $('simple-inventory-panel');
+    if (simple && !simple.closest('.od170-module')) {
+      const head = simple.querySelector('.inventory-text-head');
+      const body = $('simple-inventory-list');
+      if (head && body) wrapModule('equip-lista-simples', 'Inventário em Texto', head, body);
+    }
+    const block = $('block-inventory-panel');
+    if (block && !block.closest('.od170-module')) {
+      wrapModule('equip-modular', 'Inventário Modular', null, block, { defaultCollapsed: true });
+    }
+  }
+  function wrapGenericTabs(){
+    wrapByBody('ficha-vitais', 'Vida, Esforço e Defesa', '.vitals-grid');
+    wrapByBody('pericias-lista', 'Perícias', '#skills-wrap');
+    wrapByBody('combate-ataques', 'Ataques', '#attacks-list');
+    wrapByBody('magias-conjurador', 'Conjurador', '#tab-magias .magic-grid');
+    wrapByBody('magias-lista', 'Magias', '#spells-list');
+    wrapByBody('habilidades-lista', 'Habilidades', '#abilities-list');
+    const abilityTools = document.querySelector('#tab-habilidades .ability-tools');
+    const abilityList = $('abilities-list');
+    if (abilityTools && abilityList && abilityList.closest('.od170-module') && !abilityTools.closest('.od170-module')) {
+      abilityList.closest('.od170-module').insertBefore(abilityTools, abilityList);
+      abilityTools.classList.add('od170-module-body');
+    }
+    const banner = $('active-form-banner');
+    const forms = $('transformations-list');
+    if (forms) wrapModule('transformacoes-lista', 'Transformações', forms.previousElementSibling?.matches('.section-title-row') ? forms.previousElementSibling : null, banner ? [banner, forms] : forms);
+  }
+  function ensureToolbar(){
+    const sheet = document.querySelector('.sheet');
+    const tabs = document.querySelector('.sheet .tabs');
+    if (!sheet || !tabs || $('od170-toolbar')) return;
+
+    const toolbar = document.createElement('div');
+    toolbar.id = 'od170-toolbar';
+    toolbar.className = 'od170-toolbar';
+    toolbar.innerHTML = `
+      <div>
+        <strong>Organização da ficha</strong>
+        <span>Reduza blocos para navegar mais rápido.</span>
+      </div>
+      <div class="od170-toolbar-actions">
+        <button id="od170-expand-all" class="ghost-btn small" type="button">Expandir tudo</button>
+        <button id="od170-collapse-all" class="ghost-btn small" type="button">Reduzir tudo</button>
+        <button id="od170-dense-toggle" class="ghost-btn small" type="button">Modo denso</button>
+      </div>`;
+    sheet.insertBefore(toolbar, tabs);
+
+    $('od170-expand-all')?.addEventListener('click', () => collapseAll(false));
+    $('od170-collapse-all')?.addEventListener('click', () => collapseAll(true));
+    $('od170-dense-toggle')?.addEventListener('click', () => setDense(!isDense()));
+    setDense(isDense());
+  }
+  function installEvents(){
+    if (document.body.dataset.od170Events === '1') return;
+    document.body.dataset.od170Events = '1';
+
+    document.addEventListener('click', event => {
+      const btn = event.target.closest?.('[data-od170-toggle]');
+      if (!btn) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const module = btn.closest('.od170-module');
+      setCollapsed(module, !module.classList.contains('od170-collapsed'));
+    }, true);
+  }
+  function boot(){
+    ensureToolbar();
+    wrapGenericTabs();
+    wrapResumo();
+    wrapEquipamentos();
+    installEvents();
+    document.body.classList.toggle('od170-dense-sheet', isDense());
+    booted = true;
+  }
+  function scheduleBoot(){
+    clearTimeout(window.__od170BootTimer);
+    window.__od170BootTimer = setTimeout(boot, 80);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
+  else boot();
+
+  ['loadCharacter','renderSkills','renderSimpleInventory','od161RenderEquipmentProficiencies','applyInventoryMode'].forEach(name => {
+    try {
+      const fn = window[name];
+      if (typeof fn !== 'function' || fn.__od170Modular) return;
+      const wrapped = function od170WrappedModule(){
+        const result = fn.apply(this, arguments);
+        scheduleBoot();
+        return result;
+      };
+      wrapped.__od170Modular = true;
+      window[name] = wrapped;
+      try { eval(`${name} = wrapped`); } catch (_) {}
+    } catch (_) {}
+  });
+
+  window.od170ModularSheet = { boot, collapseAll, setDense };
 })();

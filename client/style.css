@@ -12152,3 +12152,166 @@ textarea::placeholder {
   will-change: auto !important;
   backface-visibility: hidden;
 }
+
+
+/* =========================
+   V170 - Ficha modular e reduzível
+========================= */
+.od170-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin: 14px 0 12px;
+  padding: 12px 14px;
+  border: 1px solid color-mix(in srgb, var(--accent, #d94a4a), white 18%);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--accent, #d94a4a), transparent 84%), transparent 44%),
+    rgba(0,0,0,.24);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
+}
+
+.od170-toolbar strong {
+  display: block;
+  color: #fff;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-size: .82rem;
+}
+
+.od170-toolbar span {
+  display: block;
+  margin-top: 2px;
+  color: rgba(255,255,255,.62);
+  font-family: Arial, system-ui, sans-serif;
+  font-size: .82rem;
+}
+
+.od170-toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.od170-module {
+  margin: 14px 0;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 18px;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.045), rgba(0,0,0,.20)),
+    rgba(0,0,0,.16);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.025);
+  overflow: clip;
+  content-visibility: auto;
+  contain-intrinsic-size: 220px;
+}
+
+.od170-module > .od170-module-head {
+  min-height: 52px;
+  margin: 0 !important;
+  padding: 12px 14px !important;
+  border-bottom: 1px solid rgba(255,255,255,.09);
+  background: rgba(0,0,0,.18);
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.od170-module > .od170-module-head h2,
+.od170-module > .od170-module-head h3,
+.od170-module > .od170-module-head h4 {
+  margin: 0;
+}
+
+.od170-module > .od170-module-head p,
+.od170-module > .od170-module-head .helper-text {
+  margin-bottom: 0;
+}
+
+.od170-module-toggle {
+  flex: 0 0 auto;
+  min-width: 82px;
+}
+
+.od170-module-body {
+  margin: 0 !important;
+  padding: 14px !important;
+}
+
+.od170-module > .od170-module-body + .od170-module-body {
+  padding-top: 0 !important;
+}
+
+.od170-module.od170-collapsed > .od170-module-body {
+  display: none !important;
+}
+
+.od170-module.od170-collapsed > .od170-module-head {
+  border-bottom: 0;
+}
+
+.od170-module.od170-collapsed {
+  contain-intrinsic-size: 60px;
+}
+
+.od170-dense-sheet .sheet,
+.od170-dense-sheet .manga-panel,
+.od170-dense-sheet .od170-module-body {
+  padding: 10px !important;
+}
+
+.od170-dense-sheet .helper-text,
+.od170-dense-sheet .subtitle,
+.od170-dense-sheet .hint {
+  display: none !important;
+}
+
+.od170-dense-sheet .vitals-grid,
+.od170-dense-sheet .identity-grid,
+.od170-dense-sheet .equipment-grid,
+.od170-dense-sheet .magic-grid {
+  gap: 8px !important;
+}
+
+.od170-dense-sheet .od170-module {
+  margin: 8px 0;
+  border-radius: 14px;
+}
+
+.od170-dense-sheet .od170-module > .od170-module-head {
+  min-height: 44px;
+  padding: 9px 12px !important;
+}
+
+.od170-dense-sheet input,
+.od170-dense-sheet textarea,
+.od170-dense-sheet select {
+  min-height: 36px;
+}
+
+@media (max-width: 760px) {
+  .od170-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .od170-toolbar-actions {
+    justify-content: stretch;
+  }
+
+  .od170-toolbar-actions > button {
+    flex: 1 1 auto;
+  }
+
+  .od170-module > .od170-module-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .od170-module-toggle {
+    width: 100%;
+  }
+}
