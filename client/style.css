@@ -11578,3 +11578,177 @@ body.dark-sheet .equipment-prof-dot {
     justify-content: center !important;
   }
 }
+
+
+/* =========================
+   V168 - Organização por áreas
+========================= */
+html[data-od-area],
+body[data-od-area] {
+  scroll-behavior: smooth;
+}
+
+body[data-od-area="ficha"] #master-dashboard,
+body[data-od-area="ficha"] #player-dashboard,
+body[data-od-area="ficha"] #initiative-panel,
+body[data-od-area="ficha"] #campaign-mini-card {
+  display: none !important;
+}
+
+body[data-od-area="ficha"] #players-sidebar .sidebar-title-row::after {
+  content: "Ficha avulsa";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  padding: 4px 9px;
+  border: 1px solid color-mix(in srgb, var(--accent, #d94a4a), white 18%);
+  border-radius: 999px;
+  color: rgba(255,255,255,.78);
+  font-size: .68rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  background: rgba(0,0,0,.26);
+}
+
+body[data-od-area="mesa"] #players-sidebar .sidebar-title-row::after {
+  content: "Mesa";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  padding: 4px 9px;
+  border: 1px solid color-mix(in srgb, var(--accent, #d94a4a), white 18%);
+  border-radius: 999px;
+  color: rgba(255,255,255,.78);
+  font-size: .68rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  background: rgba(0,0,0,.26);
+}
+
+body[data-od-area="ficha"] .topbar .brand span,
+body[data-od-area="mesa"] .topbar .brand span {
+  max-width: 42vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body[data-od-area="ficha"] #campaign-character-btn {
+  border-color: color-mix(in srgb, var(--accent, #d94a4a), white 24%) !important;
+}
+
+.sessions-shell,
+.sessions-main,
+.sessions-account-panel {
+  min-height: 0;
+}
+
+#sessions-screen.active {
+  overflow-y: auto;
+  align-items: start;
+  place-items: start center;
+}
+
+#account-character-list,
+.account-character-list,
+#campaign-list,
+.campaign-list {
+  max-height: min(62vh, 680px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--accent, #d94a4a), white 14%) rgba(255,255,255,.08);
+}
+
+#account-character-list::-webkit-scrollbar,
+.account-character-list::-webkit-scrollbar,
+#campaign-list::-webkit-scrollbar,
+.campaign-list::-webkit-scrollbar {
+  width: 10px;
+}
+
+#account-character-list::-webkit-scrollbar-thumb,
+.account-character-list::-webkit-scrollbar-thumb,
+#campaign-list::-webkit-scrollbar-thumb,
+.campaign-list::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--accent, #d94a4a), white 18%);
+  border-radius: 999px;
+}
+
+#account-character-list::-webkit-scrollbar-track,
+.account-character-list::-webkit-scrollbar-track,
+#campaign-list::-webkit-scrollbar-track,
+.campaign-list::-webkit-scrollbar-track {
+  background: rgba(0,0,0,.18);
+  border-radius: 999px;
+}
+
+body[data-od-area="personagens"] .account-character-card,
+body[data-od-area="campanhas"] .campaign-card {
+  scroll-margin: 100px;
+}
+
+body[data-od-area="ficha"] .character-list,
+body[data-od-area="mesa"] .character-list {
+  max-height: calc(100vh - 260px);
+  overflow-y: auto;
+  padding-right: 6px;
+  overscroll-behavior: contain;
+}
+
+body[data-od-area="ficha"] .sheet-area {
+  isolation: isolate;
+}
+
+@media (max-width: 900px) {
+  body[data-od-area="ficha"] .topbar .brand span,
+  body[data-od-area="mesa"] .topbar .brand span {
+    max-width: 64vw;
+  }
+  #account-character-list,
+  .account-character-list,
+  #campaign-list,
+  .campaign-list {
+    max-height: none;
+    overflow-y: visible;
+    padding-right: 0;
+  }
+}
+
+
+/* =========================
+   V168.5 - limpeza segura do patch de áreas
+========================= */
+body[data-od-area="ficha"] #campaign-mini-card,
+body[data-od-area="ficha"] #master-dashboard,
+body[data-od-area="ficha"] #player-dashboard,
+body[data-od-area="ficha"] #initiative-panel {
+  display: none !important;
+}
+
+body[data-od-area="ficha"] #players-sidebar,
+body[data-od-area="mesa"] #players-sidebar {
+  contain: layout paint;
+}
+
+body[data-od-area="ficha"] .character-list,
+body[data-od-area="mesa"] .character-list,
+#account-character-list,
+.account-character-list,
+#campaign-list,
+.campaign-list {
+  -webkit-overflow-scrolling: touch;
+}
+
+body[data-od-area="personagens"] .account-character-list,
+body[data-od-area="campanhas"] .campaign-list {
+  padding-bottom: 16px;
+}
+
+body[data-od-area="ficha"] .sheet-area,
+body[data-od-area="mesa"] .sheet-area {
+  min-width: 0;
+}
