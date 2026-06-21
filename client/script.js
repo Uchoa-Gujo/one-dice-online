@@ -5,7 +5,7 @@
 ========================= */
 (function od139EarlyGuards(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.68.5';
+  window.ONE_DICE_CLIENT_VERSION = '1.69.9';
   if (!window.CSS) window.CSS = {};
   if (typeof window.CSS.escape !== 'function') {
     window.CSS.escape = function(value) {
@@ -12035,7 +12035,7 @@ function od66InventoryMutationUnlockSoon() {
    Este bloco não altera regras de ficha; apenas melhora autonomia e experiência.
 ========================= */
 (function od115Maintenance(){
-  const VERSION = '1.68.5';
+  const VERSION = '1.69.9';
   const STORAGE_PREFIX = 'od_';
   const routeMap = {
     home: '/inicio',
@@ -13636,7 +13636,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od136AttributesClean(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.68.5';
+  window.ONE_DICE_CLIENT_VERSION = '1.69.9';
 
   const ATTRS = [
     ['forca', 'Força'], ['agilidade', 'Agilidade'], ['vigor', 'Vigor'], ['intelecto', 'Intelecto'], ['presenca', 'Presença']
@@ -13804,7 +13804,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od137SheetStabilityAndManualDefenseDodge(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.68.5';
+  window.ONE_DICE_CLIENT_VERSION = '1.69.9';
 
   const $ = id => document.getElementById(id);
   const EDITABLE = 'input, textarea, select, [contenteditable="true"]';
@@ -14166,7 +14166,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od138AuditAndDuplicateSheetInstalled) return;
   window.__od138AuditAndDuplicateSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.68.5';
+  window.ONE_DICE_CLIENT_VERSION = '1.69.9';
 
   const DUP_SELECTOR = '[data-od138-duplicate-character], [data-od71-copy-character], [data-copy-account-character]';
 
@@ -14359,7 +14359,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od139ExtraErrorFixesInstalled) return;
   window.__od139ExtraErrorFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.68.5';
+  window.ONE_DICE_CLIENT_VERSION = '1.69.9';
 
   const IMAGE_KEYS = [
     'portrait','portraitUrl','image','imageUrl','photo','photoUrl','avatar','avatarUrl','retrato','foto',
@@ -14514,9 +14514,9 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od140GeneralImprovementsInstalled) return;
   window.__od140GeneralImprovementsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.68.5';
+  window.ONE_DICE_CLIENT_VERSION = '1.69.9';
 
-  const VERSION = '1.68.5';
+  const VERSION = '1.69.9';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   const IMPORT_INPUT_ID = 'od140-import-json-input';
   const MAX_BACKUPS_PER_CHAR = 5;
@@ -14995,7 +14995,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od141AuditHardeningInstalled) return;
   window.__od141AuditHardeningInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.68.5';
+  window.ONE_DICE_CLIENT_VERSION = '1.69.9';
 
   function pruneBackups(){
     try {
@@ -15046,7 +15046,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od142FinalCleanupInstalled) return;
   window.__od142FinalCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.68.5';
+  window.ONE_DICE_CLIENT_VERSION = '1.69.9';
 
   function keepFirst(selector){
     const nodes = Array.from(document.querySelectorAll(selector));
@@ -15132,7 +15132,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od148SafeRollbackPatchInstalled) return;
   window.__od148SafeRollbackPatchInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.68.5';
+  window.ONE_DICE_CLIENT_VERSION = '1.69.9';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   function hideManualNotes(){
     ['defense-effective-note','dodge-formula-note'].forEach(id => {
@@ -15185,7 +15185,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od152StableLayoutFixesInstalled) return;
   window.__od152StableLayoutFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.68.5';
+  window.ONE_DICE_CLIENT_VERSION = '1.69.9';
 
   const $ = id => document.getElementById(id);
   const n = (value, fallback = 0) => {
@@ -15377,7 +15377,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od155SessionDashboardStability(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.68.5';
+  window.ONE_DICE_CLIENT_VERSION = '1.69.9';
 
   const STORE_PREFIX = 'od155_dashboard_collapsed_';
   const lastSig = { player: '', master: '' };
@@ -15533,7 +15533,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od156ProtectOtherPlayersSheetsInstalled) return;
   window.__od156ProtectOtherPlayersSheetsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.68.5';
+  window.ONE_DICE_CLIENT_VERSION = '1.69.9';
 
   const PROTECTED_ARRAYS = ['inventoryItems','blockInventory','abilities','spells','attacks','conditions','transformations','dropItems'];
   const PROTECTED_OBJECTS = ['skills','resistances','attrs','caster','obsIcons','portraitCrop','settings'];
@@ -15638,7 +15638,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od157ProtectOwnSheetPartialAutosaveInstalled) return;
   window.__od157ProtectOwnSheetPartialAutosaveInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.68.5';
+  window.ONE_DICE_CLIENT_VERSION = '1.69.9';
 
   function clone(value){
     try { return structuredClone(value); } catch (_) {
@@ -15794,7 +15794,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od159StableSessionRenderInstalled) return;
   window.__od159StableSessionRenderInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.68.5';
+  window.ONE_DICE_CLIENT_VERSION = '1.69.9';
 
   const $ = id => document.getElementById(id);
   const last = { tableSig: '', tableAt: 0, playerSig: '', masterSig: '' };
@@ -15927,7 +15927,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od160AccountSheetIsolationInstalled) return;
   window.__od160AccountSheetIsolationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.68.5';
+  window.ONE_DICE_CLIENT_VERSION = '1.69.9';
 
   const $ = id => document.getElementById(id);
 
@@ -16078,7 +16078,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od161EquipmentProficienciesInstalled) return;
   window.__od161EquipmentProficienciesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.68.5';
+  window.ONE_DICE_CLIENT_VERSION = '1.69.9';
 
   const GROUPS = {
     weapons: [
@@ -16245,9 +16245,9 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od164StableCleanRoutesInstalled) return;
   window.__od164StableCleanRoutesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.68.5';
+  window.ONE_DICE_CLIENT_VERSION = '1.69.9';
 
-  const VERSION = '1.68.5';
+  const VERSION = '1.69.9';
   let applyingRoute = false;
   let routeTimer = null;
 
@@ -16453,7 +16453,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od165ExactPortraitCrop(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.68.5';
+  window.ONE_DICE_CLIENT_VERSION = '1.69.9';
   if (window.__od165ExactPortraitCropInstalled) return;
   window.__od165ExactPortraitCropInstalled = true;
 
@@ -16575,7 +16575,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1685AreaSeparationInstalled) return;
   window.__od1685AreaSeparationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.68.5';
+  window.ONE_DICE_CLIENT_VERSION = '1.69.9';
 
   const AREA = {
     AUTH: 'login',
@@ -16749,4 +16749,233 @@ function od66InventoryMutationUnlockSoon() {
   else boot();
 
   window.od168AreaSeparation = { setArea, syncAreaFromScreen, forceCharacterContext, forceTableContext, fixMenuLabels };
+})();
+
+
+/* =========================
+   V169.9 - Patch: destreinar perícias não volta sozinho
+   Motivo:
+   - A tela de perícias renderiza só a aba Treinadas ou Não Treinadas.
+   - Ao destreinar uma perícia na aba Treinadas, o card sai da tela imediatamente.
+   - Salvamentos genéricos que leem somente o DOM podiam tratar a ausência como "não foi mexido"
+     e proteções antigas podiam restaurar o estado anterior.
+========================= */
+(function od1699StableSkillUntrain(){
+  'use strict';
+  if (window.__od1699StableSkillUntrainInstalled) return;
+  window.__od1699StableSkillUntrainInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.69.9';
+
+  const pending = new Map();
+  let flushTimer = null;
+
+  function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
+  function clone(value){
+    try { return structuredClone(value); } catch (_) {
+      try { return JSON.parse(JSON.stringify(value)); } catch (__) { return value; }
+    }
+  }
+  function allSkillNames(){
+    return safe(() => Array.isArray(SKILLS) ? SKILLS.map(([name]) => name) : [], []);
+  }
+  function current(){
+    return safe(() => typeof currentChar === 'function' ? currentChar() : null, null);
+  }
+  function ensureSkill(char, name){
+    if (!char || !name) return null;
+    char.skills = char.skills || {};
+    char.skills[name] = char.skills[name] || { trained: false, bonus: 0, disadvantage: false };
+    if (typeof char.skills[name].trained !== 'boolean') char.skills[name].trained = !!char.skills[name].trained;
+    if (!Number.isFinite(Number(char.skills[name].bonus))) char.skills[name].bonus = 0;
+    return char.skills[name];
+  }
+  function presentSkillNames(){
+    return new Set([...document.querySelectorAll('[data-skill-trained], [data-skill-bonus]')]
+      .map(el => el.dataset.skillTrained || el.dataset.skillBonus)
+      .filter(Boolean));
+  }
+  function rowBonusFor(input, name){
+    const card = input.closest?.('.od79-skill-card, tr, article, .skill-card') || document;
+    const local = card.querySelector?.(`[data-skill-bonus="${CSS.escape ? CSS.escape(name) : name}"]`);
+    if (local) return Number(local.value || 0);
+    const char = current();
+    return Number(char?.skills?.[name]?.bonus || 0);
+  }
+  function rememberSkillChange(input){
+    if (!input) return;
+    const trainedName = input.dataset.skillTrained;
+    const bonusName = input.dataset.skillBonus;
+    const name = trainedName || bonusName;
+    if (!name) return;
+
+    const existing = pending.get(name) || {};
+    const next = { ...existing };
+
+    if (trainedName) {
+      next.trained = !!input.checked;
+      next.bonus = rowBonusFor(input, name);
+      next.touchedTrained = true;
+    }
+    if (bonusName) {
+      next.bonus = Number(input.value || 0);
+      next.touchedBonus = true;
+    }
+
+    pending.set(name, next);
+
+    // Aplica no armazenamento local imediatamente, antes do card sumir da aba Treinadas.
+    if (typeof updateChar === 'function') {
+      updateChar(char => {
+        const skill = ensureSkill(char, name);
+        if (!skill) return;
+        if ('trained' in next) skill.trained = !!next.trained;
+        if ('bonus' in next) skill.bonus = Number(next.bonus || 0);
+        skill.disadvantage = !!skill.disadvantage;
+        char._explicitSkillChanges = char._explicitSkillChanges || {};
+        char._explicitSkillChanges[name] = {
+          trained: skill.trained,
+          bonus: Number(skill.bonus || 0),
+          at: Date.now(),
+          source: 'v1.69.9'
+        };
+      });
+    }
+
+    scheduleFlush();
+  }
+  function applyPendingTo(char){
+    if (!char || !pending.size) return false;
+    let changed = false;
+    for (const [name, data] of pending.entries()) {
+      const skill = ensureSkill(char, name);
+      if (!skill) continue;
+      if ('trained' in data && skill.trained !== !!data.trained) {
+        skill.trained = !!data.trained;
+        changed = true;
+      }
+      if ('bonus' in data && Number(skill.bonus || 0) !== Number(data.bonus || 0)) {
+        skill.bonus = Number(data.bonus || 0);
+        changed = true;
+      }
+      skill.disadvantage = !!skill.disadvantage;
+      char._explicitSkillChanges = char._explicitSkillChanges || {};
+      char._explicitSkillChanges[name] = {
+        trained: !!skill.trained,
+        bonus: Number(skill.bonus || 0),
+        at: Date.now(),
+        source: 'v1.69.9'
+      };
+    }
+    return changed;
+  }
+  function restoreAbsentSkillsFromBefore(char, before, present){
+    if (!char || !before?.skills) return false;
+    char.skills = char.skills || {};
+    let changed = false;
+    const keys = new Set([...allSkillNames(), ...Object.keys(before.skills || {}), ...Object.keys(char.skills || {})]);
+
+    keys.forEach(name => {
+      if (!name) return;
+      if (pending.has(name)) return; // alteração explícita do usuário ganha da proteção antiga
+      if (present.has(name)) return; // se estava na tela, o DOM pode salvar normalmente
+      if (!before.skills[name]) return;
+
+      const currentSkill = char.skills[name];
+      const oldSkill = before.skills[name];
+      const different = JSON.stringify(currentSkill || {}) !== JSON.stringify(oldSkill || {});
+      if (different) {
+        char.skills[name] = clone(oldSkill);
+        changed = true;
+      }
+    });
+
+    return changed;
+  }
+  function flush(){
+    flushTimer = null;
+    if (!pending.size) return;
+
+    let updated = null;
+    if (typeof updateChar === 'function') {
+      updateChar(char => {
+        applyPendingTo(char);
+        updated = char;
+      });
+    }
+    const char = updated || current();
+
+    if (char && typeof od42ScheduleCharacterSave === 'function') {
+      od42ScheduleCharacterSave(char);
+    }
+
+    // Mantém por alguns instantes para proteger o próximo autosave gerado pelo mesmo clique.
+    setTimeout(() => pending.clear(), 900);
+  }
+  function scheduleFlush(){
+    clearTimeout(flushTimer);
+    flushTimer = setTimeout(flush, 80);
+  }
+
+  document.addEventListener('change', event => {
+    const input = event.target?.closest?.('[data-skill-trained], [data-skill-bonus]');
+    if (!input) return;
+    rememberSkillChange(input);
+  }, true);
+
+  if (typeof saveCurrentCharacter === 'function' && !saveCurrentCharacter.__od1699StableSkillUntrain) {
+    const previousSave = saveCurrentCharacter;
+    saveCurrentCharacter = function od1699SaveCurrentCharacter(){
+      const before = clone(current());
+      const present = presentSkillNames();
+
+      const result = previousSave.apply(this, arguments);
+
+      try {
+        if (typeof updateChar === 'function') {
+          let patched = null;
+          updateChar(char => {
+            if (!char || (before?.id && String(char.id) !== String(before.id))) return;
+            restoreAbsentSkillsFromBefore(char, before, present);
+            applyPendingTo(char);
+            char._presentSkills = [...present];
+            char._saveSourceVersion = '1.69.9';
+            patched = char;
+          });
+          if (patched && typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(patched);
+        }
+      } catch (error) {
+        console.warn('[One Dice v1.69.9] Falha ao estabilizar perícias:', error);
+      }
+
+      return result;
+    };
+    saveCurrentCharacter.__od1699StableSkillUntrain = true;
+    try { window.saveCurrentCharacter = saveCurrentCharacter; } catch (_) {}
+  }
+
+  // Proteção final do payload online: se o usuário acabou de destreinar, o PUT não pode restaurar true.
+  if (typeof od42Api === 'function' && !od42Api.__od1699SkillPayloadSafe) {
+    const previousApi = od42Api;
+    od42Api = function od1699Api(path, options = {}){
+      try {
+        const isPut = String(path || '').startsWith('/api/characters/') && String(options?.method || '').toUpperCase() === 'PUT';
+        if (isPut && options.body && pending.size) {
+          const payload = JSON.parse(options.body);
+          if (payload?.data) {
+            payload.data.skills = payload.data.skills || {};
+            applyPendingTo(payload.data);
+            payload.data._saveSourceVersion = '1.69.9';
+            options = { ...options, body: JSON.stringify(payload) };
+          }
+        }
+      } catch (error) {
+        console.warn('[One Dice v1.69.9] Falha ao proteger payload de perícias:', error);
+      }
+      return previousApi.call(this, path, options);
+    };
+    od42Api.__od1699SkillPayloadSafe = true;
+    try { window.od42Api = od42Api; } catch (_) {}
+  }
+
+  window.od1699SkillPatch = { pending, flush };
 })();

@@ -11752,3 +11752,392 @@ body[data-od-area="ficha"] .sheet-area,
 body[data-od-area="mesa"] .sheet-area {
   min-width: 0;
 }
+
+
+/* =========================
+   V169 - Padrão visual único
+   Camada somente visual: botões, cards, campos, menus e títulos.
+========================= */
+:root {
+  --od169-bg-dark: #050706;
+  --od169-panel: rgba(8, 12, 10, .78);
+  --od169-panel-strong: rgba(5, 7, 6, .92);
+  --od169-panel-soft: rgba(255,255,255,.055);
+  --od169-border: rgba(255,255,255,.14);
+  --od169-border-strong: color-mix(in srgb, var(--accent, #d94a4a), white 22%);
+  --od169-text: #f7f3e8;
+  --od169-muted: rgba(247,243,232,.68);
+  --od169-shadow: 0 18px 44px rgba(0,0,0,.28);
+  --od169-radius: 18px;
+}
+
+body.dark-sheet {
+  --panel: rgba(7, 10, 9, .88);
+  --line: color-mix(in srgb, var(--accent, #d94a4a), #ffffff 18%);
+}
+
+body.dark-sheet .manga-panel,
+body.dark-sheet .sheet,
+body.dark-sheet .sidebar,
+body.dark-sheet .sessions-head,
+body.dark-sheet .sessions-actions,
+body.dark-sheet .sessions-account-panel,
+body.dark-sheet .table-dashboard,
+body.dark-sheet .modal-card {
+  border: 1px solid var(--od169-border-strong) !important;
+  border-radius: var(--od169-radius) !important;
+  clip-path: none !important;
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--accent, #d94a4a), transparent 84%), transparent 42%),
+    linear-gradient(145deg, rgba(255,255,255,.055), rgba(0,0,0,.38)),
+    var(--od169-panel) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.045),
+    var(--od169-shadow) !important;
+}
+
+body.dark-sheet .manga-panel::before,
+body.dark-sheet .sheet::before {
+  opacity: .08 !important;
+  mix-blend-mode: screen !important;
+}
+
+.topbar {
+  border-bottom: 1px solid var(--od169-border-strong) !important;
+  background:
+    linear-gradient(180deg, rgba(8, 11, 10, .96), rgba(4, 6, 5, .92)) !important;
+  box-shadow: 0 12px 34px rgba(0,0,0,.24);
+}
+
+.brand strong,
+.sessions-head h1,
+.sessions-head h2,
+.sheet h3,
+.dashboard-head h2,
+.sidebar h2,
+.section-title-row h3,
+.table-tools h3,
+.inventory-text-head h3,
+.equipment-prof-head h3 {
+  color: var(--od169-text);
+  letter-spacing: .07em;
+}
+
+.subtitle,
+.helper-text,
+.sessions-head p,
+.dashboard-head .subtitle,
+.table-tools p,
+.section-title-row p {
+  color: var(--od169-muted) !important;
+  font-family: Arial, system-ui, sans-serif;
+}
+
+.eyebrow {
+  color: color-mix(in srgb, var(--accent, #d94a4a), white 22%) !important;
+  letter-spacing: .14em !important;
+}
+
+button,
+.tab-btn,
+.sheet-tab,
+.ghost-btn,
+.primary-btn,
+.danger-btn,
+.stepper-btn,
+.sidebar-toggle-btn,
+.sessions-menu-btn,
+.topbar-menu-toggle {
+  border-radius: 12px !important;
+  clip-path: none !important;
+  transition:
+    transform .16s ease,
+    box-shadow .16s ease,
+    border-color .16s ease,
+    background .16s ease,
+    color .16s ease,
+    filter .16s ease !important;
+}
+
+.tab-btn:hover,
+.sheet-tab:hover,
+.ghost-btn:hover,
+.primary-btn:hover,
+.danger-btn:hover,
+.sessions-menu-btn:hover,
+.topbar-menu-toggle:hover,
+.sidebar-toggle-btn:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 10px 22px rgba(0,0,0,.28) !important;
+}
+
+.primary-btn,
+.tab-btn.active,
+.sheet-tab.active {
+  border-color: color-mix(in srgb, var(--accent, #d94a4a), white 30%) !important;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--accent, #d94a4a), #ffffff 8%), color-mix(in srgb, var(--accent, #d94a4a), #000000 22%)) !important;
+  color: #fff !important;
+}
+
+.ghost-btn,
+.tab-btn,
+.sheet-tab {
+  border-color: rgba(255,255,255,.18) !important;
+  background: rgba(0,0,0,.28) !important;
+  color: rgba(255,255,255,.88) !important;
+}
+
+.ghost-btn:hover,
+.tab-btn:hover,
+.sheet-tab:hover {
+  border-color: var(--od169-border-strong) !important;
+  background: color-mix(in srgb, var(--accent, #d94a4a), transparent 82%) !important;
+  color: #fff !important;
+}
+
+.danger-btn,
+.mini-danger-btn {
+  border-color: color-mix(in srgb, #b73535, white 22%) !important;
+  background: linear-gradient(135deg, #b73535, #631313) !important;
+  color: #fff !important;
+}
+
+input,
+textarea,
+select,
+.accent-select {
+  border-radius: 12px !important;
+  border-color: rgba(255,255,255,.18) !important;
+  background: rgba(0,0,0,.30) !important;
+  color: var(--od169-text) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  transform: none !important;
+  border-color: var(--od169-border-strong) !important;
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--accent, #d94a4a), transparent 72%),
+    inset 0 0 0 1px rgba(255,255,255,.08) !important;
+}
+
+.sheet label,
+.sessions-shell label,
+.modal-card label,
+.table-dashboard label,
+.sidebar label {
+  color: rgba(255,255,255,.76);
+  font-family: Arial, system-ui, sans-serif;
+  font-weight: 800;
+}
+
+.tabs {
+  gap: 8px !important;
+  padding: 10px !important;
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 18px;
+  background: rgba(0,0,0,.22);
+}
+
+.sheet-tab {
+  min-height: 42px;
+}
+
+.vital-card,
+.stat-card,
+.attr-card,
+.res-card,
+.mini-card,
+.attack-card,
+.spell-card,
+.ability-card,
+.transformation-card,
+.condition-chip,
+.public-character-card,
+.master-dashboard-card,
+.campaign-card,
+.account-character-card,
+.choose-character-card,
+.session-action-box,
+.commerce-item-row,
+.initiative-row {
+  border-radius: 16px !important;
+  clip-path: none !important;
+  border: 1px solid rgba(255,255,255,.14) !important;
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--accent, #d94a4a), transparent 88%), transparent 46%),
+    rgba(0,0,0,.24) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.035);
+}
+
+.account-character-card,
+.campaign-card,
+.choose-character-card {
+  align-items: center;
+}
+
+.account-character-card img,
+.campaign-character-preview img,
+.choose-character-card img,
+.character-pill img,
+.public-character-card img,
+.master-dashboard-card img {
+  border-radius: 14px !important;
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(0,0,0,.28);
+}
+
+.character-pill {
+  border-radius: 14px !important;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.20);
+  transition: transform .16s ease, background .16s ease, border-color .16s ease;
+}
+
+.character-pill:hover {
+  transform: translateX(2px);
+  border-color: var(--od169-border-strong);
+}
+
+.character-pill.active {
+  background: color-mix(in srgb, var(--accent, #d94a4a), transparent 78%) !important;
+  border-color: var(--od169-border-strong) !important;
+  color: #fff !important;
+}
+
+.bar-shell {
+  border-radius: 999px !important;
+  border: 1px solid rgba(255,255,255,.14) !important;
+  background: rgba(0,0,0,.34) !important;
+}
+
+.bar-fill {
+  border-radius: 999px !important;
+}
+
+.table-wrap,
+.chat-log,
+.initiative-list,
+.cards-list,
+#skills-wrap {
+  border-radius: 16px !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+  background: rgba(0,0,0,.18) !important;
+}
+
+th {
+  background: color-mix(in srgb, var(--accent, #d94a4a), #000 30%) !important;
+  color: #fff !important;
+}
+
+td {
+  border-color: rgba(255,255,255,.08) !important;
+}
+
+.chat-msg {
+  border-radius: 14px;
+  border-left-color: var(--accent, #d94a4a) !important;
+  background: rgba(255,255,255,.06) !important;
+}
+
+.od-modal::backdrop,
+dialog::backdrop {
+  background: rgba(0,0,0,.72) !important;
+  backdrop-filter: blur(5px);
+}
+
+.modal-card {
+  color: var(--od169-text);
+}
+
+.sessions-menu-panel,
+.quick-actions-menu,
+.dropdown-menu,
+.action-menu {
+  border: 1px solid var(--od169-border-strong) !important;
+  border-radius: 16px !important;
+  background: rgba(6,8,7,.96) !important;
+  box-shadow: 0 20px 42px rgba(0,0,0,.34) !important;
+}
+
+.account-character-actions,
+.campaign-actions,
+.dashboard-actions,
+.top-actions,
+.inventory-text-actions,
+.modal-actions {
+  gap: 8px !important;
+}
+
+.helper-text,
+.subtitle {
+  max-width: 80ch;
+}
+
+@media (max-width: 720px) {
+  .tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+  }
+  .sheet-tab {
+    flex: 0 0 auto;
+  }
+  .top-actions {
+    width: 100%;
+  }
+}
+
+
+/* =========================
+   V169.5 - Patch de bugs do padrão visual
+========================= */
+
+/* Evita que o tema visual afete campos ocultos usados por funções internas. */
+.hidden-field,
+input[type="hidden"] {
+  display: none !important;
+}
+
+/* Mantém botões pequenos de controle estáveis, sem pulo visual ao passar o mouse. */
+.stepper-btn:hover,
+.mini-danger-btn:hover,
+.quick-action-compact-toggle:hover {
+  transform: none !important;
+}
+
+/* Evita que cards longos do menu estourem horizontalmente após as bordas novas da v1.69. */
+.account-character-card,
+.campaign-card,
+.choose-character-card,
+.character-pill,
+.session-action-box {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Evita que selects do topo cresçam demais e empurrem o menu. */
+.top-actions .accent-select,
+.top-actions select {
+  max-width: 190px;
+}
+
+/* Garante leitura de placeholders no tema visual escuro. */
+input::placeholder,
+textarea::placeholder {
+  color: rgba(255,255,255,.42) !important;
+}
+
+
+/* =========================
+   V169.9 - Perícias: estabilidade visual ao destreinar
+========================= */
+.od79-skill-card input[data-skill-trained] {
+  cursor: pointer;
+}
+.od79-skill-card.is-untrained {
+  opacity: .92;
+}
