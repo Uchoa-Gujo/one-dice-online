@@ -13071,3 +13071,43 @@ button {
     max-width: 100%;
   }
 }
+
+
+/* =========================
+   V176.1 - Hotfix duplicação de visualização reduzida
+========================= */
+
+/* Oculta os resumos antigos da v1.71.5 quando o módulo está reduzido.
+   Motivo: a v1.76 já cria a visualização nova; manter as duas gera duplicação. */
+.od170-module.od170-collapsed > .od1715-collapse-summary:not(.od176-reduced-view),
+.od1761-old-summary-disabled {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Mantém apenas a visualização nova da v1.76. */
+.od170-module.od170-collapsed > .od176-reduced-view {
+  display: block !important;
+  visibility: visible !important;
+  height: auto !important;
+  max-height: none !important;
+  pointer-events: auto !important;
+}
+
+/* Caso algum resumo antigo de ataques/perícias/atributos seja recriado por observer antigo,
+   ele não aparece visualmente. */
+.od170-module > .od1715-attr-summary:not(.od176-reduced-view),
+.od170-module > .od1715-skill-summary:not(.od176-reduced-view),
+.od170-module > .od1715-attack-summary:not(.od176-reduced-view),
+.od170-module > .od1715-spell-summary:not(.od176-reduced-view),
+.od170-module > .od1715-equipment-summary:not(.od176-reduced-view) {
+  display: none !important;
+}

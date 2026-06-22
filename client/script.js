@@ -5,7 +5,7 @@
 ========================= */
 (function od139EarlyGuards(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.76.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
   if (!window.CSS) window.CSS = {};
   if (typeof window.CSS.escape !== 'function') {
     window.CSS.escape = function(value) {
@@ -12035,7 +12035,7 @@ function od66InventoryMutationUnlockSoon() {
    Este bloco não altera regras de ficha; apenas melhora autonomia e experiência.
 ========================= */
 (function od115Maintenance(){
-  const VERSION = '1.76.0';
+  const VERSION = '1.76.1';
   const STORAGE_PREFIX = 'od_';
   const routeMap = {
     home: '/inicio',
@@ -13636,7 +13636,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od136AttributesClean(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.76.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
 
   const ATTRS = [
     ['forca', 'Força'], ['agilidade', 'Agilidade'], ['vigor', 'Vigor'], ['intelecto', 'Intelecto'], ['presenca', 'Presença']
@@ -13804,7 +13804,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od137SheetStabilityAndManualDefenseDodge(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.76.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
 
   const $ = id => document.getElementById(id);
   const EDITABLE = 'input, textarea, select, [contenteditable="true"]';
@@ -14166,7 +14166,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od138AuditAndDuplicateSheetInstalled) return;
   window.__od138AuditAndDuplicateSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.76.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
 
   const DUP_SELECTOR = '[data-od138-duplicate-character], [data-od71-copy-character], [data-copy-account-character]';
 
@@ -14359,7 +14359,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od139ExtraErrorFixesInstalled) return;
   window.__od139ExtraErrorFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.76.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
 
   const IMAGE_KEYS = [
     'portrait','portraitUrl','image','imageUrl','photo','photoUrl','avatar','avatarUrl','retrato','foto',
@@ -14514,9 +14514,9 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od140GeneralImprovementsInstalled) return;
   window.__od140GeneralImprovementsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.76.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
 
-  const VERSION = '1.76.0';
+  const VERSION = '1.76.1';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   const IMPORT_INPUT_ID = 'od140-import-json-input';
   const MAX_BACKUPS_PER_CHAR = 5;
@@ -14995,7 +14995,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od141AuditHardeningInstalled) return;
   window.__od141AuditHardeningInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.76.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
 
   function pruneBackups(){
     try {
@@ -15046,7 +15046,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od142FinalCleanupInstalled) return;
   window.__od142FinalCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.76.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
 
   function keepFirst(selector){
     const nodes = Array.from(document.querySelectorAll(selector));
@@ -15132,7 +15132,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od148SafeRollbackPatchInstalled) return;
   window.__od148SafeRollbackPatchInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.76.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   function hideManualNotes(){
     ['defense-effective-note','dodge-formula-note'].forEach(id => {
@@ -15185,7 +15185,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od152StableLayoutFixesInstalled) return;
   window.__od152StableLayoutFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.76.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
 
   const $ = id => document.getElementById(id);
   const n = (value, fallback = 0) => {
@@ -15377,7 +15377,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od155SessionDashboardStability(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.76.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
 
   const STORE_PREFIX = 'od155_dashboard_collapsed_';
   const lastSig = { player: '', master: '' };
@@ -15533,7 +15533,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od156ProtectOtherPlayersSheetsInstalled) return;
   window.__od156ProtectOtherPlayersSheetsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.76.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
 
   const PROTECTED_ARRAYS = ['inventoryItems','blockInventory','abilities','spells','attacks','conditions','transformations','dropItems'];
   const PROTECTED_OBJECTS = ['skills','resistances','attrs','caster','obsIcons','portraitCrop','settings'];
@@ -15638,7 +15638,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od157ProtectOwnSheetPartialAutosaveInstalled) return;
   window.__od157ProtectOwnSheetPartialAutosaveInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.76.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
 
   function clone(value){
     try { return structuredClone(value); } catch (_) {
@@ -15794,7 +15794,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od159StableSessionRenderInstalled) return;
   window.__od159StableSessionRenderInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.76.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
 
   const $ = id => document.getElementById(id);
   const last = { tableSig: '', tableAt: 0, playerSig: '', masterSig: '' };
@@ -15927,7 +15927,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od160AccountSheetIsolationInstalled) return;
   window.__od160AccountSheetIsolationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.76.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
 
   const $ = id => document.getElementById(id);
 
@@ -16078,7 +16078,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od161EquipmentProficienciesInstalled) return;
   window.__od161EquipmentProficienciesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.76.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
 
   const GROUPS = {
     weapons: [
@@ -16245,9 +16245,9 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od164StableCleanRoutesInstalled) return;
   window.__od164StableCleanRoutesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.76.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
 
-  const VERSION = '1.76.0';
+  const VERSION = '1.76.1';
   let applyingRoute = false;
   let routeTimer = null;
 
@@ -16453,7 +16453,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od165ExactPortraitCrop(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.76.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
   if (window.__od165ExactPortraitCropInstalled) return;
   window.__od165ExactPortraitCropInstalled = true;
 
@@ -16575,7 +16575,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1685AreaSeparationInstalled) return;
   window.__od1685AreaSeparationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.76.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
 
   const AREA = {
     AUTH: 'login',
@@ -16764,7 +16764,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1699StableSkillUntrainInstalled) return;
   window.__od1699StableSkillUntrainInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.76.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
 
   const pending = new Map();
   let flushTimer = null;
@@ -16992,7 +16992,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16910SkillSaveMergeInstalled) return;
   window.__od16910SkillSaveMergeInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.76.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
 
   let lastExplicit = {};
   let lastExplicitAt = 0;
@@ -17208,7 +17208,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16911StablePortraitDuringResourcesInstalled) return;
   window.__od16911StablePortraitDuringResourcesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.76.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
 
   const RESOURCE_SELECTOR = '#pv-current, #pv-max, #pe-current, #pe-max';
   const MAIN_SELECTOR = '#char-portrait-preview';
@@ -17380,7 +17380,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od170ModularSheetInstalled) return;
   window.__od170ModularSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.76.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
 
   const STORE_KEY = 'od170_modules_state_v1';
   const DENSE_KEY = 'od170_dense_sheet_v1';
@@ -17624,7 +17624,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od171HubNavigationAndScrollInstalled) return;
   window.__od171HubNavigationAndScrollInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.76.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
 
   let pending = false;
 
@@ -17748,7 +17748,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1715ScrollAndSmartCollapseInstalled) return;
   window.__od1715ScrollAndSmartCollapseInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.76.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
 
   let scheduled = false;
 
@@ -17996,7 +17996,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od176SmartSheetModesInstalled) return;
   window.__od176SmartSheetModesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.76.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
 
   let scheduled = false;
 
@@ -18235,4 +18235,72 @@ function od66InventoryMutationUnlockSoon() {
   setTimeout(renderAll, 1400);
 
   window.od176SmartSheetModes = { renderAll };
+})();
+
+
+/* =========================
+   V176.1 - Hotfix: remove duplicação dos resumos reduzidos
+   Causa:
+   - A v1.71.5 já gerava resumos reduzidos antigos.
+   - A v1.76 adicionou o novo modo visualização, mas os resumos antigos continuaram no DOM.
+   - Resultado: atributos, perícias e ataques apareciam duas vezes.
+========================= */
+(function od1761NoDuplicateReducedSummaries(){
+  'use strict';
+  if (window.__od1761NoDuplicateReducedSummariesInstalled) return;
+  window.__od1761NoDuplicateReducedSummariesInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.76.1';
+
+  const OLD_SUMMARY_SELECTOR = [
+    '.od1715-attr-summary',
+    '.od1715-skill-summary',
+    '.od1715-attack-summary',
+    '.od1715-spell-summary',
+    '.od1715-equipment-summary'
+  ].join(',');
+
+  function cleanupOldSummaries(){
+    document.querySelectorAll(OLD_SUMMARY_SELECTOR).forEach(el => {
+      if (el.classList.contains('od176-reduced-view')) return;
+      el.classList.add('od1761-old-summary-disabled');
+      el.setAttribute('aria-hidden', 'true');
+      // Remove o bloco antigo quando existir novo bloco v1.76 no mesmo módulo.
+      const module = el.closest('.od170-module');
+      if (module && module.querySelector(':scope > .od176-reduced-view')) {
+        el.remove();
+      }
+    });
+
+    // Garante que cada módulo fique com apenas um resumo novo da v1.76 por tipo.
+    document.querySelectorAll('.od170-module').forEach(module => {
+      const seen = new Set();
+      module.querySelectorAll(':scope > .od176-reduced-view').forEach(box => {
+        const type = [...box.classList].find(cls => cls.startsWith('od176-') && cls.endsWith('-summary')) || box.className;
+        if (seen.has(type)) box.remove();
+        else seen.add(type);
+      });
+    });
+  }
+
+  function scheduleCleanup(){
+    clearTimeout(window.__od1761CleanupTimer);
+    window.__od1761CleanupTimer = setTimeout(cleanupOldSummaries, 40);
+  }
+
+  document.addEventListener('click', event => {
+    if (event.target.closest?.('[data-od170-toggle], #od170-collapse-all, #od170-expand-all')) {
+      scheduleCleanup();
+      setTimeout(cleanupOldSummaries, 160);
+    }
+  }, true);
+
+  const observer = new MutationObserver(scheduleCleanup);
+  observer.observe(document.body, { childList: true, subtree: true });
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', cleanupOldSummaries, { once: true });
+  else cleanupOldSummaries();
+
+  setTimeout(cleanupOldSummaries, 120);
+  setTimeout(cleanupOldSummaries, 600);
+  setTimeout(cleanupOldSummaries, 1400);
 })();
