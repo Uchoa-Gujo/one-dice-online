@@ -12315,3 +12315,137 @@ textarea::placeholder {
     width: 100%;
   }
 }
+
+
+/* =========================
+   V171 - Navegação e rolagem do hub
+========================= */
+html[data-od171-route="characters"],
+html[data-od171-route="campaigns"],
+body[data-od171-route="characters"],
+body[data-od171-route="campaigns"] {
+  min-height: 100dvh;
+}
+
+body[data-od171-route="characters"] #sessions-screen.active,
+body[data-od171-route="campaigns"] #sessions-screen.active {
+  height: 100dvh !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  display: block !important;
+}
+
+body[data-od171-route="characters"] #sessions-screen.active .od71-shell,
+body[data-od171-route="campaigns"] #sessions-screen.active .od71-shell {
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  min-height: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+
+body[data-od171-route="characters"] .od71-topbar,
+body[data-od171-route="campaigns"] .od71-topbar {
+  flex: 0 0 auto !important;
+}
+
+body[data-od171-route="characters"] .od71-content,
+body[data-od171-route="campaigns"] .od71-content {
+  flex: 1 1 auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  width: min(1180px, calc(100vw - 36px)) !important;
+  margin: 22px auto 0 !important;
+  padding: 0 4px 92px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  overscroll-behavior: contain !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable both-edges;
+}
+
+body[data-od171-route="characters"] .od71-content::-webkit-scrollbar,
+body[data-od171-route="campaigns"] .od71-content::-webkit-scrollbar {
+  width: 10px;
+}
+
+body[data-od171-route="characters"] .od71-content::-webkit-scrollbar-thumb,
+body[data-od171-route="campaigns"] .od71-content::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--accent, #c5222c), white 18%);
+  border-radius: 999px;
+}
+
+body[data-od171-route="characters"] .od71-content::-webkit-scrollbar-track,
+body[data-od171-route="campaigns"] .od71-content::-webkit-scrollbar-track {
+  background: rgba(0,0,0,.18);
+  border-radius: 999px;
+}
+
+body[data-od171-route="characters"] #od71-character-list,
+body[data-od171-route="campaigns"] #od71-campaign-list {
+  max-height: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+  align-content: start !important;
+  padding-bottom: 72px !important;
+}
+
+body[data-od171-route="characters"] #od71-character-list {
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+}
+
+body[data-od171-route="campaigns"] #od71-campaign-list {
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)) !important;
+}
+
+body[data-od171-route="characters"] .od71-page-head,
+body[data-od171-route="campaigns"] .od71-page-head {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  margin-bottom: 16px !important;
+  padding: 10px 0 14px;
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--panel-bg, #0b0f0d) 88%, transparent),
+      color-mix(in srgb, var(--panel-bg, #0b0f0d) 70%, transparent));
+  backdrop-filter: blur(8px);
+}
+
+.od171-back-home {
+  border-color: rgba(255,255,255,.16) !important;
+  background: rgba(255,255,255,.06) !important;
+}
+
+@media (max-width: 820px) {
+  body[data-od171-route="characters"] #sessions-screen.active,
+  body[data-od171-route="campaigns"] #sessions-screen.active,
+  body[data-od171-route="characters"] #sessions-screen.active .od71-shell,
+  body[data-od171-route="campaigns"] #sessions-screen.active .od71-shell {
+    height: 100dvh !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  body[data-od171-route="characters"] .od71-content,
+  body[data-od171-route="campaigns"] .od71-content {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    width: min(100% - 22px, 1440px) !important;
+    margin-top: 14px !important;
+    padding-bottom: 86px !important;
+  }
+
+  body[data-od171-route="characters"] #od71-character-list,
+  body[data-od171-route="campaigns"] #od71-campaign-list {
+    grid-template-columns: 1fr !important;
+  }
+
+  body[data-od171-route="characters"] .od71-page-head,
+  body[data-od171-route="campaigns"] .od71-page-head {
+    grid-template-columns: 1fr !important;
+  }
+}

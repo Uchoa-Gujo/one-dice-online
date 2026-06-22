@@ -5,7 +5,7 @@
 ========================= */
 (function od139EarlyGuards(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
   if (!window.CSS) window.CSS = {};
   if (typeof window.CSS.escape !== 'function') {
     window.CSS.escape = function(value) {
@@ -12035,7 +12035,7 @@ function od66InventoryMutationUnlockSoon() {
    Este bloco não altera regras de ficha; apenas melhora autonomia e experiência.
 ========================= */
 (function od115Maintenance(){
-  const VERSION = '1.70.0';
+  const VERSION = '1.71.0';
   const STORAGE_PREFIX = 'od_';
   const routeMap = {
     home: '/inicio',
@@ -13636,7 +13636,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od136AttributesClean(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
 
   const ATTRS = [
     ['forca', 'Força'], ['agilidade', 'Agilidade'], ['vigor', 'Vigor'], ['intelecto', 'Intelecto'], ['presenca', 'Presença']
@@ -13804,7 +13804,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od137SheetStabilityAndManualDefenseDodge(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
 
   const $ = id => document.getElementById(id);
   const EDITABLE = 'input, textarea, select, [contenteditable="true"]';
@@ -14166,7 +14166,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od138AuditAndDuplicateSheetInstalled) return;
   window.__od138AuditAndDuplicateSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
 
   const DUP_SELECTOR = '[data-od138-duplicate-character], [data-od71-copy-character], [data-copy-account-character]';
 
@@ -14359,7 +14359,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od139ExtraErrorFixesInstalled) return;
   window.__od139ExtraErrorFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
 
   const IMAGE_KEYS = [
     'portrait','portraitUrl','image','imageUrl','photo','photoUrl','avatar','avatarUrl','retrato','foto',
@@ -14514,9 +14514,9 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od140GeneralImprovementsInstalled) return;
   window.__od140GeneralImprovementsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
 
-  const VERSION = '1.70.0';
+  const VERSION = '1.71.0';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   const IMPORT_INPUT_ID = 'od140-import-json-input';
   const MAX_BACKUPS_PER_CHAR = 5;
@@ -14995,7 +14995,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od141AuditHardeningInstalled) return;
   window.__od141AuditHardeningInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
 
   function pruneBackups(){
     try {
@@ -15046,7 +15046,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od142FinalCleanupInstalled) return;
   window.__od142FinalCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
 
   function keepFirst(selector){
     const nodes = Array.from(document.querySelectorAll(selector));
@@ -15132,7 +15132,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od148SafeRollbackPatchInstalled) return;
   window.__od148SafeRollbackPatchInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   function hideManualNotes(){
     ['defense-effective-note','dodge-formula-note'].forEach(id => {
@@ -15185,7 +15185,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od152StableLayoutFixesInstalled) return;
   window.__od152StableLayoutFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
 
   const $ = id => document.getElementById(id);
   const n = (value, fallback = 0) => {
@@ -15377,7 +15377,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od155SessionDashboardStability(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
 
   const STORE_PREFIX = 'od155_dashboard_collapsed_';
   const lastSig = { player: '', master: '' };
@@ -15533,7 +15533,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od156ProtectOtherPlayersSheetsInstalled) return;
   window.__od156ProtectOtherPlayersSheetsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
 
   const PROTECTED_ARRAYS = ['inventoryItems','blockInventory','abilities','spells','attacks','conditions','transformations','dropItems'];
   const PROTECTED_OBJECTS = ['skills','resistances','attrs','caster','obsIcons','portraitCrop','settings'];
@@ -15638,7 +15638,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od157ProtectOwnSheetPartialAutosaveInstalled) return;
   window.__od157ProtectOwnSheetPartialAutosaveInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
 
   function clone(value){
     try { return structuredClone(value); } catch (_) {
@@ -15794,7 +15794,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od159StableSessionRenderInstalled) return;
   window.__od159StableSessionRenderInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
 
   const $ = id => document.getElementById(id);
   const last = { tableSig: '', tableAt: 0, playerSig: '', masterSig: '' };
@@ -15927,7 +15927,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od160AccountSheetIsolationInstalled) return;
   window.__od160AccountSheetIsolationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
 
   const $ = id => document.getElementById(id);
 
@@ -16078,7 +16078,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od161EquipmentProficienciesInstalled) return;
   window.__od161EquipmentProficienciesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
 
   const GROUPS = {
     weapons: [
@@ -16245,9 +16245,9 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od164StableCleanRoutesInstalled) return;
   window.__od164StableCleanRoutesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
 
-  const VERSION = '1.70.0';
+  const VERSION = '1.71.0';
   let applyingRoute = false;
   let routeTimer = null;
 
@@ -16453,7 +16453,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od165ExactPortraitCrop(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
   if (window.__od165ExactPortraitCropInstalled) return;
   window.__od165ExactPortraitCropInstalled = true;
 
@@ -16575,7 +16575,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1685AreaSeparationInstalled) return;
   window.__od1685AreaSeparationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
 
   const AREA = {
     AUTH: 'login',
@@ -16764,7 +16764,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1699StableSkillUntrainInstalled) return;
   window.__od1699StableSkillUntrainInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
 
   const pending = new Map();
   let flushTimer = null;
@@ -16992,7 +16992,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16910SkillSaveMergeInstalled) return;
   window.__od16910SkillSaveMergeInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
 
   let lastExplicit = {};
   let lastExplicitAt = 0;
@@ -17208,7 +17208,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16911StablePortraitDuringResourcesInstalled) return;
   window.__od16911StablePortraitDuringResourcesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
 
   const RESOURCE_SELECTOR = '#pv-current, #pv-max, #pe-current, #pe-max';
   const MAIN_SELECTOR = '#char-portrait-preview';
@@ -17380,7 +17380,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od170ModularSheetInstalled) return;
   window.__od170ModularSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.70.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
 
   const STORE_KEY = 'od170_modules_state_v1';
   const DENSE_KEY = 'od170_dense_sheet_v1';
@@ -17610,4 +17610,128 @@ function od66InventoryMutationUnlockSoon() {
   });
 
   window.od170ModularSheet = { boot, collapseAll, setDense };
+})();
+
+
+/* =========================
+   V171 - Navegação e rolagem das listas do hub
+   Foco:
+   - corrigir aba Personagens sem rolagem quando há muitas fichas;
+   - marcar a rota atual no body para CSS específico;
+   - melhorar fluxo com botão Voltar ao Início nas listas.
+========================= */
+(function od171HubNavigationAndScroll(){
+  'use strict';
+  if (window.__od171HubNavigationAndScrollInstalled) return;
+  window.__od171HubNavigationAndScrollInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
+
+  let pending = false;
+
+  function routeFromDOM(){
+    if (document.getElementById('od71-character-list')) return 'characters';
+    if (document.getElementById('od71-campaign-list')) return 'campaigns';
+    if (document.querySelector('#od71-content .od71-home-hero')) return 'home';
+
+    const path = String(location.pathname || '').toLowerCase();
+    if (path.includes('personagens')) return 'characters';
+    if (path.includes('campanhas')) return 'campaigns';
+    return 'home';
+  }
+
+  function syncRoute(){
+    const route = routeFromDOM();
+    document.body.dataset.od171Route = route;
+    document.documentElement.dataset.od171Route = route;
+    document.getElementById('od71-shell')?.setAttribute('data-od171-route', route);
+
+    document.querySelectorAll('.od71-nav-btn').forEach(btn => {
+      const target = btn.dataset.od71Tab || btn.dataset.od75Tab;
+      btn.classList.toggle('active', target === route || (route === 'characters' && target === 'characters') || (route === 'campaigns' && target === 'campaigns'));
+    });
+
+    enhanceLists(route);
+    ensureBackHome(route);
+  }
+
+  function scheduleSync(){
+    if (pending) return;
+    pending = true;
+    requestAnimationFrame(() => {
+      pending = false;
+      syncRoute();
+    });
+  }
+
+  function enhanceLists(route){
+    const characterList = document.getElementById('od71-character-list');
+    if (characterList) {
+      characterList.classList.add('od171-scroll-list', 'od171-character-scroll-list');
+      characterList.setAttribute('tabindex', '0');
+      characterList.setAttribute('aria-label', 'Lista de personagens');
+    }
+
+    const campaignList = document.getElementById('od71-campaign-list');
+    if (campaignList) {
+      campaignList.classList.add('od171-scroll-list', 'od171-campaign-scroll-list');
+      campaignList.setAttribute('tabindex', '0');
+      campaignList.setAttribute('aria-label', 'Lista de campanhas');
+    }
+
+    const content = document.getElementById('od71-content');
+    if (content && (route === 'characters' || route === 'campaigns')) {
+      content.classList.add('od171-scroll-content');
+    } else {
+      content?.classList.remove('od171-scroll-content');
+    }
+  }
+
+  function ensureBackHome(route){
+    const head = document.querySelector('#od71-content .od71-page-head');
+    if (!head) return;
+    let actions = head.querySelector('.od71-actions');
+    if (!actions) {
+      actions = document.createElement('div');
+      actions.className = 'od71-actions';
+      head.appendChild(actions);
+    }
+
+    let btn = actions.querySelector('[data-od171-back-home]');
+    if (route === 'home') {
+      btn?.remove();
+      return;
+    }
+
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'od71-action od171-back-home';
+      btn.dataset.od171BackHome = '1';
+      btn.dataset.od71Tab = 'home';
+      btn.textContent = '← Início';
+      actions.prepend(btn);
+    }
+  }
+
+  document.addEventListener('click', event => {
+    const nav = event.target.closest?.('[data-od71-tab], [data-od171-back-home]');
+    if (nav) setTimeout(scheduleSync, 0);
+  }, true);
+
+  window.addEventListener('popstate', () => setTimeout(scheduleSync, 0));
+  window.addEventListener('resize', scheduleSync);
+
+  const contentObserver = new MutationObserver(scheduleSync);
+  contentObserver.observe(document.body, { childList: true, subtree: true });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', syncRoute, { once: true });
+  } else {
+    syncRoute();
+  }
+
+  setTimeout(syncRoute, 120);
+  setTimeout(syncRoute, 600);
+
+  window.od171SyncHubRoute = syncRoute;
 })();
