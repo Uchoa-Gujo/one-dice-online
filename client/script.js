@@ -5,7 +5,7 @@
 ========================= */
 (function od139EarlyGuards(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.5';
   if (!window.CSS) window.CSS = {};
   if (typeof window.CSS.escape !== 'function') {
     window.CSS.escape = function(value) {
@@ -12035,7 +12035,7 @@ function od66InventoryMutationUnlockSoon() {
    Este bloco não altera regras de ficha; apenas melhora autonomia e experiência.
 ========================= */
 (function od115Maintenance(){
-  const VERSION = '1.71.0';
+  const VERSION = '1.71.5';
   const STORAGE_PREFIX = 'od_';
   const routeMap = {
     home: '/inicio',
@@ -13636,7 +13636,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od136AttributesClean(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.5';
 
   const ATTRS = [
     ['forca', 'Força'], ['agilidade', 'Agilidade'], ['vigor', 'Vigor'], ['intelecto', 'Intelecto'], ['presenca', 'Presença']
@@ -13804,7 +13804,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od137SheetStabilityAndManualDefenseDodge(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.5';
 
   const $ = id => document.getElementById(id);
   const EDITABLE = 'input, textarea, select, [contenteditable="true"]';
@@ -14166,7 +14166,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od138AuditAndDuplicateSheetInstalled) return;
   window.__od138AuditAndDuplicateSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.5';
 
   const DUP_SELECTOR = '[data-od138-duplicate-character], [data-od71-copy-character], [data-copy-account-character]';
 
@@ -14359,7 +14359,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od139ExtraErrorFixesInstalled) return;
   window.__od139ExtraErrorFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.5';
 
   const IMAGE_KEYS = [
     'portrait','portraitUrl','image','imageUrl','photo','photoUrl','avatar','avatarUrl','retrato','foto',
@@ -14514,9 +14514,9 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od140GeneralImprovementsInstalled) return;
   window.__od140GeneralImprovementsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.5';
 
-  const VERSION = '1.71.0';
+  const VERSION = '1.71.5';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   const IMPORT_INPUT_ID = 'od140-import-json-input';
   const MAX_BACKUPS_PER_CHAR = 5;
@@ -14995,7 +14995,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od141AuditHardeningInstalled) return;
   window.__od141AuditHardeningInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.5';
 
   function pruneBackups(){
     try {
@@ -15046,7 +15046,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od142FinalCleanupInstalled) return;
   window.__od142FinalCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.5';
 
   function keepFirst(selector){
     const nodes = Array.from(document.querySelectorAll(selector));
@@ -15132,7 +15132,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od148SafeRollbackPatchInstalled) return;
   window.__od148SafeRollbackPatchInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.5';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   function hideManualNotes(){
     ['defense-effective-note','dodge-formula-note'].forEach(id => {
@@ -15185,7 +15185,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od152StableLayoutFixesInstalled) return;
   window.__od152StableLayoutFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.5';
 
   const $ = id => document.getElementById(id);
   const n = (value, fallback = 0) => {
@@ -15377,7 +15377,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od155SessionDashboardStability(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.5';
 
   const STORE_PREFIX = 'od155_dashboard_collapsed_';
   const lastSig = { player: '', master: '' };
@@ -15533,7 +15533,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od156ProtectOtherPlayersSheetsInstalled) return;
   window.__od156ProtectOtherPlayersSheetsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.5';
 
   const PROTECTED_ARRAYS = ['inventoryItems','blockInventory','abilities','spells','attacks','conditions','transformations','dropItems'];
   const PROTECTED_OBJECTS = ['skills','resistances','attrs','caster','obsIcons','portraitCrop','settings'];
@@ -15638,7 +15638,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od157ProtectOwnSheetPartialAutosaveInstalled) return;
   window.__od157ProtectOwnSheetPartialAutosaveInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.5';
 
   function clone(value){
     try { return structuredClone(value); } catch (_) {
@@ -15794,7 +15794,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od159StableSessionRenderInstalled) return;
   window.__od159StableSessionRenderInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.5';
 
   const $ = id => document.getElementById(id);
   const last = { tableSig: '', tableAt: 0, playerSig: '', masterSig: '' };
@@ -15927,7 +15927,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od160AccountSheetIsolationInstalled) return;
   window.__od160AccountSheetIsolationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.5';
 
   const $ = id => document.getElementById(id);
 
@@ -16078,7 +16078,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od161EquipmentProficienciesInstalled) return;
   window.__od161EquipmentProficienciesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.5';
 
   const GROUPS = {
     weapons: [
@@ -16245,9 +16245,9 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od164StableCleanRoutesInstalled) return;
   window.__od164StableCleanRoutesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.5';
 
-  const VERSION = '1.71.0';
+  const VERSION = '1.71.5';
   let applyingRoute = false;
   let routeTimer = null;
 
@@ -16453,7 +16453,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od165ExactPortraitCrop(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.5';
   if (window.__od165ExactPortraitCropInstalled) return;
   window.__od165ExactPortraitCropInstalled = true;
 
@@ -16575,7 +16575,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1685AreaSeparationInstalled) return;
   window.__od1685AreaSeparationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.5';
 
   const AREA = {
     AUTH: 'login',
@@ -16764,7 +16764,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1699StableSkillUntrainInstalled) return;
   window.__od1699StableSkillUntrainInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.5';
 
   const pending = new Map();
   let flushTimer = null;
@@ -16992,7 +16992,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16910SkillSaveMergeInstalled) return;
   window.__od16910SkillSaveMergeInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.5';
 
   let lastExplicit = {};
   let lastExplicitAt = 0;
@@ -17208,7 +17208,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16911StablePortraitDuringResourcesInstalled) return;
   window.__od16911StablePortraitDuringResourcesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.5';
 
   const RESOURCE_SELECTOR = '#pv-current, #pv-max, #pe-current, #pe-max';
   const MAIN_SELECTOR = '#char-portrait-preview';
@@ -17380,7 +17380,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od170ModularSheetInstalled) return;
   window.__od170ModularSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.5';
 
   const STORE_KEY = 'od170_modules_state_v1';
   const DENSE_KEY = 'od170_dense_sheet_v1';
@@ -17624,7 +17624,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od171HubNavigationAndScrollInstalled) return;
   window.__od171HubNavigationAndScrollInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.71.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.71.5';
 
   let pending = false;
 
@@ -17734,4 +17734,250 @@ function od66InventoryMutationUnlockSoon() {
   setTimeout(syncRoute, 600);
 
   window.od171SyncHubRoute = syncRoute;
+})();
+
+
+/* =========================
+   V171.5 - Ajustes de scroll e redução inteligente
+   Foco:
+   - scroll real em Personagens/Campanhas;
+   - módulos reduzidos com resumo útil;
+   - cards de personagens com visual mais limpo.
+========================= */
+(function od1715ScrollAndSmartCollapse(){
+  'use strict';
+  if (window.__od1715ScrollAndSmartCollapseInstalled) return;
+  window.__od1715ScrollAndSmartCollapseInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.71.5';
+
+  let scheduled = false;
+
+  function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
+  function $(id){ return document.getElementById(id); }
+  function current(){ return safe(() => typeof currentChar === 'function' ? currentChar() : null, null); }
+  function esc(value){
+    return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+  }
+  function mod(value){
+    if (typeof formatMod === 'function') return formatMod(Number(value || 0));
+    const n = Number(value || 0);
+    return n >= 0 ? `+${n}` : String(n);
+  }
+  function attrBonus(char, key){
+    if (typeof attrMod === 'function') return attrMod(Number(char?.attrs?.[key] ?? 1));
+    return Math.floor((Number(char?.attrs?.[key] ?? 10) - 10) / 2);
+  }
+  function route(){
+    if ($('od71-character-list')) return 'characters';
+    if ($('od71-campaign-list')) return 'campaigns';
+    if (document.querySelector('#od71-content .od71-home-hero')) return 'home';
+    const path = String(location.pathname || '').toLowerCase();
+    if (path.includes('personagens')) return 'characters';
+    if (path.includes('campanhas')) return 'campaigns';
+    return 'home';
+  }
+
+  function forceHubScroll(){
+    const r = route();
+    document.body.dataset.od171Route = r;
+    document.documentElement.dataset.od171Route = r;
+    $('od71-shell')?.setAttribute('data-od171-route', r);
+
+    const content = $('od71-content');
+    const screen = $('sessions-screen');
+    const shell = $('od71-shell');
+
+    if (r === 'characters' || r === 'campaigns') {
+      document.body.classList.remove('od84-session-home');
+      document.body.style.setProperty('overflow', 'hidden', 'important');
+      screen?.style.setProperty('height', '100dvh', 'important');
+      screen?.style.setProperty('overflow', 'hidden', 'important');
+      shell?.style.setProperty('height', '100dvh', 'important');
+      shell?.style.setProperty('overflow', 'hidden', 'important');
+      content?.style.setProperty('height', 'calc(100dvh - 118px)', 'important');
+      content?.style.setProperty('max-height', 'calc(100dvh - 118px)', 'important');
+      content?.style.setProperty('overflow-y', 'auto', 'important');
+      content?.style.setProperty('overflow-x', 'hidden', 'important');
+      content?.style.setProperty('-webkit-overflow-scrolling', 'touch');
+      content?.classList.add('od1715-force-scroll');
+    } else {
+      content?.classList.remove('od1715-force-scroll');
+      ['height','max-height','overflow-y','overflow-x','-webkit-overflow-scrolling'].forEach(prop => content?.style.removeProperty(prop));
+      screen?.style.removeProperty('height');
+      screen?.style.removeProperty('overflow');
+      shell?.style.removeProperty('height');
+      shell?.style.removeProperty('overflow');
+      document.body.style.removeProperty('overflow');
+    }
+
+    const charList = $('od71-character-list');
+    if (charList) {
+      charList.classList.add('od1715-character-list');
+      charList.setAttribute('tabindex', '0');
+    }
+
+    const campaignList = $('od71-campaign-list');
+    if (campaignList) {
+      campaignList.classList.add('od1715-campaign-list');
+      campaignList.setAttribute('tabindex', '0');
+    }
+  }
+
+  function moduleByKey(key){
+    return document.querySelector(`.od170-module[data-od170-key="${key}"]`);
+  }
+  function setSummary(module, className, html){
+    if (!module) return;
+    let box = module.querySelector(`:scope > .${className}`);
+    const head = module.querySelector(':scope > .od170-module-head');
+    if (!box) {
+      box = document.createElement('div');
+      box.className = `od1715-collapse-summary ${className}`;
+      if (head && head.nextSibling) module.insertBefore(box, head.nextSibling);
+      else module.appendChild(box);
+    }
+    box.innerHTML = html;
+  }
+  function empty(label){
+    return `<div class="od1715-summary-empty">${esc(label)}</div>`;
+  }
+
+  function renderAttrSummary(char = current()){
+    const module = moduleByKey('resumo-atributos');
+    if (!module || !char) return;
+    const keys = safe(() => Array.isArray(ATTRIBUTE_KEYS) ? ATTRIBUTE_KEYS : [], []);
+    const html = keys.map(([key, label]) => {
+      const value = Number(char?.attrs?.[key] ?? 1);
+      const bonus = attrBonus(char, key);
+      return `<div class="od1715-attr-mini">
+        <small>${esc(label)}</small>
+        <strong>${esc(value)}</strong>
+        <span>${esc(mod(bonus))}</span>
+      </div>`;
+    }).join('');
+    setSummary(module, 'od1715-attr-summary', html || empty('Sem atributos.'));
+  }
+
+  function renderSkillSummary(char = current()){
+    const module = moduleByKey('pericias-lista');
+    if (!module || !char) return;
+    const skills = safe(() => Array.isArray(SKILLS) ? SKILLS : [], []);
+    const trained = skills.filter(([name]) => !!char.skills?.[name]?.trained);
+    const rows = trained.length ? trained : skills.filter(([name]) => Number(char.skills?.[name]?.bonus || 0) !== 0).slice(0, 8);
+    const html = rows.map(([name, attr]) => {
+      const total = typeof skillTotal === 'function'
+        ? skillTotal(char, name, attr)
+        : (attrBonus(char, attr) + (char.skills?.[name]?.trained ? Number(char.profBonus || 0) : 0) + Number(char.skills?.[name]?.bonus || 0));
+      return `<div class="od1715-skill-mini">
+        <span>${esc(name)}</span>
+        <strong>${esc(mod(total))}</strong>
+      </div>`;
+    }).join('');
+    setSummary(module, 'od1715-skill-summary', html || empty('Nenhuma perícia treinada.'));
+  }
+
+  function renderAttackSummary(char = current()){
+    const module = moduleByKey('combate-ataques');
+    if (!module || !char) return;
+    const attacks = Array.isArray(char.attacks) ? char.attacks : [];
+    const html = attacks.map(atk => `<article class="od1715-card-mini od1715-attack-mini">
+      <strong>${esc(atk.name || 'Ataque')}</strong>
+      <span>Bônus ${esc(mod(Number(atk.bonus || 0)))} • Dano ${esc(atk.damage || '-')}</span>
+      ${atk.crit ? `<small>Crítico ${esc(atk.crit)}</small>` : ''}
+    </article>`).join('');
+    setSummary(module, 'od1715-attack-summary', html || empty('Nenhum ataque cadastrado.'));
+  }
+
+  function renderSpellSummary(char = current()){
+    const module = moduleByKey('magias-lista');
+    if (!module || !char) return;
+    const spells = Array.isArray(char.spells) ? char.spells : [];
+    const html = spells.map(spell => `<article class="od1715-card-mini od1715-spell-mini">
+      <strong>${esc(spell.name || 'Magia')}</strong>
+      <span>${esc(spell.circle || 'Círculo -')} • ${esc(spell.cost || 'Custo -')}</span>
+      <small>${esc(spell.exec || spell.range || 'Sem descrição expandida')}</small>
+    </article>`).join('');
+    setSummary(module, 'od1715-spell-summary', html || empty('Nenhuma magia cadastrada.'));
+  }
+
+  function renderEquipmentSummary(char = current()){
+    const module = moduleByKey('equip-lista-simples');
+    if (!module || !char) return;
+    const items = Array.isArray(char.inventoryItems) ? char.inventoryItems : [];
+    const html = items.map(item => `<article class="od1715-card-mini od1715-item-mini">
+      <strong>${esc(item.name || 'Item')}</strong>
+      <span>Peso ${esc(item.weight || 0)} • Usos ${esc(item.uses || 0)}</span>
+    </article>`).join('');
+    setSummary(module, 'od1715-equipment-summary', html || empty('Nenhum item cadastrado.'));
+  }
+
+  function renderSummaries(){
+    renderAttrSummary();
+    renderSkillSummary();
+    renderAttackSummary();
+    renderSpellSummary();
+    renderEquipmentSummary();
+  }
+
+  function enhanceCharacterCards(){
+    document.querySelectorAll('#od71-character-list .od85-character-card, #od71-character-list .od71-character-card').forEach(card => {
+      card.classList.add('od1715-character-card');
+      const body = card.querySelector('.od71-card-body');
+      if (body) body.classList.add('od1715-character-body');
+      const img = card.querySelector('img');
+      if (img) {
+        img.classList.add('od1715-character-img');
+        img.loading = 'lazy';
+        img.decoding = 'async';
+      }
+    });
+  }
+
+  function sync(){
+    forceHubScroll();
+    renderSummaries();
+    enhanceCharacterCards();
+  }
+  function schedule(){
+    if (scheduled) return;
+    scheduled = true;
+    requestAnimationFrame(() => {
+      scheduled = false;
+      sync();
+    });
+  }
+
+  document.addEventListener('click', event => {
+    if (event.target.closest?.('[data-od170-toggle], [data-od71-tab], #od71-new-character, [data-od71-open-character]')) {
+      setTimeout(schedule, 0);
+      setTimeout(schedule, 160);
+    }
+  }, true);
+
+  document.addEventListener('input', event => {
+    if (event.target.closest?.('#attributes-grid input, #skills-wrap input, #attacks-list input, #spells-list input, #simple-inventory-list input, #simple-inventory-list textarea')) {
+      schedule();
+    }
+  }, true);
+
+  document.addEventListener('change', event => {
+    if (event.target.closest?.('#attributes-grid input, #skills-wrap input, #attacks-list input, #spells-list input, #simple-inventory-list input, #simple-inventory-list textarea')) {
+      setTimeout(schedule, 0);
+    }
+  }, true);
+
+  window.addEventListener('resize', schedule);
+  window.addEventListener('popstate', () => setTimeout(schedule, 0));
+
+  const observer = new MutationObserver(schedule);
+  observer.observe(document.body, { childList: true, subtree: true });
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', sync, { once: true });
+  else sync();
+
+  setTimeout(sync, 120);
+  setTimeout(sync, 600);
+  setTimeout(sync, 1400);
+
+  window.od1715Adjustments = { sync, renderSummaries, forceHubScroll };
 })();
