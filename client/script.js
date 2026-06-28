@@ -5,7 +5,7 @@
 ========================= */
 (function od139EarlyGuards(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.78.5';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.6';
   if (!window.CSS) window.CSS = {};
   if (typeof window.CSS.escape !== 'function') {
     window.CSS.escape = function(value) {
@@ -12035,7 +12035,7 @@ function od66InventoryMutationUnlockSoon() {
    Este bloco não altera regras de ficha; apenas melhora autonomia e experiência.
 ========================= */
 (function od115Maintenance(){
-  const VERSION = '1.78.5';
+  const VERSION = '1.78.6';
   const STORAGE_PREFIX = 'od_';
   const routeMap = {
     home: '/inicio',
@@ -20669,4 +20669,120 @@ function od66InventoryMutationUnlockSoon() {
   setTimeout(decorate, 120);
   setTimeout(decorate, 600);
   setTimeout(decorate, 1200);
+})();
+
+
+/* =========================
+   V178.6 - Hotfix definitivo dos nomes dos Atributos
+   Troca o render final dos atributos para usar uma linha própria:
+   nome completo à esquerda e bônus à direita, sem ellipsis.
+========================= */
+(function od1786AttributeNameFinalFix(){
+  'use strict';
+  if (window.__od1786AttributeNameFinalFixInstalled) return;
+  window.__od1786AttributeNameFinalFixInstalled = true;
+
+  const LABELS = {
+    forca: 'Força',
+    agilidade: 'Agilidade',
+    vigor: 'Vigor',
+    intelecto: 'Intelecto',
+    presenca: 'Presença'
+  };
+
+  function esc(value){
+    return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+  }
+
+  function attrValue(char, key){
+    return Number(char?.attrs?.[key] ?? 10);
+  }
+
+  function attrBonus(value){
+    try {
+      if (typeof attrMod === 'function' && typeof formatMod === 'function') return formatMod(attrMod(value));
+    } catch (_) {}
+    const mod = Math.floor((Number(value || 10) - 10) / 2);
+    return `${mod >= 0 ? '+' : ''}${mod}`;
+  }
+
+  function renderAttributesFinal(char){
+    const grid = document.getElementById('attributes-grid');
+    if (!grid || !char) return;
+    grid.classList.add('od1786-attributes-grid');
+    grid.innerHTML = '';
+
+    Object.entries(LABELS).forEach(([key, label]) => {
+      const value = attrValue(char, key);
+      const card = document.createElement('div');
+      card.className = 'attr-card-v2 od1786-attr-card';
+      card.innerHTML = `
+        <div class="od1786-attr-title-row">
+          <span class="attr-name od1786-attr-name" title="${esc(label)}">${esc(label)}</span>
+          <span class="attr-mod od1786-attr-mod">${esc(attrBonus(value))}</span>
+        </div>
+        <div class="od1786-attr-control-row">
+          <span class="od1786-dice-label">D20</span>
+          <button type="button" class="od1786-attr-step" data-od1786-attr-step="${esc(key)}" data-dir="-1">−</button>
+          <input data-attr="${esc(key)}" type="number" value="${esc(value)}" min="1" inputmode="numeric">
+          <button type="button" class="od1786-attr-step" data-od1786-attr-step="${esc(key)}" data-dir="1">+</button>
+        </div>
+        <button class="primary-btn small roll-attr od1786-roll" data-roll-attr="${esc(key)}" type="button">D20</button>`;
+      grid.appendChild(card);
+    });
+  }
+
+  if (typeof renderAttributes === 'function') {
+    renderAttributes = renderAttributesFinal;
+    try { window.renderAttributes = renderAttributesFinal; } catch (_) {}
+  }
+
+  document.addEventListener('click', event => {
+    const step = event.target.closest?.('[data-od1786-attr-step]');
+    if (!step) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+
+    const key = step.dataset.od1786AttrStep;
+    const dir = Number(step.dataset.dir || 0);
+    const char = typeof currentChar === 'function' ? currentChar() : null;
+    if (!char || !key) return;
+
+    const current = Number(char.attrs?.[key] ?? 10);
+    const next = Math.max(1, current + dir);
+
+    if (typeof updateChar === 'function') updateChar(c => {
+      c.attrs = c.attrs || {};
+      c.attrs[key] = next;
+    });
+    else {
+      char.attrs = char.attrs || {};
+      char.attrs[key] = next;
+    }
+
+    renderAttributesFinal(typeof currentChar === 'function' ? currentChar() : char);
+    if (typeof updateDerivedStatsDisplay === 'function') updateDerivedStatsDisplay(typeof currentChar === 'function' ? currentChar() : char);
+    if (typeof queueSave === 'function') queueSave();
+  }, true);
+
+  document.addEventListener('input', event => {
+    const input = event.target.closest?.('#attributes-grid input[data-attr]');
+    if (!input) return;
+    setTimeout(() => {
+      const char = typeof currentChar === 'function' ? currentChar() : null;
+      if (char) renderAttributesFinal(char);
+    }, 60);
+  }, true);
+
+  function boot(){
+    const char = typeof currentChar === 'function' ? currentChar() : null;
+    if (char) renderAttributesFinal(char);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
+  else boot();
+
+  setTimeout(boot, 120);
+  setTimeout(boot, 600);
+  setTimeout(boot, 1400);
 })();
