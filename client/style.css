@@ -16873,3 +16873,835 @@ body.od1784-ability-design #abilities-list .od80-order-btn {
     font-size: .78rem !important;
   }
 }
+
+
+/* =========================
+   V178.7 - Nomes de atributos sem corte/ellipsis
+========================= */
+
+body.od1787-attribute-name-final #attributes-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+
+body.od1787-attribute-name-final #attributes-grid .attr-card-v2,
+#attributes-grid .od1787-attr-card-final {
+  min-width: 0 !important;
+  width: 100% !important;
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+  overflow: visible !important;
+}
+
+body.od1787-attribute-name-final #attributes-grid .attr-head,
+body.od1787-attribute-name-final #attributes-grid .od101-attr-top,
+body.od1787-attribute-name-final #attributes-grid .od100-attr-head,
+#attributes-grid .od1787-attr-head-final {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 6px !important;
+  align-items: center !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+body.od1787-attribute-name-final #attributes-grid .attr-name,
+body.od1787-attribute-name-final #attributes-grid .od1787-attr-name-final,
+#attributes-grid .attr-name.od1787-attr-name-final {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  font-size: clamp(.72rem, .86vw, .84rem) !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+  text-align: left !important;
+}
+
+body.od1787-attribute-name-final #attributes-grid .attr-mod,
+body.od1787-attribute-name-final #attributes-grid .od1787-attr-mod-final,
+#attributes-grid .attr-mod.od1787-attr-mod-final {
+  position: static !important;
+  justify-self: end !important;
+  margin: 0 !important;
+  min-width: 24px !important;
+  max-width: max-content !important;
+  white-space: nowrap !important;
+  font-size: clamp(.95rem, 1.1vw, 1.1rem) !important;
+  line-height: 1 !important;
+}
+
+/* Remove ellipsis herdado de qualquer camada anterior */
+body.od1787-attribute-name-final #attributes-grid .attr-name::before,
+body.od1787-attribute-name-final #attributes-grid .attr-name::after {
+  content: none !important;
+  display: none !important;
+}
+
+@media (max-width: 980px) {
+  body.od1787-attribute-name-final #attributes-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+  }
+
+  body.od1787-attribute-name-final #attributes-grid .attr-name,
+  body.od1787-attribute-name-final #attributes-grid .od1787-attr-name-final {
+    font-size: .82rem !important;
+  }
+}
+
+
+/* =========================
+   V178.8 - Nomes completos nos Atributos
+========================= */
+
+body.od1788-attr-full-names #attributes-grid,
+#attributes-grid {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  overflow: visible !important;
+}
+
+body.od1788-attr-full-names #attributes-grid .attr-card-v2,
+#attributes-grid .od1788-attr-card {
+  min-width: 0 !important;
+  width: 100% !important;
+  padding: 11px 9px !important;
+  overflow: visible !important;
+  box-sizing: border-box !important;
+}
+
+body.od1788-attr-full-names #attributes-grid .attr-head,
+body.od1788-attr-full-names #attributes-grid .od101-attr-top,
+body.od1788-attr-full-names #attributes-grid .od100-attr-head,
+body.od1788-attr-full-names #attributes-grid .od1786-attr-title-row,
+#attributes-grid .od1788-attr-head {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 4px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+body.od1788-attr-full-names #attributes-grid .attr-name,
+body.od1788-attr-full-names #attributes-grid .od1788-attr-name-full,
+#attributes-grid .attr-name.od1788-attr-name-full {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  font-size: clamp(.56rem, .68vw, .66rem) !important;
+  line-height: 1 !important;
+  letter-spacing: -0.02em !important;
+  text-align: left !important;
+}
+
+body.od1788-attr-full-names #attributes-grid .attr-mod,
+body.od1788-attr-full-names #attributes-grid .od1788-attr-mod,
+#attributes-grid .attr-mod.od1788-attr-mod {
+  position: static !important;
+  justify-self: end !important;
+  margin: 0 !important;
+  min-width: 22px !important;
+  max-width: max-content !important;
+  white-space: nowrap !important;
+  font-size: clamp(.88rem, 1vw, 1.02rem) !important;
+  line-height: 1 !important;
+}
+
+/* Evita que qualquer regra antiga coloque reticências de novo. */
+body.od1788-attr-full-names #attributes-grid .attr-name::before,
+body.od1788-attr-full-names #attributes-grid .attr-name::after {
+  content: none !important;
+  display: none !important;
+}
+
+@media (max-width: 980px) {
+  body.od1788-attr-full-names #attributes-grid,
+  #attributes-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+  }
+
+  body.od1788-attr-full-names #attributes-grid .attr-name,
+  body.od1788-attr-full-names #attributes-grid .od1788-attr-name-full {
+    font-size: .78rem !important;
+  }
+}
+
+
+/* =========================
+   V178.9 - Perícias: check treinada e caixas alinhadas
+========================= */
+.od98-skill-card,
+.od88-skill-card,
+.od79-skill-card {
+  box-sizing: border-box !important;
+  padding: 16px !important;
+  gap: 12px !important;
+  overflow: hidden !important;
+}
+
+.od98-skill-top,
+.od88-skill-top,
+.od79-skill-top {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  min-width: 0 !important;
+}
+
+.od98-skill-check,
+.od88-skill-check,
+.od79-skill-check {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-height: 48px !important;
+  padding: 7px 12px !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(255,255,255,.14) !important;
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.025)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 8px 18px rgba(0,0,0,.18) !important;
+  opacity: 1 !important;
+}
+
+.od98-skill-check span,
+.od88-skill-check span,
+.od79-skill-check span {
+  display: inline-block !important;
+  font-size: .9rem !important;
+  font-weight: 800 !important;
+  letter-spacing: .04em !important;
+  line-height: 1.05 !important;
+  color: rgba(255,255,255,.92) !important;
+  text-transform: uppercase !important;
+}
+
+.od98-skill-check input,
+.od88-skill-check input,
+.od79-skill-check input {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  margin: 0 !important;
+  border-radius: 10px !important;
+  border: 1px solid rgba(255,255,255,.16) !important;
+  background: linear-gradient(180deg, rgba(35, 38, 42, .96), rgba(13, 15, 18, .96)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 5px 14px rgba(0,0,0,.22) !important;
+  display: grid !important;
+  place-items: center !important;
+  cursor: pointer !important;
+  position: relative !important;
+  flex: 0 0 34px !important;
+}
+
+.od98-skill-check input:checked,
+.od88-skill-check input:checked,
+.od79-skill-check input:checked {
+  border-color: color-mix(in srgb, var(--accent, #c5222c) 88%, #fff 12%) !important;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent, #c5222c) 90%, #ff6b73 10%), color-mix(in srgb, var(--accent, #c5222c) 78%, #5e0910 22%)) !important;
+}
+
+.od98-skill-check input:checked::after,
+.od88-skill-check input:checked::after,
+.od79-skill-check input:checked::after {
+  content: '✓' !important;
+  color: #fff !important;
+  font-size: 24px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  transform: translateY(-1px) !important;
+}
+
+.od98-skill-math,
+.od88-skill-math,
+.od79-skill-stats {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  align-items: end !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+.od98-skill-math > span,
+.od98-skill-math > label,
+.od88-skill-math > span,
+.od88-skill-math > label,
+.od79-skill-stats > span,
+.od79-skill-stats > label {
+  display: grid !important;
+  gap: 5px !important;
+  min-width: 0 !important;
+  width: 100% !important;
+}
+
+.od98-skill-math small,
+.od88-skill-math small,
+.od79-skill-stats small {
+  display: block !important;
+  padding-inline: 3px !important;
+  text-align: center !important;
+}
+
+.od98-skill-math b,
+.od88-skill-math b,
+.od79-skill-stats b,
+.od98-skill-math input[type="number"],
+.od88-skill-math input[type="number"],
+.od79-skill-stats input[type="number"] {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  border-radius: 12px !important;
+}
+
+.od98-skill-math b,
+.od88-skill-math b,
+.od79-skill-stats b {
+  min-height: 38px !important;
+  padding: 0 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.od98-skill-math input[type="number"],
+.od88-skill-math input[type="number"],
+.od79-skill-stats input[type="number"] {
+  height: 38px !important;
+  padding: 0 8px !important;
+  text-align: center !important;
+}
+
+.od98-skill-roll,
+.od88-skill-roll,
+.od79-skill-roll {
+  width: 100% !important;
+  min-width: 0 !important;
+  margin-top: 2px !important;
+}
+
+@media (max-width: 780px) {
+  .od98-skill-math,
+  .od88-skill-math,
+  .od79-skill-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .od98-skill-check,
+  .od88-skill-check,
+  .od79-skill-check {
+    min-height: 44px !important;
+    padding: 7px 10px !important;
+  }
+
+  .od98-skill-check span,
+  .od88-skill-check span,
+  .od79-skill-check span {
+    font-size: .82rem !important;
+  }
+}
+
+
+/* =========================
+   V178.10 - Inventário em Texto justo e estável
+========================= */
+
+#simple-inventory-list.od17810-inventory-list,
+#simple-inventory-list.od17810-inventory-list.od1782-editable-list,
+#simple-inventory-list {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)) !important;
+  gap: 16px !important;
+  align-items: start !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: visible !important;
+  box-sizing: border-box !important;
+}
+
+#simple-inventory-list .od17810-item-card.simple-inventory-card,
+#simple-inventory-list .od17810-item-card {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: auto !important;
+  min-height: 360px !important;
+  padding: 18px !important;
+  border-radius: 24px !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,.065), transparent 44%),
+    linear-gradient(145deg, rgba(255,255,255,.045), rgba(0,0,0,.22)),
+    rgba(0,0,0,.16) !important;
+  border: 1px solid color-mix(in srgb, var(--accent, #c5222c), white 10%) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.03), 0 10px 22px rgba(0,0,0,.14) !important;
+  grid-template: none !important;
+}
+
+#simple-inventory-list .od17810-item-card > * {
+  position: static !important;
+  grid-area: auto !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#simple-inventory-list .od17810-row {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+#simple-inventory-list .od17810-name-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 48px !important;
+  gap: 10px !important;
+  align-items: center !important;
+}
+
+#simple-inventory-list .od17810-name-input {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 48px !important;
+  padding: 11px 14px !important;
+  border-radius: 16px !important;
+  text-align: left !important;
+  background: rgba(0,0,0,.56) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  pointer-events: auto !important;
+  user-select: text !important;
+  cursor: text !important;
+  opacity: 1 !important;
+}
+
+#simple-inventory-list .od17810-remove-btn {
+  width: 48px !important;
+  min-width: 48px !important;
+  height: 48px !important;
+  margin: 0 !important;
+  border-radius: 16px !important;
+  position: static !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#simple-inventory-list .od17810-desc-wrap {
+  display: grid !important;
+  gap: 8px !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  color: rgba(255,255,255,.72) !important;
+  font-family: Arial, system-ui, sans-serif !important;
+  font-size: .74rem !important;
+  font-weight: 900 !important;
+  letter-spacing: .06em !important;
+  text-transform: uppercase !important;
+}
+
+#simple-inventory-list .od17810-desc-input {
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 120px !important;
+  padding: 14px !important;
+  border-radius: 18px !important;
+  resize: vertical !important;
+  text-align: left !important;
+  line-height: 1.35 !important;
+  background: rgba(0,0,0,.56) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  pointer-events: auto !important;
+  user-select: text !important;
+  cursor: text !important;
+  opacity: 1 !important;
+}
+
+#simple-inventory-list .od17810-meta-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 58px !important;
+  gap: 10px !important;
+  align-items: stretch !important;
+}
+
+#simple-inventory-list .od17810-box {
+  display: grid !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  padding: 10px !important;
+  border-radius: 18px !important;
+  background: rgba(0,0,0,.18) !important;
+  border: 1px solid rgba(255,255,255,.13) !important;
+  color: rgba(255,255,255,.76) !important;
+  text-align: center !important;
+  font-family: Arial, system-ui, sans-serif !important;
+  font-size: .72rem !important;
+  font-weight: 900 !important;
+  letter-spacing: .05em !important;
+  text-transform: uppercase !important;
+}
+
+#simple-inventory-list .od17810-stepper {
+  display: grid !important;
+  grid-template-columns: 34px minmax(0, 1fr) 34px !important;
+  gap: 6px !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+
+#simple-inventory-list .od17810-stepper input {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 36px !important;
+  padding: 0 6px !important;
+  text-align: center !important;
+  border-radius: 12px !important;
+  background: rgba(0,0,0,.58) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  pointer-events: auto !important;
+  user-select: text !important;
+  cursor: text !important;
+  opacity: 1 !important;
+}
+
+#simple-inventory-list .od17810-step-btn {
+  width: 34px !important;
+  min-width: 34px !important;
+  height: 34px !important;
+  padding: 0 !important;
+  border-radius: 11px !important;
+}
+
+#simple-inventory-list .od17810-order-box {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 8px !important;
+  align-self: stretch !important;
+}
+
+#simple-inventory-list .od17810-order-btn {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 35px !important;
+  padding: 0 !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  border-radius: 12px !important;
+}
+
+#simple-inventory-list .od17810-actions {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  width: 100% !important;
+  margin-top: auto !important;
+}
+
+#simple-inventory-list .od17810-actions button {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 40px !important;
+  border-radius: 14px !important;
+}
+
+/* Neutraliza layouts antigos especificamente dentro dos cards finais. */
+#simple-inventory-list .od17810-item-card .od1782-order-box,
+#simple-inventory-list .od17810-item-card .od1778-order-box,
+#simple-inventory-list .od17810-item-card .od1777-order-box,
+#simple-inventory-list .od17810-item-card .od1776-item-order-actions {
+  display: none !important;
+}
+
+/* Garante que nenhuma camada antiga transforme os inputs em visualização. */
+#simple-inventory-list .od17810-item-card input,
+#simple-inventory-list .od17810-item-card textarea,
+#simple-inventory-list .od17810-item-card button {
+  transform: none !important;
+  max-width: 100% !important;
+}
+
+@media (max-width: 900px) {
+  #simple-inventory-list.od17810-inventory-list,
+  #simple-inventory-list {
+    grid-template-columns: 1fr !important;
+  }
+
+  #simple-inventory-list .od17810-meta-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  #simple-inventory-list .od17810-order-box {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+
+/* =========================
+   V178.11 - Magias compactas e utilizáveis
+========================= */
+#spells-list.od17811-spells-list,
+body #spells-list.od17811-spells-list {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(430px, 560px)) !important;
+  justify-content: start !important;
+  align-items: start !important;
+  gap: 18px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 10px !important;
+  box-sizing: border-box !important;
+}
+
+#spells-list .od17811-spell-card,
+body.od1783-magic-design #spells-list .od17811-spell-card,
+#spells-list .spell-card.od17811-spell-card {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+  width: 100% !important;
+  max-width: 560px !important;
+  min-width: 0 !important;
+  min-height: auto !important;
+  height: auto !important;
+  padding: 18px !important;
+  padding-right: 58px !important;
+  border-radius: 24px !important;
+  overflow: hidden !important;
+  grid-template: none !important;
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,.07), transparent 45%),
+    linear-gradient(145deg, rgba(255,255,255,.045), rgba(0,0,0,.20)),
+    rgba(0,0,0,.18) !important;
+  border: 1px solid color-mix(in srgb, var(--accent, #c5222c), white 10%) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.03), 0 10px 22px rgba(0,0,0,.15) !important;
+  box-sizing: border-box !important;
+}
+
+#spells-list .od17811-spell-card > * {
+  position: static !important;
+  grid-area: auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+#spells-list .od17811-spell-name {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  padding: 10px 14px !important;
+  border-radius: 16px !important;
+  text-align: left !important;
+  font-size: clamp(1rem, 1.15vw, 1.2rem) !important;
+  line-height: 1.1 !important;
+  background: rgba(0,0,0,.58) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+#spells-list .od17811-spell-fields,
+body.od1783-magic-design #spells-list .od17811-spell-fields {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 9px !important;
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+#spells-list .od17811-spell-fields label {
+  display: grid !important;
+  gap: 6px !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  color: rgba(255,255,255,.72) !important;
+  font-family: Arial, system-ui, sans-serif !important;
+  font-size: .66rem !important;
+  font-weight: 900 !important;
+  letter-spacing: .045em !important;
+  text-transform: uppercase !important;
+}
+
+#spells-list .od17811-spell-fields label span {
+  display: block !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#spells-list .od17811-spell-fields input {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 0 8px !important;
+  border-radius: 12px !important;
+  text-align: center !important;
+  background: rgba(0,0,0,.58) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  font-size: .9rem !important;
+}
+
+#spells-list .od17811-spell-text-grid {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 12px !important;
+  width: 100% !important;
+}
+
+#spells-list .od17811-spell-text-block,
+body.od1783-magic-design #spells-list .od17811-spell-text-block {
+  display: grid !important;
+  gap: 7px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  color: rgba(255,255,255,.74) !important;
+  font-family: Arial, system-ui, sans-serif !important;
+  font-size: .72rem !important;
+  font-weight: 900 !important;
+  letter-spacing: .055em !important;
+  text-transform: uppercase !important;
+}
+
+#spells-list .od17811-spell-text-block textarea,
+#spells-list .od17811-spell-card .spell-description,
+#spells-list .od17811-spell-card .spell-upgrades {
+  width: 100% !important;
+  min-width: 0 !important;
+  padding: 13px 14px !important;
+  border-radius: 16px !important;
+  text-align: left !important;
+  line-height: 1.35 !important;
+  resize: vertical !important;
+  background: rgba(0,0,0,.58) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+#spells-list .od17811-spell-card .spell-description {
+  min-height: 112px !important;
+}
+
+#spells-list .od17811-spell-card .spell-upgrades {
+  min-height: 88px !important;
+}
+
+#spells-list .od17811-spell-footer {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  width: 100% !important;
+  margin-top: 0 !important;
+}
+
+#spells-list .od17811-remove-card {
+  width: min(190px, 100%) !important;
+  min-width: 130px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  border-radius: 14px !important;
+  position: static !important;
+}
+
+#spells-list .od17811-spell-card > .od80-card-order {
+  position: absolute !important;
+  right: 14px !important;
+  bottom: 14px !important;
+  top: auto !important;
+  width: 34px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  z-index: 30 !important;
+}
+
+#spells-list .od17811-spell-card .od80-order-btn {
+  width: 32px !important;
+  height: 26px !important;
+  padding: 0 !important;
+  border-radius: 10px !important;
+}
+
+#spells-list .od17811-spell-empty {
+  grid-column: 1 / -1 !important;
+}
+
+@media (max-width: 900px) {
+  #spells-list.od17811-spells-list,
+  body #spells-list.od17811-spells-list {
+    grid-template-columns: 1fr !important;
+    padding: 8px !important;
+  }
+
+  #spells-list .od17811-spell-card,
+  body.od1783-magic-design #spells-list .od17811-spell-card {
+    max-width: none !important;
+    padding-right: 52px !important;
+  }
+
+  #spells-list .od17811-spell-fields,
+  body.od1783-magic-design #spells-list .od17811-spell-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 560px) {
+  #spells-list .od17811-spell-fields,
+  body.od1783-magic-design #spells-list .od17811-spell-fields {
+    grid-template-columns: 1fr !important;
+  }
+
+  #spells-list .od17811-spell-card,
+  body.od1783-magic-design #spells-list .od17811-spell-card {
+    padding: 15px !important;
+  }
+
+  #spells-list .od17811-spell-card > .od80-card-order {
+    position: static !important;
+    flex-direction: row !important;
+    width: 100% !important;
+  }
+
+  #spells-list .od17811-remove-card {
+    width: 100% !important;
+  }
+}

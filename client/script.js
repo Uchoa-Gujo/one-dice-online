@@ -5,7 +5,7 @@
 ========================= */
 (function od139EarlyGuards(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.78.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
   if (!window.CSS) window.CSS = {};
   if (typeof window.CSS.escape !== 'function') {
     window.CSS.escape = function(value) {
@@ -12035,7 +12035,7 @@ function od66InventoryMutationUnlockSoon() {
    Este bloco não altera regras de ficha; apenas melhora autonomia e experiência.
 ========================= */
 (function od115Maintenance(){
-  const VERSION = '1.78.6';
+  const VERSION = '1.78.11';
   const STORAGE_PREFIX = 'od_';
   const routeMap = {
     home: '/inicio',
@@ -13636,7 +13636,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od136AttributesClean(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   const ATTRS = [
     ['forca', 'Força'], ['agilidade', 'Agilidade'], ['vigor', 'Vigor'], ['intelecto', 'Intelecto'], ['presenca', 'Presença']
@@ -13804,7 +13804,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od137SheetStabilityAndManualDefenseDodge(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   const $ = id => document.getElementById(id);
   const EDITABLE = 'input, textarea, select, [contenteditable="true"]';
@@ -14166,7 +14166,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od138AuditAndDuplicateSheetInstalled) return;
   window.__od138AuditAndDuplicateSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   const DUP_SELECTOR = '[data-od138-duplicate-character], [data-od71-copy-character], [data-copy-account-character]';
 
@@ -14359,7 +14359,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od139ExtraErrorFixesInstalled) return;
   window.__od139ExtraErrorFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   const IMAGE_KEYS = [
     'portrait','portraitUrl','image','imageUrl','photo','photoUrl','avatar','avatarUrl','retrato','foto',
@@ -14514,7 +14514,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od140GeneralImprovementsInstalled) return;
   window.__od140GeneralImprovementsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   const VERSION = '1.78.4';
   const BACKUP_KEY = 'od_sheet_backups_v140';
@@ -14995,7 +14995,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od141AuditHardeningInstalled) return;
   window.__od141AuditHardeningInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   function pruneBackups(){
     try {
@@ -15046,7 +15046,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od142FinalCleanupInstalled) return;
   window.__od142FinalCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   function keepFirst(selector){
     const nodes = Array.from(document.querySelectorAll(selector));
@@ -15132,7 +15132,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od148SafeRollbackPatchInstalled) return;
   window.__od148SafeRollbackPatchInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   function hideManualNotes(){
     ['defense-effective-note','dodge-formula-note'].forEach(id => {
@@ -15185,7 +15185,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od152StableLayoutFixesInstalled) return;
   window.__od152StableLayoutFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   const $ = id => document.getElementById(id);
   const n = (value, fallback = 0) => {
@@ -15377,7 +15377,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od155SessionDashboardStability(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   const STORE_PREFIX = 'od155_dashboard_collapsed_';
   const lastSig = { player: '', master: '' };
@@ -15533,7 +15533,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od156ProtectOtherPlayersSheetsInstalled) return;
   window.__od156ProtectOtherPlayersSheetsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   const PROTECTED_ARRAYS = ['inventoryItems','blockInventory','abilities','spells','attacks','conditions','transformations','dropItems'];
   const PROTECTED_OBJECTS = ['skills','resistances','attrs','caster','obsIcons','portraitCrop','settings'];
@@ -15638,7 +15638,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od157ProtectOwnSheetPartialAutosaveInstalled) return;
   window.__od157ProtectOwnSheetPartialAutosaveInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   function clone(value){
     try { return structuredClone(value); } catch (_) {
@@ -15794,7 +15794,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od159StableSessionRenderInstalled) return;
   window.__od159StableSessionRenderInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   const $ = id => document.getElementById(id);
   const last = { tableSig: '', tableAt: 0, playerSig: '', masterSig: '' };
@@ -15927,7 +15927,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od160AccountSheetIsolationInstalled) return;
   window.__od160AccountSheetIsolationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   const $ = id => document.getElementById(id);
 
@@ -16078,7 +16078,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od161EquipmentProficienciesInstalled) return;
   window.__od161EquipmentProficienciesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   const GROUPS = {
     weapons: [
@@ -16245,7 +16245,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od164StableCleanRoutesInstalled) return;
   window.__od164StableCleanRoutesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   const VERSION = '1.78.4';
   let applyingRoute = false;
@@ -16453,7 +16453,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od165ExactPortraitCrop(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
   if (window.__od165ExactPortraitCropInstalled) return;
   window.__od165ExactPortraitCropInstalled = true;
 
@@ -16575,7 +16575,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1685AreaSeparationInstalled) return;
   window.__od1685AreaSeparationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   const AREA = {
     AUTH: 'login',
@@ -16764,7 +16764,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1699StableSkillUntrainInstalled) return;
   window.__od1699StableSkillUntrainInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   const pending = new Map();
   let flushTimer = null;
@@ -16992,7 +16992,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16910SkillSaveMergeInstalled) return;
   window.__od16910SkillSaveMergeInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   let lastExplicit = {};
   let lastExplicitAt = 0;
@@ -17208,7 +17208,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16911StablePortraitDuringResourcesInstalled) return;
   window.__od16911StablePortraitDuringResourcesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   const RESOURCE_SELECTOR = '#pv-current, #pv-max, #pe-current, #pe-max';
   const MAIN_SELECTOR = '#char-portrait-preview';
@@ -17380,7 +17380,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od170ModularSheetInstalled) return;
   window.__od170ModularSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   const STORE_KEY = 'od170_modules_state_v1';
   const DENSE_KEY = 'od170_dense_sheet_v1';
@@ -17624,7 +17624,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od171HubNavigationAndScrollInstalled) return;
   window.__od171HubNavigationAndScrollInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   let pending = false;
 
@@ -17748,7 +17748,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1715ScrollAndSmartCollapseInstalled) return;
   window.__od1715ScrollAndSmartCollapseInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   let scheduled = false;
 
@@ -17996,7 +17996,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od176SmartSheetModesInstalled) return;
   window.__od176SmartSheetModesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   let scheduled = false;
 
@@ -18249,7 +18249,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1761NoDuplicateReducedSummariesInstalled) return;
   window.__od1761NoDuplicateReducedSummariesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   const OLD_SUMMARY_SELECTOR = [
     '.od1715-attr-summary',
@@ -18311,7 +18311,7 @@ function od66InventoryMutationUnlockSoon() {
    A correção principal está no index.html e no server/server.js.
 ========================= */
 (function od1762ReloadPathFixMarker(){
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 })();
 
 
@@ -18328,7 +18328,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od177InventoryReworkInstalled) return;
   window.__od177InventoryReworkInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   let scheduled = false;
 
@@ -18580,7 +18580,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1771EquipmentVisualHotfixInstalled) return;
   window.__od1771EquipmentVisualHotfixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   function $(id){ return document.getElementById(id); }
   function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
@@ -18637,7 +18637,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1772EquipmentMagicHotfixInstalled) return;
   window.__od1772EquipmentMagicHotfixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   let saveGuard = false;
 
@@ -18859,7 +18859,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1773InventoryAbilityLayoutFixInstalled) return;
   window.__od1773InventoryAbilityLayoutFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   function $(id){ return document.getElementById(id); }
   function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
@@ -19027,7 +19027,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1774LayoutPolishInstalled) return;
   window.__od1774LayoutPolishInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   function $(id){ return document.getElementById(id); }
 
@@ -19155,7 +19155,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1775ReloadRouteRestoreInstalled) return;
   window.__od1775ReloadRouteRestoreInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   const INITIAL_PATH = location.pathname + location.search;
   const INITIAL_PARTS = location.pathname.split('/').filter(Boolean).map(part => {
@@ -19357,7 +19357,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1776RealEditLayoutFixInstalled) return;
   window.__od1776RealEditLayoutFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   let saveMoneyTimer = null;
   let syncTimer = null;
@@ -19606,7 +19606,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1777HardLayoutResetInstalled) return;
   window.__od1777HardLayoutResetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   let timer = null;
   let savingMoney = null;
@@ -19853,7 +19853,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1778AuditConflictCleanInstalled) return;
   window.__od1778AuditConflictCleanInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   let timer = null;
   let saveTimer = null;
@@ -20101,7 +20101,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od178SkillsDesignPolishInstalled) return;
   window.__od178SkillsDesignPolishInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   let timer = null;
 
@@ -20174,7 +20174,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1781AttributeTextFixInstalled) return;
   window.__od1781AttributeTextFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   let timer = null;
 
@@ -20242,7 +20242,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1782EditableTextInventoryInstalled) return;
   window.__od1782EditableTextInventoryInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   let syncTimer = null;
 
@@ -20436,7 +20436,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1783MagicEditDesignInstalled) return;
   window.__od1783MagicEditDesignInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.78.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
 
   let timer = null;
 
@@ -20785,4 +20785,596 @@ function od66InventoryMutationUnlockSoon() {
   setTimeout(boot, 120);
   setTimeout(boot, 600);
   setTimeout(boot, 1400);
+})();
+
+
+/* =========================
+   V178.7 - Correção final visual dos nomes dos Atributos
+   Motivo:
+   Algumas camadas antigas ainda aplicavam ellipsis no nome depois do render.
+   Esta correção atua no DOM já renderizado e troca os nomes para abreviações
+   oficiais legíveis, sem "...", mantendo significado.
+========================= */
+(function od1787AttributeNameNoEllipsis(){
+  'use strict';
+  if (window.__od1787AttributeNameNoEllipsisInstalled) return;
+  window.__od1787AttributeNameNoEllipsisInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
+
+  const DISPLAY = {
+    'força': 'FORÇA',
+    'forca': 'FORÇA',
+    'agilidade': 'AGILID.',
+    'vigor': 'VIGOR',
+    'intelecto': 'INTELECT.',
+    'presença': 'PRESENÇA',
+    'presenca': 'PRESENÇA'
+  };
+
+  function normalizeText(value){
+    return String(value || '')
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function fix(){
+    document.body.classList.add('od1787-attribute-name-final');
+
+    document.querySelectorAll('#attributes-grid .attr-card-v2').forEach(card => {
+      card.classList.add('od1787-attr-card-final');
+
+      const name = card.querySelector('.attr-name');
+      if (!name) return;
+
+      const raw = name.getAttribute('title') || name.dataset.fullText || name.textContent || '';
+      const normalized = normalizeText(raw).replace(/\.+$/g, '');
+
+      let finalText = DISPLAY[normalized];
+
+      // Quando já veio cortado como "AGILIDA...", "INTELEC..." ou "PRESEN..."
+      if (!finalText) {
+        if (normalized.startsWith('agilida')) finalText = 'AGILID.';
+        else if (normalized.startsWith('intelec')) finalText = 'INTELECT.';
+        else if (normalized.startsWith('presen')) finalText = 'PRESENÇA';
+        else if (normalized.startsWith('for')) finalText = 'FORÇA';
+        else if (normalized.startsWith('vig')) finalText = 'VIGOR';
+      }
+
+      if (finalText) {
+        name.textContent = finalText;
+        name.dataset.fullText = raw || finalText;
+        name.setAttribute('title', raw || finalText);
+      }
+
+      name.classList.add('od1787-attr-name-final');
+      card.querySelector('.attr-mod')?.classList.add('od1787-attr-mod-final');
+      card.querySelector('.attr-head, .od101-attr-top, .od100-attr-head')?.classList.add('od1787-attr-head-final');
+    });
+  }
+
+  function schedule(){
+    clearTimeout(window.__od1787AttrTimer);
+    window.__od1787AttrTimer = setTimeout(fix, 30);
+  }
+
+  document.addEventListener('click', event => {
+    if (event.target.closest?.('#attributes-grid, [data-od170-toggle], .sheet-tab')) {
+      schedule();
+      setTimeout(fix, 120);
+    }
+  }, true);
+
+  document.addEventListener('input', event => {
+    if (event.target.closest?.('#attributes-grid')) schedule();
+  }, true);
+
+  new MutationObserver(schedule).observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['class']
+  });
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fix, { once: true });
+  else fix();
+
+  setTimeout(fix, 100);
+  setTimeout(fix, 500);
+  setTimeout(fix, 1200);
+  setTimeout(fix, 2200);
+})();
+
+
+/* =========================
+   V178.8 - Atributos com nome completo
+   Corrige a v1.78.7: não pode abreviar. Precisa escrever completo.
+========================= */
+(function od1788AttributeFullNames(){
+  'use strict';
+  if (window.__od1788AttributeFullNamesInstalled) return;
+  window.__od1788AttributeFullNamesInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
+
+  const FULL = {
+    forca: 'FORÇA',
+    força: 'FORÇA',
+    agilidade: 'AGILIDADE',
+    vigor: 'VIGOR',
+    intelecto: 'INTELECTO',
+    presenca: 'PRESENÇA',
+    presença: 'PRESENÇA'
+  };
+
+  function norm(value){
+    return String(value || '')
+      .trim()
+      .toLowerCase()
+      .replace(/\.+$/g, '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function keyFromText(value){
+    const n = norm(value);
+    if (n.startsWith('for')) return 'forca';
+    if (n.startsWith('agil')) return 'agilidade';
+    if (n.startsWith('vig')) return 'vigor';
+    if (n.startsWith('intel')) return 'intelecto';
+    if (n.startsWith('pres')) return 'presenca';
+    return n;
+  }
+
+  function applyFullNames(){
+    document.body.classList.add('od1788-attr-full-names');
+
+    document.querySelectorAll('#attributes-grid .attr-card-v2').forEach(card => {
+      card.classList.add('od1788-attr-card');
+
+      const input = card.querySelector('input[data-attr]');
+      const key = input?.dataset?.attr || keyFromText(card.querySelector('.attr-name')?.textContent);
+      const name = card.querySelector('.attr-name');
+      if (!name) return;
+
+      const full = FULL[key] || FULL[keyFromText(name.textContent)] || name.textContent;
+      name.textContent = full;
+      name.dataset.fullText = full;
+      name.setAttribute('title', full);
+      name.classList.add('od1788-attr-name-full');
+
+      card.querySelector('.attr-mod')?.classList.add('od1788-attr-mod');
+      card.querySelector('.attr-head, .od101-attr-top, .od100-attr-head, .od1786-attr-title-row')?.classList.add('od1788-attr-head');
+    });
+  }
+
+  function schedule(){
+    clearTimeout(window.__od1788AttrTimer);
+    window.__od1788AttrTimer = setTimeout(applyFullNames, 25);
+  }
+
+  document.addEventListener('click', event => {
+    if (event.target.closest?.('#attributes-grid, [data-od170-toggle], .sheet-tab')) {
+      schedule();
+      setTimeout(applyFullNames, 120);
+    }
+  }, true);
+
+  document.addEventListener('input', event => {
+    if (event.target.closest?.('#attributes-grid')) schedule();
+  }, true);
+
+  new MutationObserver(schedule).observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['class']
+  });
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', applyFullNames, { once: true });
+  else applyFullNames();
+
+  setTimeout(applyFullNames, 100);
+  setTimeout(applyFullNames, 500);
+  setTimeout(applyFullNames, 1200);
+  setTimeout(applyFullNames, 2200);
+})();
+
+
+/* =========================
+   V178.10 - Inventário em Texto refeito justo e estável
+   Corrige cards quebrados por camadas antigas:
+   - nome editável no topo;
+   - excluir ao lado do nome;
+   - descrição grande e editável;
+   - peso/usos compactos;
+   - ordem separada;
+   - ações no rodapé.
+========================= */
+(function od17810FairTextInventory(){
+  'use strict';
+  if (window.__od17810FairTextInventoryInstalled) return;
+  window.__od17810FairTextInventoryInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
+
+  let renderTimer = null;
+  let saveTimer = null;
+
+  function $(id){ return document.getElementById(id); }
+  function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
+  function getChar(){ return safe(() => typeof currentChar === 'function' ? currentChar() : null, null); }
+  function uidSafe(prefix){
+    return typeof uid === 'function' ? uid(prefix || 'id') : `${prefix || 'id'}_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+  }
+  function esc(value){
+    if (typeof escapeHtml === 'function') return escapeHtml(value ?? '');
+    return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+  }
+  function formatWeight(value){
+    if (typeof normalizeWeight === 'function' && typeof formatNumberBr === 'function') return formatNumberBr(normalizeWeight(value));
+    const n = Number(String(value ?? 0.5).replace(',', '.'));
+    if (!Number.isFinite(n)) return '0,5';
+    return Number.isInteger(n) ? String(n) : String(n).replace('.', ',');
+  }
+  function normalizeWeightSafe(value){
+    if (typeof normalizeWeight === 'function') return normalizeWeight(value);
+    const n = Number(String(value ?? 0.5).replace(',', '.'));
+    if (!Number.isFinite(n) || n < 0.5) return 0.5;
+    if (n < 1) return 0.5;
+    return Math.round(n);
+  }
+
+  function currentItemsFromDom(){
+    const list = $('simple-inventory-list');
+    if (!list) return [];
+    return [...list.querySelectorAll('.od17810-item-card')].map(card => ({
+      id: card.dataset.itemId || uidSafe('inv'),
+      name: card.querySelector('[data-inv-field="name"]')?.value?.trim() || 'Item',
+      weight: normalizeWeightSafe(card.querySelector('[data-inv-field="weight"]')?.value || 0.5),
+      uses: Math.max(0, Number(card.querySelector('[data-inv-field="uses"]')?.value || 0)),
+      desc: card.querySelector('[data-inv-field="desc"]')?.value || ''
+    }));
+  }
+
+  function writeDomToChar(){
+    const char = getChar();
+    if (!char) return;
+    const items = currentItemsFromDom();
+    if (typeof updateChar === 'function') updateChar(c => { c.inventoryItems = items; });
+    else char.inventoryItems = items;
+    if (typeof updateInventoryWeightTotal === 'function') updateInventoryWeightTotal();
+  }
+
+  function scheduleSave(){
+    writeDomToChar();
+    if (typeof queueSave === 'function') queueSave();
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      writeDomToChar();
+      if (typeof saveCurrentCharacter === 'function') saveCurrentCharacter();
+    }, 250);
+  }
+
+  function renderInventory(char = getChar()){
+    const list = $('simple-inventory-list');
+    if (!list || !char) return;
+
+    const items = Array.isArray(char.inventoryItems) ? char.inventoryItems : [];
+    list.className = 'simple-inventory-list od17810-inventory-list';
+    list.innerHTML = '';
+
+    if (!items.length) {
+      const empty = document.createElement('div');
+      empty.className = 'simple-inventory-empty od17810-empty';
+      empty.textContent = 'Nenhum item adicionado.';
+      list.appendChild(empty);
+      if (typeof updateInventoryWeightTotal === 'function') updateInventoryWeightTotal();
+      return;
+    }
+
+    items.forEach((item, index) => {
+      const itemId = item.id || uidSafe('inv');
+      item.id = itemId;
+
+      const card = document.createElement('article');
+      card.className = 'simple-inventory-card od17810-item-card';
+      card.dataset.inventoryIndex = String(index);
+      card.dataset.itemId = itemId;
+
+      card.innerHTML = `
+        <div class="od17810-row od17810-name-row">
+          <input class="simple-inventory-name od17810-name-input" data-inv-field="name" type="text" value="${esc(item.name || 'Novo item')}" placeholder="Nome do item" autocomplete="off" />
+          <button class="mini-danger-btn od17810-remove-btn" data-remove-simple-item="${index}" type="button" aria-label="Excluir item">×</button>
+        </div>
+
+        <label class="od17810-desc-wrap">
+          <span>Descrição</span>
+          <textarea class="simple-inventory-desc od17810-desc-input" data-inv-field="desc" rows="4" placeholder="Descrição do item">${esc(item.desc || '')}</textarea>
+        </label>
+
+        <div class="od17810-row od17810-meta-row">
+          <label class="od17810-box od17810-weight-box">
+            <span>Peso</span>
+            <div class="od17810-stepper">
+              <button class="stepper-btn od17810-step-btn" data-step-field="weight" data-step-dir="-1" type="button">−</button>
+              <input data-inv-field="weight" type="text" value="${esc(formatWeight(item.weight ?? 0.5))}" inputmode="decimal" />
+              <button class="stepper-btn od17810-step-btn" data-step-field="weight" data-step-dir="1" type="button">+</button>
+            </div>
+          </label>
+
+          <label class="od17810-box od17810-uses-box">
+            <span>Usos</span>
+            <div class="od17810-stepper">
+              <button class="stepper-btn od17810-step-btn" data-step-field="uses" data-step-dir="-1" type="button">−</button>
+              <input data-inv-field="uses" type="number" min="0" step="1" value="${esc(Math.max(0, Number(item.uses || 0)))}" />
+              <button class="stepper-btn od17810-step-btn" data-step-field="uses" data-step-dir="1" type="button">+</button>
+            </div>
+          </label>
+
+          <div class="od17810-order-box">
+            <button class="ghost-btn small od17810-order-btn" data-od17810-move="${index}" data-dir="-1" type="button" aria-label="Subir item">▲</button>
+            <button class="ghost-btn small od17810-order-btn" data-od17810-move="${index}" data-dir="1" type="button" aria-label="Descer item">▼</button>
+          </div>
+        </div>
+
+        <div class="item-card-actions od17810-actions">
+          <button class="ghost-btn small" data-transfer-simple-item="${esc(itemId)}" type="button">Transferir</button>
+          <button class="ghost-btn small" data-drop-simple-item="${esc(itemId)}" type="button">Enviar para Drop</button>
+        </div>`;
+
+      list.appendChild(card);
+    });
+
+    if (typeof updateInventoryWeightTotal === 'function') updateInventoryWeightTotal();
+  }
+
+  function moveItem(index, dir){
+    writeDomToChar();
+    const char = getChar();
+    if (!char) return;
+    const items = Array.isArray(char.inventoryItems) ? [...char.inventoryItems] : [];
+    const from = Number(index);
+    const to = from + Number(dir);
+    if (from < 0 || to < 0 || from >= items.length || to >= items.length) return;
+
+    const [item] = items.splice(from, 1);
+    items.splice(to, 0, item);
+
+    if (typeof updateChar === 'function') updateChar(c => { c.inventoryItems = items; });
+    else char.inventoryItems = items;
+
+    renderInventory(getChar());
+    if (typeof saveCurrentCharacter === 'function') saveCurrentCharacter();
+  }
+
+  function neutralizeOldInventory(){
+    const list = $('simple-inventory-list');
+    if (!list) return;
+    list.querySelectorAll('.od1776-item-order-actions, .od1777-order-box, .od1778-order-box, .od1782-order-box, [data-od1776-move-item], [data-od1777-move], [data-od1778-move], [data-od1782-move]').forEach(el => {
+      if (!el.closest('.od17810-item-card')) el.remove();
+    });
+  }
+
+  renderSimpleInventory = function od17810RenderSimpleInventory(char){
+    renderInventory(char || getChar());
+    neutralizeOldInventory();
+  };
+  try { window.renderSimpleInventory = renderSimpleInventory; } catch (_) {}
+
+  // Mantém a leitura do save compatível com os novos cards.
+  readSimpleInventoryFromDOM = function od17810ReadSimpleInventoryFromDOM(){
+    return currentItemsFromDom();
+  };
+  try { window.readSimpleInventoryFromDOM = readSimpleInventoryFromDOM; } catch (_) {}
+
+  document.addEventListener('click', event => {
+    const move = event.target.closest?.('[data-od17810-move]');
+    if (move) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      moveItem(move.dataset.od17810Move, move.dataset.dir);
+      return;
+    }
+
+    const step = event.target.closest?.('#simple-inventory-list .od17810-step-btn');
+    if (step) {
+      const card = step.closest('.od17810-item-card');
+      const field = step.dataset.stepField;
+      const dir = Number(step.dataset.stepDir || 0);
+      const input = card?.querySelector(`[data-inv-field="${field}"]`);
+      if (!input) return;
+
+      event.preventDefault();
+      event.stopImmediatePropagation();
+
+      if (field === 'weight') {
+        const current = normalizeWeightSafe(input.value);
+        const next = dir > 0 ? (current < 1 ? 1 : current + 1) : (current <= 1 ? 0.5 : current - 1);
+        input.value = formatWeight(next);
+      } else if (field === 'uses') {
+        input.value = String(Math.max(0, Number(input.value || 0) + dir));
+      }
+
+      scheduleSave();
+      return;
+    }
+
+    if (event.target.closest?.('#add-simple-inventory-item, [data-remove-simple-item]')) {
+      setTimeout(() => renderInventory(getChar()), 80);
+    }
+  }, true);
+
+  document.addEventListener('input', event => {
+    if (event.target.closest?.('#simple-inventory-list .od17810-item-card')) {
+      scheduleSave();
+    }
+  }, true);
+
+  document.addEventListener('change', event => {
+    if (event.target.closest?.('#simple-inventory-list .od17810-item-card')) {
+      scheduleSave();
+    }
+  }, true);
+
+  const observer = new MutationObserver(() => {
+    clearTimeout(renderTimer);
+    renderTimer = setTimeout(neutralizeOldInventory, 40);
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => renderInventory(getChar()), { once: true });
+  else renderInventory(getChar());
+
+  setTimeout(() => renderInventory(getChar()), 120);
+  setTimeout(() => renderInventory(getChar()), 800);
+
+  window.od17810FairTextInventory = { renderInventory, currentItemsFromDom };
+})();
+
+
+/* =========================
+   V178.11 - Magias: edição reestruturada de verdade
+   Corrige layout espaçado/quebrado substituindo o render final das magias.
+========================= */
+(function od17811SpellEditorRebuild(){
+  'use strict';
+  if (window.__od17811SpellEditorRebuildInstalled) return;
+  window.__od17811SpellEditorRebuildInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.78.11';
+
+  let saveTimer = null;
+
+  function $(id){ return document.getElementById(id); }
+  function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
+  function getChar(){ return safe(() => typeof currentChar === 'function' ? currentChar() : null, null); }
+  function esc(value){
+    if (typeof escapeHtml === 'function') return escapeHtml(value ?? '');
+    return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  }
+
+  function readSpellsFromDom(){
+    return [...document.querySelectorAll('#spells-list .spell-card')].map(card => ({
+      name: card.querySelector('.spell-name')?.value || '',
+      circle: card.querySelector('.spell-circle')?.value || '',
+      exec: card.querySelector('.spell-exec')?.value || '',
+      range: card.querySelector('.spell-range')?.value || '',
+      cost: card.querySelector('.spell-cost')?.value || '',
+      components: card.querySelector('.spell-components')?.value || '',
+      description: card.querySelector('.spell-description')?.value || '',
+      upgrades: card.querySelector('.spell-upgrades')?.value || ''
+    }));
+  }
+
+  function writeSpellsToChar(){
+    const char = getChar();
+    if (!char) return;
+    const spells = readSpellsFromDom();
+    if (typeof updateChar === 'function') updateChar(c => { c.spells = spells; });
+    else char.spells = spells;
+  }
+
+  function scheduleSave(){
+    writeSpellsToChar();
+    if (typeof queueSave === 'function') queueSave();
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      writeSpellsToChar();
+      if (typeof saveCurrentCharacter === 'function') saveCurrentCharacter();
+    }, 260);
+  }
+
+  function spellCardHtml(spell, index){
+    return `
+      <article class="mini-card spell-card od17811-spell-card" data-index="${index}">
+        <div class="od17811-spell-head">
+          <input class="spell-name od17811-spell-name" placeholder="Nome da magia" value="${esc(spell.name || '')}" />
+        </div>
+
+        <div class="spell-fields-grid od17811-spell-fields">
+          <label><span>Círculo</span><input class="spell-circle" placeholder="1º" value="${esc(spell.circle || '')}" /></label>
+          <label><span>Execução</span><input class="spell-exec" placeholder="Ação" value="${esc(spell.exec || '')}" /></label>
+          <label><span>Alcance</span><input class="spell-range" placeholder="9 m" value="${esc(spell.range || '')}" /></label>
+          <label><span>Custo</span><input class="spell-cost" placeholder="2 PE" value="${esc(spell.cost || spell.pe || '')}" /></label>
+          <label><span>Componentes</span><input class="spell-components" placeholder="V, S, M" value="${esc(spell.components || '')}" /></label>
+        </div>
+
+        <div class="od17811-spell-text-grid">
+          <label class="spell-text-label od17811-spell-text-block"><span>Descrição</span>
+            <textarea class="spell-description" rows="5" placeholder="Descrição da magia">${esc(spell.description || spell.effect || '')}</textarea>
+          </label>
+          <label class="spell-text-label od17811-spell-text-block"><span>Aprimoramentos</span>
+            <textarea class="spell-upgrades" rows="4" placeholder="Aprimoramentos, versões superiores ou gastos extras">${esc(spell.upgrades || '')}</textarea>
+          </label>
+        </div>
+
+        <div class="od17811-spell-footer">
+          <button class="remove-card danger-btn small od17811-remove-card" type="button">Remover</button>
+        </div>
+      </article>`;
+  }
+
+  function renderSpellList(char = getChar()){
+    const list = $('spells-list');
+    if (!list || !char) return;
+    const spells = Array.isArray(char.spells) ? char.spells : [];
+    list.className = 'cards-list od17811-spells-list';
+    list.innerHTML = spells.length
+      ? spells.map((spell, index) => spellCardHtml(spell, index)).join('')
+      : '<div class="simple-inventory-empty od17811-spell-empty">Nenhuma magia adicionada.</div>';
+
+    // O sistema de ordenação antigo adiciona controles depois; aqui só reposicionamos visualmente.
+    setTimeout(() => {
+      list.querySelectorAll('.spell-card').forEach(card => card.classList.add('od17811-spell-card'));
+    }, 20);
+  }
+
+  addSpellCard = function od17811AddSpellCard(spell = {}, index = null){
+    const list = $('spells-list');
+    if (!list) return;
+    if (list.querySelector('.od17811-spell-empty')) list.innerHTML = '';
+    list.classList.add('od17811-spells-list');
+    const idx = index ?? list.querySelectorAll('.spell-card').length;
+    const wrap = document.createElement('div');
+    wrap.innerHTML = spellCardHtml(spell, idx).trim();
+    list.appendChild(wrap.firstElementChild);
+  };
+  try { window.addSpellCard = addSpellCard; } catch (_) {}
+
+  renderSpells = function od17811RenderSpells(char){
+    renderSpellList(char || getChar());
+  };
+  try { window.renderSpells = renderSpells; } catch (_) {}
+
+  // Compatibilidade com camadas que usam v39ReadSpellsFromDOM.
+  if (typeof v39ReadSpellsFromDOM === 'function') {
+    v39ReadSpellsFromDOM = readSpellsFromDom;
+    try { window.v39ReadSpellsFromDOM = v39ReadSpellsFromDOM; } catch (_) {}
+  }
+
+  document.addEventListener('input', event => {
+    if (event.target.closest?.('#spells-list .spell-card')) scheduleSave();
+  }, true);
+
+  document.addEventListener('change', event => {
+    if (event.target.closest?.('#spells-list .spell-card')) scheduleSave();
+  }, true);
+
+  document.addEventListener('click', event => {
+    if (event.target.closest?.('#add-spell')) {
+      setTimeout(() => document.querySelectorAll('#spells-list .spell-card').forEach(card => card.classList.add('od17811-spell-card')), 80);
+    }
+    if (event.target.closest?.('#spells-list .remove-card')) {
+      setTimeout(() => {
+        writeSpellsToChar();
+        if (typeof saveCurrentCharacter === 'function') saveCurrentCharacter();
+      }, 50);
+    }
+  }, true);
+
+  const char = getChar();
+  if (char && document.getElementById('spells-list')) renderSpellList(char);
+  setTimeout(() => { const c = getChar(); if (c) renderSpellList(c); }, 150);
+  setTimeout(() => { const c = getChar(); if (c) renderSpellList(c); }, 800);
+
+  window.od17811SpellEditorRebuild = { renderSpellList, readSpellsFromDom };
 })();
