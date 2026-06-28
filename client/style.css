@@ -13631,3 +13631,297 @@ button {
     flex: 1 1 150px !important;
   }
 }
+
+
+/* =========================
+   V177.3 - Inventário/Habilidades/Layout fixo
+========================= */
+
+/* Geral: ficha com largura estável entre abas */
+body.od1773-stable-sheet-width .app-shell {
+  grid-template-columns: minmax(0, 960px) minmax(260px, 320px) !important;
+  justify-content: center !important;
+  align-items: start !important;
+  gap: 22px !important;
+  max-width: 1320px !important;
+  width: min(1320px, calc(100vw - 64px)) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+body.od1773-stable-sheet-width .sheet-area,
+.od1773-sheet-area-fixed {
+  width: 960px !important;
+  max-width: 960px !important;
+  min-width: 0 !important;
+}
+
+body.od1773-stable-sheet-width .sheet,
+.od1773-sheet-fixed {
+  width: 100% !important;
+  max-width: 960px !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+body.od1773-stable-sheet-width .right-panel {
+  width: 300px !important;
+  max-width: 320px !important;
+  min-width: 260px !important;
+}
+
+/* Em telas menores, volta a ser fluido */
+@media (max-width: 1320px) {
+  body.od1773-stable-sheet-width .app-shell {
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: min(100% - 32px, 980px) !important;
+  }
+
+  body.od1773-stable-sheet-width .sheet-area,
+  .od1773-sheet-area-fixed,
+  body.od1773-stable-sheet-width .sheet,
+  .od1773-sheet-fixed {
+    width: 100% !important;
+    max-width: 980px !important;
+  }
+
+  body.od1773-stable-sheet-width .right-panel {
+    width: 100% !important;
+    max-width: 980px !important;
+  }
+}
+
+/* Equipamentos: dinheiro e peso máximo editáveis de verdade */
+#money.od1773-force-editable,
+#weight-max.od1773-force-editable,
+#money,
+#weight-max {
+  pointer-events: auto !important;
+  user-select: auto !important;
+  opacity: 1 !important;
+  cursor: text !important;
+  background: rgba(0,0,0,.42) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+#money:disabled,
+#weight-max:disabled {
+  pointer-events: auto !important;
+  opacity: 1 !important;
+}
+
+#weight-current.od1773-calculated-field {
+  opacity: .92 !important;
+  cursor: default !important;
+}
+
+/* Inventário em Texto: fica só um botão de reduzir/expandir */
+#simple-inventory-compact-toggle,
+.od1773-hidden-extra-toggle {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Edição de item em texto mais organizada */
+#simple-inventory-list {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important;
+  gap: 14px !important;
+  align-items: stretch !important;
+}
+
+.simple-inventory-card.od1773-edit-item-card {
+  min-height: 300px !important;
+  padding: 16px !important;
+  border-radius: 22px !important;
+  display: grid !important;
+  grid-template-columns: 1fr auto !important;
+  grid-template-areas:
+    "name remove"
+    "metrics metrics"
+    "desc desc"
+    "actions actions" !important;
+  gap: 12px !important;
+  align-content: start !important;
+  overflow: hidden !important;
+}
+
+.simple-inventory-card.od1773-edit-item-card input[data-inv-field="name"] {
+  grid-area: name !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  height: 44px !important;
+  text-align: left !important;
+  padding: 10px 14px !important;
+  border-radius: 14px !important;
+  font-size: .96rem !important;
+}
+
+.simple-inventory-card.od1773-edit-item-card .od1773-remove-item-btn,
+.simple-inventory-card.od1773-edit-item-card [data-remove-simple-item],
+.simple-inventory-card.od1773-edit-item-card .mini-danger-btn {
+  grid-area: remove !important;
+  position: static !important;
+  justify-self: end !important;
+  align-self: start !important;
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  border-radius: 14px !important;
+  margin: 0 !important;
+}
+
+.simple-inventory-card.od1773-edit-item-card input[data-inv-field="weight"],
+.simple-inventory-card.od1773-edit-item-card input[data-inv-field="uses"] {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 40px !important;
+  text-align: center !important;
+  border-radius: 14px !important;
+}
+
+.simple-inventory-card.od1773-edit-item-card .simple-inventory-stats,
+.simple-inventory-card.od1773-edit-item-card .simple-inventory-meta,
+.simple-inventory-card.od1773-edit-item-card .item-card-metrics {
+  grid-area: metrics !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+
+.simple-inventory-card.od1773-edit-item-card textarea[data-inv-field="desc"],
+.simple-inventory-card.od1773-edit-item-card .simple-inventory-desc {
+  grid-area: desc !important;
+  width: 100% !important;
+  min-height: 108px !important;
+  max-height: none !important;
+  resize: vertical !important;
+  padding: 12px 14px !important;
+  border-radius: 16px !important;
+  text-align: left !important;
+}
+
+.simple-inventory-card.od1773-edit-item-card .item-card-actions,
+.simple-inventory-card.od1773-edit-item-card .od1773-item-actions-edit {
+  grid-area: actions !important;
+  position: static !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.simple-inventory-card.od1773-edit-item-card .item-card-actions .ghost-btn {
+  width: 100% !important;
+  min-width: 0 !important;
+  white-space: nowrap !important;
+  justify-content: center !important;
+}
+
+/* Botões de mover não podem esmagar o card */
+.simple-inventory-card.od1773-edit-item-card [data-move-simple-item],
+.simple-inventory-card.od1773-edit-item-card .move-btn,
+.simple-inventory-card.od1773-edit-item-card .item-move-btn {
+  width: 32px !important;
+  height: 28px !important;
+  min-width: 32px !important;
+  border-radius: 10px !important;
+}
+
+/* Habilidades: remove Editar/Resumo antigo; só Reduzir/Expandir */
+#tab-habilidades [data-od62-summary-toggle],
+#tab-habilidades .od62-summary-toggle,
+#tab-habilidades [data-od62-summary-list],
+#tab-habilidades .od62-summary-grid,
+#tab-habilidades .od1773-ability-old-summary-disabled {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+}
+
+#tab-habilidades .od176-mode-tag,
+#tab-habilidades .od1773-hide-mode-tag,
+#tab-magias .od176-mode-tag,
+#tab-magias .od1773-hide-mode-tag {
+  display: none !important;
+}
+
+.od170-module[data-od170-key="habilidades-lista"]:not(.od170-collapsed) #abilities-list {
+  display: grid !important;
+  visibility: visible !important;
+  height: auto !important;
+  max-height: none !important;
+  pointer-events: auto !important;
+}
+
+.od170-module[data-od170-key="habilidades-lista"]:not(.od170-collapsed) #abilities-list.hidden {
+  display: grid !important;
+}
+
+.od170-module[data-od170-key="habilidades-lista"].od170-collapsed #abilities-list,
+.od170-module[data-od170-key="habilidades-lista"].od170-collapsed .ability-tools {
+  display: none !important;
+}
+
+/* Magias: reforça só Reduzir/Expandir */
+#tab-magias [data-od62-summary-toggle],
+#tab-magias .od62-summary-toggle,
+#tab-magias [data-od62-summary-list],
+#tab-magias .od62-summary-grid,
+#tab-magias .od1773-magic-old-summary-disabled {
+  display: none !important;
+}
+
+/* Reduz um pouco o excesso de largura dos conteúdos internos para manter padrão */
+#tab-equipamentos,
+#tab-magias,
+#tab-habilidades {
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+#tab-equipamentos .od170-module,
+#tab-magias .od170-module,
+#tab-habilidades .od170-module {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 820px) {
+  .simple-inventory-card.od1773-edit-item-card {
+    grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "name"
+      "remove"
+      "metrics"
+      "desc"
+      "actions" !important;
+  }
+
+  .simple-inventory-card.od1773-edit-item-card .od1773-remove-item-btn,
+  .simple-inventory-card.od1773-edit-item-card [data-remove-simple-item],
+  .simple-inventory-card.od1773-edit-item-card .mini-danger-btn {
+    justify-self: end !important;
+  }
+
+  .simple-inventory-card.od1773-edit-item-card .item-card-actions,
+  .simple-inventory-card.od1773-edit-item-card .od1773-item-actions-edit {
+    grid-template-columns: 1fr !important;
+  }
+}
