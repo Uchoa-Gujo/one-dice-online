@@ -13111,3 +13111,341 @@ button {
 .od170-module > .od1715-equipment-summary:not(.od176-reduced-view) {
   display: none !important;
 }
+
+
+/* =========================
+   V177 - Organização do Inventário
+========================= */
+
+#tab-equipamentos > .section-title-row {
+  align-items: center !important;
+  gap: 14px !important;
+  border-radius: 22px !important;
+  padding: 16px !important;
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--accent, #c5222c), transparent 78%), transparent 48%),
+    rgba(0,0,0,.20) !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+}
+
+.od177-mode-banner {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-left: auto;
+  margin-right: 8px;
+  padding: 8px 12px;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, var(--accent, #c5222c), white 12%);
+  background: rgba(0,0,0,.25);
+  min-width: 190px;
+  text-align: center;
+}
+
+.od177-mode-banner span {
+  font-family: Arial, system-ui, sans-serif;
+  font-size: .66rem;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.55);
+}
+
+.od177-mode-banner strong {
+  color: #fff;
+  font-size: .86rem;
+  letter-spacing: .05em;
+}
+
+.od177-mode-toggle {
+  min-width: 180px;
+}
+
+/* Ordem e blocos do inventário */
+#tab-equipamentos .od177-inventory-section {
+  margin-top: 14px !important;
+}
+
+#tab-equipamentos .od177-prof-section {
+  /* proficiências estão boas; só preserva espaçamento */
+  position: relative;
+}
+
+#tab-equipamentos .od177-block-section > .od170-module-head h3::after,
+#tab-equipamentos .od177-block-section > .od170-module-head h2::after {
+  content: " — MODO BLOCK INVENTORY";
+  color: color-mix(in srgb, var(--accent, #c5222c), white 20%);
+  font-size: .78em;
+}
+
+/* Resumo do inventário reduzido */
+.od177-reduced-view {
+  display: none;
+  padding: 16px !important;
+  border-top: 1px solid rgba(255,255,255,.08);
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,.055), transparent 44%),
+    rgba(0,0,0,.18);
+}
+
+.od170-module.od170-collapsed > .od177-reduced-view {
+  display: block !important;
+}
+
+.od177-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(130px, 1fr));
+  gap: 12px;
+}
+
+.od177-summary-grid article {
+  min-height: 92px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.13);
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.075), rgba(0,0,0,.24)),
+    rgba(0,0,0,.18);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 12px;
+}
+
+.od177-summary-grid small {
+  font-family: Arial, system-ui, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: rgba(255,255,255,.62);
+  font-weight: 900;
+}
+
+.od177-summary-grid strong {
+  color: #fff;
+  font-size: clamp(1.45rem, 3vw, 2.2rem);
+  line-height: 1;
+}
+
+.od177-weight-status {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(18, 120, 44, .22);
+  border: 1px solid rgba(80, 255, 126, .22);
+  color: rgba(235,255,239,.9);
+  font-family: Arial, system-ui, sans-serif;
+  font-weight: 800;
+}
+
+.od177-weight-status.danger {
+  background: rgba(130, 18, 18, .28);
+  border-color: rgba(255,90,90,.28);
+  color: #ffe5e5;
+}
+
+/* Inventário em Texto reduzido: visualização, sem edição */
+.od170-module.od170-collapsed[data-od170-key="equip-lista-simples"] > .od170-module-body,
+.od170-module.od170-collapsed[data-od170-key="equip-lista-simples"] #simple-inventory-list,
+.od170-module.od170-collapsed[data-od170-key="equip-lista-simples"] .simple-inventory-list,
+.od170-module.od170-collapsed[data-od170-key="equip-lista-simples"] .od176-equipment-summary,
+.od170-module.od170-collapsed[data-od170-key="equip-lista-simples"] .od1715-equipment-summary {
+  display: none !important;
+}
+
+.od177-text-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(265px, 1fr));
+  gap: 12px;
+}
+
+.od177-text-item-card {
+  display: grid;
+  gap: 10px;
+  min-height: 170px;
+  padding: 14px;
+  border-radius: 20px;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.075), rgba(0,0,0,.22)),
+    rgba(0,0,0,.20);
+  border: 1px solid rgba(255,255,255,.13);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.025);
+}
+
+.od177-text-item-card header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  padding-bottom: 8px;
+}
+
+.od177-text-item-card header strong {
+  color: #fff;
+  overflow-wrap: anywhere;
+  line-height: 1.1;
+  font-size: 1.02rem;
+}
+
+.od177-text-item-card header span {
+  flex: 0 0 auto;
+  padding: 5px 9px;
+  border-radius: 999px;
+  color: #fff;
+  background: color-mix(in srgb, var(--accent, #c5222c), transparent 52%);
+  font-family: Arial, system-ui, sans-serif;
+  font-size: .72rem;
+  font-weight: 900;
+}
+
+.od177-item-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.od177-item-metrics span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 6px 9px;
+  background: rgba(255,255,255,.065);
+  border: 1px solid rgba(255,255,255,.105);
+}
+
+.od177-item-metrics small {
+  color: rgba(255,255,255,.58);
+  font-family: Arial, system-ui, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  font-size: .67rem;
+  font-weight: 900;
+}
+
+.od177-item-metrics b {
+  color: #fff;
+  font-family: Arial, system-ui, sans-serif;
+}
+
+.od177-text-item-card p {
+  margin: 0;
+  color: rgba(255,255,255,.76);
+  font-family: Arial, system-ui, sans-serif;
+  font-size: .88rem;
+  line-height: 1.36;
+  overflow-wrap: anywhere;
+}
+
+.od177-text-item-card p em {
+  color: rgba(255,255,255,.52);
+}
+
+.od177-item-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-self: end;
+}
+
+.od177-item-actions .ghost-btn {
+  flex: 1 1 120px;
+}
+
+.od177-empty {
+  padding: 14px;
+  border: 1px dashed rgba(255,255,255,.22);
+  border-radius: 16px;
+  color: rgba(255,255,255,.64);
+  font-family: Arial, system-ui, sans-serif;
+  font-style: italic;
+}
+
+/* Evita visualização duplicada v1.76/v1.71.5 no inventário em texto */
+.od170-module[data-od170-key="equip-lista-simples"] > .od176-equipment-summary,
+.od170-module[data-od170-key="equip-lista-simples"] > .od1715-equipment-summary {
+  display: none !important;
+}
+
+/* Botões de módulo do inventário */
+#tab-equipamentos .od170-module-toggle,
+#tab-equipamentos #simple-inventory-compact-toggle {
+  min-width: 112px;
+  text-align: center;
+}
+
+@media (max-width: 820px) {
+  #tab-equipamentos > .section-title-row {
+    align-items: stretch !important;
+    flex-direction: column !important;
+  }
+
+  .od177-mode-banner,
+  .od177-mode-toggle {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .od177-summary-grid,
+  .od177-text-items {
+    grid-template-columns: 1fr;
+  }
+
+  .od177-text-item-card header {
+    flex-direction: column;
+  }
+}
+
+
+/* =========================
+   V177.1 - Equipamentos sem fundo preto extra
+========================= */
+
+/* Remove a "caixa preta" específica que ficou como background no topo/estrutura da aba Equipamentos. */
+#tab-equipamentos > .section-title-row,
+#tab-equipamentos .od177-mode-banner,
+#tab-equipamentos .od170-module,
+#tab-equipamentos .od170-module > .od170-module-head,
+#tab-equipamentos .od177-reduced-view,
+#tab-equipamentos .od176-reduced-view {
+  background-color: transparent !important;
+}
+
+/* Mantém apenas borda e profundidade leve, sem bloco preto sólido atrás. */
+#tab-equipamentos > .section-title-row {
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--accent, #c5222c), transparent 86%), transparent 46%) !important;
+  box-shadow: none !important;
+}
+
+#tab-equipamentos .od170-module {
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.035), rgba(255,255,255,.012)) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.025) !important;
+}
+
+#tab-equipamentos .od170-module > .od170-module-head {
+  background: transparent !important;
+}
+
+/* O Inventário Modular só aparece quando o modo Block Inventory estiver ativo. */
+#tab-equipamentos.od1771-text-mode .od170-module[data-od170-key="equip-modular"],
+#tab-equipamentos.od1771-text-mode #block-inventory-panel,
+#tab-equipamentos .od1771-hidden-modular {
+  display: none !important;
+}
+
+/* Quando Block Inventory estiver ativo, volta a aparecer normalmente. */
+#tab-equipamentos.od1771-block-mode .od170-module[data-od170-key="equip-modular"],
+#tab-equipamentos.od1771-block-mode #block-inventory-panel {
+  display: block !important;
+}
+
+/* Se o modo texto estiver ativo, também esconde qualquer título solto de Inventário Modular. */
+#tab-equipamentos.od1771-text-mode .od177-block-section,
+#tab-equipamentos.od1771-text-mode .od177-block-section * {
+  pointer-events: none !important;
+}
+
+#tab-equipamentos.od1771-text-mode .od177-block-section {
+  display: none !important;
+}

@@ -90,6 +90,30 @@ app.use(express.static(clientDir, {
   }
 }));
 
+
+// V176.2: protege reload em URLs limpas.
+// Se uma rota profunda tentar pedir /personagem/style.css, /mesa/x/script.js,
+// /personagem/assets/logo.jpg etc., entrega o arquivo real da raiz do client.
+function sendClientAsset(req, res, relativePath) {
+  const safeRelative = String(relativePath || '').replace(/^\/+/, '');
+  const resolved = path.normalize(path.join(clientDir, safeRelative));
+  if (!resolved.startsWith(clientDir)) return res.status(403).end();
+  if (!fs.existsSync(resolved)) return res.status(404).end();
+  res.sendFile(resolved);
+}
+
+app.get(/^\/.+\/(style\.css|script\.js)$/, (req, res) => {
+  sendClientAsset(req, res, req.params[0]);
+});
+
+app.get(/^\/.+\/(block-inventory\/(?:style\.css|script\.js))$/, (req, res) => {
+  sendClientAsset(req, res, req.params[0]);
+});
+
+app.get(/^\/.+\/(assets\/[^?#]+)$/, (req, res) => {
+  sendClientAsset(req, res, req.params[0]);
+});
+
 app.get([
   '/',
   '/login',

@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+  <base href="/" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>One Dice Mesa Online</title>
-  <link rel="stylesheet" href="block-inventory/style.css" />
-  <link rel="icon" type="image/png" href="assets/favicon.png" />
-  <link rel="shortcut icon" href="assets/favicon.png" />
-  <link rel="stylesheet" href="style.css?v=1.76.1" />
+  <link rel="stylesheet" href="/block-inventory/style.css" />
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
+  <link rel="shortcut icon" href="/assets/favicon.png" />
+  <link rel="stylesheet" href="/style.css?v=1.77.1" />
 </head>
 <body>
   <div class="paper-bg"></div>
 
   <section id="auth-screen" class="screen active">
     <div class="auth-card manga-panel reveal">
-      <img src="assets/logo-completa.png" class="main-logo" alt="One Dice" />
+      <img src="/assets/logo-completa.png" class="main-logo" alt="One Dice" />
       <h1>Mesa Online</h1>
       <p class="subtitle">Ficha digital, rolagens, chat da mesa e controle de PV/PE.</p>
 
@@ -55,7 +56,7 @@
     <div class="sessions-shell reveal">
       <div class="sessions-head manga-panel">
         <div>
-          <img src="assets/logo-texto.png" class="sessions-logo" alt="One Dice" />
+          <img src="/assets/logo-texto.png" class="sessions-logo" alt="One Dice" />
           <p class="eyebrow">Mesas e Campanhas</p>
           <h1>Escolha uma Mesa</h1>
           <p class="subtitle">Crie mesas, entre por código e escolha qual ficha vai usar em cada campanha. Seu papel é definido dentro de cada mesa.</p>
@@ -165,7 +166,7 @@
           <input id="account-settings-avatar-file" type="file" accept="image/*" />
         </label>
         <div class="account-avatar-preview-wrap">
-          <img id="account-settings-avatar-preview" src="assets/logo.jpg" alt="Prévia da foto da conta" />
+          <img id="account-settings-avatar-preview" src="/assets/logo.jpg" alt="Prévia da foto da conta" />
           <small>Essa foto aparece ao lado do seu nome no chat.</small>
         </div>
       </div>
@@ -185,7 +186,7 @@
 
       <div class="topbar-content">
         <div class="brand">
-          <img src="assets/logo-texto.png" alt="One Dice" />
+          <img src="/assets/logo-texto.png" alt="One Dice" />
           <div>
             <strong>One Dice</strong>
             <span id="current-user-label">Mesa Online</span>
@@ -860,7 +861,7 @@
     </article>
   </template>
   <script src="/socket.io/socket.io.js"></script>
-  <script src="script.js?v=1.76.1"></script>
-  <script type="module" src="block-inventory/script.js"></script>
+  <script src="/script.js?v=1.77.1"></script>
+  <script type="module" src="/block-inventory/script.js"></script>
 </body>
 </html>
