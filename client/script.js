@@ -5,7 +5,7 @@
 ========================= */
 (function od139EarlyGuards(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
   if (!window.CSS) window.CSS = {};
   if (typeof window.CSS.escape !== 'function') {
     window.CSS.escape = function(value) {
@@ -12035,7 +12035,7 @@ function od66InventoryMutationUnlockSoon() {
    Este bloco não altera regras de ficha; apenas melhora autonomia e experiência.
 ========================= */
 (function od115Maintenance(){
-  const VERSION = '1.77.6';
+  const VERSION = '1.77.8';
   const STORAGE_PREFIX = 'od_';
   const routeMap = {
     home: '/inicio',
@@ -13636,7 +13636,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od136AttributesClean(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   const ATTRS = [
     ['forca', 'Força'], ['agilidade', 'Agilidade'], ['vigor', 'Vigor'], ['intelecto', 'Intelecto'], ['presenca', 'Presença']
@@ -13804,7 +13804,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od137SheetStabilityAndManualDefenseDodge(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   const $ = id => document.getElementById(id);
   const EDITABLE = 'input, textarea, select, [contenteditable="true"]';
@@ -14166,7 +14166,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od138AuditAndDuplicateSheetInstalled) return;
   window.__od138AuditAndDuplicateSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   const DUP_SELECTOR = '[data-od138-duplicate-character], [data-od71-copy-character], [data-copy-account-character]';
 
@@ -14359,7 +14359,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od139ExtraErrorFixesInstalled) return;
   window.__od139ExtraErrorFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   const IMAGE_KEYS = [
     'portrait','portraitUrl','image','imageUrl','photo','photoUrl','avatar','avatarUrl','retrato','foto',
@@ -14514,9 +14514,9 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od140GeneralImprovementsInstalled) return;
   window.__od140GeneralImprovementsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
-  const VERSION = '1.77.6';
+  const VERSION = '1.77.8';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   const IMPORT_INPUT_ID = 'od140-import-json-input';
   const MAX_BACKUPS_PER_CHAR = 5;
@@ -14995,7 +14995,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od141AuditHardeningInstalled) return;
   window.__od141AuditHardeningInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   function pruneBackups(){
     try {
@@ -15046,7 +15046,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od142FinalCleanupInstalled) return;
   window.__od142FinalCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   function keepFirst(selector){
     const nodes = Array.from(document.querySelectorAll(selector));
@@ -15132,7 +15132,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od148SafeRollbackPatchInstalled) return;
   window.__od148SafeRollbackPatchInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   function hideManualNotes(){
     ['defense-effective-note','dodge-formula-note'].forEach(id => {
@@ -15185,7 +15185,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od152StableLayoutFixesInstalled) return;
   window.__od152StableLayoutFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   const $ = id => document.getElementById(id);
   const n = (value, fallback = 0) => {
@@ -15377,7 +15377,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od155SessionDashboardStability(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   const STORE_PREFIX = 'od155_dashboard_collapsed_';
   const lastSig = { player: '', master: '' };
@@ -15533,7 +15533,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od156ProtectOtherPlayersSheetsInstalled) return;
   window.__od156ProtectOtherPlayersSheetsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   const PROTECTED_ARRAYS = ['inventoryItems','blockInventory','abilities','spells','attacks','conditions','transformations','dropItems'];
   const PROTECTED_OBJECTS = ['skills','resistances','attrs','caster','obsIcons','portraitCrop','settings'];
@@ -15638,7 +15638,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od157ProtectOwnSheetPartialAutosaveInstalled) return;
   window.__od157ProtectOwnSheetPartialAutosaveInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   function clone(value){
     try { return structuredClone(value); } catch (_) {
@@ -15794,7 +15794,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od159StableSessionRenderInstalled) return;
   window.__od159StableSessionRenderInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   const $ = id => document.getElementById(id);
   const last = { tableSig: '', tableAt: 0, playerSig: '', masterSig: '' };
@@ -15927,7 +15927,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od160AccountSheetIsolationInstalled) return;
   window.__od160AccountSheetIsolationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   const $ = id => document.getElementById(id);
 
@@ -16078,7 +16078,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od161EquipmentProficienciesInstalled) return;
   window.__od161EquipmentProficienciesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   const GROUPS = {
     weapons: [
@@ -16245,9 +16245,9 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od164StableCleanRoutesInstalled) return;
   window.__od164StableCleanRoutesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
-  const VERSION = '1.77.6';
+  const VERSION = '1.77.8';
   let applyingRoute = false;
   let routeTimer = null;
 
@@ -16453,7 +16453,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od165ExactPortraitCrop(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
   if (window.__od165ExactPortraitCropInstalled) return;
   window.__od165ExactPortraitCropInstalled = true;
 
@@ -16575,7 +16575,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1685AreaSeparationInstalled) return;
   window.__od1685AreaSeparationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   const AREA = {
     AUTH: 'login',
@@ -16764,7 +16764,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1699StableSkillUntrainInstalled) return;
   window.__od1699StableSkillUntrainInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   const pending = new Map();
   let flushTimer = null;
@@ -16992,7 +16992,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16910SkillSaveMergeInstalled) return;
   window.__od16910SkillSaveMergeInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   let lastExplicit = {};
   let lastExplicitAt = 0;
@@ -17208,7 +17208,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16911StablePortraitDuringResourcesInstalled) return;
   window.__od16911StablePortraitDuringResourcesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   const RESOURCE_SELECTOR = '#pv-current, #pv-max, #pe-current, #pe-max';
   const MAIN_SELECTOR = '#char-portrait-preview';
@@ -17380,7 +17380,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od170ModularSheetInstalled) return;
   window.__od170ModularSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   const STORE_KEY = 'od170_modules_state_v1';
   const DENSE_KEY = 'od170_dense_sheet_v1';
@@ -17624,7 +17624,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od171HubNavigationAndScrollInstalled) return;
   window.__od171HubNavigationAndScrollInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   let pending = false;
 
@@ -17748,7 +17748,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1715ScrollAndSmartCollapseInstalled) return;
   window.__od1715ScrollAndSmartCollapseInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   let scheduled = false;
 
@@ -17996,7 +17996,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od176SmartSheetModesInstalled) return;
   window.__od176SmartSheetModesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   let scheduled = false;
 
@@ -18249,7 +18249,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1761NoDuplicateReducedSummariesInstalled) return;
   window.__od1761NoDuplicateReducedSummariesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   const OLD_SUMMARY_SELECTOR = [
     '.od1715-attr-summary',
@@ -18311,7 +18311,7 @@ function od66InventoryMutationUnlockSoon() {
    A correção principal está no index.html e no server/server.js.
 ========================= */
 (function od1762ReloadPathFixMarker(){
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 })();
 
 
@@ -18328,7 +18328,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od177InventoryReworkInstalled) return;
   window.__od177InventoryReworkInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   let scheduled = false;
 
@@ -18580,7 +18580,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1771EquipmentVisualHotfixInstalled) return;
   window.__od1771EquipmentVisualHotfixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   function $(id){ return document.getElementById(id); }
   function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
@@ -18637,7 +18637,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1772EquipmentMagicHotfixInstalled) return;
   window.__od1772EquipmentMagicHotfixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   let saveGuard = false;
 
@@ -18859,7 +18859,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1773InventoryAbilityLayoutFixInstalled) return;
   window.__od1773InventoryAbilityLayoutFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   function $(id){ return document.getElementById(id); }
   function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
@@ -19027,7 +19027,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1774LayoutPolishInstalled) return;
   window.__od1774LayoutPolishInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   function $(id){ return document.getElementById(id); }
 
@@ -19155,7 +19155,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1775ReloadRouteRestoreInstalled) return;
   window.__od1775ReloadRouteRestoreInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   const INITIAL_PATH = location.pathname + location.search;
   const INITIAL_PARTS = location.pathname.split('/').filter(Boolean).map(part => {
@@ -19357,7 +19357,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1776RealEditLayoutFixInstalled) return;
   window.__od1776RealEditLayoutFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.6';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
 
   let saveMoneyTimer = null;
   let syncTimer = null;
@@ -19590,4 +19590,500 @@ function od66InventoryMutationUnlockSoon() {
   setTimeout(() => { hideSolidLoader(); clearInterval(loaderWatcher); }, 6500);
 
   window.od1776RealEditLayoutFix = { sync, forceMoneyWeightEditable };
+})();
+
+
+/* =========================
+   V177.7 - Reset real dos layouts quebrados
+   Esta camada para de tentar encaixar por cima dos grids quebrados:
+   - recria o resumo do inventário com inputs limpos e clicáveis;
+   - reorganiza DOM dos cards de inventário;
+   - força magias/habilidades para layout flex estável;
+   - remove overlays/posicionamentos antigos nos cards;
+   - aplica classes finais para CSS de alta prioridade.
+========================= */
+(function od1777HardLayoutReset(){
+  'use strict';
+  if (window.__od1777HardLayoutResetInstalled) return;
+  window.__od1777HardLayoutResetInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
+
+  let timer = null;
+  let savingMoney = null;
+
+  function $(id){ return document.getElementById(id); }
+  function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
+  function current(){ return safe(() => typeof currentChar === 'function' ? currentChar() : null, null); }
+  function numberBr(value){
+    const n = Number(String(value ?? 0).replace(',', '.'));
+    if (!Number.isFinite(n)) return '0';
+    return String(n).replace('.', ',');
+  }
+
+  function saveMoneyWeight(){
+    clearTimeout(savingMoney);
+    savingMoney = setTimeout(() => {
+      const char = current();
+      if (!char) return;
+      const money = $('money')?.value ?? '0';
+      const max = Number(String($('weight-max')?.value ?? 0).replace(',', '.')) || 0;
+      if (typeof updateChar === 'function') {
+        updateChar(c => {
+          c.money = money;
+          c.weightMax = max;
+        });
+      } else {
+        char.money = money;
+        char.weightMax = max;
+      }
+      if (typeof updateDerivedStatsDisplay === 'function') updateDerivedStatsDisplay(current());
+      if (typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(current());
+    }, 180);
+  }
+
+  function rebuildInventorySummary(){
+    const grid = document.querySelector('#tab-equipamentos .inventory-summary-grid');
+    if (!grid || grid.dataset.od1777Ready === '1') return;
+
+    const char = current() || {};
+    const moneyValue = $('money')?.value ?? char.money ?? '0';
+    const currentValue = $('weight-current')?.value ?? char.weightCurrent ?? '0';
+    const maxValue = $('weight-max')?.value ?? char.weightMax ?? '15';
+
+    grid.classList.add('od1777-inventory-summary-grid');
+    grid.dataset.od1777Ready = '1';
+    grid.innerHTML = `
+      <label class="od1777-summary-field">Dinheiro
+        <input id="money" class="od1777-money-input" type="text" value="${String(moneyValue).replace(/"/g, '&quot;')}" autocomplete="off" />
+      </label>
+      <label class="od1777-summary-field">Peso Atual
+        <input id="weight-current" class="od1777-weight-current" type="text" value="${String(currentValue).replace(/"/g, '&quot;')}" readonly />
+      </label>
+      <label class="od1777-summary-field">Peso Máximo
+        <input id="weight-max" class="od1777-weight-max-input" type="number" value="${String(maxValue).replace(/"/g, '&quot;')}" min="0" step="0.5" autocomplete="off" />
+      </label>`;
+
+    ['money','weight-max'].forEach(id => {
+      const input = $(id);
+      if (!input) return;
+      input.disabled = false;
+      input.readOnly = false;
+      input.removeAttribute('disabled');
+      input.removeAttribute('readonly');
+      input.addEventListener('input', saveMoneyWeight);
+      input.addEventListener('change', saveMoneyWeight);
+      input.addEventListener('mousedown', () => {
+        input.disabled = false;
+        input.readOnly = false;
+        input.focus();
+      }, true);
+    });
+  }
+
+  function forceInventorySummaryOpen(){
+    const module = document.querySelector('.od170-module[data-od170-key="equip-resumo"]');
+    if (!module) return;
+    module.classList.remove('od170-collapsed');
+    module.classList.add('od1777-summary-open');
+    module.querySelectorAll(':scope > .od176-reduced-view, :scope > .od177-reduced-view, :scope > .od1715-collapse-summary').forEach(el => el.remove());
+    const toggle = module.querySelector(':scope > .od170-module-head .od170-module-toggle');
+    if (toggle) toggle.remove();
+  }
+
+  function rebuildInventoryCards(){
+    document.querySelectorAll('#simple-inventory-list .simple-inventory-card').forEach((card, index) => {
+      card.classList.add('od1777-item-card');
+      card.style.removeProperty('grid-template');
+      card.style.removeProperty('grid-template-areas');
+
+      const nameRow = card.querySelector('.simple-inventory-name-row');
+      const name = card.querySelector('[data-inv-field="name"]');
+      const remove = card.querySelector('[data-remove-simple-item], .mini-danger-btn');
+      const top = card.querySelector('.simple-inventory-card-top');
+      const desc = card.querySelector('[data-inv-field="desc"]');
+      const actions = card.querySelector('.item-card-actions');
+
+      if (nameRow) nameRow.classList.add('od1777-item-name-row');
+      if (name) name.classList.add('od1777-item-name');
+      if (remove) {
+        remove.classList.add('od1777-item-remove');
+        if (nameRow && remove.parentElement !== nameRow) nameRow.appendChild(remove);
+      }
+
+      if (desc) desc.classList.add('od1777-item-desc');
+
+      if (top) {
+        top.classList.add('od1777-item-metrics-row');
+        if (!top.querySelector('.od1777-order-box')) {
+          const order = document.createElement('div');
+          order.className = 'od1777-order-box';
+          order.innerHTML = `
+            <button class="ghost-btn small od1777-order-btn" data-od1777-move="${index}" data-dir="-1" type="button">▲</button>
+            <button class="ghost-btn small od1777-order-btn" data-od1777-move="${index}" data-dir="1" type="button">▼</button>`;
+          top.appendChild(order);
+        } else {
+          top.querySelectorAll('[data-od1777-move]').forEach(btn => btn.dataset.od1777Move = String(index));
+        }
+
+        top.querySelectorAll('.simple-inventory-stepper').forEach(stepper => stepper.classList.add('od1777-stepper'));
+      }
+
+      if (actions) actions.classList.add('od1777-item-actions');
+    });
+  }
+
+  function moveItem(index, dir){
+    const char = current();
+    if (!char) return;
+    const items = Array.isArray(char.inventoryItems) ? [...char.inventoryItems] : [];
+    const from = Number(index);
+    const to = from + Number(dir);
+    if (from < 0 || to < 0 || from >= items.length || to >= items.length) return;
+    const [item] = items.splice(from, 1);
+    items.splice(to, 0, item);
+    if (typeof updateChar === 'function') updateChar(c => c.inventoryItems = items);
+    else char.inventoryItems = items;
+    if (typeof renderSimpleInventory === 'function') renderSimpleInventory(current());
+    setTimeout(sync, 30);
+    if (typeof saveCurrentCharacter === 'function') saveCurrentCharacter();
+  }
+
+  function cleanSpells(){
+    document.querySelectorAll('#spells-list .spell-card').forEach(card => {
+      card.classList.add('od1777-spell-clean');
+      card.querySelector('.spell-fields-grid')?.classList.add('od1777-spell-fields');
+      card.querySelectorAll('.spell-text-label').forEach(label => label.classList.add('od1777-spell-text'));
+      card.querySelector('.remove-card')?.classList.add('od1777-remove-bottom');
+      card.querySelectorAll('*').forEach(el => {
+        el.style.removeProperty('grid-area');
+        el.style.removeProperty('position');
+      });
+    });
+  }
+
+  function cleanAbilities(){
+    document.querySelectorAll('#abilities-list .ability-card').forEach(card => {
+      card.classList.add('od1777-ability-clean');
+      card.querySelector('.ability-fields-grid')?.classList.add('od1777-ability-fields');
+      card.querySelector('.ability-description-wrap')?.classList.add('od1777-ability-text');
+      card.querySelector('.ability-card-actions')?.classList.add('od1777-ability-actions');
+      card.querySelectorAll('*').forEach(el => {
+        el.style.removeProperty('grid-area');
+        el.style.removeProperty('position');
+      });
+    });
+  }
+
+  function cleanSkillsAndAttrs(){
+    document.querySelectorAll('#attributes-grid .attr-card-v2').forEach(card => card.classList.add('od1777-attr-clean'));
+    document.querySelectorAll('#skills-wrap .od79-skill-card').forEach(card => card.classList.add('od1777-skill-clean'));
+  }
+
+  function sync(){
+    document.body.classList.add('od1777-final-layout');
+    forceInventorySummaryOpen();
+    rebuildInventorySummary();
+    rebuildInventoryCards();
+    cleanSpells();
+    cleanAbilities();
+    cleanSkillsAndAttrs();
+  }
+
+  function schedule(){
+    clearTimeout(timer);
+    timer = setTimeout(sync, 40);
+  }
+
+  document.addEventListener('click', event => {
+    const move = event.target.closest?.('[data-od1777-move]');
+    if (move) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      moveItem(move.dataset.od1777Move, move.dataset.dir);
+      return;
+    }
+
+    if (event.target.closest?.('#money, #weight-max')) {
+      const input = event.target.closest('#money, #weight-max');
+      input.disabled = false;
+      input.readOnly = false;
+      input.focus();
+      return;
+    }
+
+    if (event.target.closest?.('[data-od170-toggle], .sheet-tab, #add-simple-inventory-item, [data-remove-simple-item], #add-spell, #add-ability, .remove-card')) {
+      schedule();
+      setTimeout(sync, 140);
+    }
+  }, true);
+
+  document.addEventListener('input', event => {
+    if (event.target.closest?.('#money, #weight-max')) saveMoneyWeight();
+    if (event.target.closest?.('.sheet')) schedule();
+  }, true);
+
+  document.addEventListener('change', event => {
+    if (event.target.closest?.('#money, #weight-max')) saveMoneyWeight();
+    if (event.target.closest?.('.sheet')) schedule();
+  }, true);
+
+  const observer = new MutationObserver(schedule);
+  observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', sync, { once: true });
+  else sync();
+
+  setTimeout(sync, 100);
+  setTimeout(sync, 500);
+  setTimeout(sync, 1300);
+
+  window.od1777HardLayoutReset = { sync };
+})();
+
+
+/* =========================
+   V177.8 - Auditoria e limpeza de conflitos da v1.77.7
+   Correção real:
+   - remove botões antigos de ordem da v1.77.6;
+   - reconstrói money/weight quando necessário, sem depender de "uma vez só";
+   - impede overlays/camadas antigas de bloquear money e weight-max;
+   - marca layout final como versão 1.77.8.
+========================= */
+(function od1778AuditConflictClean(){
+  'use strict';
+  if (window.__od1778AuditConflictCleanInstalled) return;
+  window.__od1778AuditConflictCleanInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.77.8';
+
+  let timer = null;
+  let saveTimer = null;
+
+  function $(id){ return document.getElementById(id); }
+  function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
+  function current(){ return safe(() => typeof currentChar === 'function' ? currentChar() : null, null); }
+
+  function removeOldInventoryOrderButtons(){
+    document.querySelectorAll('.od1776-item-order-actions, [data-od1776-move-item]').forEach(el => el.remove());
+  }
+
+  function ensureInventorySummaryInputs(){
+    const module = document.querySelector('.od170-module[data-od170-key="equip-resumo"]');
+    if (!module) return;
+
+    module.classList.remove('od170-collapsed');
+    module.classList.add('od1778-summary-fixed');
+
+    module.querySelectorAll(':scope > .od176-reduced-view, :scope > .od177-reduced-view, :scope > .od1715-collapse-summary, :scope > .od177-inventory-summary').forEach(el => el.remove());
+    module.querySelector(':scope > .od170-module-head .od170-module-toggle')?.remove();
+
+    const body = module.querySelector(':scope > .od170-module-body') || module;
+    let grid = module.querySelector('.inventory-summary-grid');
+
+    const char = current() || {};
+    const existingMoney = $('money')?.value ?? char.money ?? '0';
+    const existingCurrent = $('weight-current')?.value ?? char.weightCurrent ?? '0';
+    const existingMax = $('weight-max')?.value ?? char.weightMax ?? '15';
+
+    const needsRebuild = !grid || !grid.querySelector('#money') || !grid.querySelector('#weight-max') || !grid.querySelector('#weight-current');
+
+    if (needsRebuild) {
+      if (!grid) {
+        grid = document.createElement('div');
+        grid.className = 'inventory-summary-grid od1778-summary-grid';
+        body.prepend(grid);
+      }
+      grid.classList.add('od1778-summary-grid');
+      grid.innerHTML = `
+        <label class="od1778-summary-field">Dinheiro
+          <input id="money" class="od1778-money-input" type="text" autocomplete="off" value="${String(existingMoney).replace(/"/g, '&quot;')}" />
+        </label>
+        <label class="od1778-summary-field">Peso Atual
+          <input id="weight-current" class="od1778-weight-current" type="text" readonly value="${String(existingCurrent).replace(/"/g, '&quot;')}" />
+        </label>
+        <label class="od1778-summary-field">Peso Máximo
+          <input id="weight-max" class="od1778-weight-max-input" type="number" min="0" step="0.5" autocomplete="off" value="${String(existingMax).replace(/"/g, '&quot;')}" />
+        </label>`;
+    } else {
+      grid.classList.add('od1778-summary-grid');
+    }
+
+    const money = $('money');
+    const max = $('weight-max');
+    const cur = $('weight-current');
+
+    [money, max].forEach(input => {
+      if (!input) return;
+      input.disabled = false;
+      input.readOnly = false;
+      input.removeAttribute('disabled');
+      input.removeAttribute('readonly');
+      input.classList.add('od1778-clickable');
+      input.style.setProperty('pointer-events', 'auto', 'important');
+      input.style.setProperty('user-select', 'text', 'important');
+      input.style.setProperty('position', 'relative', 'important');
+      input.style.setProperty('z-index', '2147483000', 'important');
+      input.tabIndex = 0;
+    });
+
+    if (cur) {
+      cur.readOnly = true;
+      cur.setAttribute('readonly', 'readonly');
+      cur.classList.add('od1778-readonly');
+    }
+  }
+
+  function saveMoneyWeight(){
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      const money = $('money')?.value ?? '0';
+      const max = Number(String($('weight-max')?.value ?? '0').replace(',', '.')) || 0;
+
+      if (typeof updateChar === 'function') {
+        updateChar(char => {
+          char.money = money;
+          char.weightMax = max;
+        });
+      } else {
+        const char = current();
+        if (char) {
+          char.money = money;
+          char.weightMax = max;
+        }
+      }
+
+      const char = current();
+      if (typeof updateDerivedStatsDisplay === 'function') updateDerivedStatsDisplay(char);
+      if (typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(char);
+      else if (typeof saveCurrentCharacter === 'function') saveCurrentCharacter();
+    }, 120);
+  }
+
+  function normalizeInventoryCards(){
+    removeOldInventoryOrderButtons();
+
+    document.querySelectorAll('#simple-inventory-list .simple-inventory-card').forEach((card, index) => {
+      card.classList.add('od1778-item-card');
+
+      const nameRow = card.querySelector('.simple-inventory-name-row');
+      const remove = card.querySelector('[data-remove-simple-item], .mini-danger-btn');
+      const top = card.querySelector('.simple-inventory-card-top');
+
+      if (nameRow) nameRow.classList.add('od1778-item-name-row');
+      if (remove && nameRow && remove.parentElement !== nameRow) nameRow.appendChild(remove);
+      if (remove) remove.classList.add('od1778-item-remove');
+
+      card.querySelector('[data-inv-field="name"]')?.classList.add('od1778-item-name');
+      card.querySelector('[data-inv-field="desc"]')?.classList.add('od1778-item-desc');
+      card.querySelector('.item-card-actions')?.classList.add('od1778-item-actions');
+
+      if (top) {
+        top.classList.add('od1778-item-metrics-row');
+        top.querySelectorAll('.od1777-order-box').forEach(el => el.remove());
+        let order = top.querySelector('.od1778-order-box');
+        if (!order) {
+          order = document.createElement('div');
+          order.className = 'od1778-order-box';
+          top.appendChild(order);
+        }
+        order.innerHTML = `
+          <button class="ghost-btn small od1778-order-btn" data-od1778-move="${index}" data-dir="-1" type="button">▲</button>
+          <button class="ghost-btn small od1778-order-btn" data-od1778-move="${index}" data-dir="1" type="button">▼</button>`;
+      }
+    });
+  }
+
+  function moveItem(index, dir){
+    const char = current();
+    if (!char) return;
+    const items = Array.isArray(char.inventoryItems) ? [...char.inventoryItems] : [];
+    const from = Number(index);
+    const to = from + Number(dir);
+    if (from < 0 || to < 0 || from >= items.length || to >= items.length) return;
+    const [item] = items.splice(from, 1);
+    items.splice(to, 0, item);
+    if (typeof updateChar === 'function') updateChar(c => { c.inventoryItems = items; });
+    else char.inventoryItems = items;
+    if (typeof renderSimpleInventory === 'function') renderSimpleInventory(current());
+    if (typeof saveCurrentCharacter === 'function') saveCurrentCharacter();
+    setTimeout(sync, 30);
+  }
+
+  function markFinalLayouts(){
+    document.body.classList.add('od1778-final-clean');
+    document.querySelectorAll('#attributes-grid .attr-card-v2').forEach(el => el.classList.add('od1778-attr-card'));
+    document.querySelectorAll('#skills-wrap .od79-skill-card').forEach(el => el.classList.add('od1778-skill-card'));
+    document.querySelectorAll('#spells-list .spell-card').forEach(el => {
+      el.classList.add('od1778-spell-card');
+      el.querySelector('.spell-fields-grid')?.classList.add('od1778-spell-fields');
+      el.querySelectorAll('.spell-text-label').forEach(t => t.classList.add('od1778-spell-text'));
+    });
+    document.querySelectorAll('#abilities-list .ability-card').forEach(el => {
+      el.classList.add('od1778-ability-card');
+      el.querySelector('.ability-fields-grid')?.classList.add('od1778-ability-fields');
+      el.querySelector('.ability-description-wrap')?.classList.add('od1778-ability-text');
+      el.querySelector('.ability-card-actions')?.classList.add('od1778-ability-actions');
+    });
+  }
+
+  function sync(){
+    ensureInventorySummaryInputs();
+    normalizeInventoryCards();
+    markFinalLayouts();
+  }
+
+  function schedule(){
+    clearTimeout(timer);
+    timer = setTimeout(sync, 35);
+  }
+
+  document.addEventListener('click', event => {
+    const move = event.target.closest?.('[data-od1778-move]');
+    if (move) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      moveItem(move.dataset.od1778Move, move.dataset.dir);
+      return;
+    }
+
+    const field = event.target.closest?.('#money, #weight-max');
+    if (field) {
+      ensureInventorySummaryInputs();
+      field.focus();
+      return;
+    }
+
+    if (event.target.closest?.('[data-od170-toggle], .sheet-tab, #add-simple-inventory-item, [data-remove-simple-item], #add-spell, #add-ability, .remove-card')) {
+      schedule();
+      setTimeout(sync, 150);
+    }
+  }, true);
+
+  document.addEventListener('mousedown', event => {
+    const field = event.target.closest?.('#money, #weight-max');
+    if (!field) return;
+    ensureInventorySummaryInputs();
+    field.focus();
+  }, true);
+
+  document.addEventListener('input', event => {
+    if (event.target.closest?.('#money, #weight-max')) saveMoneyWeight();
+    if (event.target.closest?.('.sheet')) schedule();
+  }, true);
+
+  document.addEventListener('change', event => {
+    if (event.target.closest?.('#money, #weight-max')) saveMoneyWeight();
+    if (event.target.closest?.('.sheet')) schedule();
+  }, true);
+
+  const observer = new MutationObserver(schedule);
+  observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', sync, { once: true });
+  else sync();
+
+  setTimeout(sync, 100);
+  setTimeout(sync, 500);
+  setTimeout(sync, 1300);
+
+  window.od1778AuditConflictClean = { sync };
 })();

@@ -14967,3 +14967,717 @@ body.od1775-restoring-route::before {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 }
+
+
+/* =========================
+   V177.7 - Reset final dos layouts problemáticos
+========================= */
+
+/* 1) Atributos: 5 cards estáveis, nome sem cortar */
+#attributes-grid {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  width: 100% !important;
+  overflow: visible !important;
+}
+
+#attributes-grid .attr-card-v2,
+#attributes-grid .od1777-attr-clean {
+  min-width: 0 !important;
+  width: 100% !important;
+  min-height: 154px !important;
+  padding: 12px !important;
+  overflow: visible !important;
+  display: grid !important;
+  grid-template-rows: auto auto auto !important;
+  gap: 8px !important;
+  align-items: center !important;
+  box-sizing: border-box !important;
+}
+
+#attributes-grid .attr-name {
+  max-width: none !important;
+  width: 100% !important;
+  overflow: visible !important;
+  text-overflow: initial !important;
+  white-space: normal !important;
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
+  font-size: clamp(.64rem, .78vw, .76rem) !important;
+  line-height: 1.05 !important;
+  letter-spacing: 0 !important;
+  text-align: left !important;
+}
+
+#attributes-grid .attr-mod {
+  position: static !important;
+  margin: 0 !important;
+  justify-self: end !important;
+  font-size: 1rem !important;
+}
+
+#attributes-grid .attr-help {
+  display: none !important;
+}
+
+#attributes-grid input[data-attr] {
+  width: 64px !important;
+  max-width: 64px !important;
+  height: 38px !important;
+  justify-self: center !important;
+  text-align: center !important;
+}
+
+#attributes-grid .roll-attr {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 40px !important;
+  padding: 0 6px !important;
+}
+
+/* 2) Perícias: sem recorte, centralizadas dentro do painel */
+#skills-wrap,
+.od79-skill-panel,
+.od79-skills-shell {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  overflow: visible !important;
+  box-sizing: border-box !important;
+}
+
+.od79-skills-grid,
+#skills-wrap .od79-skills-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+  width: 100% !important;
+  padding: 16px !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+}
+
+#skills-wrap .od79-skill-card,
+#skills-wrap .od1777-skill-clean {
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 238px !important;
+  padding: 16px !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  display: grid !important;
+  grid-template-rows: auto auto auto 44px !important;
+  gap: 11px !important;
+  align-content: stretch !important;
+}
+
+#skills-wrap .od79-skill-card * {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#skills-wrap .od79-skill-card .od79-skill-values,
+#skills-wrap .od79-skill-card .skill-values,
+#skills-wrap .od79-skill-card .od79-skill-row {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 7px !important;
+  width: 100% !important;
+}
+
+#skills-wrap .od79-skill-card button[data-skill],
+#skills-wrap .od79-skill-card .roll-skill {
+  width: 100% !important;
+  align-self: end !important;
+}
+
+/* 3/4) Inventário: reset completo do modo edição e dinheiro/peso clicáveis */
+.od170-module[data-od170-key="equip-resumo"],
+.od170-module[data-od170-key="equip-resumo"] * {
+  pointer-events: auto !important;
+}
+
+.od170-module[data-od170-key="equip-resumo"]::before,
+.od170-module[data-od170-key="equip-resumo"]::after,
+#tab-equipamentos .inventory-summary-grid::before,
+#tab-equipamentos .inventory-summary-grid::after {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+.od170-module[data-od170-key="equip-resumo"] > .od170-module-body {
+  display: block !important;
+  position: relative !important;
+  z-index: 100 !important;
+}
+
+#tab-equipamentos .inventory-summary-grid,
+#tab-equipamentos .od1777-inventory-summary-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  width: 100% !important;
+  position: relative !important;
+  z-index: 120 !important;
+  pointer-events: auto !important;
+}
+
+#tab-equipamentos .od1777-summary-field {
+  display: grid !important;
+  gap: 6px !important;
+  padding: 10px !important;
+  border-radius: 16px !important;
+  background: rgba(0,0,0,.16) !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+  pointer-events: auto !important;
+  position: relative !important;
+  z-index: 130 !important;
+}
+
+#money,
+#weight-max,
+#money.od1777-money-input,
+#weight-max.od1777-weight-max-input {
+  pointer-events: auto !important;
+  user-select: text !important;
+  cursor: text !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 9999 !important;
+  width: 100% !important;
+  background: rgba(0,0,0,.55) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+#weight-current {
+  pointer-events: none !important;
+  opacity: .85 !important;
+}
+
+/* Inventário em Texto: layout pedido */
+#simple-inventory-list {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  width: 100% !important;
+  align-items: stretch !important;
+}
+
+#simple-inventory-list .simple-inventory-card,
+#simple-inventory-list .od1777-item-card {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  grid-template-rows: auto minmax(112px, auto) auto auto !important;
+  gap: 14px !important;
+  min-height: 328px !important;
+  padding: 18px !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  border-radius: 24px !important;
+}
+
+#simple-inventory-list .od1777-item-name-row,
+#simple-inventory-list .simple-inventory-name-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 48px !important;
+  gap: 10px !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+
+#simple-inventory-list .od1777-item-name,
+#simple-inventory-list .simple-inventory-name {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 48px !important;
+  padding: 12px 14px !important;
+  text-align: left !important;
+  border-radius: 16px !important;
+}
+
+#simple-inventory-list .od1777-item-remove,
+#simple-inventory-list [data-remove-simple-item],
+#simple-inventory-list .mini-danger-btn {
+  position: static !important;
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  margin: 0 !important;
+  border-radius: 16px !important;
+  z-index: 2 !important;
+}
+
+#simple-inventory-list .od1777-item-desc,
+#simple-inventory-list .simple-inventory-desc {
+  width: 100% !important;
+  min-height: 112px !important;
+  resize: vertical !important;
+  padding: 14px !important;
+  border-radius: 18px !important;
+  text-align: left !important;
+}
+
+#simple-inventory-list .od1777-item-metrics-row,
+#simple-inventory-list .simple-inventory-card-top {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 54px !important;
+  gap: 10px !important;
+  align-items: stretch !important;
+  width: 100% !important;
+}
+
+#simple-inventory-list .od1777-stepper,
+#simple-inventory-list .simple-inventory-stepper {
+  min-width: 0 !important;
+  width: 100% !important;
+  display: grid !important;
+  gap: 6px !important;
+  padding: 9px !important;
+  border-radius: 18px !important;
+}
+
+#simple-inventory-list .stepper-control {
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: 34px minmax(0, 1fr) 34px !important;
+  gap: 5px !important;
+  align-items: center !important;
+}
+
+#simple-inventory-list .stepper-control input {
+  width: 100% !important;
+  min-width: 0 !important;
+  text-align: center !important;
+}
+
+#simple-inventory-list .od1777-order-box {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 7px !important;
+  align-self: stretch !important;
+}
+
+#simple-inventory-list .od1777-order-btn {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 32px !important;
+  padding: 0 !important;
+  border-radius: 12px !important;
+}
+
+#simple-inventory-list .od1777-item-actions,
+#simple-inventory-list .item-card-actions {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  width: 100% !important;
+}
+
+#simple-inventory-list .item-card-actions button {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+/* 5) Magias: edição estável */
+#spells-list {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  width: 100% !important;
+}
+
+#spells-list .spell-card,
+#spells-list .od1777-spell-clean {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  padding: 18px !important;
+  min-height: 0 !important;
+  height: auto !important;
+  overflow: hidden !important;
+  grid-template: none !important;
+}
+
+#spells-list .spell-card > * {
+  grid-area: auto !important;
+  position: static !important;
+}
+
+#spells-list .spell-name {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 50px !important;
+  padding: 12px 14px !important;
+  text-align: left !important;
+}
+
+#spells-list .spell-fields-grid,
+#spells-list .od1777-spell-fields {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  width: 100% !important;
+}
+
+#spells-list .spell-fields-grid label {
+  display: grid !important;
+  gap: 6px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  padding: 10px !important;
+}
+
+#spells-list input,
+#spells-list textarea {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+#spells-list .spell-description {
+  min-height: 120px !important;
+  resize: vertical !important;
+}
+
+#spells-list .spell-upgrades {
+  min-height: 96px !important;
+  resize: vertical !important;
+}
+
+#spells-list .remove-card,
+#spells-list .od1777-remove-bottom {
+  width: min(220px, 100%) !important;
+  align-self: end !important;
+  position: static !important;
+}
+
+/* Habilidades: edição estável */
+#abilities-list {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  width: 100% !important;
+}
+
+#abilities-list .ability-card,
+#abilities-list .od1777-ability-clean {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  padding: 18px !important;
+  min-height: 0 !important;
+  height: auto !important;
+  overflow: hidden !important;
+  grid-template: none !important;
+}
+
+#abilities-list .ability-card > * {
+  grid-area: auto !important;
+  position: static !important;
+}
+
+#abilities-list .ability-name {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 50px !important;
+  padding: 12px 14px !important;
+  text-align: left !important;
+}
+
+#abilities-list .ability-fields-grid,
+#abilities-list .od1777-ability-fields {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  width: 100% !important;
+}
+
+#abilities-list .ability-fields-grid label {
+  display: grid !important;
+  gap: 6px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  padding: 10px !important;
+}
+
+#abilities-list .ability-cost-row {
+  display: grid !important;
+  grid-template-columns: 34px minmax(0, 1fr) 34px !important;
+  gap: 6px !important;
+  width: 100% !important;
+}
+
+#abilities-list input,
+#abilities-list textarea,
+#abilities-list select {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+#abilities-list .ability-description {
+  min-height: 120px !important;
+  resize: vertical !important;
+}
+
+#abilities-list .ability-card-actions,
+#abilities-list .od1777-ability-actions {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  width: 100% !important;
+}
+
+#abilities-list .ability-card-actions button {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+/* Responsivo */
+@media (max-width: 980px) {
+  #attributes-grid,
+  .od79-skills-grid,
+  #simple-inventory-list,
+  #spells-list,
+  #abilities-list {
+    grid-template-columns: 1fr !important;
+  }
+
+  #tab-equipamentos .inventory-summary-grid,
+  #tab-equipamentos .od1777-inventory-summary-grid,
+  #simple-inventory-list .simple-inventory-card-top,
+  #spells-list .spell-fields-grid,
+  #abilities-list .ability-fields-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  #simple-inventory-list .od1777-order-box {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+
+/* =========================
+   V177.8 - Limpeza de conflitos da v1.77.7
+========================= */
+
+/* Remove botões antigos de ordem que vinham da v1.77.6/v1.77.7 */
+.od1776-item-order-actions,
+.od1777-order-box,
+[data-od1776-move-item],
+[data-od1777-move] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Atributos: sem reticências */
+#attributes-grid .attr-name,
+#attributes-grid .od1778-attr-card .attr-name {
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+  font-size: clamp(.62rem, .76vw, .74rem) !important;
+  letter-spacing: 0 !important;
+  line-height: 1.04 !important;
+}
+
+/* Perícias: protege contra recorte do painel */
+#skills-wrap,
+#skills-wrap *,
+.od79-skill-panel,
+.od79-skill-panel * {
+  box-sizing: border-box !important;
+}
+
+.od79-skills-grid,
+#skills-wrap .od79-skills-grid {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: visible !important;
+  padding-left: 16px !important;
+  padding-right: 16px !important;
+}
+
+#skills-wrap .od79-skill-card,
+#skills-wrap .od1778-skill-card {
+  width: 100% !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Resumo do inventário: inputs reais por cima de qualquer camada */
+.od170-module[data-od170-key="equip-resumo"],
+.od170-module[data-od170-key="equip-resumo"] * {
+  pointer-events: auto !important;
+}
+
+.od170-module[data-od170-key="equip-resumo"]::before,
+.od170-module[data-od170-key="equip-resumo"]::after {
+  content: none !important;
+  display: none !important;
+  pointer-events: none !important;
+}
+
+.od1778-summary-grid {
+  position: relative !important;
+  z-index: 5000 !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  pointer-events: auto !important;
+}
+
+.od1778-summary-field {
+  display: grid !important;
+  gap: 6px !important;
+  padding: 10px !important;
+  border-radius: 16px !important;
+  pointer-events: auto !important;
+  position: relative !important;
+  z-index: 6000 !important;
+}
+
+#money.od1778-clickable,
+#weight-max.od1778-clickable,
+#money,
+#weight-max {
+  pointer-events: auto !important;
+  user-select: text !important;
+  cursor: text !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 2147483000 !important;
+  -webkit-user-select: text !important;
+  touch-action: manipulation !important;
+}
+
+/* Inventário em texto: só a estrutura v1.77.8 */
+#simple-inventory-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+}
+
+#simple-inventory-list .od1778-item-card {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  grid-template-rows: auto minmax(112px, auto) auto auto !important;
+  gap: 14px !important;
+  min-height: 328px !important;
+  padding: 18px !important;
+  overflow: hidden !important;
+  border-radius: 24px !important;
+}
+
+#simple-inventory-list .od1778-item-name-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 48px !important;
+  gap: 10px !important;
+  align-items: center !important;
+}
+
+#simple-inventory-list .od1778-item-name {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 48px !important;
+  text-align: left !important;
+}
+
+#simple-inventory-list .od1778-item-remove {
+  position: static !important;
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+}
+
+#simple-inventory-list .od1778-item-desc {
+  width: 100% !important;
+  min-height: 112px !important;
+  resize: vertical !important;
+}
+
+#simple-inventory-list .od1778-item-metrics-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 54px !important;
+  gap: 10px !important;
+}
+
+#simple-inventory-list .od1778-order-box {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 7px !important;
+}
+
+#simple-inventory-list .od1778-order-btn {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 32px !important;
+  padding: 0 !important;
+  display: inline-grid !important;
+  place-items: center !important;
+}
+
+#simple-inventory-list .od1778-item-actions {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+
+/* Magias/Habilidades: deixa só flex estável final */
+#spells-list .od1778-spell-card,
+#abilities-list .od1778-ability-card {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  grid-template: none !important;
+  overflow: hidden !important;
+}
+
+#spells-list .od1778-spell-card > *,
+#abilities-list .od1778-ability-card > * {
+  grid-area: auto !important;
+  position: static !important;
+}
+
+#spells-list .od1778-spell-fields,
+#abilities-list .od1778-ability-fields {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+
+#spells-list .spell-description,
+#spells-list .spell-upgrades,
+#abilities-list .ability-description {
+  width: 100% !important;
+  min-height: 110px !important;
+  resize: vertical !important;
+}
+
+#spells-list .remove-card,
+#abilities-list .ability-card-actions button {
+  position: static !important;
+}
+
+@media (max-width: 980px) {
+  #simple-inventory-list,
+  #spells-list,
+  #abilities-list,
+  .od1778-summary-grid,
+  #attributes-grid,
+  .od79-skills-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  #simple-inventory-list .od1778-item-metrics-row,
+  #spells-list .od1778-spell-fields,
+  #abilities-list .od1778-ability-fields {
+    grid-template-columns: 1fr !important;
+  }
+}
