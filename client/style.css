@@ -14411,3 +14411,559 @@ body.od1775-restoring-route::before {
   letter-spacing: .08em;
   text-transform: uppercase;
 }
+
+
+/* =========================
+   V177.6 - Layout final de edição
+========================= */
+
+/* 6) Loading sólido com tema e animação */
+#od1776-solid-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(205, 34, 44, .34), transparent 28%),
+    radial-gradient(circle at 15% 10%, rgba(255,255,255,.06), transparent 20%),
+    linear-gradient(135deg, #060606 0%, #151515 45%, #23070a 100%);
+  color: #fff;
+  pointer-events: all;
+}
+
+#od1776-solid-loader::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: .16;
+  background:
+    repeating-linear-gradient(45deg, rgba(255,255,255,.08) 0 1px, transparent 1px 10px);
+}
+
+.od1776-loader-card {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  gap: 12px;
+  padding: 34px 46px;
+  border-radius: 28px;
+  border: 1px solid rgba(255, 65, 78, .55);
+  background: rgba(0,0,0,.46);
+  box-shadow: 0 0 60px rgba(205,34,44,.22), inset 0 0 0 1px rgba(255,255,255,.06);
+}
+
+.od1776-loader-card span {
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  border: 4px solid rgba(255,255,255,.16);
+  border-top-color: #d22630;
+  animation: od1776Spin .85s linear infinite;
+}
+
+.od1776-loader-card strong {
+  font-family: Impact, Haettenschweiler, 'Arial Black', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  animation: od1776Pulse 1s ease-in-out infinite alternate;
+}
+
+.od1776-loader-card small {
+  color: rgba(255,255,255,.66);
+  font-family: Arial, system-ui, sans-serif;
+  letter-spacing: .04em;
+}
+
+@keyframes od1776Spin { to { transform: rotate(360deg); } }
+@keyframes od1776Pulse { from { opacity: .62; } to { opacity: 1; } }
+
+html.od1775-restoring-route body::before,
+body.od1775-restoring-route::before {
+  content: none !important;
+  display: none !important;
+}
+
+/* 7) Atributos expandidos: nomes sem corte */
+#attributes-grid {
+  grid-template-columns: repeat(auto-fit, minmax(172px, 1fr)) !important;
+  gap: 12px !important;
+}
+
+#attributes-grid .attr-card-v2,
+#attributes-grid .od1776-attr-card-clean {
+  min-width: 0 !important;
+  min-height: 160px !important;
+  padding: 14px !important;
+  overflow: visible !important;
+  display: grid !important;
+  align-content: start !important;
+  gap: 10px !important;
+}
+
+#attributes-grid .attr-name {
+  width: 100% !important;
+  max-width: none !important;
+  overflow: visible !important;
+  text-overflow: initial !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: anywhere !important;
+  line-height: 1.05 !important;
+  font-size: .9rem !important;
+  letter-spacing: .035em !important;
+  min-height: 1.15em !important;
+}
+
+#attributes-grid .attr-mod {
+  position: static !important;
+  display: inline-block !important;
+  margin-left: auto !important;
+}
+
+#attributes-grid .attr-card-v2 input[data-attr] {
+  width: 70px !important;
+  max-width: 70px !important;
+  justify-self: center !important;
+}
+
+#attributes-grid .roll-attr {
+  width: 100% !important;
+}
+
+/* 1) Perícias: cards centralizados e alinhados */
+#skills-wrap .od79-skills-grid,
+#skills-wrap .od79-skill-grid,
+.od79-skills-grid {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+  gap: 16px !important;
+  align-items: stretch !important;
+}
+
+#skills-wrap .od79-skill-card,
+#skills-wrap .od1776-skill-card-clean {
+  display: grid !important;
+  grid-template-rows: auto auto auto auto !important;
+  gap: 12px !important;
+  min-height: 236px !important;
+  padding: 18px !important;
+  align-content: space-between !important;
+  justify-items: stretch !important;
+  overflow: hidden !important;
+}
+
+#skills-wrap .od79-skill-card h3,
+#skills-wrap .od79-skill-card h4,
+#skills-wrap .od79-skill-card .skill-name,
+#skills-wrap .od79-skill-card strong {
+  text-align: left !important;
+  line-height: 1.08 !important;
+  overflow-wrap: anywhere !important;
+}
+
+#skills-wrap .od79-skill-card .od79-skill-values,
+#skills-wrap .od79-skill-card .skill-values,
+#skills-wrap .od79-skill-card .od79-skill-row {
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  align-items: end !important;
+}
+
+#skills-wrap .od79-skill-card input,
+#skills-wrap .od79-skill-card button {
+  max-width: 100% !important;
+  min-width: 0 !important;
+}
+
+#skills-wrap .od79-skill-card .roll-skill,
+#skills-wrap .od79-skill-card button[data-skill] {
+  width: 100% !important;
+  align-self: end !important;
+}
+
+/* 2) Inventário em texto: nome + excluir, descrição, peso/usos + ordem */
+#simple-inventory-list {
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)) !important;
+  gap: 16px !important;
+  align-items: stretch !important;
+}
+
+#simple-inventory-list .simple-inventory-card,
+#simple-inventory-list .od1776-inventory-edit-card {
+  min-height: 330px !important;
+  padding: 18px !important;
+  border-radius: 24px !important;
+  display: grid !important;
+  grid-template-rows: auto minmax(110px, auto) auto auto !important;
+  grid-template-columns: 1fr !important;
+  gap: 14px !important;
+  overflow: hidden !important;
+}
+
+#simple-inventory-list .simple-inventory-name-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 46px !important;
+  gap: 10px !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+
+#simple-inventory-list .simple-inventory-name {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 48px !important;
+  padding: 11px 14px !important;
+  text-align: left !important;
+  border-radius: 16px !important;
+}
+
+#simple-inventory-list [data-remove-simple-item],
+#simple-inventory-list .mini-danger-btn {
+  position: static !important;
+  width: 46px !important;
+  height: 46px !important;
+  min-width: 46px !important;
+  margin: 0 !important;
+  border-radius: 15px !important;
+  grid-column: auto !important;
+  grid-row: auto !important;
+  z-index: 2 !important;
+}
+
+#simple-inventory-list .simple-inventory-desc,
+#simple-inventory-list textarea[data-inv-field="desc"] {
+  width: 100% !important;
+  min-height: 116px !important;
+  max-height: none !important;
+  resize: vertical !important;
+  padding: 14px !important;
+  border-radius: 18px !important;
+  text-align: left !important;
+  align-self: stretch !important;
+}
+
+#simple-inventory-list .simple-inventory-card-top {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 52px !important;
+  grid-template-areas: "peso usos ordem" !important;
+  gap: 10px !important;
+  align-items: stretch !important;
+  width: 100% !important;
+}
+
+#simple-inventory-list .simple-inventory-weight { grid-area: peso !important; }
+#simple-inventory-list .simple-inventory-uses { grid-area: usos !important; }
+
+#simple-inventory-list .simple-inventory-stepper {
+  min-width: 0 !important;
+  width: 100% !important;
+  padding: 9px !important;
+  border-radius: 18px !important;
+  display: grid !important;
+  gap: 6px !important;
+  align-items: center !important;
+}
+
+#simple-inventory-list .simple-inventory-stepper .stepper-control {
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: 34px minmax(0, 1fr) 34px !important;
+  gap: 6px !important;
+  align-items: center !important;
+}
+
+#simple-inventory-list .simple-inventory-stepper input {
+  width: 100% !important;
+  min-width: 0 !important;
+  text-align: center !important;
+}
+
+#simple-inventory-list .od1776-item-order-actions {
+  grid-area: ordem !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 7px !important;
+  align-self: stretch !important;
+  justify-self: stretch !important;
+}
+
+#simple-inventory-list .od1776-item-order-actions button {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 32px !important;
+  padding: 0 !important;
+  border-radius: 12px !important;
+}
+
+#simple-inventory-list .item-card-actions {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+#simple-inventory-list .item-card-actions .ghost-btn {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+/* 3) Dinheiro e Peso Máximo editáveis */
+.od170-module[data-od170-key="equip-resumo"],
+.od170-module[data-od170-key="equip-resumo"] * {
+  pointer-events: auto !important;
+}
+
+.od170-module[data-od170-key="equip-resumo"]::before,
+.od170-module[data-od170-key="equip-resumo"]::after {
+  pointer-events: none !important;
+}
+
+.od170-module[data-od170-key="equip-resumo"] > .od170-module-body {
+  display: block !important;
+  position: relative !important;
+  z-index: 30 !important;
+}
+
+#tab-equipamentos .inventory-summary-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  position: relative !important;
+  z-index: 40 !important;
+  pointer-events: auto !important;
+}
+
+#tab-equipamentos .inventory-summary-grid label {
+  pointer-events: auto !important;
+  position: relative !important;
+  z-index: 50 !important;
+}
+
+#money,
+#weight-max,
+#money.od1776-force-editable-field,
+#weight-max.od1776-force-editable-field {
+  pointer-events: auto !important;
+  user-select: text !important;
+  cursor: text !important;
+  position: relative !important;
+  z-index: 999 !important;
+  opacity: 1 !important;
+  background: rgba(0,0,0,.58) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+#weight-current.od1776-calculated-field {
+  pointer-events: none !important;
+  opacity: .86 !important;
+}
+
+/* 4) Magias: refaz edição sem grid quebrado */
+#spells-list {
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)) !important;
+  gap: 16px !important;
+  align-items: stretch !important;
+}
+
+#spells-list .spell-card,
+#spells-list .od1776-spell-card-clean {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 18px !important;
+  overflow: hidden !important;
+  grid-template: none !important;
+}
+
+#spells-list .spell-card > * {
+  grid-area: auto !important;
+}
+
+#spells-list .spell-name {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 50px !important;
+  padding: 12px 14px !important;
+  text-align: left !important;
+  border-radius: 16px !important;
+}
+
+#spells-list .spell-fields-grid,
+#spells-list .od1776-spell-fields-clean {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  width: 100% !important;
+}
+
+#spells-list .spell-fields-grid label {
+  min-width: 0 !important;
+  width: 100% !important;
+  padding: 10px !important;
+  display: grid !important;
+  gap: 6px !important;
+}
+
+#spells-list .spell-fields-grid input {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+#spells-list .spell-text-label,
+#spells-list .od1776-spell-text-clean {
+  width: 100% !important;
+  display: grid !important;
+  gap: 7px !important;
+  min-width: 0 !important;
+}
+
+#spells-list .spell-description {
+  min-height: 120px !important;
+  width: 100% !important;
+  resize: vertical !important;
+}
+
+#spells-list .spell-upgrades {
+  min-height: 95px !important;
+  width: 100% !important;
+  resize: vertical !important;
+}
+
+#spells-list .remove-card {
+  width: min(220px, 100%) !important;
+  align-self: end !important;
+  position: static !important;
+  margin-top: 2px !important;
+}
+
+/* Conjurador */
+#tab-magias .magic-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+  gap: 12px !important;
+  padding: 16px !important;
+}
+
+#tab-magias .magic-grid label {
+  padding: 12px 14px !important;
+  min-width: 0 !important;
+  display: grid !important;
+  gap: 7px !important;
+}
+
+/* 5) Habilidades: refaz edição sem quebrar resolução */
+#abilities-list {
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)) !important;
+  gap: 16px !important;
+  align-items: stretch !important;
+}
+
+#abilities-list .ability-card,
+#abilities-list .od1776-ability-card-clean {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 18px !important;
+  overflow: hidden !important;
+  grid-template: none !important;
+}
+
+#abilities-list .ability-card > * {
+  grid-area: auto !important;
+}
+
+#abilities-list .ability-name {
+  width: 100% !important;
+  height: 50px !important;
+  min-width: 0 !important;
+  padding: 12px 14px !important;
+  text-align: left !important;
+  border-radius: 16px !important;
+}
+
+#abilities-list .ability-fields-grid,
+#abilities-list .od1776-ability-fields-clean {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  width: 100% !important;
+}
+
+#abilities-list .ability-fields-grid label {
+  min-width: 0 !important;
+  width: 100% !important;
+  display: grid !important;
+  gap: 6px !important;
+  padding: 10px !important;
+}
+
+#abilities-list .ability-cost-row {
+  display: grid !important;
+  grid-template-columns: 34px minmax(0, 1fr) 34px !important;
+  gap: 6px !important;
+  align-items: center !important;
+}
+
+#abilities-list .ability-fields-grid input,
+#abilities-list .ability-fields-grid select {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+#abilities-list .ability-description-wrap,
+#abilities-list .od1776-ability-desc-clean {
+  display: grid !important;
+  gap: 7px !important;
+  width: 100% !important;
+}
+
+#abilities-list .ability-description {
+  min-height: 120px !important;
+  width: 100% !important;
+  resize: vertical !important;
+}
+
+#abilities-list .ability-card-actions,
+#abilities-list .od1776-ability-actions-clean {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  width: 100% !important;
+}
+
+#abilities-list .ability-card-actions button {
+  width: 100% !important;
+  min-width: 0 !important;
+  position: static !important;
+}
+
+/* Mobile */
+@media (max-width: 820px) {
+  #attributes-grid,
+  #simple-inventory-list,
+  #spells-list,
+  #abilities-list,
+  #skills-wrap .od79-skills-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  #simple-inventory-list .simple-inventory-card-top,
+  #spells-list .spell-fields-grid,
+  #abilities-list .ability-fields-grid,
+  #tab-equipamentos .inventory-summary-grid {
+    grid-template-columns: 1fr !important;
+    grid-template-areas: none !important;
+  }
+
+  #simple-inventory-list .od1776-item-order-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
