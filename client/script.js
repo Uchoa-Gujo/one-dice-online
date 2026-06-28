@@ -5,7 +5,7 @@
 ========================= */
 (function od139EarlyGuards(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
   if (!window.CSS) window.CSS = {};
   if (typeof window.CSS.escape !== 'function') {
     window.CSS.escape = function(value) {
@@ -12035,7 +12035,7 @@ function od66InventoryMutationUnlockSoon() {
    Este bloco não altera regras de ficha; apenas melhora autonomia e experiência.
 ========================= */
 (function od115Maintenance(){
-  const VERSION = '1.77.3';
+  const VERSION = '1.77.5';
   const STORAGE_PREFIX = 'od_';
   const routeMap = {
     home: '/inicio',
@@ -13636,7 +13636,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od136AttributesClean(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
   const ATTRS = [
     ['forca', 'Força'], ['agilidade', 'Agilidade'], ['vigor', 'Vigor'], ['intelecto', 'Intelecto'], ['presenca', 'Presença']
@@ -13804,7 +13804,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od137SheetStabilityAndManualDefenseDodge(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
   const $ = id => document.getElementById(id);
   const EDITABLE = 'input, textarea, select, [contenteditable="true"]';
@@ -14166,7 +14166,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od138AuditAndDuplicateSheetInstalled) return;
   window.__od138AuditAndDuplicateSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
   const DUP_SELECTOR = '[data-od138-duplicate-character], [data-od71-copy-character], [data-copy-account-character]';
 
@@ -14359,7 +14359,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od139ExtraErrorFixesInstalled) return;
   window.__od139ExtraErrorFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
   const IMAGE_KEYS = [
     'portrait','portraitUrl','image','imageUrl','photo','photoUrl','avatar','avatarUrl','retrato','foto',
@@ -14514,9 +14514,9 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od140GeneralImprovementsInstalled) return;
   window.__od140GeneralImprovementsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
-  const VERSION = '1.77.3';
+  const VERSION = '1.77.5';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   const IMPORT_INPUT_ID = 'od140-import-json-input';
   const MAX_BACKUPS_PER_CHAR = 5;
@@ -14995,7 +14995,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od141AuditHardeningInstalled) return;
   window.__od141AuditHardeningInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
   function pruneBackups(){
     try {
@@ -15046,7 +15046,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od142FinalCleanupInstalled) return;
   window.__od142FinalCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
   function keepFirst(selector){
     const nodes = Array.from(document.querySelectorAll(selector));
@@ -15132,7 +15132,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od148SafeRollbackPatchInstalled) return;
   window.__od148SafeRollbackPatchInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   function hideManualNotes(){
     ['defense-effective-note','dodge-formula-note'].forEach(id => {
@@ -15185,7 +15185,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od152StableLayoutFixesInstalled) return;
   window.__od152StableLayoutFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
   const $ = id => document.getElementById(id);
   const n = (value, fallback = 0) => {
@@ -15377,7 +15377,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od155SessionDashboardStability(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
   const STORE_PREFIX = 'od155_dashboard_collapsed_';
   const lastSig = { player: '', master: '' };
@@ -15533,7 +15533,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od156ProtectOtherPlayersSheetsInstalled) return;
   window.__od156ProtectOtherPlayersSheetsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
   const PROTECTED_ARRAYS = ['inventoryItems','blockInventory','abilities','spells','attacks','conditions','transformations','dropItems'];
   const PROTECTED_OBJECTS = ['skills','resistances','attrs','caster','obsIcons','portraitCrop','settings'];
@@ -15638,7 +15638,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od157ProtectOwnSheetPartialAutosaveInstalled) return;
   window.__od157ProtectOwnSheetPartialAutosaveInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
   function clone(value){
     try { return structuredClone(value); } catch (_) {
@@ -15794,7 +15794,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od159StableSessionRenderInstalled) return;
   window.__od159StableSessionRenderInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
   const $ = id => document.getElementById(id);
   const last = { tableSig: '', tableAt: 0, playerSig: '', masterSig: '' };
@@ -15927,7 +15927,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od160AccountSheetIsolationInstalled) return;
   window.__od160AccountSheetIsolationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
   const $ = id => document.getElementById(id);
 
@@ -16078,7 +16078,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od161EquipmentProficienciesInstalled) return;
   window.__od161EquipmentProficienciesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
   const GROUPS = {
     weapons: [
@@ -16245,9 +16245,9 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od164StableCleanRoutesInstalled) return;
   window.__od164StableCleanRoutesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
-  const VERSION = '1.77.3';
+  const VERSION = '1.77.5';
   let applyingRoute = false;
   let routeTimer = null;
 
@@ -16453,7 +16453,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od165ExactPortraitCrop(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
   if (window.__od165ExactPortraitCropInstalled) return;
   window.__od165ExactPortraitCropInstalled = true;
 
@@ -16575,7 +16575,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1685AreaSeparationInstalled) return;
   window.__od1685AreaSeparationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
   const AREA = {
     AUTH: 'login',
@@ -16764,7 +16764,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1699StableSkillUntrainInstalled) return;
   window.__od1699StableSkillUntrainInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
   const pending = new Map();
   let flushTimer = null;
@@ -16992,7 +16992,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16910SkillSaveMergeInstalled) return;
   window.__od16910SkillSaveMergeInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
   let lastExplicit = {};
   let lastExplicitAt = 0;
@@ -17208,7 +17208,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16911StablePortraitDuringResourcesInstalled) return;
   window.__od16911StablePortraitDuringResourcesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
   const RESOURCE_SELECTOR = '#pv-current, #pv-max, #pe-current, #pe-max';
   const MAIN_SELECTOR = '#char-portrait-preview';
@@ -17380,7 +17380,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od170ModularSheetInstalled) return;
   window.__od170ModularSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
   const STORE_KEY = 'od170_modules_state_v1';
   const DENSE_KEY = 'od170_dense_sheet_v1';
@@ -17624,7 +17624,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od171HubNavigationAndScrollInstalled) return;
   window.__od171HubNavigationAndScrollInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
   let pending = false;
 
@@ -17748,7 +17748,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1715ScrollAndSmartCollapseInstalled) return;
   window.__od1715ScrollAndSmartCollapseInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
   let scheduled = false;
 
@@ -17996,7 +17996,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od176SmartSheetModesInstalled) return;
   window.__od176SmartSheetModesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
   let scheduled = false;
 
@@ -18249,7 +18249,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1761NoDuplicateReducedSummariesInstalled) return;
   window.__od1761NoDuplicateReducedSummariesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
   const OLD_SUMMARY_SELECTOR = [
     '.od1715-attr-summary',
@@ -18311,7 +18311,7 @@ function od66InventoryMutationUnlockSoon() {
    A correção principal está no index.html e no server/server.js.
 ========================= */
 (function od1762ReloadPathFixMarker(){
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 })();
 
 
@@ -18328,7 +18328,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od177InventoryReworkInstalled) return;
   window.__od177InventoryReworkInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
   let scheduled = false;
 
@@ -18580,7 +18580,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1771EquipmentVisualHotfixInstalled) return;
   window.__od1771EquipmentVisualHotfixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
   function $(id){ return document.getElementById(id); }
   function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
@@ -18637,7 +18637,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1772EquipmentMagicHotfixInstalled) return;
   window.__od1772EquipmentMagicHotfixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
   let saveGuard = false;
 
@@ -18859,7 +18859,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1773InventoryAbilityLayoutFixInstalled) return;
   window.__od1773InventoryAbilityLayoutFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.77.3';
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
 
   function $(id){ return document.getElementById(id); }
   function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
@@ -19013,4 +19013,333 @@ function od66InventoryMutationUnlockSoon() {
   setTimeout(sync, 1500);
 
   window.od1773InventoryAbilityLayoutFix = { sync };
+})();
+
+
+/* =========================
+   V177.4 - Hotfix de layout pós largura fixa
+   - Abas sem barra feia.
+   - Resumo do inventário sem modo reduzido inútil.
+   - Dinheiro/Peso Máximo clicáveis.
+   - Cards editáveis de item, magia e habilidade reorganizados.
+========================= */
+(function od1774LayoutPolish(){
+  'use strict';
+  if (window.__od1774LayoutPolishInstalled) return;
+  window.__od1774LayoutPolishInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
+
+  function $(id){ return document.getElementById(id); }
+
+  function makeInventorySummaryAlwaysEditable(){
+    const summaryModule = document.querySelector('.od170-module[data-od170-key="equip-resumo"]');
+    if (!summaryModule) return;
+
+    // Peso/dinheiro são pequenos; não precisam de modo resumo. Mantém sempre expandido.
+    summaryModule.classList.remove('od170-collapsed');
+    summaryModule.classList.add('od1774-no-collapse-summary');
+
+    summaryModule.querySelectorAll(':scope > .od177-inventory-summary, :scope > .od176-reduced-view, :scope > .od1715-collapse-summary').forEach(el => {
+      el.classList.add('od1774-disabled-summary-view');
+    });
+
+    const btn = summaryModule.querySelector(':scope > .od170-module-head .od170-module-toggle');
+    if (btn) {
+      btn.classList.add('od1774-disabled-summary-toggle');
+      btn.setAttribute('aria-hidden', 'true');
+      btn.tabIndex = -1;
+    }
+
+    const money = $('money');
+    const weightMax = $('weight-max');
+    const weightCurrent = $('weight-current');
+
+    [money, weightMax].forEach(input => {
+      if (!input) return;
+      input.disabled = false;
+      input.readOnly = false;
+      input.removeAttribute('disabled');
+      input.removeAttribute('readonly');
+      input.classList.add('od1774-clickable-field');
+      input.style.setProperty('pointer-events', 'auto', 'important');
+      input.style.setProperty('position', 'relative', 'important');
+      input.style.setProperty('z-index', '30', 'important');
+      input.tabIndex = 0;
+    });
+
+    if (weightCurrent) {
+      weightCurrent.readOnly = true;
+      weightCurrent.setAttribute('readonly', 'readonly');
+    }
+  }
+
+  function hideOldButtons(){
+    // Magias e habilidades: sem editar/resumo antigo.
+    document.querySelectorAll('#tab-magias [data-od62-summary-toggle], #tab-magias .od62-summary-toggle, #tab-habilidades [data-od62-summary-toggle], #tab-habilidades .od62-summary-toggle').forEach(el => {
+      el.classList.add('od1774-hidden-old-summary-button');
+      el.setAttribute('aria-hidden', 'true');
+    });
+
+    // Inventário em texto: deixa só o botão do módulo.
+    const old = $('simple-inventory-compact-toggle');
+    if (old) {
+      old.classList.add('od1774-hidden-old-summary-button');
+      old.setAttribute('aria-hidden', 'true');
+      old.tabIndex = -1;
+    }
+  }
+
+  function tagCards(){
+    document.querySelectorAll('#attributes-grid .attr-card-v2, #attributes-grid [data-attr]').forEach(el => {
+      el.closest('.attr-card-v2')?.classList.add('od1774-attr-card');
+    });
+
+    document.querySelectorAll('#skills-wrap .od79-skill-card').forEach(card => card.classList.add('od1774-skill-card'));
+    document.querySelectorAll('#simple-inventory-list .simple-inventory-card').forEach(card => card.classList.add('od1774-simple-edit-card'));
+    document.querySelectorAll('#spells-list .spell-card').forEach(card => card.classList.add('od1774-spell-edit-card'));
+    document.querySelectorAll('#abilities-list .ability-card').forEach(card => card.classList.add('od1774-ability-edit-card'));
+  }
+
+  function sync(){
+    document.body.classList.add('od1774-layout-polish');
+    makeInventorySummaryAlwaysEditable();
+    hideOldButtons();
+    tagCards();
+  }
+
+  function schedule(){
+    clearTimeout(window.__od1774LayoutTimer);
+    window.__od1774LayoutTimer = setTimeout(sync, 40);
+  }
+
+  document.addEventListener('click', event => {
+    if (event.target.closest?.('[data-od170-toggle], .sheet-tab, #add-simple-inventory-item, #add-spell, #add-ability, [data-remove-simple-item], .remove-spell, .remove-ability')) {
+      schedule();
+      setTimeout(sync, 180);
+    }
+  }, true);
+
+  document.addEventListener('focusin', event => {
+    if (event.target?.matches?.('#money, #weight-max')) makeInventorySummaryAlwaysEditable();
+  }, true);
+
+  document.addEventListener('input', event => {
+    if (event.target.closest?.('.sheet')) schedule();
+  }, true);
+
+  const observer = new MutationObserver(schedule);
+  observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style', 'disabled', 'readonly'] });
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', sync, { once: true });
+  else sync();
+
+  setTimeout(sync, 120);
+  setTimeout(sync, 650);
+  setTimeout(sync, 1500);
+
+  window.od1774LayoutPolish = { sync };
+})();
+
+
+/* =========================
+   V177.5 - Hotfix de reload/atualização mantendo rota e sessão
+   Problema:
+   - Ao dar F5 em /personagem/xxx ou /inicio, a tela podia cair no login
+     ou voltar para a escolha de mesa antes da sessão online terminar de carregar.
+   Correção:
+   - Guarda a rota original.
+   - Espera a sessão/personagens/mesas carregarem.
+   - Restaura a ficha ou a tela correta depois do boot online.
+========================= */
+(function od1775ReloadRouteRestore(){
+  'use strict';
+  if (window.__od1775ReloadRouteRestoreInstalled) return;
+  window.__od1775ReloadRouteRestoreInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.77.5';
+
+  const INITIAL_PATH = location.pathname + location.search;
+  const INITIAL_PARTS = location.pathname.split('/').filter(Boolean).map(part => {
+    try { return decodeURIComponent(part); } catch (_) { return part; }
+  });
+  const IS_DEEP_ROUTE = !!INITIAL_PARTS.length && INITIAL_PARTS[0] !== 'login';
+  let restoring = false;
+  let restored = false;
+
+  function hasSessionToken(){
+    try {
+      if (typeof od42GetSession === 'function') return !!od42GetSession()?.token;
+      const raw = localStorage.getItem('od_online_session_v42') || sessionStorage.getItem('od_online_session_v42');
+      return !!JSON.parse(raw || 'null')?.token;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  if (IS_DEEP_ROUTE && hasSessionToken()) {
+    restoring = true;
+    document.documentElement.classList.add('od1775-restoring-route');
+    document.body?.classList?.add('od1775-restoring-route');
+    try { sessionStorage.setItem('od_pending_route', INITIAL_PATH); } catch (_) {}
+  }
+
+  function slugify(value){
+    return String(value || '')
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  function activateTab(tab){
+    if (!tab) return;
+    setTimeout(() => {
+      const btn = document.querySelector(`.sheet-tab[data-tab="${CSS.escape(tab)}"]`);
+      if (btn) btn.click();
+    }, 80);
+  }
+
+  function ownCharacters(){
+    try {
+      const all = typeof get === 'function' && typeof STORAGE !== 'undefined' ? get(STORAGE.characters, []) : [];
+      return all.filter(c => !currentUser?.id || String(c.ownerId || '') === String(currentUser.id));
+    } catch (_) {
+      return [];
+    }
+  }
+
+  function resolveCharacter(token){
+    const chars = ownCharacters();
+    const raw = String(token || '').trim();
+    if (!raw) return chars[0] || null;
+    const wanted = slugify(raw);
+    return chars.find(c => String(c.id) === raw)
+      || chars.find(c => slugify(c.name) === wanted)
+      || chars.find(c => slugify(c.name).includes(wanted))
+      || null;
+  }
+
+  function setHubTab(tab){
+    try { localStorage.setItem('od71_tab', tab); } catch (_) {}
+    if (typeof showSessions === 'function') showSessions();
+    setTimeout(() => {
+      try {
+        const btn = document.querySelector(`[data-od71-tab="${tab}"], [data-od75-tab="${tab}"]`);
+        if (btn) btn.click();
+        const path = tab === 'characters' ? '/personagens' : tab === 'campaigns' ? '/campanhas' : '/inicio';
+        history.replaceState({ od1775Restored: true, tab }, '', path);
+      } catch (_) {}
+    }, 80);
+  }
+
+  async function restoreRoute(){
+    if (restored || !currentUser) return false;
+    restored = true;
+
+    const parts = INITIAL_PARTS;
+    const query = new URLSearchParams(location.search || '');
+
+    try {
+      if (!parts.length || parts[0] === 'inicio') {
+        setHubTab('home');
+        return true;
+      }
+
+      if (parts[0] === 'personagens' || parts[0] === 'fichas') {
+        setHubTab(parts[0] === 'personagens' ? 'characters' : 'characters');
+        return true;
+      }
+
+      if (parts[0] === 'campanhas' || parts[0] === 'mesas') {
+        setHubTab('campaigns');
+        return true;
+      }
+
+      // Compatibilidade com URL antiga/amigável: /personagem/nome-da-ficha
+      if (parts[0] === 'personagem' || parts[0] === 'ficha') {
+        const char = resolveCharacter(parts[1] || currentCharacterId);
+        if (char && typeof initAccountCharacterEditor === 'function') {
+          initAccountCharacterEditor(char.id);
+          activateTab(query.get('tab') || 'resumo');
+          return true;
+        }
+        setHubTab('characters');
+        return true;
+      }
+
+      // Mesa: mantém comportamento antigo, mas garante recarregamento do estado online.
+      if (parts[0] === 'mesa') {
+        const tableId = parts[1];
+        if (tableId && typeof enterCampaign === 'function') {
+          try {
+            const memberOk = typeof getMembers === 'function'
+              ? getMembers().some(m => String(m.campaignId) === String(tableId) && String(m.userId) === String(currentUser.id))
+              : true;
+            if (memberOk) {
+              await enterCampaign(tableId);
+              if ((parts[2] === 'ficha' || parts[2] === 'personagem') && parts[3]) {
+                const charId = parts[3];
+                const exists = typeof get === 'function' && typeof STORAGE !== 'undefined'
+                  ? get(STORAGE.characters, []).some(c => String(c.id) === String(charId) || slugify(c.name) === slugify(charId))
+                  : false;
+                if (exists && typeof loadCharacter === 'function') {
+                  const found = get(STORAGE.characters, []).find(c => String(c.id) === String(charId) || slugify(c.name) === slugify(charId));
+                  loadCharacter(found?.id || charId);
+                }
+                activateTab(query.get('tab') || 'resumo');
+              }
+              return true;
+            }
+          } catch (_) {}
+        }
+        setHubTab('campaigns');
+        return true;
+      }
+    } finally {
+      restoring = false;
+      document.documentElement.classList.remove('od1775-restoring-route');
+      document.body.classList.remove('od1775-restoring-route');
+      try { sessionStorage.removeItem('od_pending_route'); } catch (_) {}
+    }
+
+    return false;
+  }
+
+  // Evita que uma rota profunda com sessão válida seja substituída por /login durante o boot.
+  if (typeof showAuth === 'function' && !showAuth.__od1775RouteRestore) {
+    const previousShowAuth = showAuth;
+    showAuth = function od1775ShowAuth(){
+      if (restoring && hasSessionToken() && IS_DEEP_ROUTE) {
+        try { sessionStorage.setItem('od_pending_route', INITIAL_PATH); } catch (_) {}
+        return;
+      }
+      return previousShowAuth.apply(this, arguments);
+    };
+    showAuth.__od1775RouteRestore = true;
+    try { window.showAuth = showAuth; } catch (_) {}
+  }
+
+  // Depois do boot online, restaura a rota original.
+  if (typeof od42Boot === 'function' && !od42Boot.__od1775RouteRestore) {
+    const previousBoot = od42Boot;
+    od42Boot = async function od1775Boot(){
+      const result = await previousBoot.apply(this, arguments);
+      setTimeout(() => restoreRoute(), 60);
+      setTimeout(() => restoreRoute(), 450);
+      return result;
+    };
+    od42Boot.__od1775RouteRestore = true;
+    try { window.od42Boot = od42Boot; } catch (_) {}
+  }
+
+  // Cobre casos em que outro boot já tenha sido chamado antes do wrapper.
+  setTimeout(() => restoreRoute(), 900);
+  setTimeout(() => restoreRoute(), 1700);
+  setTimeout(() => {
+    if (!restored && restoring) {
+      restoring = false;
+      document.documentElement.classList.remove('od1775-restoring-route');
+      document.body.classList.remove('od1775-restoring-route');
+      if (!currentUser && typeof showAuth === 'function') showAuth();
+    }
+  }, 3500);
 })();

@@ -13925,3 +13925,489 @@ body.od1773-stable-sheet-width .right-panel {
     grid-template-columns: 1fr !important;
   }
 }
+
+
+/* =========================
+   V177.4 - Correções visuais pós largura fixa
+========================= */
+
+/* 1) Abas sem barra branca feia */
+.sheet-tabs,
+.tabs {
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+  flex-wrap: wrap !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  padding-bottom: 6px !important;
+}
+
+.sheet-tabs::-webkit-scrollbar,
+.tabs::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.sheet-tab,
+.tab-btn {
+  flex: 0 1 auto !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 980px) {
+  .sheet-tabs,
+  .tabs {
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    scrollbar-width: none !important;
+  }
+}
+
+/* 2) Atributos expandidos: nomes sem corte */
+#attributes-grid {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+  gap: 12px !important;
+}
+
+#attributes-grid .attr-card-v2,
+#attributes-grid .od1774-attr-card {
+  min-width: 0 !important;
+  padding: 14px !important;
+  overflow: visible !important;
+}
+
+#attributes-grid .attr-card-v2 h4,
+#attributes-grid .attr-card-v2 .attr-name,
+#attributes-grid .attr-card-v2 label,
+#attributes-grid .od1774-attr-card h4,
+#attributes-grid .od1774-attr-card .attr-name,
+#attributes-grid .od1774-attr-card label {
+  max-width: 100% !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: anywhere !important;
+  line-height: 1.05 !important;
+  font-size: clamp(.78rem, 1.1vw, .96rem) !important;
+  letter-spacing: .04em !important;
+}
+
+#attributes-grid .attr-card-v2 .attr-main,
+#attributes-grid .attr-card-v2 .attr-controls {
+  min-width: 0 !important;
+}
+
+/* 3) Perícias expandidas: alinhamento mais limpo */
+#skills-wrap,
+#skills-table,
+.od79-skill-panel {
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+.od79-skills-grid,
+#skills-wrap .od79-skills-grid,
+#skills-wrap .skill-grid {
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
+  gap: 14px !important;
+  align-items: stretch !important;
+}
+
+#skills-wrap .od79-skill-card,
+#skills-wrap .od1774-skill-card {
+  min-width: 0 !important;
+  min-height: 230px !important;
+  display: grid !important;
+  grid-template-rows: auto auto 1fr auto !important;
+  gap: 12px !important;
+  padding: 16px !important;
+  overflow: hidden !important;
+}
+
+#skills-wrap .od79-skill-card .od79-skill-values,
+#skills-wrap .od79-skill-card .skill-values,
+#skills-wrap .od79-skill-card .od79-skill-row {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  align-items: end !important;
+}
+
+#skills-wrap .od79-skill-card input,
+#skills-wrap .od79-skill-card button {
+  max-width: 100% !important;
+}
+
+#skills-wrap .od79-skill-card h4,
+#skills-wrap .od79-skill-card h3,
+#skills-wrap .od79-skill-card .skill-name {
+  overflow-wrap: anywhere !important;
+  line-height: 1.05 !important;
+}
+
+/* 4) Inventário: resumo de dinheiro/peso sempre editável, sem modo reduzido */
+.od170-module[data-od170-key="equip-resumo"].od1774-no-collapse-summary {
+  display: block !important;
+}
+
+.od170-module[data-od170-key="equip-resumo"].od1774-no-collapse-summary > .od170-module-body {
+  display: block !important;
+}
+
+.od170-module[data-od170-key="equip-resumo"] > .od177-inventory-summary,
+.od170-module[data-od170-key="equip-resumo"] > .od176-reduced-view,
+.od170-module[data-od170-key="equip-resumo"] > .od1715-collapse-summary,
+.od1774-disabled-summary-view {
+  display: none !important;
+}
+
+.od1774-disabled-summary-toggle {
+  display: none !important;
+}
+
+#tab-equipamentos .inventory-summary-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+
+#tab-equipamentos .inventory-summary-grid label {
+  position: relative !important;
+  z-index: 10 !important;
+  pointer-events: auto !important;
+}
+
+#money,
+#weight-max,
+#money.od1774-clickable-field,
+#weight-max.od1774-clickable-field {
+  pointer-events: auto !important;
+  user-select: text !important;
+  cursor: text !important;
+  position: relative !important;
+  z-index: 50 !important;
+  opacity: 1 !important;
+  background: rgba(0,0,0,.46) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+#weight-current {
+  pointer-events: none !important;
+}
+
+/* Inventário em texto: botões de ordem fora do excluir */
+#simple-inventory-list {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important;
+  gap: 14px !important;
+}
+
+#simple-inventory-list .simple-inventory-card,
+#simple-inventory-list .od1774-simple-edit-card {
+  position: relative !important;
+  min-height: 310px !important;
+  padding: 16px !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 48px !important;
+  grid-template-areas:
+    "name remove"
+    "metrics order"
+    "desc desc"
+    "actions actions" !important;
+  gap: 12px !important;
+  overflow: hidden !important;
+}
+
+#simple-inventory-list .simple-inventory-card input[data-inv-field="name"] {
+  grid-area: name !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+#simple-inventory-list .simple-inventory-card [data-remove-simple-item],
+#simple-inventory-list .simple-inventory-card .mini-danger-btn {
+  grid-area: remove !important;
+  position: static !important;
+  justify-self: end !important;
+  align-self: start !important;
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  z-index: 3 !important;
+}
+
+#simple-inventory-list .simple-inventory-card [data-move-simple-item],
+#simple-inventory-list .simple-inventory-card .move-btn,
+#simple-inventory-list .simple-inventory-card .item-move-btn,
+#simple-inventory-list .simple-inventory-card .move-up,
+#simple-inventory-list .simple-inventory-card .move-down {
+  position: static !important;
+  width: 38px !important;
+  height: 30px !important;
+  min-width: 38px !important;
+  margin: 0 !important;
+  z-index: 2 !important;
+}
+
+#simple-inventory-list .simple-inventory-card .item-order-actions,
+#simple-inventory-list .simple-inventory-card .simple-inventory-order,
+#simple-inventory-list .simple-inventory-card .move-actions {
+  grid-area: order !important;
+  position: static !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 6px !important;
+  align-self: start !important;
+  justify-self: end !important;
+}
+
+#simple-inventory-list .simple-inventory-card .simple-inventory-stats,
+#simple-inventory-list .simple-inventory-card .simple-inventory-meta,
+#simple-inventory-list .simple-inventory-card .item-card-metrics {
+  grid-area: metrics !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+}
+
+#simple-inventory-list .simple-inventory-card textarea[data-inv-field="desc"],
+#simple-inventory-list .simple-inventory-card .simple-inventory-desc {
+  grid-area: desc !important;
+  min-height: 112px !important;
+  width: 100% !important;
+}
+
+#simple-inventory-list .simple-inventory-card .item-card-actions {
+  grid-area: actions !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+}
+
+#simple-inventory-compact-toggle,
+.od1774-hidden-old-summary-button {
+  display: none !important;
+}
+
+/* 5) Magias: conjurador e edição refeitos para a largura nova */
+#tab-magias .magic-grid {
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)) !important;
+  gap: 12px !important;
+  padding: 14px !important;
+}
+
+#tab-magias .magic-grid label {
+  padding: 12px 14px !important;
+  min-width: 0 !important;
+  overflow: visible !important;
+  line-height: 1.1 !important;
+}
+
+#tab-magias .magic-grid label input,
+#tab-magias .magic-grid label select {
+  margin-top: 7px !important;
+  width: 100% !important;
+}
+
+#spells-list {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important;
+  gap: 14px !important;
+}
+
+#spells-list .spell-card,
+#spells-list .od1774-spell-edit-card {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) 44px !important;
+  grid-template-areas:
+    "name name remove"
+    "circle exec range"
+    "cost components components"
+    "description description description"
+    "upgrades upgrades upgrades" !important;
+  gap: 10px !important;
+  min-width: 0 !important;
+  min-height: 380px !important;
+  padding: 16px !important;
+  overflow: hidden !important;
+}
+
+#spells-list .spell-card .spell-name {
+  grid-area: name !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+#spells-list .spell-card .remove-spell,
+#spells-list .spell-card [data-remove-spell],
+#spells-list .spell-card .mini-danger-btn {
+  grid-area: remove !important;
+  position: static !important;
+  justify-self: end !important;
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+}
+
+#spells-list .spell-card .spell-circle { grid-area: circle !important; }
+#spells-list .spell-card .spell-exec { grid-area: exec !important; }
+#spells-list .spell-card .spell-range { grid-area: range !important; }
+#spells-list .spell-card .spell-cost { grid-area: cost !important; }
+#spells-list .spell-card .spell-components { grid-area: components !important; }
+
+#spells-list .spell-card .spell-description,
+#spells-list .spell-card textarea.spell-description {
+  grid-area: description !important;
+  min-height: 118px !important;
+  width: 100% !important;
+}
+
+#spells-list .spell-card .spell-upgrades,
+#spells-list .spell-card textarea.spell-upgrades {
+  grid-area: upgrades !important;
+  min-height: 92px !important;
+  width: 100% !important;
+}
+
+#spells-list .spell-card input,
+#spells-list .spell-card textarea,
+#spells-list .spell-card select {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+/* 6) Habilidades: edição reformulada para largura nova */
+#abilities-list {
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important;
+  gap: 14px !important;
+}
+
+#abilities-list .ability-card,
+#abilities-list .od1774-ability-edit-card {
+  min-width: 0 !important;
+  min-height: 340px !important;
+  padding: 16px !important;
+  display: grid !important;
+  grid-template-columns: 40px minmax(0, 1fr) 40px !important;
+  grid-template-areas:
+    "name name order"
+    "cost costType bonus"
+    "action action action"
+    "desc desc desc"
+    "use remove remove" !important;
+  gap: 10px !important;
+  overflow: hidden !important;
+}
+
+#abilities-list .ability-card .ability-name,
+#abilities-list .ability-card input.ability-name {
+  grid-area: name !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+#abilities-list .ability-card .ability-cost { grid-area: cost !important; }
+#abilities-list .ability-card .ability-cost-type { grid-area: costType !important; }
+#abilities-list .ability-card .ability-bonus { grid-area: bonus !important; }
+#abilities-list .ability-card .ability-action { grid-area: action !important; }
+
+#abilities-list .ability-card .ability-description,
+#abilities-list .ability-card textarea.ability-description {
+  grid-area: desc !important;
+  min-height: 100px !important;
+  width: 100% !important;
+}
+
+#abilities-list .ability-card .use-ability,
+#abilities-list .ability-card [data-use-ability] {
+  grid-area: use !important;
+  width: 100% !important;
+}
+
+#abilities-list .ability-card .remove-ability,
+#abilities-list .ability-card [data-remove-ability],
+#abilities-list .ability-card .danger-btn {
+  grid-area: remove !important;
+  width: 100% !important;
+}
+
+#abilities-list .ability-card [data-move-ability],
+#abilities-list .ability-card .move-btn,
+#abilities-list .ability-card .move-up,
+#abilities-list .ability-card .move-down {
+  position: static !important;
+  width: 34px !important;
+  height: 28px !important;
+  min-width: 34px !important;
+  margin: 0 !important;
+}
+
+#abilities-list .ability-card .ability-order,
+#abilities-list .ability-card .move-actions {
+  grid-area: order !important;
+  display: grid !important;
+  gap: 6px !important;
+  justify-self: end !important;
+}
+
+#tab-habilidades [data-od62-summary-toggle],
+#tab-habilidades .od62-summary-toggle,
+#tab-habilidades [data-od62-summary-list],
+#tab-habilidades .od62-summary-grid,
+#tab-magias [data-od62-summary-toggle],
+#tab-magias .od62-summary-toggle,
+#tab-magias [data-od62-summary-list],
+#tab-magias .od62-summary-grid {
+  display: none !important;
+}
+
+/* Mobile */
+@media (max-width: 820px) {
+  #tab-equipamentos .inventory-summary-grid,
+  #spells-list,
+  #abilities-list,
+  #simple-inventory-list {
+    grid-template-columns: 1fr !important;
+  }
+
+  #spells-list .spell-card,
+  #abilities-list .ability-card,
+  #simple-inventory-list .simple-inventory-card {
+    grid-template-columns: 1fr !important;
+    grid-template-areas: none !important;
+  }
+
+  #spells-list .spell-card > *,
+  #abilities-list .ability-card > *,
+  #simple-inventory-list .simple-inventory-card > * {
+    grid-area: auto !important;
+  }
+}
+
+
+/* =========================
+   V177.5 - evita flash de login durante restauração de rota
+========================= */
+html.od1775-restoring-route #auth-screen.active,
+body.od1775-restoring-route #auth-screen.active {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+html.od1775-restoring-route body::before,
+body.od1775-restoring-route::before {
+  content: "Carregando ficha...";
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at center, rgba(180,35,45,.18), transparent 36%),
+    #111;
+  color: #fff;
+  font-family: Impact, Haettenschweiler, 'Arial Black', sans-serif;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
