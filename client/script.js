@@ -5,7 +5,7 @@
 ========================= */
 (function od139EarlyGuards(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
   if (!window.CSS) window.CSS = {};
   if (typeof window.CSS.escape !== 'function') {
     window.CSS.escape = function(value) {
@@ -2881,6 +2881,10 @@ setTimeout(() => {
   document.addEventListener('click', function(event) {
     const target = event.target;
 
+    const oldSummaryToggle = target.closest?.('[data-od62-summary-toggle]');
+    if (oldSummaryToggle) { event.preventDefault(); event.stopImmediatePropagation(); cleanupOldSummaryButtons(); return; }
+
+
     const createCampaignBtn = target.closest?.('#create-campaign-btn');
     if (createCampaignBtn) {
       event.preventDefault();
@@ -4148,119 +4152,7 @@ setTimeout(od46SyncSidebarDockButton, 120);
     }
   }, true);
 
-  // --------- Resumo de magias / habilidades ---------
-  function ensureSummaryButton(tabId, listId, label) {
-    const tab = document.getElementById(tabId);
-    const list = document.getElementById(listId);
-    if (!tab || !list) return null;
-    const row = tab.querySelector('.section-title-row') || tab;
-    let btn = tab.querySelector(`[data-od62-summary-toggle="${listId}"]`);
-    if (!btn) {
-      btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'ghost-btn small od62-summary-toggle';
-      btn.dataset.od62SummaryToggle = listId;
-      btn.textContent = 'Resumo';
-      row.appendChild(btn);
-    }
-    let summary = tab.querySelector(`[data-od62-summary-list="${listId}"]`);
-    if (!summary) {
-      summary = document.createElement('div');
-      summary.className = 'od62-summary-grid hidden';
-      summary.dataset.od62SummaryList = listId;
-      list.insertAdjacentElement('afterend', summary);
-    }
-    return { tab, list, btn, summary, label };
-  }
-
-  function spellFromCard(card) {
-    return {
-      name: safeText(card.querySelector('.spell-name')?.value, 'Magia'),
-      circle: safeText(card.querySelector('.spell-circle')?.value, '-'),
-      exec: safeText(card.querySelector('.spell-exec')?.value, '-'),
-      range: safeText(card.querySelector('.spell-range')?.value, '-'),
-      cost: safeText(card.querySelector('.spell-cost')?.value, '-'),
-      components: safeText(card.querySelector('.spell-components')?.value, '-'),
-      description: safeText(card.querySelector('.spell-description')?.value, 'Sem descrição.'),
-      upgrades: safeText(card.querySelector('.spell-upgrades')?.value, 'Sem aprimoramentos.')
-    };
-  }
-
-  function abilityFromCard(card) {
-    const amount = safeText(card.querySelector('.ability-cost-amount')?.value, '0');
-    const resource = safeText(card.querySelector('.ability-cost-resource')?.value, 'PE');
-    return {
-      name: safeText(card.querySelector('.ability-name')?.value, 'Habilidade'),
-      cost: amount && amount !== '0' ? `${amount} ${resource}` : '0',
-      bonus: safeText(card.querySelector('.ability-bonus')?.value, '-'),
-      action: safeText(card.querySelector('.ability-action')?.value, 'Padrão'),
-      description: safeText(card.querySelector('.ability-description')?.value, 'Sem descrição.')
-    };
-  }
-
-  function chip(label, value) { return `<span class="od62-chip"><b>${escapeHtml(label)}:</b> ${escapeHtml(value)}</span>`; }
-
-  function rebuildSpellsSummary() {
-    const pack = ensureSummaryButton('tab-magias', 'spells-list', 'Magias');
-    if (!pack) return;
-    const cards = [...pack.list.querySelectorAll('.spell-card')];
-    pack.summary.innerHTML = cards.length ? cards.map(card => {
-      const s = spellFromCard(card);
-      return `<article class="od62-summary-card od62-spell-summary"><h4>${escapeHtml(s.name)}</h4><div class="od62-chip-row">${chip('Círculo', s.circle)}${chip('Ação', s.exec)}${chip('Alcance', s.range)}${chip('Custo', s.cost)}${chip('Comp.', s.components)}</div><p>${escapeHtml(s.description)}</p><div class="od62-upgrades"><strong>Aprimoramentos</strong><span>${escapeHtml(s.upgrades)}</span></div></article>`;
-    }).join('') : '<div class="campaign-empty">Nenhuma magia adicionada.</div>';
-  }
-
-  function rebuildAbilitiesSummary() {
-    const pack = ensureSummaryButton('tab-habilidades', 'abilities-list', 'Habilidades');
-    if (!pack) return;
-    const cards = [...pack.list.querySelectorAll('.ability-card')];
-    pack.summary.innerHTML = cards.length ? cards.map(card => {
-      const a = abilityFromCard(card);
-      return `<article class="od62-summary-card od62-ability-summary"><h4>${escapeHtml(a.name)}</h4><div class="od62-chip-row">${chip('Custo', a.cost)}${chip('Ação', a.action)}${chip('Bônus', a.bonus)}</div><p>${escapeHtml(a.description)}</p></article>`;
-    }).join('') : '<div class="campaign-empty">Nenhuma habilidade adicionada.</div>';
-  }
-
-  function setSummaryMode(listId, enabled, shouldSave = false) {
-    const pack = ensureSummaryButton(listId === 'spells-list' ? 'tab-magias' : 'tab-habilidades', listId, '');
-    if (!pack) return;
-    if (shouldSave && typeof saveCurrentCharacter === 'function') saveCurrentCharacter();
-    if (listId === 'spells-list') rebuildSpellsSummary();
-    if (listId === 'abilities-list') rebuildAbilitiesSummary();
-    pack.list.classList.toggle('hidden', enabled);
-    pack.summary.classList.toggle('hidden', !enabled);
-    pack.btn.textContent = enabled ? 'Editar' : 'Resumo';
-    pack.tab.classList.toggle('od62-summary-mode', enabled);
-    setCleanBool(`od62_${listId}_summary`, enabled);
-  }
-
-  document.addEventListener('click', event => {
-    const toggle = event.target.closest('[data-od62-summary-toggle]');
-    if (!toggle) return;
-    event.preventDefault();
-    const listId = toggle.dataset.od62SummaryToggle;
-    const current = cleanBool(`od62_${listId}_summary`, false);
-    setSummaryMode(listId, !current, true);
-  }, true);
-
-  const baseRenderSpells = renderSpells;
-  renderSpells = function(char) {
-    baseRenderSpells(char);
-    rebuildSpellsSummary();
-    setSummaryMode('spells-list', cleanBool('od62_spells-list_summary', false));
-  };
-
-  const baseRenderAbilities = renderAbilities;
-  renderAbilities = function(char) {
-    baseRenderAbilities(char);
-    rebuildAbilitiesSummary();
-    setSummaryMode('abilities-list', cleanBool('od62_abilities-list_summary', false));
-  };
-
-  document.addEventListener('input', event => {
-    if (event.target.closest('.spell-card')) rebuildSpellsSummary();
-    if (event.target.closest('.ability-card')) rebuildAbilitiesSummary();
-  }, true);
-
+  // --------- Resumos antigos de magias/habilidades removidos na v1.80.9 ---------
   // --------- Inventário reduzido visual ---------
   function injectInventorySummaries() {
     document.querySelectorAll('.simple-inventory-card').forEach(card => {
@@ -4299,10 +4191,6 @@ setTimeout(od46SyncSidebarDockButton, 120);
   function initCleanUI() {
     cleanSessionsUI();
     cleanTopbarUI();
-    ensureSummaryButton('tab-magias', 'spells-list', 'Magias');
-    ensureSummaryButton('tab-habilidades', 'abilities-list', 'Habilidades');
-    rebuildSpellsSummary();
-    rebuildAbilitiesSummary();
     injectInventorySummaries();
     setupDiceVisuals();
   }
@@ -12035,7 +11923,7 @@ function od66InventoryMutationUnlockSoon() {
    Este bloco não altera regras de ficha; apenas melhora autonomia e experiência.
 ========================= */
 (function od115Maintenance(){
-  const VERSION = '1.80.8';
+  const VERSION = '1.80.9';
   const STORAGE_PREFIX = 'od_';
   const routeMap = {
     home: '/inicio',
@@ -13636,7 +13524,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od136AttributesClean(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   const ATTRS = [
     ['forca', 'Força'], ['agilidade', 'Agilidade'], ['vigor', 'Vigor'], ['intelecto', 'Intelecto'], ['presenca', 'Presença']
@@ -13804,7 +13692,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od137SheetStabilityAndManualDefenseDodge(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   const $ = id => document.getElementById(id);
   const EDITABLE = 'input, textarea, select, [contenteditable="true"]';
@@ -14166,7 +14054,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od138AuditAndDuplicateSheetInstalled) return;
   window.__od138AuditAndDuplicateSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   const DUP_SELECTOR = '[data-od138-duplicate-character], [data-od71-copy-character], [data-copy-account-character]';
 
@@ -14359,7 +14247,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od139ExtraErrorFixesInstalled) return;
   window.__od139ExtraErrorFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   const IMAGE_KEYS = [
     'portrait','portraitUrl','image','imageUrl','photo','photoUrl','avatar','avatarUrl','retrato','foto',
@@ -14514,7 +14402,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od140GeneralImprovementsInstalled) return;
   window.__od140GeneralImprovementsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   const VERSION = '1.80.5';
   const BACKUP_KEY = 'od_sheet_backups_v140';
@@ -14995,7 +14883,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od141AuditHardeningInstalled) return;
   window.__od141AuditHardeningInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   function pruneBackups(){
     try {
@@ -15046,7 +14934,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od142FinalCleanupInstalled) return;
   window.__od142FinalCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   function keepFirst(selector){
     const nodes = Array.from(document.querySelectorAll(selector));
@@ -15132,7 +15020,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od148SafeRollbackPatchInstalled) return;
   window.__od148SafeRollbackPatchInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   function hideManualNotes(){
     ['defense-effective-note','dodge-formula-note'].forEach(id => {
@@ -15185,7 +15073,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od152StableLayoutFixesInstalled) return;
   window.__od152StableLayoutFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   const $ = id => document.getElementById(id);
   const n = (value, fallback = 0) => {
@@ -15377,7 +15265,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od155SessionDashboardStability(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   const STORE_PREFIX = 'od155_dashboard_collapsed_';
   const lastSig = { player: '', master: '' };
@@ -15533,7 +15421,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od156ProtectOtherPlayersSheetsInstalled) return;
   window.__od156ProtectOtherPlayersSheetsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   const PROTECTED_ARRAYS = ['inventoryItems','blockInventory','abilities','spells','attacks','conditions','transformations','dropItems'];
   const PROTECTED_OBJECTS = ['skills','resistances','attrs','caster','obsIcons','portraitCrop','settings'];
@@ -15638,7 +15526,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od157ProtectOwnSheetPartialAutosaveInstalled) return;
   window.__od157ProtectOwnSheetPartialAutosaveInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   function clone(value){
     try { return structuredClone(value); } catch (_) {
@@ -15794,7 +15682,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od159StableSessionRenderInstalled) return;
   window.__od159StableSessionRenderInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   const $ = id => document.getElementById(id);
   const last = { tableSig: '', tableAt: 0, playerSig: '', masterSig: '' };
@@ -15927,7 +15815,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od160AccountSheetIsolationInstalled) return;
   window.__od160AccountSheetIsolationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   const $ = id => document.getElementById(id);
 
@@ -16078,7 +15966,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od161EquipmentProficienciesInstalled) return;
   window.__od161EquipmentProficienciesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   const GROUPS = {
     weapons: [
@@ -16245,7 +16133,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od164StableCleanRoutesInstalled) return;
   window.__od164StableCleanRoutesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   const VERSION = '1.80.5';
   let applyingRoute = false;
@@ -16453,7 +16341,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od165ExactPortraitCrop(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
   if (window.__od165ExactPortraitCropInstalled) return;
   window.__od165ExactPortraitCropInstalled = true;
 
@@ -16575,7 +16463,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1685AreaSeparationInstalled) return;
   window.__od1685AreaSeparationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   const AREA = {
     AUTH: 'login',
@@ -16764,7 +16652,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1699StableSkillUntrainInstalled) return;
   window.__od1699StableSkillUntrainInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   const pending = new Map();
   let flushTimer = null;
@@ -16992,7 +16880,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16910SkillSaveMergeInstalled) return;
   window.__od16910SkillSaveMergeInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   let lastExplicit = {};
   let lastExplicitAt = 0;
@@ -17208,7 +17096,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16911StablePortraitDuringResourcesInstalled) return;
   window.__od16911StablePortraitDuringResourcesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   const RESOURCE_SELECTOR = '#pv-current, #pv-max, #pe-current, #pe-max';
   const MAIN_SELECTOR = '#char-portrait-preview';
@@ -17380,7 +17268,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od170ModularSheetInstalled) return;
   window.__od170ModularSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   const STORE_KEY = 'od170_modules_state_v1';
   const DENSE_KEY = 'od170_dense_sheet_v1';
@@ -17624,7 +17512,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od171HubNavigationAndScrollInstalled) return;
   window.__od171HubNavigationAndScrollInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   let pending = false;
 
@@ -17748,7 +17636,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1715ScrollAndSmartCollapseInstalled) return;
   window.__od1715ScrollAndSmartCollapseInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   let scheduled = false;
 
@@ -17990,7 +17878,7 @@ function od66InventoryMutationUnlockSoon() {
    A correção principal está no index.html e no server/server.js.
 ========================= */
 (function od1762ReloadPathFixMarker(){
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 })();
 
 
@@ -18013,7 +17901,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1775ReloadRouteRestoreInstalled) return;
   window.__od1775ReloadRouteRestoreInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   const INITIAL_PATH = location.pathname + location.search;
   const INITIAL_PARTS = location.pathname.split('/').filter(Boolean).map(part => {
@@ -18218,7 +18106,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od178SkillsDesignPolishInstalled) return;
   window.__od178SkillsDesignPolishInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   let timer = null;
 
@@ -18291,7 +18179,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1781AttributeTextFixInstalled) return;
   window.__od1781AttributeTextFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   let timer = null;
 
@@ -18478,7 +18366,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1787AttributeNameNoEllipsisInstalled) return;
   window.__od1787AttributeNameNoEllipsisInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   const DISPLAY = {
     'força': 'FORÇA',
@@ -18574,7 +18462,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1788AttributeFullNamesInstalled) return;
   window.__od1788AttributeFullNamesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   const FULL = {
     forca: 'FORÇA',
@@ -18674,7 +18562,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od17814AttributesStableFinalInstalled) return;
   window.__od17814AttributesStableFinalInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   const ATTRS = [
     ['forca', 'FORÇA'],
@@ -18845,7 +18733,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1801SafeShellInstalled) return;
   window.__od1801SafeShellInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   const SETTINGS_KEY = 'od_settings';
   const DEFAULTS = { theme: 'dark', accent: 'red', skillsCompact: true, font: 'impact', sound: true };
@@ -19045,7 +18933,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1802RobustLoginInstalled) return;
   window.__od1802RobustLoginInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   function $(id){ return document.getElementById(id); }
   function cleanNick(value){
@@ -19186,7 +19074,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1803AreaCleanupInstalled) return;
   window.__od1803AreaCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   const AREA = {
     AUTH: 'login',
@@ -19426,7 +19314,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1804LoginAndAudioFixInstalled) return;
   window.__od1804LoginAndAudioFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   let loginBusy = false;
   let loginTicket = 0;
@@ -19684,7 +19572,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1805FinalShellInstalled) return;
   window.__od1805FinalShellInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   let hideTimer = null;
   let shellTimer = null;
@@ -19982,7 +19870,7 @@ function od66InventoryMutationUnlockSoon() {
 
 
 /* =========================
-   V180.8 - Correção dos modos reduzido/expandido e edição sem reset
+   V180.9 - Ajustes finais dos botões e remoção de resumos antigos
    Regra desta atualização:
    - substitui o bloco final v180.7; não empilha outro editor por cima;
    - inventário, magias e habilidades têm apenas um controlador final;
@@ -19992,9 +19880,9 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od1808CleanEditorsModes(){
   'use strict';
-  if (window.__od1808CleanEditorsModesInstalled) return;
-  window.__od1808CleanEditorsModesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
+  if (window.__od1809CleanEditorsModesInstalled) return;
+  window.__od1809CleanEditorsModesInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.80.9';
 
   let saveTimer = null;
   let renderTimer = null;
@@ -20058,6 +19946,23 @@ function od66InventoryMutationUnlockSoon() {
     }, delay);
   }
 
+
+  function cleanupOldSummaryButtons(){
+    document.querySelectorAll('[data-od62-summary-toggle="spells-list"], [data-od62-summary-list="spells-list"], [data-od62-summary-toggle="abilities-list"], [data-od62-summary-list="abilities-list"]').forEach(el => el.remove());
+    document.querySelectorAll('#tab-magias .od62-summary-toggle, #tab-magias .od62-summary-grid, #tab-habilidades .od62-summary-toggle, #tab-habilidades .od62-summary-grid').forEach(el => el.remove());
+    document.querySelectorAll('#tab-magias.od62-summary-mode, #tab-habilidades.od62-summary-mode').forEach(el => el.classList.remove('od62-summary-mode'));
+    const spells = $('spells-list'); if (spells) spells.classList.remove('hidden');
+    const abilities = $('abilities-list'); if (abilities) abilities.classList.remove('hidden');
+  }
+  function cleanupInventorySummaryToggle(){
+    const module = document.querySelector('.od170-module[data-od170-key="equip-resumo"]');
+    if (!module) return;
+    module.classList.remove('od170-collapsed');
+    const btn = module.querySelector('[data-od170-toggle]');
+    if (btn) { btn.remove(); }
+    module.classList.add('od1809-no-module-toggle');
+  }
+
   /* ---------- Resumo dinheiro/peso ---------- */
   function summaryValuesFromDOM(){
     const char = cchar();
@@ -20077,6 +19982,7 @@ function od66InventoryMutationUnlockSoon() {
   }
   function renderInventorySummary(char = cchar()){
     if (!char) return;
+    cleanupInventorySummaryToggle();
     const grid = document.querySelector('#tab-equipamentos .inventory-summary-grid');
     if (!grid) return;
     const items = ensureItems(char);
@@ -20275,6 +20181,7 @@ function od66InventoryMutationUnlockSoon() {
     </article>`;
   }
   function updateSpellHeader(char = cchar()){
+    cleanupOldSummaryButtons();
     const module = document.querySelector('.od170-module[data-od170-key="magias-lista"]');
     module?.classList.remove('od170-collapsed');
     const btn = module?.querySelector('[data-od170-toggle]');
@@ -20343,6 +20250,7 @@ function od66InventoryMutationUnlockSoon() {
     </article>`;
   }
   function updateAbilityHeader(char = cchar()){
+    cleanupOldSummaryButtons();
     $('toggle-ability-desc')?.closest('.ability-tools')?.classList.add('od1808-hidden-old-ability-tools');
     const module = document.querySelector('.od170-module[data-od170-key="habilidades-lista"]');
     module?.classList.remove('od170-collapsed');
@@ -20380,6 +20288,8 @@ function od66InventoryMutationUnlockSoon() {
   }
   function renderAll(char = cchar()){
     if (!char) return;
+    cleanupOldSummaryButtons();
+    cleanupInventorySummaryToggle();
     renderInventory(char);
     renderSpellsFinal(char);
     renderAbilitiesFinal(char);

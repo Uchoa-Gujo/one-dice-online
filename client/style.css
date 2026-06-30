@@ -4401,8 +4401,8 @@ body.dark-sheet .sessions-sheet-toggle {
   min-width: 290px !important;
   max-width: min(290px, calc(100vw - 120px)) !important;
   display: grid !important;
-  gap: 10px !important;
-  padding: 14px !important;
+  gap: 8px !important;
+  padding: 10px !important;
   border: 3px solid var(--accent, #111) !important;
   border-radius: 16px !important;
   background: color-mix(in srgb, var(--paper, #111) 92%, #000 8%) !important;
@@ -14684,12 +14684,12 @@ body.od1805-dark-only .od1805-panel {
 .od1808-small-field input,
 .od1808-small-field select { min-height: 46px !important; padding: 0 14px !important; text-align: center !important; font-size: 1rem !important; }
 
-.od1808-inv-bottom { display: grid !important; grid-template-columns: repeat(3, minmax(0,1fr)) !important; gap: 14px !important; }
+.od1808-inv-bottom { display: grid !important; grid-template-columns: minmax(0,1fr) minmax(0,1fr) minmax(90px,.62fr) !important; gap: 10px !important; align-items: stretch !important; }
 .od1808-box,
 .od1808-order {
   display: grid !important;
-  gap: 10px !important;
-  padding: 14px !important;
+  gap: 8px !important;
+  padding: 10px !important;
   border-radius: 20px !important;
   background: rgba(0,0,0,.20) !important;
   border: 1px solid rgba(255,255,255,.10) !important;
@@ -14699,11 +14699,11 @@ body.od1805-dark-only .od1805-panel {
   text-transform: uppercase !important;
   text-align: center !important;
 }
-.od1808-stepper { display: grid !important; grid-template-columns: 48px minmax(86px, 1fr) 48px !important; gap: 12px !important; align-items: center !important; }
-.od1808-stepper button { width: 48px !important; min-width: 48px !important; height: 48px !important; border-radius: 15px !important; padding: 0 !important; font-size: 1.35rem !important; }
-.od1808-stepper input { height: 48px !important; min-width: 86px !important; text-align: center !important; padding: 0 12px !important; font-size: 1.15rem !important; font-weight: 900 !important; }
+.od1808-stepper { display: grid !important; grid-template-columns: 34px minmax(44px, 1fr) 34px !important; gap: 6px !important; align-items: center !important; width: 100% !important; min-width: 0 !important; }
+.od1808-stepper button { width: 34px !important; min-width: 34px !important; height: 38px !important; border-radius: 12px !important; padding: 0 !important; font-size: 1.15rem !important; }
+.od1808-stepper input { height: 38px !important; min-width: 0 !important; width: 100% !important; text-align: center !important; padding: 0 6px !important; font-size: 1rem !important; font-weight: 900 !important; }
 .od1808-order > div { display: grid !important; grid-template-columns: repeat(2,minmax(0,1fr)) !important; gap: 8px !important; }
-.od1808-order button { min-width: 0 !important; min-height: 38px !important; border-radius: 12px !important; }
+.od1808-order button { min-width: 0 !important; min-height: 34px !important; border-radius: 11px !important; padding: 0 6px !important; font-size: .72rem !important; }
 .od1808-card-order { padding: 0 !important; background: transparent !important; border: 0 !important; }
 
 .od1808-summary-grid { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 18px !important; }
@@ -14743,4 +14743,83 @@ body.od1805-dark-only .od1805-panel {
   #abilities-list.od1808-editor-list { grid-template-columns: 1fr !important; }
   .od1808-summary-grid,
   .od1808-inv-bottom { grid-template-columns: 1fr !important; }
+}
+
+
+/* =========================
+   V180.9 - Limpeza final de botões desnecessários e ajuste de compactação
+========================= */
+
+/* Resumo do inventário não precisa reduzir/expandir */
+.od170-module[data-od170-key="equip-resumo"] [data-od170-toggle],
+.od170-module[data-od170-key="equip-resumo"] .od170-module-toggle,
+.od1809-no-module-toggle [data-od170-toggle] {
+  display: none !important;
+}
+
+/* Remove o botão antigo Resumo/Editar das magias e habilidades */
+#tab-magias [data-od62-summary-toggle],
+#tab-magias [data-od62-summary-list],
+#tab-magias .od62-summary-toggle,
+#tab-magias .od62-summary-grid,
+#tab-habilidades [data-od62-summary-toggle],
+#tab-habilidades [data-od62-summary-list],
+#tab-habilidades .od62-summary-toggle,
+#tab-habilidades .od62-summary-grid {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Garante que as listas novas não sejam escondidas por modo antigo */
+#spells-list.od1808-editor-list,
+#abilities-list.od1808-editor-list {
+  display: grid !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Peso/Usos do inventário em texto compactos e dentro das próprias áreas */
+.od1808-inv-card-edit .od1808-inv-bottom {
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr) minmax(90px,.62fr) !important;
+  gap: 10px !important;
+  align-items: stretch !important;
+}
+
+.od1808-inv-card-edit .od1808-box,
+.od1808-inv-card-edit .od1808-order {
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+.od1808-inv-card-edit .od1808-stepper {
+  grid-template-columns: 34px minmax(44px, 1fr) 34px !important;
+  gap: 6px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+.od1808-inv-card-edit .od1808-stepper button {
+  width: 34px !important;
+  min-width: 34px !important;
+  height: 38px !important;
+  padding: 0 !important;
+}
+
+.od1808-inv-card-edit .od1808-stepper input {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 38px !important;
+  padding: 0 6px !important;
+  font-size: 1rem !important;
+}
+
+.od1808-inv-card-edit .od1808-order > div {
+  gap: 6px !important;
+}
+
+.od1808-inv-card-edit .od1808-order button {
+  min-height: 34px !important;
+  padding: 0 4px !important;
+  font-size: .70rem !important;
 }
