@@ -14570,12 +14570,29 @@ body.od1805-dark-only .od1805-panel {
 
 
 
+
 /* =========================
-   V180.7 - Editores limpos: Inventário, Magias e Habilidades
+   V180.8 - Modos corretos: Inventário, Magias, Habilidades e Atributos
 ========================= */
-#simple-inventory-list.od1807-inventory-list,
-#spells-list.od1807-editor-list,
-#abilities-list.od1807-editor-list {
+/* Atributos: quando reduzido, oculta edição; quando expandido, oculta resumo */
+.od170-module[data-od170-key="resumo-atributos"].od170-collapsed > .od170-module-body,
+.od170-module[data-od170-key="resumo-atributos"].od170-collapsed #attributes-grid { display: none !important; }
+.od170-module[data-od170-key="resumo-atributos"]:not(.od170-collapsed) > .od1715-attr-summary { display: none !important; }
+
+/* Remove botões antigos de reduzir que não devem controlar esses editores */
+.od170-module[data-od170-key="equip-lista-simples"] > .od170-module-head [data-od170-toggle] { display: none !important; }
+.od170-module[data-od170-key="magias-lista"] > .od1715-collapse-summary,
+.od170-module[data-od170-key="habilidades-lista"] > .od1715-collapse-summary,
+.od170-module[data-od170-key="equip-lista-simples"] > .od1715-collapse-summary { display: none !important; }
+.ability-tools.od1808-hidden-old-ability-tools,
+#toggle-ability-desc { display: none !important; }
+#tab-equipamentos:not(.block-inventory-active) #block-inventory-panel,
+#tab-equipamentos:not(.block-inventory-active) .od170-module[data-od170-key="equip-modular"],
+.od170-module[data-od170-key="equip-modular"][hidden] { display: none !important; }
+
+#simple-inventory-list.od1808-inventory-list,
+#spells-list.od1808-editor-list,
+#abilities-list.od1808-editor-list {
   display: grid !important;
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   gap: 18px !important;
@@ -14585,10 +14602,13 @@ body.od1805-dark-only .od1805-panel {
   padding: 10px !important;
   box-sizing: border-box !important;
 }
-#simple-inventory-list.od1807-reduced { grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) !important; }
-.od1807-inv-card-edit,
-.od1807-inv-card-view,
-.od1807-editor-card {
+#simple-inventory-list.od1808-reduced,
+#spells-list.od1808-reduced,
+#abilities-list.od1808-reduced { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+
+.od1808-inv-card-edit,
+.od1808-inv-card-view,
+.od1808-editor-card {
   min-width: 0 !important;
   width: 100% !important;
   max-width: none !important;
@@ -14603,23 +14623,28 @@ body.od1805-dark-only .od1805-panel {
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.035), 0 16px 32px rgba(0,0,0,.20) !important;
   box-sizing: border-box !important;
 }
-.od1807-card-actions,
-.od1807-footer {
+
+.od1808-card-actions,
+.od1808-footer {
   display: grid !important;
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   gap: 12px !important;
   width: 100% !important;
 }
-.od1807-card-actions button,
-.od1807-footer button,
-.od1807-head-btn {
+.od1808-footer { display: flex !important; justify-content: center !important; }
+.od1808-footer .danger-btn { width: min(320px, 100%) !important; }
+.od1808-card-actions button,
+.od1808-footer button,
+.od1808-head-btn,
+.od1808-mode-toggle {
   min-height: 44px !important;
   border-radius: 14px !important;
   text-align: center !important;
   white-space: nowrap !important;
 }
-.od1807-field,
-.od1807-small-field {
+
+.od1808-field,
+.od1808-small-field {
   display: grid !important;
   gap: 8px !important;
   margin: 0 !important;
@@ -14633,34 +14658,35 @@ body.od1805-dark-only .od1805-panel {
   letter-spacing: .05em !important;
   text-transform: uppercase !important;
 }
-.od1807-title-row { display: grid !important; grid-template-columns: minmax(0, 1fr) 56px !important; gap: 12px !important; align-items: center !important; }
-.od1807-title-input,
-.od1807-title-row input,
-.od1807-field textarea,
-.od1807-small-field input,
-.od1807-small-field select,
-.od1807-stepper input {
+.od1808-title-row { display: grid !important; grid-template-columns: minmax(0, 1fr) 56px !important; gap: 12px !important; align-items: center !important; }
+.od1808-title-input,
+.od1808-title-row input,
+.od1808-field textarea,
+.od1808-small-field input,
+.od1808-small-field select,
+.od1808-stepper input {
   width: 100% !important;
   min-width: 0 !important;
   max-width: 100% !important;
   border-radius: 16px !important;
   background: rgba(0,0,0,.58) !important;
   color: #fff !important;
-  -webkit-text-fill-color: #fff !important;
+  -webkit-text-fill-color:#fff !important;
   border: 1px solid rgba(255,255,255,.14) !important;
   box-sizing: border-box !important;
 }
-.od1807-title-input,
-.od1807-title-row input { min-height: 52px !important; padding: 10px 16px !important; font-size: 1.15rem !important; font-weight: 700 !important; text-align: left !important; }
-.od1807-delete { width: 56px !important; min-width: 56px !important; height: 52px !important; border-radius: 16px !important; font-size: 1.8rem !important; }
-.od1807-big-text { min-height: 230px !important; padding: 16px !important; line-height: 1.45 !important; resize: vertical !important; font-size: 1rem !important; font-weight: 550 !important; }
-.od1807-mid-text { min-height: 150px !important; padding: 16px !important; line-height: 1.42 !important; resize: vertical !important; font-size: .96rem !important; }
-.od1807-small-grid { display: grid !important; grid-template-columns: repeat(2, minmax(0,1fr)) !important; gap: 14px !important; width: 100% !important; }
-.od1807-small-field input,
-.od1807-small-field select { min-height: 46px !important; padding: 0 14px !important; text-align: center !important; font-size: 1rem !important; }
-.od1807-inv-bottom { display: grid !important; grid-template-columns: repeat(3, minmax(0,1fr)) !important; gap: 14px !important; }
-.od1807-box,
-.od1807-order {
+.od1808-title-input,
+.od1808-title-row input { min-height: 52px !important; padding: 10px 16px !important; font-size: 1.15rem !important; font-weight: 700 !important; text-align: left !important; }
+.od1808-delete { width: 56px !important; min-width: 56px !important; height: 52px !important; border-radius: 16px !important; font-size: 1.8rem !important; }
+.od1808-big-text { min-height: 230px !important; padding: 16px !important; line-height: 1.45 !important; resize: vertical !important; font-size: 1rem !important; font-weight: 550 !important; }
+.od1808-mid-text { min-height: 150px !important; padding: 16px !important; line-height: 1.42 !important; resize: vertical !important; font-size: .96rem !important; }
+.od1808-small-grid { display: grid !important; grid-template-columns: repeat(2, minmax(0,1fr)) !important; gap: 14px !important; width: 100% !important; }
+.od1808-small-field input,
+.od1808-small-field select { min-height: 46px !important; padding: 0 14px !important; text-align: center !important; font-size: 1rem !important; }
+
+.od1808-inv-bottom { display: grid !important; grid-template-columns: repeat(3, minmax(0,1fr)) !important; gap: 14px !important; }
+.od1808-box,
+.od1808-order {
   display: grid !important;
   gap: 10px !important;
   padding: 14px !important;
@@ -14673,14 +14699,15 @@ body.od1805-dark-only .od1805-panel {
   text-transform: uppercase !important;
   text-align: center !important;
 }
-.od1807-stepper { display: grid !important; grid-template-columns: 44px minmax(0, 1fr) 44px !important; gap: 10px !important; align-items: center !important; }
-.od1807-stepper button { width: 44px !important; height: 44px !important; border-radius: 14px !important; padding: 0 !important; }
-.od1807-stepper input { height: 44px !important; text-align: center !important; padding: 0 8px !important; }
-.od1807-order > div { display: grid !important; grid-template-columns: repeat(2,minmax(0,1fr)) !important; gap: 8px !important; }
-.od1807-order button { min-width: 0 !important; min-height: 38px !important; border-radius: 12px !important; }
-.od1807-card-order { padding: 0 !important; background: transparent !important; border: 0 !important; }
-.od1807-summary-grid { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 18px !important; }
-.od1807-summary-card {
+.od1808-stepper { display: grid !important; grid-template-columns: 48px minmax(86px, 1fr) 48px !important; gap: 12px !important; align-items: center !important; }
+.od1808-stepper button { width: 48px !important; min-width: 48px !important; height: 48px !important; border-radius: 15px !important; padding: 0 !important; font-size: 1.35rem !important; }
+.od1808-stepper input { height: 48px !important; min-width: 86px !important; text-align: center !important; padding: 0 12px !important; font-size: 1.15rem !important; font-weight: 900 !important; }
+.od1808-order > div { display: grid !important; grid-template-columns: repeat(2,minmax(0,1fr)) !important; gap: 8px !important; }
+.od1808-order button { min-width: 0 !important; min-height: 38px !important; border-radius: 12px !important; }
+.od1808-card-order { padding: 0 !important; background: transparent !important; border: 0 !important; }
+
+.od1808-summary-grid { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)) !important; gap: 18px !important; }
+.od1808-summary-card {
   min-height: 150px !important;
   display: grid !important;
   place-items: center !important;
@@ -14695,16 +14722,25 @@ body.od1805-dark-only .od1805-panel {
   font-weight: 900 !important;
   text-transform: uppercase !important;
 }
-.od1807-summary-card input { width: 100% !important; min-height: 58px !important; border-radius: 16px !important; text-align: center !important; font-size: 1.7rem !important; font-weight: 900 !important; background: rgba(0,0,0,.58) !important; color: #fff !important; -webkit-text-fill-color:#fff !important; }
-.od1807-weight-status { display:flex !important; gap:12px !important; align-items:center !important; padding:14px 18px !important; border-radius:16px !important; background: rgba(0,0,0,.20) !important; border:1px solid rgba(255,255,255,.10) !important; }
-.od1807-tags { display:flex !important; flex-wrap:wrap !important; gap:8px !important; }
-.od1807-tags span { padding:6px 10px !important; border-radius:999px !important; border:1px solid color-mix(in srgb, var(--accent, #c9303a), white 10%) !important; }
-.od1807-view-body h4 { margin: 0 0 8px !important; font-size: 1.25rem !important; }
-.od1807-view-body p { white-space: pre-wrap !important; line-height: 1.42 !important; }
+.od1808-summary-card input { width: 100% !important; min-height: 58px !important; border-radius: 16px !important; text-align: center !important; font-size: 1.7rem !important; font-weight: 900 !important; background: rgba(0,0,0,.58) !important; color: #fff !important; -webkit-text-fill-color:#fff !important; }
+.od1808-weight-status { display:flex !important; gap:12px !important; align-items:center !important; padding:14px 18px !important; border-radius:16px !important; background: rgba(0,0,0,.20) !important; border:1px solid rgba(255,255,255,.10) !important; }
+.od1808-status-icon,.od1807-status-icon { display:none !important; }
+
+.od1808-tags,
+.od1808-view-tags { display:flex !important; flex-wrap:wrap !important; gap:8px !important; }
+.od1808-tags span,
+.od1808-view-tags span { padding:6px 10px !important; border-radius:999px !important; border:1px solid color-mix(in srgb, var(--accent, #c9303a), white 10%) !important; }
+.od1808-view-body h4,
+.od1808-view-title { margin: 0 0 8px !important; font-size: 1.25rem !important; font-weight: 900 !important; color: #fff !important; }
+.od1808-view-body p,
+.od1808-view-text p { white-space: pre-wrap !important; line-height: 1.42 !important; margin: 8px 0 0 !important; }
+.od1808-view-text { display:grid !important; gap:6px !important; padding:14px !important; border-radius:16px !important; background:rgba(0,0,0,.18) !important; border:1px solid rgba(255,255,255,.09) !important; }
+.od1808-source-fields { display:none !important; }
+
 @media (max-width: 1100px) {
-  #simple-inventory-list.od1807-inventory-list,
-  #spells-list.od1807-editor-list,
-  #abilities-list.od1807-editor-list { grid-template-columns: 1fr !important; }
-  .od1807-summary-grid,
-  .od1807-inv-bottom { grid-template-columns: 1fr !important; }
+  #simple-inventory-list.od1808-inventory-list,
+  #spells-list.od1808-editor-list,
+  #abilities-list.od1808-editor-list { grid-template-columns: 1fr !important; }
+  .od1808-summary-grid,
+  .od1808-inv-bottom { grid-template-columns: 1fr !important; }
 }

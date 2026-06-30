@@ -5,7 +5,7 @@
 ========================= */
 (function od139EarlyGuards(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
   if (!window.CSS) window.CSS = {};
   if (typeof window.CSS.escape !== 'function') {
     window.CSS.escape = function(value) {
@@ -12035,7 +12035,7 @@ function od66InventoryMutationUnlockSoon() {
    Este bloco não altera regras de ficha; apenas melhora autonomia e experiência.
 ========================= */
 (function od115Maintenance(){
-  const VERSION = '1.80.7';
+  const VERSION = '1.80.8';
   const STORAGE_PREFIX = 'od_';
   const routeMap = {
     home: '/inicio',
@@ -13636,7 +13636,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od136AttributesClean(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   const ATTRS = [
     ['forca', 'Força'], ['agilidade', 'Agilidade'], ['vigor', 'Vigor'], ['intelecto', 'Intelecto'], ['presenca', 'Presença']
@@ -13804,7 +13804,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od137SheetStabilityAndManualDefenseDodge(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   const $ = id => document.getElementById(id);
   const EDITABLE = 'input, textarea, select, [contenteditable="true"]';
@@ -14166,7 +14166,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od138AuditAndDuplicateSheetInstalled) return;
   window.__od138AuditAndDuplicateSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   const DUP_SELECTOR = '[data-od138-duplicate-character], [data-od71-copy-character], [data-copy-account-character]';
 
@@ -14359,7 +14359,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od139ExtraErrorFixesInstalled) return;
   window.__od139ExtraErrorFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   const IMAGE_KEYS = [
     'portrait','portraitUrl','image','imageUrl','photo','photoUrl','avatar','avatarUrl','retrato','foto',
@@ -14514,7 +14514,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od140GeneralImprovementsInstalled) return;
   window.__od140GeneralImprovementsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   const VERSION = '1.80.5';
   const BACKUP_KEY = 'od_sheet_backups_v140';
@@ -14995,7 +14995,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od141AuditHardeningInstalled) return;
   window.__od141AuditHardeningInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   function pruneBackups(){
     try {
@@ -15046,7 +15046,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od142FinalCleanupInstalled) return;
   window.__od142FinalCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   function keepFirst(selector){
     const nodes = Array.from(document.querySelectorAll(selector));
@@ -15132,7 +15132,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od148SafeRollbackPatchInstalled) return;
   window.__od148SafeRollbackPatchInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   function hideManualNotes(){
     ['defense-effective-note','dodge-formula-note'].forEach(id => {
@@ -15185,7 +15185,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od152StableLayoutFixesInstalled) return;
   window.__od152StableLayoutFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   const $ = id => document.getElementById(id);
   const n = (value, fallback = 0) => {
@@ -15377,7 +15377,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od155SessionDashboardStability(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   const STORE_PREFIX = 'od155_dashboard_collapsed_';
   const lastSig = { player: '', master: '' };
@@ -15533,7 +15533,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od156ProtectOtherPlayersSheetsInstalled) return;
   window.__od156ProtectOtherPlayersSheetsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   const PROTECTED_ARRAYS = ['inventoryItems','blockInventory','abilities','spells','attacks','conditions','transformations','dropItems'];
   const PROTECTED_OBJECTS = ['skills','resistances','attrs','caster','obsIcons','portraitCrop','settings'];
@@ -15638,7 +15638,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od157ProtectOwnSheetPartialAutosaveInstalled) return;
   window.__od157ProtectOwnSheetPartialAutosaveInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   function clone(value){
     try { return structuredClone(value); } catch (_) {
@@ -15794,7 +15794,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od159StableSessionRenderInstalled) return;
   window.__od159StableSessionRenderInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   const $ = id => document.getElementById(id);
   const last = { tableSig: '', tableAt: 0, playerSig: '', masterSig: '' };
@@ -15927,7 +15927,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od160AccountSheetIsolationInstalled) return;
   window.__od160AccountSheetIsolationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   const $ = id => document.getElementById(id);
 
@@ -16078,7 +16078,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od161EquipmentProficienciesInstalled) return;
   window.__od161EquipmentProficienciesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   const GROUPS = {
     weapons: [
@@ -16245,7 +16245,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od164StableCleanRoutesInstalled) return;
   window.__od164StableCleanRoutesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   const VERSION = '1.80.5';
   let applyingRoute = false;
@@ -16453,7 +16453,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od165ExactPortraitCrop(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
   if (window.__od165ExactPortraitCropInstalled) return;
   window.__od165ExactPortraitCropInstalled = true;
 
@@ -16575,7 +16575,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1685AreaSeparationInstalled) return;
   window.__od1685AreaSeparationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   const AREA = {
     AUTH: 'login',
@@ -16764,7 +16764,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1699StableSkillUntrainInstalled) return;
   window.__od1699StableSkillUntrainInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   const pending = new Map();
   let flushTimer = null;
@@ -16992,7 +16992,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16910SkillSaveMergeInstalled) return;
   window.__od16910SkillSaveMergeInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   let lastExplicit = {};
   let lastExplicitAt = 0;
@@ -17208,7 +17208,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16911StablePortraitDuringResourcesInstalled) return;
   window.__od16911StablePortraitDuringResourcesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   const RESOURCE_SELECTOR = '#pv-current, #pv-max, #pe-current, #pe-max';
   const MAIN_SELECTOR = '#char-portrait-preview';
@@ -17380,7 +17380,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od170ModularSheetInstalled) return;
   window.__od170ModularSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   const STORE_KEY = 'od170_modules_state_v1';
   const DENSE_KEY = 'od170_dense_sheet_v1';
@@ -17624,7 +17624,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od171HubNavigationAndScrollInstalled) return;
   window.__od171HubNavigationAndScrollInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   let pending = false;
 
@@ -17748,7 +17748,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1715ScrollAndSmartCollapseInstalled) return;
   window.__od1715ScrollAndSmartCollapseInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   let scheduled = false;
 
@@ -17990,7 +17990,7 @@ function od66InventoryMutationUnlockSoon() {
    A correção principal está no index.html e no server/server.js.
 ========================= */
 (function od1762ReloadPathFixMarker(){
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 })();
 
 
@@ -18013,7 +18013,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1775ReloadRouteRestoreInstalled) return;
   window.__od1775ReloadRouteRestoreInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   const INITIAL_PATH = location.pathname + location.search;
   const INITIAL_PARTS = location.pathname.split('/').filter(Boolean).map(part => {
@@ -18218,7 +18218,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od178SkillsDesignPolishInstalled) return;
   window.__od178SkillsDesignPolishInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   let timer = null;
 
@@ -18291,7 +18291,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1781AttributeTextFixInstalled) return;
   window.__od1781AttributeTextFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   let timer = null;
 
@@ -18478,7 +18478,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1787AttributeNameNoEllipsisInstalled) return;
   window.__od1787AttributeNameNoEllipsisInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   const DISPLAY = {
     'força': 'FORÇA',
@@ -18574,7 +18574,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1788AttributeFullNamesInstalled) return;
   window.__od1788AttributeFullNamesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   const FULL = {
     forca: 'FORÇA',
@@ -18674,7 +18674,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od17814AttributesStableFinalInstalled) return;
   window.__od17814AttributesStableFinalInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   const ATTRS = [
     ['forca', 'FORÇA'],
@@ -18845,7 +18845,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1801SafeShellInstalled) return;
   window.__od1801SafeShellInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   const SETTINGS_KEY = 'od_settings';
   const DEFAULTS = { theme: 'dark', accent: 'red', skillsCompact: true, font: 'impact', sound: true };
@@ -19045,7 +19045,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1802RobustLoginInstalled) return;
   window.__od1802RobustLoginInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   function $(id){ return document.getElementById(id); }
   function cleanNick(value){
@@ -19186,7 +19186,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1803AreaCleanupInstalled) return;
   window.__od1803AreaCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   const AREA = {
     AUTH: 'login',
@@ -19426,7 +19426,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1804LoginAndAudioFixInstalled) return;
   window.__od1804LoginAndAudioFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   let loginBusy = false;
   let loginTicket = 0;
@@ -19684,7 +19684,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1805FinalShellInstalled) return;
   window.__od1805FinalShellInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   let hideTimer = null;
   let shellTimer = null;
@@ -19980,59 +19980,34 @@ function od66InventoryMutationUnlockSoon() {
 
 
 
+
 /* =========================
-   V180.7 - Editores refeitos do zero: Inventário, Magias e Habilidades
+   V180.8 - Correção dos modos reduzido/expandido e edição sem reset
    Regra desta atualização:
-   - os blocos antigos dessas áreas foram removidos fisicamente;
-   - este é o único render final ativo para as três áreas;
-   - eventos antigos de adicionar/remover/editar são bloqueados antes de rodar;
-   - salvar sempre sincroniza a fonte da ficha antes de enviar ao servidor.
+   - substitui o bloco final v180.7; não empilha outro editor por cima;
+   - inventário, magias e habilidades têm apenas um controlador final;
+   - o modo reduzido é visualização sem edição;
+   - o modo expandido é edição contínua, sem resetar ao digitar;
+   - botões antigos dos módulos são ocultados ou reaproveitados corretamente.
 ========================= */
-(function od1807CleanEditors(){
+(function od1808CleanEditorsModes(){
   'use strict';
-  if (window.__od1807CleanEditorsInstalled) return;
-  window.__od1807CleanEditorsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+  if (window.__od1808CleanEditorsModesInstalled) return;
+  window.__od1808CleanEditorsModesInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.80.8';
 
   let saveTimer = null;
+  let renderTimer = null;
   let rendering = false;
 
   function $(id){ return document.getElementById(id); }
   function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
   function cchar(){ return safe(() => typeof currentChar === 'function' ? currentChar() : null, null); }
   function uidSafe(prefix){ return typeof uid === 'function' ? uid(prefix || 'id') : `${prefix || 'id'}_${Date.now()}_${Math.random().toString(16).slice(2)}`; }
-  function esc(value){
-    return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-  }
-  function number(value, fallback = 0){
-    const n = Number(String(value ?? '').replace(',', '.'));
-    return Number.isFinite(n) ? n : fallback;
-  }
-  function weightValue(value){
-    const n = number(value, .5);
-    if (!Number.isFinite(n) || n <= 0) return .5;
-    return n < 1 ? .5 : Math.round(n * 2) / 2;
-  }
-  function fmt(value){
-    const n = number(value, 0);
-    return Number.isInteger(n) ? String(n) : String(n).replace('.', ',');
-  }
-  function cloneItem(item = {}){
-    return {
-      id: item.id || uidSafe('inv'),
-      name: item.name || 'Novo item',
-      weight: weightValue(item.weight ?? .5),
-      uses: Math.max(0, Math.round(number(item.uses, 0))),
-      desc: item.desc || item.description || ''
-    };
-  }
-  function ensureItems(char = cchar()){
-    if (!char) return [];
-    char.inventoryItems = Array.isArray(char.inventoryItems) ? char.inventoryItems.map(cloneItem) : [];
-    return char.inventoryItems;
-  }
-  function currentWeight(items){ return (items || []).reduce((sum, item) => sum + weightValue(item.weight), 0); }
-  function isInventoryReduced(char = cchar()){ return !!char?.simpleInventoryCompact; }
+  function esc(value){ return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+  function number(value, fallback = 0){ const n = Number(String(value ?? '').replace(',', '.')); return Number.isFinite(n) ? n : fallback; }
+  function fmt(value){ const n = number(value, 0); return Number.isInteger(n) ? String(n) : String(n).replace('.', ','); }
+  function weightValue(value){ const n = number(value, .5); if (!Number.isFinite(n) || n <= 0) return .5; return n < 1 ? .5 : Math.round(n * 2) / 2; }
   function setChar(mutator){
     const char = cchar();
     if (!char) return null;
@@ -20040,112 +20015,161 @@ function od66InventoryMutationUnlockSoon() {
     else mutator(char);
     return cchar() || char;
   }
-  function saveSoon(immediate = false){
-    syncAllFromDOM();
+
+  /* ---------- estado base ---------- */
+  function cloneItem(item = {}){
+    return {
+      id: item.id || uidSafe('inv'),
+      name: item.name ?? '',
+      weight: weightValue(item.weight ?? .5),
+      uses: Math.max(0, Math.round(number(item.uses, 0))),
+      desc: item.desc ?? item.description ?? ''
+    };
+  }
+  function ensureItems(char = cchar()){
+    if (!char) return [];
+    char.inventoryItems = Array.isArray(char.inventoryItems) ? char.inventoryItems.map(cloneItem) : [];
+    return char.inventoryItems;
+  }
+  function ensureSpells(char = cchar()){
+    if (!char) return [];
+    char.spells = Array.isArray(char.spells) ? char.spells : [];
+    return char.spells;
+  }
+  function ensureAbilities(char = cchar()){
+    if (!char) return [];
+    char.abilities = Array.isArray(char.abilities) ? char.abilities : [];
+    return char.abilities;
+  }
+  function currentWeight(items){ return (items || []).reduce((sum, item) => sum + weightValue(item.weight), 0); }
+  function invReduced(char = cchar()){ return !!char?.simpleInventoryCompact; }
+  function spellsReduced(char = cchar()){ return !!char?.spellsCompact; }
+  function abilitiesReduced(char = cchar()){ return !!char?.abilitiesCompact; }
+
+  function scheduleServerSave(delay = 850){
     if (typeof queueSave === 'function') safe(() => queueSave(), null);
     clearTimeout(saveTimer);
     saveTimer = setTimeout(() => {
-      syncAllFromDOM();
+      syncAllFromDOM({ renderSummary: true });
       safe(() => typeof saveCurrentCharacter === 'function' && saveCurrentCharacter(), null);
       const char = cchar();
       if (char && typeof od44SaveCharacterOnline === 'function') safe(() => od44SaveCharacterOnline(char), null);
       else if (char && typeof od42ScheduleCharacterSave === 'function') safe(() => od42ScheduleCharacterSave(char), null);
-    }, immediate ? 20 : 240);
+    }, delay);
   }
 
-  /* INVENTÁRIO */
-  function readInventoryDOM(){
+  /* ---------- Resumo dinheiro/peso ---------- */
+  function summaryValuesFromDOM(){
     const char = cchar();
-    const list = $('simple-inventory-list');
-    if (!list || !list.classList.contains('od1807-inventory-list') || isInventoryReduced(char)) return ensureItems(char).map(cloneItem);
-    return [...list.querySelectorAll('.od1807-inv-card-edit')].map(card => cloneItem({
-      id: card.dataset.itemId,
-      name: card.querySelector('[data-od1807-inv="name"]')?.value || 'Novo item',
-      weight: card.querySelector('[data-od1807-inv="weight"]')?.value || .5,
-      uses: card.querySelector('[data-od1807-inv="uses"]')?.value || 0,
-      desc: card.querySelector('[data-od1807-inv="desc"]')?.value || ''
-    }));
+    return {
+      money: $('money')?.value ?? char?.money ?? '0',
+      max: number($('weight-max')?.value ?? char?.weightMax ?? 0, 0)
+    };
   }
-  function persistInventory(items, renderSummary = true){
-    const normalized = (items || []).map(cloneItem);
-    const weight = currentWeight(normalized);
-    const money = $('money')?.value ?? cchar()?.money ?? '0';
-    const weightMax = number($('weight-max')?.value ?? cchar()?.weightMax ?? 0, 0);
-    const char = setChar(saved => {
-      saved.inventoryItems = normalized;
-      saved.weightCurrent = weight;
-      saved.weightMax = weightMax;
-      saved.money = String(money);
-      saved.equipmentNotes = normalized.map(item => `${item.name || 'Item'} | Peso: ${item.weight || 0} | Usos: ${item.uses || 0} | ${item.desc || ''}`).join('\n');
-    });
-    if (renderSummary) renderInventorySummary(char);
+  function updateWeightStatusOnly(char = cchar()){
+    const status = $('weight-status');
+    if (!status || !char) return;
+    const items = ensureItems(char);
+    const weight = currentWeight(items);
+    const max = number(($('weight-max')?.value ?? char.weightMax ?? 0), 0);
+    status.className = 'weight-status-line od1808-weight-status';
+    status.textContent = `${weight <= max || !max ? 'Peso dentro do limite.' : 'Peso acima do limite.'} Peso ${fmt(weight)} / ${fmt(max)}.`;
   }
   function renderInventorySummary(char = cchar()){
     if (!char) return;
     const grid = document.querySelector('#tab-equipamentos .inventory-summary-grid');
-    const status = $('weight-status');
     if (!grid) return;
     const items = ensureItems(char);
     const weight = currentWeight(items);
     const max = number(char.weightMax ?? 0, 0);
     const money = String(char.money ?? '0');
-    grid.className = 'equipment-grid inventory-summary-grid od1807-summary-grid';
+    grid.className = 'equipment-grid inventory-summary-grid od1808-summary-grid';
     grid.innerHTML = `
-      <label class="od1807-summary-card"><span>Dinheiro</span><input id="money" type="text" value="${esc(money)}" autocomplete="off"></label>
-      <label class="od1807-summary-card od1807-readonly"><span>Peso Atual</span><input id="weight-current" type="text" value="${esc(fmt(weight))}" readonly></label>
-      <label class="od1807-summary-card"><span>Peso Máximo</span><input id="weight-max" type="number" min="0" step="0.5" value="${esc(max)}"></label>`;
-    if (status) {
-      status.className = 'weight-status-line od1807-weight-status';
-      status.innerHTML = `<span class="od1807-status-icon">⚖</span><span>${weight <= max || !max ? 'Peso dentro do limite.' : 'Peso acima do limite.'} Peso ${esc(fmt(weight))} / ${esc(fmt(max))}.</span>`;
-    }
+      <label class="od1808-summary-card"><span>Dinheiro</span><input id="money" type="text" value="${esc(money)}" autocomplete="off"></label>
+      <label class="od1808-summary-card od1808-readonly"><span>Peso Atual</span><input id="weight-current" type="text" value="${esc(fmt(weight))}" readonly></label>
+      <label class="od1808-summary-card"><span>Peso Máximo</span><input id="weight-max" type="number" min="0" step="0.5" value="${esc(max)}"></label>`;
+    updateWeightStatusOnly(char);
+  }
+
+  /* ---------- Inventário em texto ---------- */
+  function readInventoryDOM(){
+    const char = cchar();
+    const list = $('simple-inventory-list');
+    if (!list || invReduced(char)) return ensureItems(char).map(cloneItem);
+    if (!list.classList.contains('od1808-inventory-list')) return ensureItems(char).map(cloneItem);
+    return [...list.querySelectorAll('.od1808-inv-card-edit')].map(card => cloneItem({
+      id: card.dataset.itemId,
+      name: card.querySelector('[data-od1808-inv="name"]')?.value ?? '',
+      weight: card.querySelector('[data-od1808-inv="weight"]')?.value ?? .5,
+      uses: card.querySelector('[data-od1808-inv="uses"]')?.value ?? 0,
+      desc: card.querySelector('[data-od1808-inv="desc"]')?.value ?? ''
+    }));
+  }
+  function persistInventory(items, renderSummary = false){
+    const normalized = (items || []).map(cloneItem);
+    const weight = currentWeight(normalized);
+    const values = summaryValuesFromDOM();
+    const char = setChar(saved => {
+      saved.inventoryItems = normalized;
+      saved.weightCurrent = weight;
+      saved.weightMax = values.max;
+      saved.money = String(values.money);
+      saved.equipmentNotes = normalized.map(item => `${item.name || 'Item'} | Peso: ${item.weight || 0} | Usos: ${item.uses || 0} | ${item.desc || ''}`).join('\n');
+    });
+    if (renderSummary) renderInventorySummary(char);
+    else updateWeightStatusOnly(char);
   }
   function renderInventoryHeader(char = cchar()){
     const panel = $('simple-inventory-panel');
     const head = panel?.querySelector('.inventory-text-head');
     if (!head) return;
-    panel.classList.add('od1807-inventory-panel');
-    head.classList.add('od1807-editor-head');
-    const reduced = isInventoryReduced(char);
+    panel.classList.add('od1808-inventory-panel');
+    head.classList.add('od1808-editor-head');
+    const reduced = invReduced(char);
     const title = head.querySelector('h3');
     if (title) title.textContent = 'Inventário em Texto';
     const toggle = $('simple-inventory-compact-toggle');
     if (toggle) {
       toggle.textContent = reduced ? 'Expandir' : 'Reduzir';
-      toggle.classList.add('od1807-head-btn');
+      toggle.classList.add('od1808-head-btn');
+      toggle.hidden = false;
+      toggle.disabled = false;
     }
     const add = $('add-simple-inventory-item');
     if (add) {
       add.textContent = '+ Item';
-      add.classList.add('od1807-head-btn','od1807-add-btn');
+      add.classList.add('od1808-head-btn','od1808-add-btn');
       add.hidden = reduced;
       add.disabled = reduced;
     }
+    const module = document.querySelector('.od170-module[data-od170-key="equip-lista-simples"]');
+    module?.classList.remove('od170-collapsed');
   }
   function inventoryViewCard(item){
-    return `<article class="od1807-inv-card-view" data-item-id="${esc(item.id)}">
-      <div class="od1807-card-actions">
+    return `<article class="od1808-inv-card-view" data-item-id="${esc(item.id)}">
+      <div class="od1808-card-actions">
         <button class="ghost-btn small" data-transfer-simple-item="${esc(item.id)}" type="button">↔ Transferir</button>
         <button class="ghost-btn small" data-drop-simple-item="${esc(item.id)}" type="button">▣ Enviar para Drop</button>
       </div>
-      <div class="od1807-view-body">
+      <div class="od1808-view-body">
         <h4>${esc(item.name || 'Item')}</h4>
-        <div class="od1807-tags"><span>Peso: ${esc(fmt(item.weight))}</span><span>Usos: ${esc(item.uses || 0)}</span></div>
+        <div class="od1808-tags"><span>Peso: ${esc(fmt(item.weight))}</span><span>Usos: ${esc(item.uses || 0)}</span></div>
         <p>${esc(item.desc || 'Sem descrição.')}</p>
       </div>
     </article>`;
   }
   function inventoryEditCard(item, index, total){
-    return `<article class="od1807-inv-card-edit" data-item-id="${esc(item.id)}">
-      <div class="od1807-card-actions">
+    return `<article class="od1808-inv-card-edit" data-item-id="${esc(item.id)}">
+      <div class="od1808-card-actions">
         <button class="ghost-btn small" data-transfer-simple-item="${esc(item.id)}" type="button">↔ Transferir</button>
         <button class="ghost-btn small" data-drop-simple-item="${esc(item.id)}" type="button">▣ Enviar para Drop</button>
       </div>
-      <label class="od1807-field"><span>Nome do item</span><div class="od1807-title-row"><input data-od1807-inv="name" data-inv-field="name" type="text" value="${esc(item.name || 'Novo item')}" placeholder="Nome do item"><button class="mini-danger-btn od1807-delete" data-od1807-remove-inventory="${esc(item.id)}" type="button">×</button></div></label>
-      <label class="od1807-field"><span>Descrição</span><textarea data-od1807-inv="desc" data-inv-field="desc" rows="6" placeholder="Descrição do item...">${esc(item.desc || '')}</textarea></label>
-      <div class="od1807-inv-bottom">
-        <label class="od1807-box"><span>⚖ Peso</span><div class="od1807-stepper"><button data-od1807-step="weight" data-dir="-1" type="button">−</button><input data-od1807-inv="weight" data-inv-field="weight" type="text" inputmode="decimal" value="${esc(fmt(item.weight))}"><button data-od1807-step="weight" data-dir="1" type="button">+</button></div></label>
-        <label class="od1807-box"><span>⌛ Usos</span><div class="od1807-stepper"><button data-od1807-step="uses" data-dir="-1" type="button">−</button><input data-od1807-inv="uses" data-inv-field="uses" type="number" min="0" step="1" value="${esc(item.uses || 0)}"><button data-od1807-step="uses" data-dir="1" type="button">+</button></div></label>
-        <div class="od1807-order"><span>Ordem</span><div><button class="ghost-btn small" data-od1807-move-inventory="${esc(item.id)}" data-dir="-1" type="button" ${index === 0 ? 'disabled' : ''}>↑ Subir</button><button class="ghost-btn small" data-od1807-move-inventory="${esc(item.id)}" data-dir="1" type="button" ${index >= total - 1 ? 'disabled' : ''}>↓ Descer</button></div></div>
+      <label class="od1808-field"><span>Nome do item</span><div class="od1808-title-row"><input data-od1808-inv="name" data-inv-field="name" type="text" value="${esc(item.name || '')}" placeholder="Nome do item"><button class="mini-danger-btn od1808-delete" data-od1808-remove-inventory="${esc(item.id)}" type="button">×</button></div></label>
+      <label class="od1808-field"><span>Descrição</span><textarea data-od1808-inv="desc" data-inv-field="desc" rows="6" placeholder="Descrição do item...">${esc(item.desc || '')}</textarea></label>
+      <div class="od1808-inv-bottom">
+        <label class="od1808-box"><span>Peso</span><div class="od1808-stepper"><button data-od1808-step="weight" data-dir="-1" type="button">−</button><input data-od1808-inv="weight" data-inv-field="weight" type="text" inputmode="decimal" value="${esc(fmt(item.weight))}"><button data-od1808-step="weight" data-dir="1" type="button">+</button></div></label>
+        <label class="od1808-box"><span>Usos</span><div class="od1808-stepper"><button data-od1808-step="uses" data-dir="-1" type="button">−</button><input data-od1808-inv="uses" data-inv-field="uses" type="number" min="0" step="1" value="${esc(item.uses || 0)}"><button data-od1808-step="uses" data-dir="1" type="button">+</button></div></label>
+        <div class="od1808-order"><span>Ordem</span><div><button class="ghost-btn small" data-od1808-move-inventory="${esc(item.id)}" data-dir="-1" type="button" ${index === 0 ? 'disabled' : ''}>↑ Subir</button><button class="ghost-btn small" data-od1808-move-inventory="${esc(item.id)}" data-dir="1" type="button" ${index >= total - 1 ? 'disabled' : ''}>↓ Descer</button></div></div>
       </div>
     </article>`;
   }
@@ -20155,61 +20179,59 @@ function od66InventoryMutationUnlockSoon() {
     rendering = true;
     try {
       const items = ensureItems(char);
-      const reduced = isInventoryReduced(char);
+      const reduced = invReduced(char);
       renderInventoryHeader(char);
       renderInventorySummary(char);
-      list.className = `simple-inventory-list od1807-inventory-list ${reduced ? 'od1807-reduced' : 'od1807-expanded'}`;
-      if (!items.length) list.innerHTML = '<div class="simple-inventory-empty od1807-empty">Nenhum item adicionado.</div>';
+      list.className = `simple-inventory-list od1808-inventory-list ${reduced ? 'od1808-reduced' : 'od1808-expanded'}`;
+      if (!items.length) list.innerHTML = '<div class="simple-inventory-empty od1808-empty">Nenhum item adicionado.</div>';
       else list.innerHTML = reduced ? items.map(inventoryViewCard).join('') : items.map((item,i)=>inventoryEditCard(item,i,items.length)).join('');
+      applyBlockInventoryVisibility(char);
     } finally { rendering = false; }
   }
   function addInventoryItem(){
-    persistInventory(readInventoryDOM().concat([{ id: uidSafe('inv'), name: 'Novo item', weight: .5, uses: 0, desc: '' }]));
+    persistInventory(readInventoryDOM().concat([{ id: uidSafe('inv'), name: 'Novo item', weight: .5, uses: 0, desc: '' }]), true);
     setChar(saved => { saved.simpleInventoryCompact = false; });
     renderInventory();
-    saveSoon(true);
+    scheduleServerSave(80);
   }
-  function removeInventoryItem(id){
-    persistInventory(readInventoryDOM().filter(item => String(item.id) !== String(id)));
-    renderInventory();
-    saveSoon(true);
-  }
+  function removeInventoryItem(id){ persistInventory(readInventoryDOM().filter(item => String(item.id) !== String(id)), true); renderInventory(); scheduleServerSave(80); }
   function moveInventory(id, dir){
     const items = readInventoryDOM();
     const from = items.findIndex(item => String(item.id) === String(id));
     const to = from + Number(dir);
     if (from < 0 || to < 0 || to >= items.length) return;
-    const [item] = items.splice(from, 1);
-    items.splice(to, 0, item);
-    persistInventory(items);
-    renderInventory();
-    saveSoon(true);
+    const [item] = items.splice(from, 1); items.splice(to, 0, item);
+    persistInventory(items, true); renderInventory(); scheduleServerSave(80);
   }
   function stepInventory(btn){
-    const card = btn.closest('.od1807-inv-card-edit');
-    const field = btn.dataset.od1807Step;
-    const input = card?.querySelector(`[data-od1807-inv="${field}"]`);
+    const card = btn.closest('.od1808-inv-card-edit');
+    const field = btn.dataset.od1808Step;
+    const input = card?.querySelector(`[data-od1808-inv="${field}"]`);
     if (!input) return;
     const dir = Number(btn.dataset.dir || 0);
     if (field === 'weight') {
       const current = weightValue(input.value);
       input.value = fmt(dir > 0 ? (current < 1 ? 1 : current + .5) : (current <= .5 ? .5 : current - .5));
-    } else {
-      input.value = String(Math.max(0, Math.round(number(input.value,0) + dir)));
-    }
-    saveSoon();
+    } else input.value = String(Math.max(0, Math.round(number(input.value,0) + dir)));
+    persistInventory(readInventoryDOM(), false);
+    scheduleServerSave(550);
+  }
+  function applyBlockInventoryVisibility(char = cchar()){
+    const active = !!char?.blockInventoryMode;
+    $('block-inventory-panel')?.classList.toggle('active', active);
+    $('simple-inventory-panel')?.classList.toggle('active', !active);
+    $('tab-equipamentos')?.classList.toggle('block-inventory-active', active);
+    document.body.classList.toggle('block-inventory-active', active);
+    const module = document.querySelector('.od170-module[data-od170-key="equip-modular"]');
+    if (module) module.hidden = !active;
   }
 
-  /* MAGIAS */
-  function ensureSpells(char = cchar()){
-    if (!char) return [];
-    char.spells = Array.isArray(char.spells) ? char.spells : [];
-    return char.spells;
-  }
+  /* ---------- Magias ---------- */
   function readSpellsDOM(){
+    const char = cchar();
     const list = $('spells-list');
-    if (!list || !list.classList.contains('od1807-spells-list')) return ensureSpells().map(spell => ({...spell}));
-    return [...list.querySelectorAll('.od1807-spell-card')].map(card => ({
+    if (!list || !list.classList.contains('od1808-spells-list') || spellsReduced(char)) return ensureSpells(char).map(spell => ({...spell}));
+    return [...list.querySelectorAll('.od1808-spell-card-edit')].map(card => ({
       name: card.querySelector('.spell-name')?.value || '',
       circle: card.querySelector('.spell-circle')?.value || '',
       exec: card.querySelector('.spell-exec')?.value || '',
@@ -20221,113 +20243,162 @@ function od66InventoryMutationUnlockSoon() {
     }));
   }
   function persistSpells(spells){ setChar(saved => { saved.spells = Array.isArray(spells) ? spells : []; }); }
-  function smallField(label, cls, placeholder, value){ return `<label class="od1807-small-field"><span>${label}</span><input class="${cls}" placeholder="${placeholder}" value="${esc(value || '')}"></label>`; }
-  function spellCard(spell = {}, index = 0, total = 1){
-    return `<article class="mini-card spell-card od1807-editor-card od1807-spell-card" data-index="${index}">
-      <label class="od1807-field od1807-title-field"><input class="spell-name od1807-title-input" placeholder="Nome da magia" value="${esc(spell.name || '')}"></label>
-      <div class="od1807-small-grid">
+  function smallField(label, cls, placeholder, value, readonly = false){ return `<label class="od1808-small-field"><span>${label}</span><input class="${cls}" placeholder="${placeholder}" value="${esc(value || '')}" ${readonly ? 'readonly tabindex="-1"' : ''}></label>`; }
+  function spellSources(spell){
+    return `<div class="od1808-source-fields" aria-hidden="true">
+      <input class="spell-name" value="${esc(spell.name || '')}" readonly><input class="spell-circle" value="${esc(spell.circle || '')}" readonly><input class="spell-exec" value="${esc(spell.exec || '')}" readonly><input class="spell-range" value="${esc(spell.range || '')}" readonly><input class="spell-cost" value="${esc(spell.cost || spell.pe || '')}" readonly><input class="spell-components" value="${esc(spell.components || '')}" readonly><textarea class="spell-description" readonly>${esc(spell.description || spell.effect || '')}</textarea><textarea class="spell-upgrades" readonly>${esc(spell.upgrades || '')}</textarea>
+    </div>`;
+  }
+  function spellViewCard(spell = {}){
+    return `<article class="mini-card spell-card od1808-editor-card od1808-spell-card-view">
+      ${spellSources(spell)}
+      <div class="od1808-view-title">${esc(spell.name || 'Magia')}</div>
+      <div class="od1808-view-tags"><span>Círculo: ${esc(spell.circle || '-')}</span><span>Execução: ${esc(spell.exec || '-')}</span><span>Alcance: ${esc(spell.range || '-')}</span><span>Custo: ${esc(spell.cost || spell.pe || '-')}</span><span>Comp.: ${esc(spell.components || '-')}</span></div>
+      <div class="od1808-view-text"><strong>Descrição</strong><p>${esc(spell.description || spell.effect || 'Sem descrição.')}</p></div>
+      <div class="od1808-view-text"><strong>Aprimoramentos</strong><p>${esc(spell.upgrades || 'Sem aprimoramentos.')}</p></div>
+    </article>`;
+  }
+  function spellEditCard(spell = {}, index = 0, total = 1){
+    return `<article class="mini-card spell-card od1808-editor-card od1808-spell-card-edit" data-index="${index}">
+      <label class="od1808-field od1808-title-field"><input class="spell-name od1808-title-input" placeholder="Nome da magia" value="${esc(spell.name || '')}"></label>
+      <div class="od1808-small-grid">
         ${smallField('Círculo','spell-circle','1º',spell.circle || '')}
         ${smallField('Execução','spell-exec','Ação',spell.exec || '')}
         ${smallField('Alcance','spell-range','9 m',spell.range || '')}
         ${smallField('Custo','spell-cost','2 PE',spell.cost || spell.pe || '')}
         ${smallField('Componentes','spell-components','V, S, M',spell.components || '')}
-        <div class="od1807-order od1807-card-order"><span>Ordem</span><div><button class="ghost-btn small" data-od1807-move-spell="${index}" data-dir="-1" type="button" ${index === 0 ? 'disabled' : ''}>↑</button><button class="ghost-btn small" data-od1807-move-spell="${index}" data-dir="1" type="button" ${index >= total - 1 ? 'disabled' : ''}>↓</button></div></div>
+        <div class="od1808-order od1808-card-order"><span>Ordem</span><div><button class="ghost-btn small" data-od1808-move-spell="${index}" data-dir="-1" type="button" ${index === 0 ? 'disabled' : ''}>↑</button><button class="ghost-btn small" data-od1808-move-spell="${index}" data-dir="1" type="button" ${index >= total - 1 ? 'disabled' : ''}>↓</button></div></div>
       </div>
-      <label class="od1807-field"><span>Descrição</span><textarea class="spell-description od1807-big-text" rows="8" placeholder="Descrição da magia">${esc(spell.description || spell.effect || '')}</textarea></label>
-      <label class="od1807-field"><span>Aprimoramentos</span><textarea class="spell-upgrades od1807-mid-text" rows="6" placeholder="Aprimoramentos, versões superiores ou gastos extras">${esc(spell.upgrades || '')}</textarea></label>
-      <div class="od1807-footer"><button class="danger-btn small od1807-remove" data-od1807-remove-spell="${index}" type="button">🗑 Remover</button></div>
+      <label class="od1808-field"><span>Descrição</span><textarea class="spell-description od1808-big-text" rows="8" placeholder="Descrição da magia">${esc(spell.description || spell.effect || '')}</textarea></label>
+      <label class="od1808-field"><span>Aprimoramentos</span><textarea class="spell-upgrades od1808-mid-text" rows="6" placeholder="Aprimoramentos, versões superiores ou gastos extras">${esc(spell.upgrades || '')}</textarea></label>
+      <div class="od1808-footer"><button class="danger-btn small od1808-remove" data-od1808-remove-spell="${index}" type="button">🗑 Remover</button></div>
     </article>`;
+  }
+  function updateSpellHeader(char = cchar()){
+    const module = document.querySelector('.od170-module[data-od170-key="magias-lista"]');
+    module?.classList.remove('od170-collapsed');
+    const btn = module?.querySelector('[data-od170-toggle]');
+    if (btn) { btn.textContent = spellsReduced(char) ? 'Expandir' : 'Reduzir'; btn.classList.add('od1808-mode-toggle'); }
+    const add = $('add-spell');
+    if (add) { add.hidden = spellsReduced(char); add.disabled = spellsReduced(char); }
   }
   function renderSpellsFinal(char = cchar()){
     const list = $('spells-list');
     if (!list || !char) return;
     const spells = ensureSpells(char);
-    list.className = 'cards-list od1807-editor-list od1807-spells-list';
-    list.innerHTML = spells.length ? spells.map((spell,i)=>spellCard(spell,i,spells.length)).join('') : '<div class="simple-inventory-empty od1807-empty">Nenhuma magia adicionada.</div>';
+    const reduced = spellsReduced(char);
+    updateSpellHeader(char);
+    list.className = `cards-list od1808-editor-list od1808-spells-list ${reduced ? 'od1808-reduced' : 'od1808-expanded'}`;
+    list.innerHTML = spells.length ? (reduced ? spells.map(spellViewCard).join('') : spells.map((spell,i)=>spellEditCard(spell,i,spells.length)).join('')) : '<div class="simple-inventory-empty od1808-empty">Nenhuma magia adicionada.</div>';
   }
-  function addSpellFinal(spell = {}){
-    const spells = readSpellsDOM();
-    spells.push({ name: spell.name || '', circle: spell.circle || '', exec: spell.exec || '', range: spell.range || '', cost: spell.cost || '', components: spell.components || '', description: spell.description || '', upgrades: spell.upgrades || '' });
-    persistSpells(spells); renderSpellsFinal(); saveSoon(true);
-  }
-  function removeSpell(index){ const spells = readSpellsDOM(); spells.splice(Number(index), 1); persistSpells(spells); renderSpellsFinal(); saveSoon(true); }
-  function moveSpell(index, dir){ const spells = readSpellsDOM(); const from=Number(index), to=from+Number(dir); if (to<0||to>=spells.length) return; const [x]=spells.splice(from,1); spells.splice(to,0,x); persistSpells(spells); renderSpellsFinal(); saveSoon(true); }
+  function addSpellFinal(spell = {}){ const spells = readSpellsDOM(); spells.push({ name: spell.name || '', circle: spell.circle || '', exec: spell.exec || '', range: spell.range || '', cost: spell.cost || '', components: spell.components || '', description: spell.description || '', upgrades: spell.upgrades || '' }); persistSpells(spells); setChar(c=>{c.spellsCompact=false;}); renderSpellsFinal(); scheduleServerSave(80); }
+  function removeSpell(index){ const spells = readSpellsDOM(); spells.splice(Number(index), 1); persistSpells(spells); renderSpellsFinal(); scheduleServerSave(80); }
+  function moveSpell(index, dir){ const spells = readSpellsDOM(); const from=Number(index), to=from+Number(dir); if (to<0||to>=spells.length) return; const [x]=spells.splice(from,1); spells.splice(to,0,x); persistSpells(spells); renderSpellsFinal(); scheduleServerSave(80); }
 
-  /* HABILIDADES */
-  function ensureAbilities(char = cchar()){
-    if (!char) return [];
-    char.abilities = Array.isArray(char.abilities) ? char.abilities : [];
-    return char.abilities;
+  /* ---------- Habilidades ---------- */
+  function normalizeAbility(ability = {}){
+    const costAmount = Math.max(0, Math.round(number(ability.costAmount ?? String(ability.cost || '').match(/\d+/)?.[0] ?? 0, 0)));
+    const costResource = ability.costResource || (String(ability.cost || '').includes('PV') ? 'PV' : 'PE');
+    return { name: ability.name || '', costAmount, costResource, cost: costAmount > 0 ? `${costAmount} ${costResource}` : '', bonus: ability.bonus || '', action: ability.action || 'Padrão', description: ability.description || ability.desc || '' };
   }
   function readAbilitiesDOMFinal(){
+    const char = cchar();
     const list = $('abilities-list');
-    if (!list || !list.classList.contains('od1807-abilities-list')) return ensureAbilities().map(a => ({...a}));
-    return [...list.querySelectorAll('.od1807-ability-card')].map(card => {
-      const costAmount = Math.max(0, Math.round(number(card.querySelector('.ability-cost-amount')?.value, 0)));
-      const costResource = card.querySelector('.ability-cost-resource')?.value || 'PE';
-      return {
-        name: card.querySelector('.ability-name')?.value || '',
-        costAmount,
-        costResource,
-        cost: costAmount > 0 ? `${costAmount} ${costResource}` : '',
-        bonus: card.querySelector('.ability-bonus')?.value || '',
-        action: card.querySelector('.ability-action')?.value || 'Padrão',
-        description: card.querySelector('.ability-description')?.value || ''
-      };
-    });
+    if (!list || !list.classList.contains('od1808-abilities-list') || abilitiesReduced(char)) return ensureAbilities(char).map(normalizeAbility);
+    return [...list.querySelectorAll('.od1808-ability-card-edit')].map(card => normalizeAbility({
+      name: card.querySelector('.ability-name')?.value || '',
+      costAmount: card.querySelector('.ability-cost-amount')?.value || 0,
+      costResource: card.querySelector('.ability-cost-resource')?.value || 'PE',
+      bonus: card.querySelector('.ability-bonus')?.value || '',
+      action: card.querySelector('.ability-action')?.value || 'Padrão',
+      description: card.querySelector('.ability-description')?.value || ''
+    }));
   }
-  function persistAbilities(abilities){
-    setChar(saved => {
-      saved.abilities = Array.isArray(abilities) ? abilities : [];
-      saved.abilitiesNotes = saved.abilities.map(item => `${item.name || 'Habilidade'} | Custo: ${item.cost || '0 ' + (item.costResource || 'PE')} | Bônus: ${item.bonus || '-'} | Ação: ${item.action || 'Padrão'} | ${item.description || ''}`).join('\n');
-    });
+  function persistAbilities(abilities){ setChar(saved => { saved.abilities = Array.isArray(abilities) ? abilities.map(normalizeAbility) : []; saved.abilitiesNotes = saved.abilities.map(item => `${item.name || 'Habilidade'} | Custo: ${item.cost || '0 ' + (item.costResource || 'PE')} | Bônus: ${item.bonus || '-'} | Ação: ${item.action || 'Padrão'} | ${item.description || ''}`).join('\n'); }); }
+  function abilitySources(a){
+    return `<div class="od1808-source-fields" aria-hidden="true"><input class="ability-name" value="${esc(a.name || '')}" readonly><input class="ability-cost-amount" value="${esc(a.costAmount || 0)}" readonly><select class="ability-cost-resource"><option value="${esc(a.costResource || 'PE')}" selected>${esc(a.costResource || 'PE')}</option></select><input class="ability-bonus" value="${esc(a.bonus || '')}" readonly><select class="ability-action"><option value="${esc(a.action || 'Padrão')}" selected>${esc(a.action || 'Padrão')}</option></select><textarea class="ability-description" readonly>${esc(a.description || '')}</textarea></div>`;
   }
-  function abilityCard(ability = {}, index = 0, total = 1){
-    const amount = Number.isFinite(Number(ability.costAmount)) ? Number(ability.costAmount) : Number(String(ability.cost || '').match(/\d+/)?.[0] || 0);
-    const resource = ability.costResource || (String(ability.cost || '').includes('PV') ? 'PV' : 'PE');
-    return `<article class="mini-card ability-card od1807-editor-card od1807-ability-card" data-index="${index}">
-      <label class="od1807-field od1807-title-field"><input class="ability-name od1807-title-input" placeholder="Nome da habilidade" value="${esc(ability.name || '')}"></label>
-      <div class="od1807-small-grid">
-        <label class="od1807-small-field"><span>Custo</span><div class="od1807-stepper"><button data-od1807-ability-cost="-1" type="button">−</button><input class="ability-cost-amount" type="number" min="0" step="1" value="${esc(amount)}"><button data-od1807-ability-cost="1" type="button">+</button></div></label>
-        <label class="od1807-small-field"><span>Tipo de custo</span><select class="ability-cost-resource"><option value="PE" ${resource === 'PE' ? 'selected' : ''}>PE</option><option value="PV" ${resource === 'PV' ? 'selected' : ''}>PV</option></select></label>
-        <label class="od1807-small-field"><span>Bônus</span><input class="ability-bonus" placeholder="Ex: +2, +1d6" value="${esc(ability.bonus || '')}"></label>
-        <label class="od1807-small-field"><span>Ação</span><select class="ability-action"><option value="Padrão" ${String(ability.action || 'Padrão') === 'Padrão' ? 'selected' : ''}>Padrão</option><option value="Movimento" ${ability.action === 'Movimento' ? 'selected' : ''}>Movimento</option><option value="Reação" ${ability.action === 'Reação' ? 'selected' : ''}>Reação</option><option value="Livre" ${ability.action === 'Livre' ? 'selected' : ''}>Livre</option></select></label>
-        <div class="od1807-order od1807-card-order"><span>Ordem</span><div><button class="ghost-btn small" data-od1807-move-ability="${index}" data-dir="-1" type="button" ${index === 0 ? 'disabled' : ''}>↑</button><button class="ghost-btn small" data-od1807-move-ability="${index}" data-dir="1" type="button" ${index >= total - 1 ? 'disabled' : ''}>↓</button></div></div>
-      </div>
-      <label class="od1807-field"><span>Descrição</span><textarea class="ability-description od1807-big-text" rows="8" placeholder="Descrição da habilidade">${esc(ability.description || ability.desc || '')}</textarea></label>
-      <div class="od1807-footer"><button class="primary-btn small od1807-use" data-od1807-use-ability="${index}" type="button">Usar</button><button class="danger-btn small od1807-remove" data-od1807-remove-ability="${index}" type="button">🗑 Remover</button></div>
+  function abilityViewCard(ability = {}){
+    const a = normalizeAbility(ability);
+    return `<article class="mini-card ability-card od1808-editor-card od1808-ability-card-view">
+      ${abilitySources(a)}
+      <div class="od1808-view-title">${esc(a.name || 'Habilidade')}</div>
+      <div class="od1808-view-tags"><span>Custo: ${esc(a.cost || 'Sem custo')}</span><span>Ação: ${esc(a.action || '-')}</span><span>Bônus: ${esc(a.bonus || '-')}</span></div>
+      <div class="od1808-view-text"><strong>Descrição</strong><p>${esc(a.description || 'Sem descrição.')}</p></div>
     </article>`;
+  }
+  function abilityEditCard(ability = {}, index = 0, total = 1){
+    const a = normalizeAbility(ability);
+    return `<article class="mini-card ability-card od1808-editor-card od1808-ability-card-edit" data-index="${index}">
+      <label class="od1808-field od1808-title-field"><input class="ability-name od1808-title-input" placeholder="Nome da habilidade" value="${esc(a.name || '')}"></label>
+      <div class="od1808-small-grid">
+        <label class="od1808-small-field"><span>Custo</span><div class="od1808-stepper"><button data-od1808-ability-cost="-1" type="button">−</button><input class="ability-cost-amount" type="number" min="0" step="1" value="${esc(a.costAmount)}"><button data-od1808-ability-cost="1" type="button">+</button></div></label>
+        <label class="od1808-small-field"><span>Tipo de custo</span><select class="ability-cost-resource"><option value="PE" ${a.costResource === 'PE' ? 'selected' : ''}>PE</option><option value="PV" ${a.costResource === 'PV' ? 'selected' : ''}>PV</option></select></label>
+        <label class="od1808-small-field"><span>Bônus</span><input class="ability-bonus" placeholder="Ex: +2, +1d6" value="${esc(a.bonus || '')}"></label>
+        <label class="od1808-small-field"><span>Ação</span><select class="ability-action"><option value="Padrão" ${a.action === 'Padrão' ? 'selected' : ''}>Padrão</option><option value="Movimento" ${a.action === 'Movimento' ? 'selected' : ''}>Movimento</option><option value="Reação" ${a.action === 'Reação' ? 'selected' : ''}>Reação</option><option value="Livre" ${a.action === 'Livre' ? 'selected' : ''}>Livre</option></select></label>
+        <div class="od1808-order od1808-card-order"><span>Ordem</span><div><button class="ghost-btn small" data-od1808-move-ability="${index}" data-dir="-1" type="button" ${index === 0 ? 'disabled' : ''}>↑</button><button class="ghost-btn small" data-od1808-move-ability="${index}" data-dir="1" type="button" ${index >= total - 1 ? 'disabled' : ''}>↓</button></div></div>
+      </div>
+      <label class="od1808-field"><span>Descrição</span><textarea class="ability-description od1808-big-text" rows="8" placeholder="Descrição da habilidade">${esc(a.description || '')}</textarea></label>
+      <div class="od1808-footer"><button class="primary-btn small od1808-use" data-od1808-use-ability="${index}" type="button">Usar</button><button class="danger-btn small od1808-remove" data-od1808-remove-ability="${index}" type="button">🗑 Remover</button></div>
+    </article>`;
+  }
+  function updateAbilityHeader(char = cchar()){
+    $('toggle-ability-desc')?.closest('.ability-tools')?.classList.add('od1808-hidden-old-ability-tools');
+    const module = document.querySelector('.od170-module[data-od170-key="habilidades-lista"]');
+    module?.classList.remove('od170-collapsed');
+    const btn = module?.querySelector('[data-od170-toggle]');
+    if (btn) { btn.textContent = abilitiesReduced(char) ? 'Expandir' : 'Reduzir'; btn.classList.add('od1808-mode-toggle'); }
+    const add = $('add-ability');
+    if (add) { add.hidden = abilitiesReduced(char); add.disabled = abilitiesReduced(char); }
   }
   function renderAbilitiesFinal(char = cchar()){
     const list = $('abilities-list');
     if (!list || !char) return;
-    const abilities = ensureAbilities(char);
-    list.className = 'cards-list od1807-editor-list od1807-abilities-list';
-    list.innerHTML = abilities.length ? abilities.map((ability,i)=>abilityCard(ability,i,abilities.length)).join('') : '<div class="simple-inventory-empty od1807-empty">Nenhuma habilidade adicionada.</div>';
+    const abilities = ensureAbilities(char).map(normalizeAbility);
+    const reduced = abilitiesReduced(char);
+    updateAbilityHeader(char);
+    list.className = `cards-list ability-cards-list od1808-editor-list od1808-abilities-list ${reduced ? 'od1808-reduced' : 'od1808-expanded'}`;
+    list.innerHTML = abilities.length ? (reduced ? abilities.map(abilityViewCard).join('') : abilities.map((ability,i)=>abilityEditCard(ability,i,abilities.length)).join('')) : '<div class="simple-inventory-empty od1808-empty">Nenhuma habilidade adicionada.</div>';
   }
-  function addAbilityFinal(ability = {}){
-    const abilities = readAbilitiesDOMFinal();
-    abilities.push({ name: ability.name || '', costAmount: Number(ability.costAmount || 0), costResource: ability.costResource || 'PE', cost: ability.cost || '', bonus: ability.bonus || '', action: ability.action || 'Padrão', description: ability.description || '' });
-    persistAbilities(abilities); renderAbilitiesFinal(); saveSoon(true);
-  }
-  function removeAbility(index){ const abilities = readAbilitiesDOMFinal(); abilities.splice(Number(index), 1); persistAbilities(abilities); renderAbilitiesFinal(); saveSoon(true); }
-  function moveAbility(index, dir){ const abilities = readAbilitiesDOMFinal(); const from=Number(index), to=from+Number(dir); if (to<0||to>=abilities.length) return; const [x]=abilities.splice(from,1); abilities.splice(to,0,x); persistAbilities(abilities); renderAbilitiesFinal(); saveSoon(true); }
-  function abilityCostStep(btn){ const input = btn.closest('.od1807-stepper')?.querySelector('.ability-cost-amount'); if (!input) return; input.value = String(Math.max(0, Math.round(number(input.value,0) + Number(btn.dataset.od1807AbilityCost || 0)))); persistAbilities(readAbilitiesDOMFinal()); saveSoon(); }
+  function addAbilityFinal(ability = {}){ const abilities = readAbilitiesDOMFinal(); abilities.push(normalizeAbility(ability)); persistAbilities(abilities); setChar(c=>{c.abilitiesCompact=false;}); renderAbilitiesFinal(); scheduleServerSave(80); }
+  function removeAbility(index){ const abilities = readAbilitiesDOMFinal(); abilities.splice(Number(index), 1); persistAbilities(abilities); renderAbilitiesFinal(); scheduleServerSave(80); }
+  function moveAbility(index, dir){ const abilities = readAbilitiesDOMFinal(); const from=Number(index), to=from+Number(dir); if (to<0||to>=abilities.length) return; const [x]=abilities.splice(from,1); abilities.splice(to,0,x); persistAbilities(abilities); renderAbilitiesFinal(); scheduleServerSave(80); }
+  function abilityCostStep(btn){ const input = btn.closest('.od1808-stepper')?.querySelector('.ability-cost-amount'); if (!input) return; input.value = String(Math.max(0, Math.round(number(input.value,0) + Number(btn.dataset.od1808AbilityCost || 0)))); persistAbilities(readAbilitiesDOMFinal()); scheduleServerSave(550); }
 
-  function syncAllFromDOM(){
+  /* ---------- sincronização ---------- */
+  function syncSummaryOnly(){
+    const values = summaryValuesFromDOM();
+    const char = setChar(saved => { saved.money = String(values.money); saved.weightMax = values.max; saved.weightCurrent = currentWeight(ensureItems(saved)); });
+    updateWeightStatusOnly(char);
+  }
+  function syncAllFromDOM(options = {}){
     const char = cchar(); if (!char) return;
-    if ($('simple-inventory-list')?.classList.contains('od1807-inventory-list') && !isInventoryReduced(char)) persistInventory(readInventoryDOM(), true);
-    if ($('spells-list')?.classList.contains('od1807-spells-list')) persistSpells(readSpellsDOM());
-    if ($('abilities-list')?.classList.contains('od1807-abilities-list')) persistAbilities(readAbilitiesDOMFinal());
+    if ($('simple-inventory-list')?.classList.contains('od1808-inventory-list')) persistInventory(readInventoryDOM(), !!options.renderSummary);
+    if ($('spells-list')?.classList.contains('od1808-spells-list')) persistSpells(readSpellsDOM());
+    if ($('abilities-list')?.classList.contains('od1808-abilities-list')) persistAbilities(readAbilitiesDOMFinal());
+    if ($('money') || $('weight-max')) syncSummaryOnly();
   }
   function renderAll(char = cchar()){
     if (!char) return;
     renderInventory(char);
     renderSpellsFinal(char);
     renderAbilitiesFinal(char);
+    enforceAttributeCollapse();
+  }
+  function scheduleRenderAll(){ clearTimeout(renderTimer); renderTimer = setTimeout(() => renderAll(cchar()), 80); }
+
+  /* ---------- Atributos reduzidos ---------- */
+  function enforceAttributeCollapse(){
+    const module = document.querySelector('.od170-module[data-od170-key="resumo-atributos"]');
+    if (!module) return;
+    const collapsed = module.classList.contains('od170-collapsed');
+    const body = module.querySelector(':scope > .od170-module-body');
+    const summary = module.querySelector(':scope > .od1715-attr-summary');
+    if (body) body.style.setProperty('display', collapsed ? 'none' : '', collapsed ? 'important' : '');
+    if (summary) summary.style.setProperty('display', collapsed ? 'grid' : 'none', 'important');
   }
 
-  // Exports finais: as funções antigas deixam de ser fonte das áreas.
+  /* ---------- Exports finais ---------- */
   renderSimpleInventory = renderInventory;
   readSimpleInventoryFromDOM = readInventoryDOM;
   renderSpells = renderSpellsFinal;
@@ -20340,44 +20411,75 @@ function od66InventoryMutationUnlockSoon() {
 
   document.addEventListener('click', event => {
     const target = event.target;
+
+    const attrToggle = target.closest?.('.od170-module[data-od170-key="resumo-atributos"] [data-od170-toggle]');
+    if (attrToggle) setTimeout(enforceAttributeCollapse, 0);
+
+    const invModuleToggle = target.closest?.('.od170-module[data-od170-key="equip-lista-simples"] [data-od170-toggle]');
+    if (invModuleToggle) { event.preventDefault(); event.stopImmediatePropagation(); document.querySelector('.od170-module[data-od170-key="equip-lista-simples"]')?.classList.remove('od170-collapsed'); return; }
+
     const invToggle = target.closest?.('#simple-inventory-compact-toggle');
-    if (invToggle) { event.preventDefault(); event.stopImmediatePropagation(); syncAllFromDOM(); setChar(saved => { saved.simpleInventoryCompact = !saved.simpleInventoryCompact; }); renderInventory(); saveSoon(true); return; }
+    if (invToggle) { event.preventDefault(); event.stopImmediatePropagation(); syncAllFromDOM({ renderSummary: true }); setChar(saved => { saved.simpleInventoryCompact = !saved.simpleInventoryCompact; }); renderInventory(); scheduleServerSave(80); return; }
     const addInv = target.closest?.('#add-simple-inventory-item');
     if (addInv) { event.preventDefault(); event.stopImmediatePropagation(); addInventoryItem(); return; }
-    const remInv = target.closest?.('[data-od1807-remove-inventory]');
-    if (remInv) { event.preventDefault(); event.stopImmediatePropagation(); removeInventoryItem(remInv.dataset.od1807RemoveInventory); return; }
-    const moveInv = target.closest?.('[data-od1807-move-inventory]');
-    if (moveInv) { event.preventDefault(); event.stopImmediatePropagation(); moveInventory(moveInv.dataset.od1807MoveInventory, moveInv.dataset.dir); return; }
-    const invStep = target.closest?.('[data-od1807-step]');
+    const remInv = target.closest?.('[data-od1808-remove-inventory]');
+    if (remInv) { event.preventDefault(); event.stopImmediatePropagation(); removeInventoryItem(remInv.dataset.od1808RemoveInventory); return; }
+    const moveInv = target.closest?.('[data-od1808-move-inventory]');
+    if (moveInv) { event.preventDefault(); event.stopImmediatePropagation(); moveInventory(moveInv.dataset.od1808MoveInventory, moveInv.dataset.dir); return; }
+    const invStep = target.closest?.('[data-od1808-step]');
     if (invStep) { event.preventDefault(); event.stopImmediatePropagation(); stepInventory(invStep); return; }
 
+    const spellToggle = target.closest?.('.od170-module[data-od170-key="magias-lista"] [data-od170-toggle]');
+    if (spellToggle) { event.preventDefault(); event.stopImmediatePropagation(); syncAllFromDOM(); setChar(saved => { saved.spellsCompact = !saved.spellsCompact; }); renderSpellsFinal(); scheduleServerSave(80); return; }
     const addSpell = target.closest?.('#add-spell');
     if (addSpell) { event.preventDefault(); event.stopImmediatePropagation(); addSpellFinal({}); return; }
-    const remSpell = target.closest?.('[data-od1807-remove-spell]');
-    if (remSpell) { event.preventDefault(); event.stopImmediatePropagation(); removeSpell(remSpell.dataset.od1807RemoveSpell); return; }
-    const moveSp = target.closest?.('[data-od1807-move-spell]');
-    if (moveSp) { event.preventDefault(); event.stopImmediatePropagation(); moveSpell(moveSp.dataset.od1807MoveSpell, moveSp.dataset.dir); return; }
+    const remSpell = target.closest?.('[data-od1808-remove-spell]');
+    if (remSpell) { event.preventDefault(); event.stopImmediatePropagation(); removeSpell(remSpell.dataset.od1808RemoveSpell); return; }
+    const moveSp = target.closest?.('[data-od1808-move-spell]');
+    if (moveSp) { event.preventDefault(); event.stopImmediatePropagation(); moveSpell(moveSp.dataset.od1808MoveSpell, moveSp.dataset.dir); return; }
 
+    const abilityToggle = target.closest?.('.od170-module[data-od170-key="habilidades-lista"] [data-od170-toggle]');
+    if (abilityToggle) { event.preventDefault(); event.stopImmediatePropagation(); syncAllFromDOM(); setChar(saved => { saved.abilitiesCompact = !saved.abilitiesCompact; saved.abilityDescriptionsHidden = false; }); renderAbilitiesFinal(); scheduleServerSave(80); return; }
+    const oldAbilityToggle = target.closest?.('#toggle-ability-desc');
+    if (oldAbilityToggle) { event.preventDefault(); event.stopImmediatePropagation(); return; }
     const addAbility = target.closest?.('#add-ability');
     if (addAbility) { event.preventDefault(); event.stopImmediatePropagation(); addAbilityFinal({}); return; }
-    const remAbility = target.closest?.('[data-od1807-remove-ability]');
-    if (remAbility) { event.preventDefault(); event.stopImmediatePropagation(); removeAbility(remAbility.dataset.od1807RemoveAbility); return; }
-    const moveAb = target.closest?.('[data-od1807-move-ability]');
-    if (moveAb) { event.preventDefault(); event.stopImmediatePropagation(); moveAbility(moveAb.dataset.od1807MoveAbility, moveAb.dataset.dir); return; }
-    const abCost = target.closest?.('[data-od1807-ability-cost]');
+    const remAbility = target.closest?.('[data-od1808-remove-ability]');
+    if (remAbility) { event.preventDefault(); event.stopImmediatePropagation(); removeAbility(remAbility.dataset.od1808RemoveAbility); return; }
+    const moveAb = target.closest?.('[data-od1808-move-ability]');
+    if (moveAb) { event.preventDefault(); event.stopImmediatePropagation(); moveAbility(moveAb.dataset.od1808MoveAbility, moveAb.dataset.dir); return; }
+    const abCost = target.closest?.('[data-od1808-ability-cost]');
     if (abCost) { event.preventDefault(); event.stopImmediatePropagation(); abilityCostStep(abCost); return; }
-    const useAb = target.closest?.('[data-od1807-use-ability]');
-    if (useAb) { event.preventDefault(); event.stopImmediatePropagation(); persistAbilities(readAbilitiesDOMFinal()); safe(() => useAbilityCard(useAb.closest('.ability-card')), null); saveSoon(); return; }
+    const useAb = target.closest?.('[data-od1808-use-ability]');
+    if (useAb) { event.preventDefault(); event.stopImmediatePropagation(); persistAbilities(readAbilitiesDOMFinal()); safe(() => useAbilityCard(useAb.closest('.ability-card')), null); scheduleServerSave(550); return; }
 
-    if (target.closest?.('.sheet-tab,[data-od170-toggle]')) setTimeout(() => renderAll(cchar()), 80);
+    if (target.closest?.('.sheet-tab,[data-od170-toggle]')) setTimeout(() => { renderAll(cchar()); enforceAttributeCollapse(); }, 90);
   }, true);
-  document.addEventListener('input', event => { if (event.target.closest?.('.od1807-inv-card-edit,.od1807-spell-card,.od1807-ability-card,#money,#weight-max')) saveSoon(); }, true);
-  document.addEventListener('change', event => { if (event.target.closest?.('.od1807-inv-card-edit,.od1807-spell-card,.od1807-ability-card,#money,#weight-max')) saveSoon(); }, true);
+
+  document.addEventListener('input', event => {
+    const t = event.target;
+    if (t.closest?.('.od1808-inv-card-edit')) {
+      persistInventory(readInventoryDOM(), false);
+      scheduleServerSave(900);
+      return;
+    }
+    if (t.closest?.('.od1808-spell-card-edit')) { persistSpells(readSpellsDOM()); scheduleServerSave(900); return; }
+    if (t.closest?.('.od1808-ability-card-edit')) { persistAbilities(readAbilitiesDOMFinal()); scheduleServerSave(900); return; }
+    if (t.closest?.('#money,#weight-max')) { syncSummaryOnly(); scheduleServerSave(900); return; }
+  }, true);
+
+  document.addEventListener('change', event => {
+    const t = event.target;
+    if (t.closest?.('.od1808-inv-card-edit')) { persistInventory(readInventoryDOM(), true); scheduleServerSave(300); return; }
+    if (t.closest?.('.od1808-spell-card-edit')) { persistSpells(readSpellsDOM()); scheduleServerSave(300); return; }
+    if (t.closest?.('.od1808-ability-card-edit')) { persistAbilities(readAbilitiesDOMFinal()); scheduleServerSave(300); return; }
+    if (t.closest?.('#money,#weight-max')) { syncSummaryOnly(); renderInventorySummary(cchar()); scheduleServerSave(300); return; }
+  }, true);
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => renderAll(cchar()), { once: true });
   else renderAll(cchar());
   setTimeout(() => renderAll(cchar()), 180);
   setTimeout(() => renderAll(cchar()), 900);
 
-  window.od1807CleanEditors = { renderAll, renderInventory, renderSpellsFinal, renderAbilitiesFinal, readInventoryDOM, readSpellsDOM, readAbilitiesDOMFinal };
+  window.od1808CleanEditorsModes = { renderAll, renderInventory, renderSpellsFinal, renderAbilitiesFinal, readInventoryDOM, readSpellsDOM, readAbilitiesDOMFinal };
 })();
