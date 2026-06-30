@@ -5,12 +5,46 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>One Dice Mesa Online</title>
+  <script>
+    (function(){
+      try {
+        document.documentElement.classList.add('od180-booting');
+        var st = JSON.parse(localStorage.getItem('od_settings') || '{}');
+        st.theme = 'dark';
+        st.accent = st.accent || 'red';
+        localStorage.setItem('od_settings', JSON.stringify(st));
+        document.documentElement.setAttribute('data-accent', st.accent || 'red');
+      } catch (_) {
+        document.documentElement.classList.add('od180-booting');
+        document.documentElement.setAttribute('data-accent', 'red');
+      }
+    })();
+  </script>
+  <style id="od180-critical-style">
+    html.od180-booting, html.od180-booting body { background:#050607 !important; overflow:hidden !important; }
+    #od180-boot-screen { position:fixed; inset:0; z-index:2147483000; display:grid; place-items:center; background: radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--accent, #c5222c) 24%, transparent), transparent 34%), linear-gradient(145deg,#050607 0%,#0b0d10 42%,#020303 100%); color:#fff; opacity:1; visibility:visible; transition:opacity .28s ease, visibility .28s ease; }
+    #od180-boot-screen.od180-hide { opacity:0; visibility:hidden; pointer-events:none; }
+    .od180-loader-card { width:min(420px,86vw); min-height:220px; border-radius:28px; border:1px solid color-mix(in srgb, var(--accent,#c5222c) 76%, #fff 10%); background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(0,0,0,.32)); box-shadow:0 30px 90px rgba(0,0,0,.58), inset 0 0 0 1px rgba(255,255,255,.05); display:grid; place-items:center; gap:18px; padding:34px; text-align:center; }
+    .od180-loader-mark { width:54px; height:54px; border-radius:18px; border:3px solid rgba(255,255,255,.16); border-top-color:var(--accent,#c5222c); animation:od180spin .82s linear infinite; }
+    .od180-loader-title { font:900 1.1rem/1.1 Impact, system-ui, sans-serif; letter-spacing:.08em; text-transform:uppercase; }
+    .od180-loader-sub { margin-top:8px; font:700 .78rem/1.4 Arial, system-ui, sans-serif; color:rgba(255,255,255,.66); text-transform:uppercase; letter-spacing:.05em; }
+    @keyframes od180spin { to { transform:rotate(360deg); } }
+  </style>
   <link rel="stylesheet" href="/block-inventory/style.css" />
   <link rel="icon" type="image/png" href="/assets/favicon.png" />
   <link rel="shortcut icon" href="/assets/favicon.png" />
-  <link rel="stylesheet" href="/style.css?v=1.78.11" />
+  <link rel="stylesheet" href="/style.css?v=1.80.0" />
 </head>
 <body>
+  <div id="od180-boot-screen" role="status" aria-live="polite" aria-label="Carregando One Dice">
+    <div class="od180-loader-card">
+      <div class="od180-loader-mark" aria-hidden="true"></div>
+      <div>
+        <div class="od180-loader-title">Carregando One Dice</div>
+        <div class="od180-loader-sub">Preparando mesa, fichas e tema escuro</div>
+      </div>
+    </div>
+  </div>
   <div class="paper-bg"></div>
 
   <section id="auth-screen" class="screen active">
@@ -861,7 +895,7 @@
     </article>
   </template>
   <script src="/socket.io/socket.io.js"></script>
-  <script src="/script.js?v=1.78.11"></script>
+  <script src="/script.js?v=1.80.0"></script>
   <script type="module" src="/block-inventory/script.js"></script>
 </body>
 </html>

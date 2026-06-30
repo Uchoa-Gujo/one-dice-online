@@ -18370,3 +18370,513 @@ body #spells-list.od17815-spells-list {
     width: 100% !important;
   }
 }
+
+
+/* =========================
+   V179 - Limpeza profunda dos editores
+========================= */
+#simple-inventory-list.od179-editor-list,
+#spells-list.od179-editor-list,
+#abilities-list.od179-editor-list {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 8px !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+}
+
+/* Não deixa modelos antigos piscarem em cima dos novos. */
+#simple-inventory-list.od179-editor-list .simple-inventory-card:not(.od179-inventory-card),
+#spells-list.od179-editor-list .spell-card:not(.od179-spell-card),
+#abilities-list.od179-editor-list .ability-card:not(.od179-ability-card) {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+.od179-editor-card {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 100% !important;
+  padding: 18px !important;
+  border-radius: 24px !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,.065), transparent 44%),
+    linear-gradient(145deg, rgba(255,255,255,.045), rgba(0,0,0,.22)),
+    rgba(0,0,0,.18) !important;
+  border: 1px solid color-mix(in srgb, var(--accent, #c5222c), white 12%) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.03), 0 10px 22px rgba(0,0,0,.14) !important;
+  grid-template: none !important;
+}
+
+.od179-editor-card > * {
+  position: static !important;
+  grid-area: auto !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.od179-title-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 50px !important;
+  gap: 10px !important;
+  align-items: center !important;
+}
+.od179-title-row-single { grid-template-columns: minmax(0, 1fr) !important; }
+
+.od179-title-input,
+.od179-editor-card input[type="text"],
+.od179-editor-card input[type="number"],
+.od179-editor-card select,
+.od179-editor-card textarea {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  background: rgba(0,0,0,.58) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  border-radius: 16px !important;
+  text-align: left !important;
+  pointer-events: auto !important;
+  user-select: text !important;
+  opacity: 1 !important;
+}
+
+.od179-title-input { height: 50px !important; padding: 10px 15px !important; font-size: 1.08rem !important; font-weight: 800 !important; }
+.od179-remove-btn { width: 50px !important; min-width: 50px !important; height: 48px !important; border-radius: 16px !important; margin: 0 !important; padding: 0 !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; font-size: 1.7rem !important; }
+
+.od179-two-fields,
+.od179-magic-small-grid,
+.od179-ability-small-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  width: 100% !important;
+}
+
+.od179-small-field,
+.od179-wide-field {
+  display: grid !important;
+  gap: 8px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  color: rgba(255,255,255,.80) !important;
+  font-family: Arial, system-ui, sans-serif !important;
+  font-size: .74rem !important;
+  font-weight: 900 !important;
+  letter-spacing: .045em !important;
+  text-transform: uppercase !important;
+}
+
+.od179-small-field span,
+.od179-wide-field span {
+  display: block !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+  line-height: 1.15 !important;
+}
+
+.od179-small-field input,
+.od179-small-field select { height: 42px !important; min-height: 42px !important; padding: 0 12px !important; text-align: center !important; }
+.od179-textarea { padding: 14px 16px !important; line-height: 1.42 !important; resize: vertical !important; font-size: .96rem !important; font-weight: 600 !important; }
+.od179-large-textarea { min-height: 160px !important; }
+.od179-medium-textarea { min-height: 125px !important; }
+
+.od179-stepper { display: grid !important; grid-template-columns: 36px minmax(0,1fr) 36px !important; gap: 8px !important; align-items: center !important; width: 100% !important; }
+.od179-step-btn { width: 36px !important; min-width: 36px !important; height: 36px !important; padding: 0 !important; border-radius: 12px !important; }
+.od179-stepper input { height: 38px !important; padding: 0 8px !important; text-align: center !important; }
+
+.od179-inventory-top-actions,
+.od179-footer {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+.od179-inventory-top-actions { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+.od179-inventory-top-actions button,
+.od179-footer button { min-width: 130px !important; height: 42px !important; border-radius: 14px !important; }
+.od179-inventory-top-actions button { width: 100% !important; min-width: 0 !important; }
+
+.od179-empty { grid-column: 1 / -1 !important; }
+
+/* Remove setas de ordem antigas e qualquer sobra dos modelos anteriores. */
+.od80-card-order,
+.od1776-item-order-actions,
+.od1777-order-box,
+.od1778-order-box,
+.od1782-order-box,
+.od17810-order-box,
+[data-od1776-move-item],
+[data-od1777-move],
+[data-od1778-move],
+[data-od1782-move],
+[data-od17810-move] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Atributos final, nomes completos sem corte. */
+#attributes-grid.od179-attributes-grid {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  width: 100% !important;
+  overflow: visible !important;
+}
+.od179-attr-card {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  min-height: 154px !important;
+  padding: 14px 12px !important;
+  border-radius: 22px !important;
+  overflow: visible !important;
+  box-sizing: border-box !important;
+  background: linear-gradient(180deg, rgba(255,255,255,.035), rgba(0,0,0,.18)), rgba(0,0,0,.16) !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+}
+.od179-attr-card::before,
+.od179-attr-card::after { content: none !important; display: none !important; }
+.od179-attr-head { display: grid !important; grid-template-columns: minmax(0, 1fr) auto !important; gap: 8px !important; align-items: center !important; width: 100% !important; }
+.od179-attr-name { display: block !important; color: rgba(255,255,255,.96) !important; font-size: clamp(.64rem, .72vw, .76rem) !important; font-weight: 900 !important; line-height: 1.08 !important; letter-spacing: 0 !important; text-transform: uppercase !important; white-space: normal !important; overflow: visible !important; text-overflow: clip !important; word-break: normal !important; }
+.od179-attr-mod { min-width: 32px !important; text-align: right !important; color: color-mix(in srgb, var(--accent, #c5222c) 92%, #ff7b83 8%) !important; font-size: clamp(1.0rem, 1.2vw, 1.2rem) !important; font-weight: 900 !important; white-space: nowrap !important; }
+.od179-attr-row { display: grid !important; grid-template-columns: auto 34px minmax(0,60px) 34px !important; gap: 8px !important; align-items: center !important; width: 100% !important; }
+.od179-dice-label { color: rgba(255,255,255,.82) !important; font-size: .78rem !important; font-weight: 900 !important; }
+.od179-attr-step { width: 34px !important; min-width: 34px !important; height: 34px !important; margin: 0 !important; padding: 0 !important; border-radius: 12px !important; }
+.od179-attr-value { width: 100% !important; min-width: 0 !important; height: 38px !important; margin: 0 !important; padding: 0 8px !important; border-radius: 13px !important; text-align: center !important; background: rgba(0,0,0,.58) !important; color: #fff !important; -webkit-text-fill-color: #fff !important; }
+.od179-attr-value::-webkit-outer-spin-button,
+.od179-attr-value::-webkit-inner-spin-button { -webkit-appearance: none !important; margin: 0 !important; }
+.od179-attr-roll { width: 100% !important; min-width: 0 !important; height: 38px !important; margin: 0 !important; border-radius: 14px !important; }
+
+@media (max-width: 1180px) {
+  #attributes-grid.od179-attributes-grid { grid-template-columns: repeat(3, minmax(180px, 1fr)) !important; }
+}
+@media (max-width: 980px) {
+  #simple-inventory-list.od179-editor-list,
+  #spells-list.od179-editor-list,
+  #abilities-list.od179-editor-list { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 820px) {
+  #attributes-grid.od179-attributes-grid { grid-template-columns: repeat(2, minmax(165px, 1fr)) !important; }
+}
+@media (max-width: 640px) {
+  .od179-two-fields,
+  .od179-magic-small-grid,
+  .od179-ability-small-grid { grid-template-columns: 1fr !important; }
+  .od179-inventory-top-actions,
+  .od179-footer { grid-template-columns: 1fr !important; flex-direction: column !important; align-items: stretch !important; }
+  .od179-footer button { width: 100% !important; }
+}
+@media (max-width: 560px) {
+  #attributes-grid.od179-attributes-grid { grid-template-columns: 1fr !important; }
+}
+
+
+/* =========================
+   V180 - Tema escuro único + shell profissional
+========================= */
+html,
+body,
+body.od180-dark-only,
+body.od180-professional-ui {
+  background: #050607 !important;
+  color: #f7f7f2 !important;
+  color-scheme: dark !important;
+}
+
+body.od180-dark-only:not(.dark-sheet) {
+  background: #050607 !important;
+}
+
+body.od180-dark-only .screen,
+body.od180-dark-only .paper-bg,
+body.od180-dark-only #auth-screen,
+body.od180-dark-only #sessions-screen,
+body.od180-dark-only #app-screen {
+  background-color: #050607 !important;
+}
+
+body.od180-dark-only .paper-bg {
+  opacity: .48 !important;
+  filter: contrast(1.08) brightness(.68) !important;
+}
+
+/* Remove completamente o tema claro da interface. */
+body.od180-dark-only #theme-toggle,
+body.od180-dark-only #sessions-theme-toggle,
+body.od180-dark-only #od84-theme-toggle,
+body.od180-dark-only .theme-switcher,
+body.od180-dark-only .od180-light-theme-removed {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+body.od180-dark-only .manga-panel,
+body.od180-dark-only .mini-card,
+body.od180-dark-only .modal-card,
+body.od180-dark-only .sessions-shell,
+body.od180-dark-only .sessions-head,
+body.od180-dark-only .sessions-actions,
+body.od180-dark-only .sessions-list-panel,
+body.od180-dark-only .session-action-box,
+body.od180-dark-only .account-sheets-panel,
+body.od180-dark-only .sheet,
+body.od180-dark-only .tab-panel,
+body.od180-dark-only .od170-module {
+  background:
+    radial-gradient(circle at 20% 0%, color-mix(in srgb, var(--accent, #c5222c) 10%, transparent), transparent 34%),
+    linear-gradient(145deg, rgba(255,255,255,.045), rgba(0,0,0,.28)),
+    rgba(6,8,9,.74) !important;
+  border-color: color-mix(in srgb, var(--accent, #c5222c) 38%, rgba(255,255,255,.14)) !important;
+  color: #f7f7f2 !important;
+}
+
+body.od180-dark-only input,
+body.od180-dark-only textarea,
+body.od180-dark-only select {
+  background: rgba(0,0,0,.58) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  border-color: rgba(255,255,255,.18) !important;
+}
+
+body.od180-dark-only input::placeholder,
+body.od180-dark-only textarea::placeholder {
+  color: rgba(255,255,255,.48) !important;
+  -webkit-text-fill-color: rgba(255,255,255,.48) !important;
+}
+
+body.od180-dark-only .primary-btn,
+body.od180-dark-only .tab-btn.active,
+body.od180-dark-only .sheet-tab.active,
+body.od180-dark-only button.primary-btn {
+  background: color-mix(in srgb, var(--accent, #c5222c) 86%, #000 14%) !important;
+  border-color: color-mix(in srgb, var(--accent, #c5222c) 90%, #fff 10%) !important;
+  color: #fff !important;
+}
+
+body.od180-dark-only .ghost-btn,
+body.od180-dark-only .tab-btn,
+body.od180-dark-only .sheet-tab,
+body.od180-dark-only .danger-btn,
+body.od180-dark-only button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 8px;
+}
+
+/* Login 100% integrado ao tema e à cor da conta. */
+body.od180-dark-only #auth-screen {
+  min-height: 100vh !important;
+  display: grid !important;
+  place-items: center !important;
+  padding: 24px !important;
+  background:
+    radial-gradient(circle at 50% 25%, color-mix(in srgb, var(--accent, #c5222c) 26%, transparent), transparent 32%),
+    radial-gradient(circle at 12% 18%, rgba(255,255,255,.05), transparent 18%),
+    linear-gradient(145deg, #050607, #0b0d10 48%, #020303) !important;
+}
+
+body.od180-dark-only .auth-card {
+  width: min(500px, 94vw) !important;
+  border-radius: 30px !important;
+  padding: 34px !important;
+  border: 1px solid color-mix(in srgb, var(--accent, #c5222c) 78%, #ffffff 10%) !important;
+  background:
+    radial-gradient(circle at top, color-mix(in srgb, var(--accent, #c5222c) 16%, transparent), transparent 42%),
+    linear-gradient(160deg, rgba(255,255,255,.075), rgba(0,0,0,.34)),
+    rgba(8,10,11,.92) !important;
+  box-shadow: 0 30px 90px rgba(0,0,0,.62), inset 0 0 0 1px rgba(255,255,255,.06) !important;
+}
+
+body.od180-dark-only .auth-card .main-logo {
+  width: 128px !important;
+  margin-inline: auto !important;
+  display: block !important;
+  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--accent, #c5222c) 28%, transparent)) !important;
+}
+
+body.od180-dark-only .auth-card h1,
+body.od180-dark-only .auth-card .subtitle,
+body.od180-dark-only .auth-form label,
+body.od180-dark-only .remember-login-line {
+  text-align: center !important;
+}
+
+body.od180-dark-only .auth-tabs {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  padding: 6px !important;
+  border-radius: 18px !important;
+  background: rgba(0,0,0,.28) !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+}
+
+body.od180-dark-only .auth-form input,
+body.od180-dark-only .auth-form button {
+  width: 100% !important;
+  min-height: 46px !important;
+  border-radius: 16px !important;
+}
+
+/* Tela de carregamento opaca: não deixa screenshot/modelo antigo aparecer por baixo. */
+#od180-boot-screen {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483000 !important;
+  display: grid !important;
+  place-items: center !important;
+  background:
+    radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--accent, #c5222c) 24%, transparent), transparent 34%),
+    linear-gradient(145deg, #050607 0%, #0b0d10 42%, #020303 100%) !important;
+  color: #fff !important;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity .28s ease, visibility .28s ease;
+}
+
+#od180-boot-screen.od180-hide {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.od180-loader-card {
+  width: min(420px, 86vw) !important;
+  min-height: 220px !important;
+  border-radius: 28px !important;
+  border: 1px solid color-mix(in srgb, var(--accent, #c5222c) 76%, #fff 10%) !important;
+  background: linear-gradient(145deg, rgba(255,255,255,.055), rgba(0,0,0,.32)) !important;
+  box-shadow: 0 30px 90px rgba(0,0,0,.58), inset 0 0 0 1px rgba(255,255,255,.05) !important;
+  display: grid !important;
+  place-items: center !important;
+  gap: 18px !important;
+  padding: 34px !important;
+  text-align: center !important;
+}
+
+.od180-loader-mark {
+  width: 54px !important;
+  height: 54px !important;
+  border-radius: 18px !important;
+  border: 3px solid rgba(255,255,255,.16) !important;
+  border-top-color: var(--accent, #c5222c) !important;
+  animation: od180spin .82s linear infinite !important;
+}
+
+.od180-loader-title {
+  font: 900 1.1rem/1.1 Impact, system-ui, sans-serif !important;
+  letter-spacing: .08em !important;
+  text-transform: uppercase !important;
+}
+
+.od180-loader-sub {
+  margin-top: 8px !important;
+  font: 700 .78rem/1.4 Arial, system-ui, sans-serif !important;
+  color: rgba(255,255,255,.66) !important;
+  text-transform: uppercase !important;
+  letter-spacing: .05em !important;
+}
+
+@keyframes od180spin { to { transform: rotate(360deg); } }
+
+/* Ícones profissionais centralizados. */
+.od180-icon-button,
+body.od180-dark-only .sessions-menu-btn,
+body.od180-dark-only .sessions-sheet-toggle,
+body.od180-dark-only .topbar-menu-toggle,
+body.od180-dark-only .od84-theme-btn,
+body.od180-dark-only .od71-icon-btn {
+  width: 54px !important;
+  min-width: 54px !important;
+  height: 54px !important;
+  padding: 0 !important;
+  border-radius: 17px !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  background: color-mix(in srgb, var(--accent, #c5222c) 78%, #000 22%) !important;
+  border: 1px solid color-mix(in srgb, var(--accent, #c5222c) 86%, #fff 10%) !important;
+  color: #fff !important;
+  box-shadow: 0 10px 24px rgba(0,0,0,.30), inset 0 0 0 1px rgba(255,255,255,.08) !important;
+}
+
+.od180-icon-button svg,
+body.od180-dark-only .sessions-menu-btn svg,
+body.od180-dark-only .sessions-sheet-toggle svg,
+body.od180-dark-only .topbar-menu-toggle svg,
+body.od180-dark-only .od84-theme-btn svg,
+body.od180-dark-only .od71-icon-btn svg {
+  width: 25px !important;
+  height: 25px !important;
+  fill: none !important;
+  stroke: currentColor !important;
+  stroke-width: 2.2 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+body.od180-dark-only .sessions-menu-panel,
+body.od180-dark-only .od84-theme-panel {
+  background: rgba(5,7,8,.96) !important;
+  border: 1px solid color-mix(in srgb, var(--accent, #c5222c) 55%, #fff 10%) !important;
+  box-shadow: 0 24px 70px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.05) !important;
+}
+
+body.od180-dark-only .od180-menu-label,
+body.od180-dark-only .menu-setting-label {
+  color: rgba(255,255,255,.82) !important;
+  text-align: left !important;
+  font: 900 .76rem/1.3 Arial, system-ui, sans-serif !important;
+  letter-spacing: .05em !important;
+  text-transform: uppercase !important;
+}
+
+body.od180-dark-only h1,
+body.od180-dark-only h2,
+body.od180-dark-only h3,
+body.od180-dark-only .eyebrow,
+body.od180-dark-only .subtitle,
+body.od180-dark-only p,
+body.od180-dark-only label,
+body.od180-dark-only button {
+  text-rendering: geometricPrecision;
+}
+
+body.od180-dark-only .eyebrow,
+body.od180-dark-only .subtitle {
+  color: rgba(255,255,255,.70) !important;
+}
+
+/* Evita white flash ou tela clara em iframes/bloco. */
+body.od180-dark-only iframe,
+body.od180-dark-only .integrated-block-shell {
+  color-scheme: dark !important;
+}
