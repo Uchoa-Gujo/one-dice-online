@@ -18917,3 +18917,286 @@ body.od1801-safe-shell .od180-icon-button svg {
   stroke-linejoin: round;
   pointer-events: none;
 }
+
+
+/* =========================
+   V180.2 - Login seguro
+========================= */
+#login-form input,
+#login-form button,
+#login-form .auth-submit,
+#auth-screen input,
+#auth-screen button {
+  pointer-events: auto !important;
+}
+
+#od180-boot-screen.od180-hide,
+#od1776-solid-loader.od180-hide {
+  pointer-events: none !important;
+}
+
+
+/* =========================
+   V180.3 - Limpeza visual das áreas Início, Personagens e Fichas
+========================= */
+
+/* Escuro obrigatório e base profissional */
+html.od1803-dark-only-root,
+body.od1803-dark-only {
+  color-scheme: dark !important;
+  background: #08090b !important;
+}
+
+body.od1803-dark-only,
+body.od1803-dark-only input,
+body.od1803-dark-only textarea,
+body.od1803-dark-only select,
+body.od1803-dark-only button {
+  color: #fff;
+}
+
+body.od1803-dark-only .paper-bg {
+  opacity: .82 !important;
+  filter: none !important;
+}
+
+body.od1803-dark-only .screen {
+  color: rgba(255,255,255,.92) !important;
+}
+
+/* Remove o tema claro sem apagar configurações da conta */
+body.od1803-dark-only.light-sheet,
+body.od1803-dark-only.theme-light,
+html.od1803-dark-only-root.theme-light {
+  background: #08090b !important;
+}
+
+body.od1803-dark-only .od1803-disabled-theme-toggle {
+  opacity: .82 !important;
+  pointer-events: none !important;
+}
+
+/* Início / mesas */
+.od1803-sessions-shell,
+.sessions-shell.od1803-sessions-shell {
+  width: min(1180px, calc(100vw - 34px)) !important;
+  margin-inline: auto !important;
+  padding: clamp(14px, 2vw, 22px) !important;
+  box-sizing: border-box !important;
+}
+
+.od1803-sessions-head,
+.sessions-head.od1803-sessions-head,
+.od1803-panel,
+.sessions-actions.od1803-panel,
+.sessions-list-panel.od1803-panel,
+.account-sheets-panel.od1803-panel {
+  border-radius: 24px !important;
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--accent, #c5222c), transparent 86%), transparent 52%),
+    linear-gradient(145deg, rgba(255,255,255,.045), rgba(0,0,0,.22)),
+    rgba(10, 11, 13, .78) !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.025),
+    0 18px 42px rgba(0,0,0,.22) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+.sessions-actions.od1803-panel {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  padding: 16px !important;
+}
+
+.session-action-box {
+  border-radius: 20px !important;
+  padding: 18px !important;
+  background: rgba(0,0,0,.18) !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+}
+
+.session-inline-form {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 10px !important;
+  align-items: center !important;
+}
+
+.session-inline-form input {
+  min-width: 0 !important;
+  width: 100% !important;
+}
+
+/* Personagens */
+.account-sheets-panel.od1803-characters-panel {
+  max-height: min(620px, calc(100vh - 220px)) !important;
+  overflow: hidden !important;
+  padding: 18px !important;
+}
+
+.account-sheets-head {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  margin-bottom: 14px !important;
+}
+
+#account-character-list.od1803-character-list {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+  gap: 14px !important;
+  max-height: min(470px, calc(100vh - 340px)) !important;
+  overflow-y: auto !important;
+  padding: 4px 6px 10px 2px !important;
+  scrollbar-width: thin !important;
+}
+
+#account-character-list.od1803-character-list > * {
+  min-width: 0 !important;
+  border-radius: 20px !important;
+  overflow: hidden !important;
+  background: rgba(0,0,0,.22) !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+}
+
+.account-character-card,
+.od1803-character-card {
+  padding: 14px !important;
+  box-sizing: border-box !important;
+}
+
+/* Campanhas */
+#campaign-list.campaign-list {
+  display: grid !important;
+  gap: 14px !important;
+  max-height: min(520px, calc(100vh - 360px)) !important;
+  overflow-y: auto !important;
+  padding-right: 6px !important;
+}
+
+.campaign-card,
+.campaign-list > * {
+  border-radius: 20px !important;
+  min-width: 0 !important;
+  background: rgba(0,0,0,.18) !important;
+}
+
+/* Ficha */
+#app-screen.od1803-app-screen {
+  background: transparent !important;
+}
+
+.sheet.od1803-sheet,
+.sheet {
+  width: min(1080px, calc(100vw - 34px)) !important;
+  max-width: 1080px !important;
+  margin-inline: auto !important;
+  box-sizing: border-box !important;
+  border-radius: 24px !important;
+  overflow: visible !important;
+}
+
+.sheet-area,
+.main-sheet-area,
+.character-main {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+.sheet-tabs {
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  scrollbar-width: thin !important;
+  padding-bottom: 6px !important;
+}
+
+.sheet-tab {
+  white-space: nowrap !important;
+}
+
+.od1803-sheet-area #campaign-mini-card,
+.od1803-sheet-area #master-dashboard,
+.od1803-sheet-area #player-dashboard,
+.od1803-sheet-area #initiative-panel {
+  display: none !important;
+}
+
+/* Textos e botões */
+.od1803-readable-text {
+  text-align: inherit;
+  overflow-wrap: anywhere;
+}
+
+button,
+.primary-btn,
+.ghost-btn,
+.danger-btn,
+.tab-btn,
+.sheet-tab {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+}
+
+.od1803-icon-btn {
+  width: 54px !important;
+  min-width: 54px !important;
+  height: 54px !important;
+  border-radius: 16px !important;
+  padding: 0 !important;
+  font-size: 1.25rem !important;
+}
+
+/* Modais/configurações */
+.od-modal .modal-card,
+.modal-card {
+  border-radius: 24px !important;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.055), rgba(0,0,0,.22)),
+    rgba(9,10,12,.96) !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+  color: #fff !important;
+}
+
+.modal-actions {
+  display: flex !important;
+  gap: 10px !important;
+  justify-content: flex-end !important;
+  flex-wrap: wrap !important;
+}
+
+/* Responsivo */
+@media (max-width: 880px) {
+  .sessions-actions.od1803-panel {
+    grid-template-columns: 1fr !important;
+  }
+
+  .session-inline-form {
+    grid-template-columns: 1fr !important;
+  }
+
+  .account-sheets-head {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  #account-character-list.od1803-character-list {
+    grid-template-columns: 1fr !important;
+    max-height: none !important;
+  }
+
+  #campaign-list.campaign-list {
+    max-height: none !important;
+  }
+
+  .sheet.od1803-sheet,
+  .sheet {
+    width: min(100%, calc(100vw - 18px)) !important;
+  }
+}
