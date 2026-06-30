@@ -14823,3 +14823,137 @@ body.od1805-dark-only .od1805-panel {
   padding: 0 4px !important;
   font-size: .70rem !important;
 }
+
+
+/* =========================
+   V180.10 - Ajustes finais solicitados
+========================= */
+
+/* 1) Evita piscada visual forte ao alternar atributos */
+.od170-module[data-od170-key="resumo-atributos"] {
+  contain: layout paint !important;
+}
+.od170-module[data-od170-key="resumo-atributos"] > .od170-module-body,
+.od170-module[data-od170-key="resumo-atributos"] > .od1715-attr-summary {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* 3) Ordem no inventário: somente setas */
+.od1808-inv-card-edit .od1808-order button {
+  font-size: 0 !important;
+  line-height: 1 !important;
+}
+.od1808-inv-card-edit .od1808-order button::first-letter {
+  font-size: 1rem !important;
+}
+.od1808-inv-card-edit .od1808-order button[data-dir="-1"]::before {
+  content: "↑" !important;
+  font-size: 1rem !important;
+}
+.od1808-inv-card-edit .od1808-order button[data-dir="1"]::before {
+  content: "↓" !important;
+  font-size: 1rem !important;
+}
+
+/* 4) Botão Fichas refeito do zero, sem imagem que some */
+#toggle-account-panel-btn.od1810-sheet-btn-final,
+#sidebar-dock-btn.od1810-sheet-btn-final,
+.sessions-sheet-toggle.od1810-sheet-btn-final {
+  display: grid !important;
+  place-items: center !important;
+  overflow: hidden !important;
+}
+#toggle-account-panel-btn.od1810-sheet-btn-final img,
+#toggle-account-panel-btn.od1810-sheet-btn-final svg,
+#sidebar-dock-btn.od1810-sheet-btn-final img,
+#sidebar-dock-btn.od1810-sheet-btn-final svg,
+.sessions-sheet-toggle.od1810-sheet-btn-final img,
+.sessions-sheet-toggle.od1810-sheet-btn-final svg,
+#toggle-account-panel-btn.od1810-sheet-btn-final .od90-sheet-icon,
+#sidebar-dock-btn.od1810-sheet-btn-final .od90-sheet-icon,
+.sessions-sheet-toggle.od1810-sheet-btn-final .od90-sheet-icon {
+  display: none !important;
+}
+.od1810-sheet-icon {
+  width: 28px !important;
+  height: 34px !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 7px !important;
+  border: 3px solid rgba(255,255,255,.94) !important;
+  background: linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.04)) !important;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.22) !important;
+  position: relative !important;
+}
+.od1810-sheet-icon::before,
+.od1810-sheet-icon::after,
+.od1810-sheet-icon span::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 7px !important;
+  right: 7px !important;
+  height: 2px !important;
+  background: rgba(255,255,255,.88) !important;
+  border-radius: 99px !important;
+}
+.od1810-sheet-icon::before { top: 9px !important; }
+.od1810-sheet-icon::after { top: 16px !important; }
+.od1810-sheet-icon span::before { top: 23px !important; }
+
+/* 5) Perícias sem reduzir/expandir */
+.od170-module[data-od170-key="pericias-lista"] > .od170-module-head [data-od170-toggle],
+.od170-module[data-od170-key="pericias-lista"] > .od1715-collapse-summary {
+  display: none !important;
+}
+.od170-module[data-od170-key="pericias-lista"].od170-collapsed > .od170-module-body,
+.od1810-skills-no-collapse > .od170-module-body {
+  display: block !important;
+}
+
+/* 6) Botão Treinada das perícias menor e sem estourar */
+.od79-skill-check,
+.od88-skill-check {
+  max-width: 128px !important;
+  min-width: 0 !important;
+  padding: 8px 10px !important;
+  gap: 7px !important;
+}
+.od79-skill-check span,
+.od88-skill-check span {
+  font-size: .68rem !important;
+  line-height: 1 !important;
+  letter-spacing: .02em !important;
+  white-space: nowrap !important;
+}
+.od79-skill-check input,
+.od88-skill-check input {
+  width: 18px !important;
+  min-width: 18px !important;
+  height: 18px !important;
+}
+
+/* 7) Resumo do inventário não muda de formato com Block Inventory */
+#tab-equipamentos.block-inventory-active .inventory-summary-grid,
+#tab-equipamentos.block-inventory-active .equipment-grid.od1808-summary-grid,
+#tab-equipamentos.block-inventory-active .od1808-summary-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  max-width: none !important;
+  width: 100% !important;
+}
+#tab-equipamentos.block-inventory-active .inventory-summary-grid .weight-field,
+#tab-equipamentos.block-inventory-active .od1808-summary-card {
+  display: grid !important;
+}
+
+/* 8) Remove perfil de sessão; deixa só configurações dos 3 tracinhos */
+.od90-profile-card,
+[data-od90-profile-card],
+.session-profile-card,
+.account-profile-card,
+.menu-profile-card,
+#session-profile-card,
+#account-menu-profile {
+  display: none !important;
+}
