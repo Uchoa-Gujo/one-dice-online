@@ -5,7 +5,7 @@
 ========================= */
 (function od139EarlyGuards(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.80.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.1';
   if (!window.CSS) window.CSS = {};
   if (typeof window.CSS.escape !== 'function') {
     window.CSS.escape = function(value) {
@@ -12035,7 +12035,7 @@ function od66InventoryMutationUnlockSoon() {
    Este bloco não altera regras de ficha; apenas melhora autonomia e experiência.
 ========================= */
 (function od115Maintenance(){
-  const VERSION = '1.80.0';
+  const VERSION = '1.80.1';
   const STORAGE_PREFIX = 'od_';
   const routeMap = {
     home: '/inicio',
@@ -22487,33 +22487,36 @@ function od66InventoryMutationUnlockSoon() {
 
 
 /* =========================
-   V180 - Tema escuro obrigatório + carregamento profissional
-   Objetivo:
-   - remover pisca de telas antigas no reload;
-   - impedir tema claro;
-   - deixar login/menu usando a cor de tema da conta;
-   - padronizar ícones e botões.
+   V180.1 - Shell visual seguro sem carregamento infinito
+   Remove a lógica problemática da v1.80:
+   - sem MutationObserver chamando innerHTML em loop;
+   - loader sempre fecha por evento ou fallback;
+   - tema escuro continua obrigatório;
+   - ícones só são decorados uma vez.
 ========================= */
-(function od180DarkOnlyProfessionalShell(){
+(function od1801SafeShell(){
   'use strict';
-  if (window.__od180DarkOnlyProfessionalShellInstalled) return;
-  window.__od180DarkOnlyProfessionalShellInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.0';
+  if (window.__od1801SafeShellInstalled) return;
+  window.__od1801SafeShellInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.80.1';
 
   const SETTINGS_KEY = 'od_settings';
   const DEFAULTS = { theme: 'dark', accent: 'red', skillsCompact: true, font: 'impact', sound: true };
   const ICONS = {
-    menu: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
-    sheets: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h9a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="M6 8H4a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2M10 9h6M10 13h6M10 17h4"/></svg>',
-    settings: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5A3.5 3.5 0 1 0 12 8a3.5 3.5 0 0 0 0 7.5Z"/><path d="M19.4 15a1.8 1.8 0 0 0 .36 1.98l.05.05a2 2 0 0 1-2.83 2.83l-.05-.05A1.8 1.8 0 0 0 15 19.4a1.8 1.8 0 0 0-1 .3 1.8 1.8 0 0 0-.9 1.56V21a2 2 0 0 1-4 0v-.08a1.8 1.8 0 0 0-.9-1.56 1.8 1.8 0 0 0-1-.3 1.8 1.8 0 0 0-1.98.36l-.05.05a2 2 0 0 1-2.83-2.83l.05-.05A1.8 1.8 0 0 0 4.6 15a1.8 1.8 0 0 0-.3-1 1.8 1.8 0 0 0-1.56-.9H2.7a2 2 0 0 1 0-4h.08a1.8 1.8 0 0 0 1.56-.9 1.8 1.8 0 0 0 .3-1 1.8 1.8 0 0 0-.36-1.98l-.05-.05a2 2 0 0 1 2.83-2.83l.05.05A1.8 1.8 0 0 0 9 4.6c.31 0 .65-.1 1-.3a1.8 1.8 0 0 0 .9-1.56V2.7a2 2 0 0 1 4 0v.08a1.8 1.8 0 0 0 .9 1.56c.35.2.69.3 1 .3a1.8 1.8 0 0 0 1.98-.36l.05-.05a2 2 0 0 1 2.83 2.83l-.05.05A1.8 1.8 0 0 0 19.4 9c0 .31.1.65.3 1a1.8 1.8 0 0 0 1.56.9h.04a2 2 0 0 1 0 4h-.08a1.8 1.8 0 0 0-1.56.9c-.2.35-.3.69-.3 1Z"/></svg>'
+    menu: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
+    sheets: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 4h9a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="M6 8H4a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2M10 9h6M10 13h6M10 17h4"/></svg>',
+    settings: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 15.5A3.5 3.5 0 1 0 12 8a3.5 3.5 0 0 0 0 7.5Z"/><path d="M19.4 15a1.8 1.8 0 0 0 .36 1.98l.05.05a2 2 0 0 1-2.83 2.83l-.05-.05A1.8 1.8 0 0 0 15 19.4a1.8 1.8 0 0 0-1 .3 1.8 1.8 0 0 0-.9 1.56V21a2 2 0 0 1-4 0v-.08a1.8 1.8 0 0 0-.9-1.56 1.8 1.8 0 0 0-1-.3 1.8 1.8 0 0 0-1.98.36l-.05.05a2 2 0 0 1-2.83-2.83l.05-.05A1.8 1.8 0 0 0 4.6 15a1.8 1.8 0 0 0-.3-1 1.8 1.8 0 0 0-1.56-.9H2.7a2 2 0 0 1 0-4h.08a1.8 1.8 0 0 0 1.56-.9 1.8 1.8 0 0 0 .3-1 1.8 1.8 0 0 0-.36-1.98l-.05-.05a2 2 0 0 1 2.83-2.83l.05.05A1.8 1.8 0 0 0 9 4.6c.31 0 .65-.1 1-.3a1.8 1.8 0 0 0 .9-1.56V2.7a2 2 0 0 1 4 0v.08a1.8 1.8 0 0 0 .9 1.56c.35.2.69.3 1 .3a1.8 1.8 0 0 0 1.98-.36l.05-.05a2 2 0 0 1 2.83 2.83l-.05.05A1.8 1.8 0 0 0 19.4 9c0 .31.1.65.3 1a1.8 1.8 0 0 0 1.56.9h.04a2 2 0 0 1 0 4h-.08a1.8 1.8 0 0 0-1.56.9c-.2.35-.3.69-.3 1Z"/></svg>'
   };
 
-  function getSettings(){
+  let hidden = false;
+  let darkTimer = null;
+
+  function readSettings(){
     try { return Object.assign({}, DEFAULTS, JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}')); }
     catch (_) { return Object.assign({}, DEFAULTS); }
   }
 
-  function saveSettings(st){
+  function writeSettings(st){
     const next = Object.assign({}, DEFAULTS, st || {});
     next.theme = 'dark';
     next.accent = next.accent || 'red';
@@ -22521,89 +22524,57 @@ function od66InventoryMutationUnlockSoon() {
     return next;
   }
 
-  function forceDark(){
-    const st = saveSettings(getSettings());
-    const body = document.body;
+  function forceDarkOnce(){
+    const st = writeSettings(readSettings());
     const html = document.documentElement;
+    const body = document.body;
+    html.dataset.theme = 'dark';
+    html.dataset.accent = st.accent || 'red';
     if (body) {
-      body.classList.add('dark-sheet', 'od180-dark-only', 'od180-professional-ui');
+      body.classList.add('dark-sheet', 'od180-dark-only', 'od180-professional-ui', 'od1801-safe-shell');
       body.classList.remove('light-sheet', 'theme-light');
+      body.dataset.theme = 'dark';
       body.dataset.accent = st.accent || 'red';
       body.dataset.font = st.font || 'impact';
-      body.dataset.theme = 'dark';
     }
-    html.dataset.accent = st.accent || 'red';
-    html.dataset.theme = 'dark';
 
     document.querySelectorAll('#theme-toggle,#sessions-theme-toggle,#od84-theme-toggle').forEach(btn => {
       btn.textContent = 'Tema Escuro';
       btn.setAttribute('aria-hidden', 'true');
       btn.tabIndex = -1;
+      btn.classList.add('od180-light-theme-removed');
     });
 
     document.querySelectorAll('#accent-select,#sessions-accent-select,#od84-accent-select').forEach(sel => {
       if (sel && sel.value !== st.accent) sel.value = st.accent || 'red';
     });
-    document.querySelectorAll('#font-select,#sessions-font-select,#od84-font-select').forEach(sel => {
-      if (sel && sel.value !== st.font) sel.value = st.font || 'impact';
-    });
   }
 
-  function decorateIcons(){
-    const menuButtons = ['#sessions-menu-btn', '#topbar-menu-toggle', '#od71-menu-btn'];
-    menuButtons.forEach(selector => {
-      document.querySelectorAll(selector).forEach(btn => {
-        btn.classList.add('od180-icon-button', 'od180-menu-icon');
-        btn.innerHTML = ICONS.menu;
-        btn.setAttribute('aria-label', 'Abrir menu');
-      });
-    });
-
-    document.querySelectorAll('#toggle-account-panel-btn').forEach(btn => {
-      btn.classList.add('od180-icon-button', 'od180-sheets-icon');
-      btn.innerHTML = ICONS.sheets;
-      btn.setAttribute('aria-label', 'Abrir minhas fichas');
-      btn.title = 'Abrir minhas fichas';
-    });
-
-    document.querySelectorAll('#od84-theme-btn,#od71-settings-btn').forEach(btn => {
-      btn.classList.add('od180-icon-button', 'od180-settings-icon');
-      btn.innerHTML = ICONS.settings;
-      btn.setAttribute('aria-label', 'Configurações visuais');
-      btn.title = 'Configurações visuais';
-    });
+  function scheduleDark(){
+    clearTimeout(darkTimer);
+    darkTimer = setTimeout(() => { forceDarkOnce(); decorateIconsOnce(); }, 50);
   }
 
-  function cleanThemePanels(){
-    document.querySelectorAll('.theme-switcher, #theme-toggle, #sessions-theme-toggle, #od84-theme-toggle').forEach(el => {
-      el.classList.add('od180-light-theme-removed');
-    });
-    document.querySelectorAll('.menu-setting-label, .od84-theme-panel label').forEach(label => {
-      label.classList.add('od180-menu-label');
-    });
+  function decorateButton(btn, kind, label){
+    if (!btn || btn.dataset.od1801Icon === kind) return;
+    btn.classList.add('od180-icon-button', `od180-${kind}-icon`);
+    btn.innerHTML = ICONS[kind] || btn.innerHTML;
+    btn.dataset.od1801Icon = kind;
+    btn.setAttribute('aria-label', label);
+    btn.title = label;
   }
 
-  function hideBoot(reason){
-    const overlay = document.getElementById('od180-boot-screen');
-    if (!overlay) {
-      document.documentElement.classList.remove('od180-booting');
-      return;
-    }
-    const finish = () => {
-      overlay.classList.add('od180-hide');
-      document.documentElement.classList.remove('od180-booting');
-      document.body?.classList.remove('od180-booting-body');
-      setTimeout(() => overlay.remove(), 420);
-    };
-    const minTime = 850;
-    const started = Number(overlay.dataset.started || Date.now());
-    const wait = Math.max(0, minTime - (Date.now() - started));
-    setTimeout(finish, wait);
+  function decorateIconsOnce(){
+    ['#sessions-menu-btn', '#topbar-menu-toggle', '#od71-menu-btn'].forEach(selector => {
+      document.querySelectorAll(selector).forEach(btn => decorateButton(btn, 'menu', 'Abrir menu'));
+    });
+    document.querySelectorAll('#toggle-account-panel-btn').forEach(btn => decorateButton(btn, 'sheets', 'Abrir minhas fichas'));
+    document.querySelectorAll('#od84-theme-btn,#od71-settings-btn').forEach(btn => decorateButton(btn, 'settings', 'Configurações visuais'));
   }
 
-  function showBoot(){
+  function ensureBoot(){
     let overlay = document.getElementById('od180-boot-screen');
-    if (!overlay) {
+    if (!overlay && document.body && !hidden) {
       overlay = document.createElement('div');
       overlay.id = 'od180-boot-screen';
       overlay.setAttribute('role', 'status');
@@ -22611,100 +22582,108 @@ function od66InventoryMutationUnlockSoon() {
       overlay.innerHTML = '<div class="od180-loader-card"><div class="od180-loader-mark" aria-hidden="true"></div><div><div class="od180-loader-title">Carregando One Dice</div><div class="od180-loader-sub">Preparando mesa, fichas e tema escuro</div></div></div>';
       document.body.prepend(overlay);
     }
-    overlay.dataset.started = String(Date.now());
-    overlay.classList.remove('od180-hide');
     document.documentElement.classList.add('od180-booting');
     document.body?.classList.add('od180-booting-body');
+    return overlay;
+  }
+
+  function hideBoot(){
+    if (hidden) return;
+    hidden = true;
+    try { clearTimeout(window.__odBootFailsafe); } catch (_) {}
+    const overlay = document.getElementById('od180-boot-screen');
+    document.documentElement.classList.remove('od180-booting');
+    document.body?.classList.remove('od180-booting-body');
+    if (overlay) {
+      overlay.classList.add('od180-hide');
+      setTimeout(() => overlay.remove(), 420);
+    }
   }
 
   function boot(){
-    forceDark();
-    decorateIcons();
-    cleanThemePanels();
+    ensureBoot();
+    forceDarkOnce();
+    decorateIconsOnce();
     document.body?.classList.add('od180-ready-dark');
   }
 
-  // Força tema escuro mesmo quando camadas antigas tentam voltar para claro.
-  const oldApplySettings = typeof applySettings === 'function' ? applySettings : null;
-  if (oldApplySettings && !oldApplySettings.__od180Wrapped) {
-    applySettings = function od180ApplySettings(){
-      const result = oldApplySettings.apply(this, arguments);
-      forceDark(); decorateIcons(); cleanThemePanels();
+  // Wrapper seguro: não usa observador em loop e não reescreve DOM repetidamente.
+  const oldApply = typeof applySettings === 'function' ? applySettings : null;
+  if (oldApply && !oldApply.__od1801Wrapped) {
+    applySettings = function od1801ApplySettings(){
+      const result = oldApply.apply(this, arguments);
+      scheduleDark();
       return result;
     };
-    applySettings.__od180Wrapped = true;
+    applySettings.__od1801Wrapped = true;
     try { window.applySettings = applySettings; } catch (_) {}
   }
 
-  const oldUpdateSettings = typeof updateSettings === 'function' ? updateSettings : null;
-  if (oldUpdateSettings && !oldUpdateSettings.__od180Wrapped) {
-    updateSettings = function od180UpdateSettings(mutator){
-      return oldUpdateSettings(function(st){
+  const oldUpdate = typeof updateSettings === 'function' ? updateSettings : null;
+  if (oldUpdate && !oldUpdate.__od1801Wrapped) {
+    updateSettings = function od1801UpdateSettings(mutator){
+      return oldUpdate(function(st){
         if (typeof mutator === 'function') mutator(st);
         st.theme = 'dark';
         if (!st.accent) st.accent = 'red';
       });
     };
-    updateSettings.__od180Wrapped = true;
+    updateSettings.__od1801Wrapped = true;
     try { window.updateSettings = updateSettings; } catch (_) {}
   }
 
   document.addEventListener('click', event => {
-    const theme = event.target.closest?.('#theme-toggle,#sessions-theme-toggle,#od84-theme-toggle,.theme-dot');
-    if (theme && (theme.id?.includes('theme') || theme.classList?.contains('theme-dot'))) {
+    const themeBtn = event.target.closest?.('#theme-toggle,#sessions-theme-toggle,#od84-theme-toggle');
+    if (themeBtn) {
       event.preventDefault();
-      event.stopPropagation();
       event.stopImmediatePropagation();
-      forceDark();
-      return;
+      forceDarkOnce();
     }
   }, true);
 
   document.addEventListener('change', event => {
     const accent = event.target.closest?.('#accent-select,#sessions-accent-select,#od84-accent-select');
     if (accent) {
-      const st = getSettings();
+      const st = readSettings();
+      st.theme = 'dark';
       st.accent = accent.value || 'red';
-      st.theme = 'dark';
-      saveSettings(st);
-      setTimeout(() => { forceDark(); decorateIcons(); }, 0);
-      return;
-    }
-    const font = event.target.closest?.('#font-select,#sessions-font-select,#od84-font-select');
-    if (font) {
-      const st = getSettings();
-      st.font = font.value || 'impact';
-      st.theme = 'dark';
-      saveSettings(st);
-      setTimeout(() => { forceDark(); decorateIcons(); }, 0);
+      writeSettings(st);
+      scheduleDark();
     }
   }, true);
 
+  // Observador leve: apenas captura criação tardia dos botões, sem mexer no DOM em loop.
   const observer = new MutationObserver(() => {
-    forceDark();
-    decorateIcons();
-    cleanThemePanels();
+    if (!document.body) return;
+    clearTimeout(observer._timer);
+    observer._timer = setTimeout(() => decorateIconsOnce(), 120);
   });
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-      showBoot(); boot();
-      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'data-accent', 'data-theme'] });
+      boot();
+      observer.observe(document.body, { childList: true, subtree: true });
+      setTimeout(hideBoot, 900);
     }, { once: true });
   } else {
-    showBoot(); boot();
-    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'data-accent', 'data-theme'] });
+    boot();
+    observer.observe(document.body, { childList: true, subtree: true });
+    setTimeout(hideBoot, 900);
   }
 
   window.addEventListener('load', () => {
     boot();
-    setTimeout(() => hideBoot('load'), 950);
+    setTimeout(hideBoot, 450);
   }, { once: true });
 
-  // Fallback caso o evento load já tenha passado ou algum asset demore.
-  setTimeout(() => { boot(); hideBoot('fallback'); }, 2600);
-  setTimeout(boot, 400);
-  setTimeout(boot, 1200);
+  // Failsafes fortes contra carregamento infinito.
+  setTimeout(hideBoot, 1800);
+  setTimeout(hideBoot, 3200);
+  setTimeout(() => {
+    document.querySelectorAll('#od180-boot-screen,#od1776-solid-loader').forEach(el => el.remove());
+    document.documentElement.classList.remove('od180-booting','od1775-restoring-route');
+    document.body?.classList.remove('od180-booting-body','od1775-restoring-route');
+  }, 4200);
 
-  window.od180DarkOnlyProfessionalShell = { forceDark, showBoot, hideBoot, decorateIcons };
+  window.od1801SafeShell = { forceDarkOnce, decorateIconsOnce, hideBoot, boot };
 })();

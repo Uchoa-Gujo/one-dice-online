@@ -18880,3 +18880,40 @@ body.od180-dark-only iframe,
 body.od180-dark-only .integrated-block-shell {
   color-scheme: dark !important;
 }
+
+
+/* =========================
+   V180.1 - Proteção contra carregamento infinito
+========================= */
+html:not(.od180-booting) body {
+  overflow: auto !important;
+}
+html:not(.od180-booting) #od180-boot-screen,
+#od180-boot-screen.od180-hide {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+body.od1801-safe-shell {
+  background: #050607 !important;
+  color: #f5f5f5 !important;
+}
+body.od1801-safe-shell .screen,
+body.od1801-safe-shell #auth-screen,
+body.od1801-safe-shell #sessions-screen,
+body.od1801-safe-shell #app-screen {
+  background: transparent !important;
+}
+body.od1801-safe-shell .od180-light-theme-removed {
+  display: none !important;
+}
+body.od1801-safe-shell .od180-icon-button svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}

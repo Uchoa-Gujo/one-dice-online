@@ -18,12 +18,22 @@
         document.documentElement.classList.add('od180-booting');
         document.documentElement.setAttribute('data-accent', 'red');
       }
+      try {
+        window.__odBootFailsafe = setTimeout(function(){
+          document.documentElement.classList.remove('od180-booting');
+          document.body && document.body.classList.remove('od180-booting-body');
+          var boot = document.getElementById('od180-boot-screen');
+          if (boot) boot.classList.add('od180-hide');
+          setTimeout(function(){ if (boot && boot.parentNode) boot.parentNode.removeChild(boot); }, 450);
+        }, 3800);
+      } catch (_) {}
     })();
   </script>
   <style id="od180-critical-style">
     html.od180-booting, html.od180-booting body { background:#050607 !important; overflow:hidden !important; }
     #od180-boot-screen { position:fixed; inset:0; z-index:2147483000; display:grid; place-items:center; background: radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--accent, #c5222c) 24%, transparent), transparent 34%), linear-gradient(145deg,#050607 0%,#0b0d10 42%,#020303 100%); color:#fff; opacity:1; visibility:visible; transition:opacity .28s ease, visibility .28s ease; }
     #od180-boot-screen.od180-hide { opacity:0; visibility:hidden; pointer-events:none; }
+    html:not(.od180-booting) #od180-boot-screen { opacity:0; visibility:hidden; pointer-events:none; }
     .od180-loader-card { width:min(420px,86vw); min-height:220px; border-radius:28px; border:1px solid color-mix(in srgb, var(--accent,#c5222c) 76%, #fff 10%); background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(0,0,0,.32)); box-shadow:0 30px 90px rgba(0,0,0,.58), inset 0 0 0 1px rgba(255,255,255,.05); display:grid; place-items:center; gap:18px; padding:34px; text-align:center; }
     .od180-loader-mark { width:54px; height:54px; border-radius:18px; border:3px solid rgba(255,255,255,.16); border-top-color:var(--accent,#c5222c); animation:od180spin .82s linear infinite; }
     .od180-loader-title { font:900 1.1rem/1.1 Impact, system-ui, sans-serif; letter-spacing:.08em; text-transform:uppercase; }
@@ -33,7 +43,7 @@
   <link rel="stylesheet" href="/block-inventory/style.css" />
   <link rel="icon" type="image/png" href="/assets/favicon.png" />
   <link rel="shortcut icon" href="/assets/favicon.png" />
-  <link rel="stylesheet" href="/style.css?v=1.80.0" />
+  <link rel="stylesheet" href="/style.css?v=1.80.1" />
 </head>
 <body>
   <div id="od180-boot-screen" role="status" aria-live="polite" aria-label="Carregando One Dice">
@@ -895,7 +905,7 @@
     </article>
   </template>
   <script src="/socket.io/socket.io.js"></script>
-  <script src="/script.js?v=1.80.0"></script>
+  <script src="/script.js?v=1.80.1"></script>
   <script type="module" src="/block-inventory/script.js"></script>
 </body>
 </html>
