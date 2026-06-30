@@ -43,9 +43,75 @@
   <link rel="stylesheet" href="/block-inventory/style.css" />
   <link rel="icon" type="image/png" href="/assets/favicon.png" />
   <link rel="shortcut icon" href="/assets/favicon.png" />
-  <link rel="stylesheet" href="/style.css?v=1.80.4" />
+  <link rel="stylesheet" href="/style.css?v=1.80.7" />
+
+  <script id="od1805-preboot-script">
+    document.documentElement.classList.add('od1805-booting');
+    window.__od1805BootStart = Date.now();
+  </script>
+  <style id="od1805-preboot-style">
+    html.od1805-booting body { background:#050608 !important; }
+    html.od1805-booting #auth-screen,
+    html.od1805-booting #sessions-screen,
+    html.od1805-booting #app-screen,
+    html.od1805-booting #overlay-screen { visibility:hidden !important; opacity:0 !important; }
+    #od1805-boot-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483647;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at 50% 40%, rgba(190, 30, 38, .20), transparent 32%),
+        linear-gradient(135deg, #050608 0%, #111315 48%, #050608 100%);
+      color: #fff;
+      font-family: Impact, Georgia, serif;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    #od1805-boot-screen .od1805-loader-box {
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:18px;
+      text-align:center;
+      padding:28px 34px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:24px;
+      background:rgba(0,0,0,.28);
+      box-shadow:0 24px 80px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.04);
+    }
+    #od1805-boot-screen .od1805-ring {
+      width:58px;
+      height:58px;
+      border-radius:50%;
+      border:4px solid rgba(255,255,255,.16);
+      border-top-color:#c9303a;
+      animation:od1805spin .8s linear infinite;
+    }
+    #od1805-boot-screen .od1805-load-title { font-size:1.05rem; }
+    #od1805-boot-screen .od1805-load-sub { font-family:Arial,sans-serif; font-size:.74rem; opacity:.75; letter-spacing:.04em; }
+    @keyframes od1805spin { to { transform:rotate(360deg); } }
+    html:not(.od1805-booting) #od1805-boot-screen { display:none !important; }
+  </style>
+
 </head>
 <body>
+  <div id="od1805-boot-screen" aria-live="polite" aria-busy="true">
+    <div class="od1805-loader-box">
+      <div class="od1805-ring" aria-hidden="true"></div>
+      <div class="od1805-load-title">Carregando One Dice</div>
+      <div class="od1805-load-sub">Preparando interface escura</div>
+    </div>
+  </div>
+  <script id="od1805-boot-failsafe">
+    setTimeout(function(){
+      document.documentElement.classList.remove('od1805-booting');
+      var el = document.getElementById('od1805-boot-screen');
+      if (el) el.remove();
+    }, 9000);
+  </script>
+
   <div id="od180-boot-screen" role="status" aria-live="polite" aria-label="Carregando One Dice">
     <div class="od180-loader-card">
       <div class="od180-loader-mark" aria-hidden="true"></div>
@@ -905,7 +971,7 @@
     </article>
   </template>
   <script src="/socket.io/socket.io.js"></script>
-  <script src="/script.js?v=1.80.4"></script>
+  <script src="/script.js?v=1.80.7"></script>
   <script type="module" src="/block-inventory/script.js"></script>
 </body>
 </html>

@@ -5,7 +5,7 @@
 ========================= */
 (function od139EarlyGuards(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
   if (!window.CSS) window.CSS = {};
   if (typeof window.CSS.escape !== 'function') {
     window.CSS.escape = function(value) {
@@ -12035,7 +12035,7 @@ function od66InventoryMutationUnlockSoon() {
    Este bloco não altera regras de ficha; apenas melhora autonomia e experiência.
 ========================= */
 (function od115Maintenance(){
-  const VERSION = '1.80.4';
+  const VERSION = '1.80.7';
   const STORAGE_PREFIX = 'od_';
   const routeMap = {
     home: '/inicio',
@@ -13636,7 +13636,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od136AttributesClean(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   const ATTRS = [
     ['forca', 'Força'], ['agilidade', 'Agilidade'], ['vigor', 'Vigor'], ['intelecto', 'Intelecto'], ['presenca', 'Presença']
@@ -13804,7 +13804,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od137SheetStabilityAndManualDefenseDodge(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   const $ = id => document.getElementById(id);
   const EDITABLE = 'input, textarea, select, [contenteditable="true"]';
@@ -14166,7 +14166,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od138AuditAndDuplicateSheetInstalled) return;
   window.__od138AuditAndDuplicateSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   const DUP_SELECTOR = '[data-od138-duplicate-character], [data-od71-copy-character], [data-copy-account-character]';
 
@@ -14359,7 +14359,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od139ExtraErrorFixesInstalled) return;
   window.__od139ExtraErrorFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   const IMAGE_KEYS = [
     'portrait','portraitUrl','image','imageUrl','photo','photoUrl','avatar','avatarUrl','retrato','foto',
@@ -14514,9 +14514,9 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od140GeneralImprovementsInstalled) return;
   window.__od140GeneralImprovementsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
-  const VERSION = '1.80.4';
+  const VERSION = '1.80.5';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   const IMPORT_INPUT_ID = 'od140-import-json-input';
   const MAX_BACKUPS_PER_CHAR = 5;
@@ -14995,7 +14995,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od141AuditHardeningInstalled) return;
   window.__od141AuditHardeningInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   function pruneBackups(){
     try {
@@ -15046,7 +15046,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od142FinalCleanupInstalled) return;
   window.__od142FinalCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   function keepFirst(selector){
     const nodes = Array.from(document.querySelectorAll(selector));
@@ -15132,7 +15132,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od148SafeRollbackPatchInstalled) return;
   window.__od148SafeRollbackPatchInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   function hideManualNotes(){
     ['defense-effective-note','dodge-formula-note'].forEach(id => {
@@ -15185,7 +15185,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od152StableLayoutFixesInstalled) return;
   window.__od152StableLayoutFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   const $ = id => document.getElementById(id);
   const n = (value, fallback = 0) => {
@@ -15377,7 +15377,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od155SessionDashboardStability(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   const STORE_PREFIX = 'od155_dashboard_collapsed_';
   const lastSig = { player: '', master: '' };
@@ -15533,7 +15533,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od156ProtectOtherPlayersSheetsInstalled) return;
   window.__od156ProtectOtherPlayersSheetsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   const PROTECTED_ARRAYS = ['inventoryItems','blockInventory','abilities','spells','attacks','conditions','transformations','dropItems'];
   const PROTECTED_OBJECTS = ['skills','resistances','attrs','caster','obsIcons','portraitCrop','settings'];
@@ -15638,7 +15638,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od157ProtectOwnSheetPartialAutosaveInstalled) return;
   window.__od157ProtectOwnSheetPartialAutosaveInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   function clone(value){
     try { return structuredClone(value); } catch (_) {
@@ -15794,7 +15794,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od159StableSessionRenderInstalled) return;
   window.__od159StableSessionRenderInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   const $ = id => document.getElementById(id);
   const last = { tableSig: '', tableAt: 0, playerSig: '', masterSig: '' };
@@ -15927,7 +15927,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od160AccountSheetIsolationInstalled) return;
   window.__od160AccountSheetIsolationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   const $ = id => document.getElementById(id);
 
@@ -16078,7 +16078,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od161EquipmentProficienciesInstalled) return;
   window.__od161EquipmentProficienciesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   const GROUPS = {
     weapons: [
@@ -16245,9 +16245,9 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od164StableCleanRoutesInstalled) return;
   window.__od164StableCleanRoutesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
-  const VERSION = '1.80.4';
+  const VERSION = '1.80.5';
   let applyingRoute = false;
   let routeTimer = null;
 
@@ -16453,7 +16453,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od165ExactPortraitCrop(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
   if (window.__od165ExactPortraitCropInstalled) return;
   window.__od165ExactPortraitCropInstalled = true;
 
@@ -16575,7 +16575,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1685AreaSeparationInstalled) return;
   window.__od1685AreaSeparationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   const AREA = {
     AUTH: 'login',
@@ -16764,7 +16764,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1699StableSkillUntrainInstalled) return;
   window.__od1699StableSkillUntrainInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   const pending = new Map();
   let flushTimer = null;
@@ -16992,7 +16992,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16910SkillSaveMergeInstalled) return;
   window.__od16910SkillSaveMergeInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   let lastExplicit = {};
   let lastExplicitAt = 0;
@@ -17208,7 +17208,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16911StablePortraitDuringResourcesInstalled) return;
   window.__od16911StablePortraitDuringResourcesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   const RESOURCE_SELECTOR = '#pv-current, #pv-max, #pe-current, #pe-max';
   const MAIN_SELECTOR = '#char-portrait-preview';
@@ -17380,7 +17380,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od170ModularSheetInstalled) return;
   window.__od170ModularSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   const STORE_KEY = 'od170_modules_state_v1';
   const DENSE_KEY = 'od170_dense_sheet_v1';
@@ -17624,7 +17624,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od171HubNavigationAndScrollInstalled) return;
   window.__od171HubNavigationAndScrollInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   let pending = false;
 
@@ -17748,7 +17748,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1715ScrollAndSmartCollapseInstalled) return;
   window.__od1715ScrollAndSmartCollapseInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   let scheduled = false;
 
@@ -17983,327 +17983,6 @@ function od66InventoryMutationUnlockSoon() {
 })();
 
 
-/* =========================
-   V176 - Modo edição x modo reduzido organizado
-   Foco:
-   - atributos reduzidos escondem os campos editáveis;
-   - perícias reduzidas mostram só treinadas + total;
-   - ataques reduzidos mostram descrição;
-   - magias/habilidades reduzidas mostram informações organizadas;
-   - expandido continua sendo modo edição.
-========================= */
-(function od176SmartSheetModes(){
-  'use strict';
-  if (window.__od176SmartSheetModesInstalled) return;
-  window.__od176SmartSheetModesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
-
-  let scheduled = false;
-
-  function $(id){ return document.getElementById(id); }
-  function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
-  function current(){ return safe(() => typeof currentChar === 'function' ? currentChar() : null, null); }
-  function esc(value){
-    return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
-  }
-  function clean(value, fallback = '-'){
-    const text = String(value ?? '').trim();
-    return text || fallback;
-  }
-  function nl(value){
-    return esc(clean(value, '')).replace(/\n/g, '<br>');
-  }
-  function formatBonus(value){
-    if (typeof formatMod === 'function') return formatMod(Number(value || 0));
-    const n = Number(value || 0);
-    return n >= 0 ? `+${n}` : String(n);
-  }
-  function attrBonus(char, key){
-    if (typeof attrMod === 'function') return attrMod(Number(char?.attrs?.[key] ?? 1));
-    return Math.floor((Number(char?.attrs?.[key] ?? 10) - 10) / 2);
-  }
-  function skillTotalSafe(char, name, attr){
-    if (typeof skillTotal === 'function') return skillTotal(char, name, attr);
-    return attrBonus(char, attr) + (char?.skills?.[name]?.trained ? Number(char?.profBonus || 0) : 0) + Number(char?.skills?.[name]?.bonus || 0);
-  }
-  function moduleByKey(key){
-    return document.querySelector(`.od170-module[data-od170-key="${key}"]`);
-  }
-  function setSummary(module, className, html){
-    if (!module) return null;
-    let box = module.querySelector(`:scope > .${className}`);
-    const head = module.querySelector(':scope > .od170-module-head');
-    if (!box) {
-      box = document.createElement('div');
-      box.className = `od176-reduced-view od1715-collapse-summary ${className}`;
-      if (head?.nextSibling) module.insertBefore(box, head.nextSibling);
-      else module.appendChild(box);
-    }
-    box.innerHTML = html;
-    return box;
-  }
-  function empty(label){
-    return `<div class="od176-empty">${esc(label)}</div>`;
-  }
-  function pill(label, value){
-    return `<span class="od176-info-pill"><small>${esc(label)}</small><b>${esc(value)}</b></span>`;
-  }
-
-  function markModeHeaders(){
-    document.querySelectorAll('.od170-module').forEach(module => {
-      const head = module.querySelector(':scope > .od170-module-head');
-      if (!head) return;
-      let tag = head.querySelector('.od176-mode-tag');
-      if (!tag) {
-        tag = document.createElement('span');
-        tag.className = 'od176-mode-tag';
-        head.appendChild(tag);
-      }
-      tag.textContent = module.classList.contains('od170-collapsed') ? 'Visualização' : 'Edição';
-    });
-  }
-
-  function renderAttrSummary(char = current()){
-    const module = moduleByKey('resumo-atributos');
-    if (!module || !char) return;
-    const keys = safe(() => Array.isArray(ATTRIBUTE_KEYS) ? ATTRIBUTE_KEYS : [], []);
-    const html = `<div class="od176-attr-grid">${keys.map(([key, label]) => {
-      const value = Number(char?.attrs?.[key] ?? 1);
-      const bonus = attrBonus(char, key);
-      return `<div class="od176-attr-box">
-        <small>${esc(label)}</small>
-        <strong>${esc(value)}</strong>
-        <span>${esc(formatBonus(bonus))}</span>
-      </div>`;
-    }).join('')}</div>`;
-    setSummary(module, 'od176-attr-summary', html || empty('Sem atributos.'));
-  }
-
-  function renderSkillSummary(char = current()){
-    const module = moduleByKey('pericias-lista');
-    if (!module || !char) return;
-    const skills = safe(() => Array.isArray(SKILLS) ? SKILLS : [], []);
-    const trained = skills.filter(([name]) => !!char.skills?.[name]?.trained);
-    const html = trained.map(([name, attr]) => {
-      const total = skillTotalSafe(char, name, attr);
-      return `<div class="od176-skill-line">
-        <span>${esc(name)}</span>
-        <strong>${esc(formatBonus(total))}</strong>
-      </div>`;
-    }).join('');
-    setSummary(module, 'od176-skill-summary', html ? `<div class="od176-skill-grid">${html}</div>` : empty('Nenhuma perícia treinada.'));
-  }
-
-  function renderAttackSummary(char = current()){
-    const module = moduleByKey('combate-ataques');
-    if (!module || !char) return;
-    const attacks = Array.isArray(char.attacks) ? char.attacks : [];
-    const html = attacks.map(atk => `<article class="od176-view-card od176-attack-card">
-      <header>
-        <strong>${esc(atk.name || 'Ataque')}</strong>
-        <span>${esc(formatBonus(Number(atk.bonus || 0)))}</span>
-      </header>
-      <div class="od176-card-pills">
-        ${pill('Dano', clean(atk.damage))}
-        ${pill('Crítico', clean(atk.crit))}
-      </div>
-      ${clean(atk.desc, '') ? `<p>${nl(atk.desc)}</p>` : '<p class="od176-muted">Sem descrição.</p>'}
-    </article>`).join('');
-    setSummary(module, 'od176-attack-summary', html ? `<div class="od176-view-grid">${html}</div>` : empty('Nenhum ataque cadastrado.'));
-  }
-
-  function renderSpellSummary(char = current()){
-    const module = moduleByKey('magias-lista');
-    if (!module || !char) return;
-    const spells = Array.isArray(char.spells) ? char.spells : [];
-    const html = spells.map(spell => `<article class="od176-view-card od176-spell-card">
-      <header>
-        <strong>${esc(spell.name || 'Magia')}</strong>
-        <span>${esc(clean(spell.circle, 'Círculo -'))}</span>
-      </header>
-      <div class="od176-card-pills">
-        ${pill('Execução', clean(spell.exec))}
-        ${pill('Alcance', clean(spell.range))}
-        ${pill('Custo', clean(spell.cost))}
-        ${pill('Componentes', clean(spell.components))}
-      </div>
-      <section>
-        <b>Descrição</b>
-        ${clean(spell.description, '') ? `<p>${nl(spell.description)}</p>` : '<p class="od176-muted">Sem descrição.</p>'}
-      </section>
-      ${clean(spell.upgrades, '') ? `<section><b>Aprimoramentos</b><p>${nl(spell.upgrades)}</p></section>` : ''}
-    </article>`).join('');
-    setSummary(module, 'od176-spell-summary', html ? `<div class="od176-view-grid od176-spell-grid">${html}</div>` : empty('Nenhuma magia cadastrada.'));
-  }
-
-  function renderAbilitySummary(char = current()){
-    const module = moduleByKey('habilidades-lista');
-    if (!module || !char) return;
-    const abilities = Array.isArray(char.abilities) ? char.abilities : [];
-    const html = abilities.map(ability => {
-      const cost = ability.cost || (Number(ability.costAmount || 0) > 0 ? `${ability.costAmount} ${ability.costResource || 'PE'}` : 'Sem custo');
-      return `<article class="od176-view-card od176-ability-card">
-        <header>
-          <strong>${esc(ability.name || 'Habilidade')}</strong>
-          <span>${esc(clean(ability.action, 'Ação -'))}</span>
-        </header>
-        <div class="od176-card-pills">
-          ${pill('Custo', clean(cost))}
-          ${pill('Bônus', clean(ability.bonus))}
-        </div>
-        ${clean(ability.description, '') ? `<p>${nl(ability.description)}</p>` : '<p class="od176-muted">Sem descrição.</p>'}
-      </article>`;
-    }).join('');
-    setSummary(module, 'od176-ability-summary', html ? `<div class="od176-view-grid">${html}</div>` : empty('Nenhuma habilidade cadastrada.'));
-  }
-
-  function renderEquipmentSummary(char = current()){
-    const simple = moduleByKey('equip-lista-simples');
-    if (!simple || !char) return;
-    const items = Array.isArray(char.inventoryItems) ? char.inventoryItems : [];
-    const html = items.map(item => `<article class="od176-view-card od176-item-card">
-      <header>
-        <strong>${esc(item.name || 'Item')}</strong>
-        <span>${esc(clean(item.type || item.category, 'Item'))}</span>
-      </header>
-      <div class="od176-card-pills">
-        ${pill('Peso', clean(item.weight, '0'))}
-        ${pill('Usos', clean(item.uses, '0'))}
-      </div>
-      ${clean(item.desc, '') ? `<p>${nl(item.desc)}</p>` : '<p class="od176-muted">Sem descrição.</p>'}
-    </article>`).join('');
-    setSummary(simple, 'od176-equipment-summary', html ? `<div class="od176-view-grid">${html}</div>` : empty('Nenhum item cadastrado.'));
-  }
-
-  function hideOldSummaryBits(){
-    // Remove visualmente botões/resumos antigos redundantes sem apagar função de edição.
-    document.querySelectorAll('#spells-summary, #abilities-summary, .spells-summary, .abilities-summary, .od75-summary-panel').forEach(el => {
-      el.classList.add('od176-old-summary-hidden');
-    });
-    document.querySelectorAll('#spells-summary-toggle, #abilities-summary-toggle, [data-summary-toggle]').forEach(el => {
-      el.classList.add('od176-old-summary-hidden');
-    });
-  }
-
-  function renderAll(){
-    renderAttrSummary();
-    renderSkillSummary();
-    renderAttackSummary();
-    renderSpellSummary();
-    renderAbilitySummary();
-    renderEquipmentSummary();
-    hideOldSummaryBits();
-    markModeHeaders();
-  }
-
-  function schedule(){
-    if (scheduled) return;
-    scheduled = true;
-    requestAnimationFrame(() => {
-      scheduled = false;
-      renderAll();
-    });
-  }
-
-  document.addEventListener('click', event => {
-    if (event.target.closest?.('[data-od170-toggle], #od170-collapse-all, #od170-expand-all')) {
-      setTimeout(schedule, 0);
-      setTimeout(schedule, 120);
-    }
-  }, true);
-
-  document.addEventListener('input', event => {
-    if (event.target.closest?.('#attributes-grid, #skills-wrap, #attacks-list, #spells-list, #abilities-list, #simple-inventory-list')) {
-      schedule();
-    }
-  }, true);
-
-  document.addEventListener('change', event => {
-    if (event.target.closest?.('#attributes-grid, #skills-wrap, #attacks-list, #spells-list, #abilities-list, #simple-inventory-list')) {
-      setTimeout(schedule, 0);
-    }
-  }, true);
-
-  const observer = new MutationObserver(schedule);
-  observer.observe(document.body, { childList: true, subtree: true });
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderAll, { once: true });
-  else renderAll();
-
-  setTimeout(renderAll, 150);
-  setTimeout(renderAll, 650);
-  setTimeout(renderAll, 1400);
-
-  window.od176SmartSheetModes = { renderAll };
-})();
-
-
-/* =========================
-   V176.1 - Hotfix: remove duplicação dos resumos reduzidos
-   Causa:
-   - A v1.71.5 já gerava resumos reduzidos antigos.
-   - A v1.76 adicionou o novo modo visualização, mas os resumos antigos continuaram no DOM.
-   - Resultado: atributos, perícias e ataques apareciam duas vezes.
-========================= */
-(function od1761NoDuplicateReducedSummaries(){
-  'use strict';
-  if (window.__od1761NoDuplicateReducedSummariesInstalled) return;
-  window.__od1761NoDuplicateReducedSummariesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
-
-  const OLD_SUMMARY_SELECTOR = [
-    '.od1715-attr-summary',
-    '.od1715-skill-summary',
-    '.od1715-attack-summary',
-    '.od1715-spell-summary',
-    '.od1715-equipment-summary'
-  ].join(',');
-
-  function cleanupOldSummaries(){
-    document.querySelectorAll(OLD_SUMMARY_SELECTOR).forEach(el => {
-      if (el.classList.contains('od176-reduced-view')) return;
-      el.classList.add('od1761-old-summary-disabled');
-      el.setAttribute('aria-hidden', 'true');
-      // Remove o bloco antigo quando existir novo bloco v1.76 no mesmo módulo.
-      const module = el.closest('.od170-module');
-      if (module && module.querySelector(':scope > .od176-reduced-view')) {
-        el.remove();
-      }
-    });
-
-    // Garante que cada módulo fique com apenas um resumo novo da v1.76 por tipo.
-    document.querySelectorAll('.od170-module').forEach(module => {
-      const seen = new Set();
-      module.querySelectorAll(':scope > .od176-reduced-view').forEach(box => {
-        const type = [...box.classList].find(cls => cls.startsWith('od176-') && cls.endsWith('-summary')) || box.className;
-        if (seen.has(type)) box.remove();
-        else seen.add(type);
-      });
-    });
-  }
-
-  function scheduleCleanup(){
-    clearTimeout(window.__od1761CleanupTimer);
-    window.__od1761CleanupTimer = setTimeout(cleanupOldSummaries, 40);
-  }
-
-  document.addEventListener('click', event => {
-    if (event.target.closest?.('[data-od170-toggle], #od170-collapse-all, #od170-expand-all')) {
-      scheduleCleanup();
-      setTimeout(cleanupOldSummaries, 160);
-    }
-  }, true);
-
-  const observer = new MutationObserver(scheduleCleanup);
-  observer.observe(document.body, { childList: true, subtree: true });
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', cleanupOldSummaries, { once: true });
-  else cleanupOldSummaries();
-
-  setTimeout(cleanupOldSummaries, 120);
-  setTimeout(cleanupOldSummaries, 600);
-  setTimeout(cleanupOldSummaries, 1400);
-})();
 
 
 /* =========================
@@ -18311,834 +17990,13 @@ function od66InventoryMutationUnlockSoon() {
    A correção principal está no index.html e no server/server.js.
 ========================= */
 (function od1762ReloadPathFixMarker(){
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 })();
 
 
-/* =========================
-   V177 - Inventário reorganizado
-   Objetivo:
-   - topo do inventário mostra o modo ativo;
-   - Resumo do Inventário tem reduzir/expandir correto;
-   - Proficiências ficam preservadas;
-   - Inventário em Texto reduzido vira visualização sem edição,
-     com nome, peso, usos, descrição, Transferir e Enviar para Drop.
-========================= */
-(function od177InventoryRework(){
-  'use strict';
-  if (window.__od177InventoryReworkInstalled) return;
-  window.__od177InventoryReworkInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
 
-  let scheduled = false;
 
-  function $(id){ return document.getElementById(id); }
-  function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
-  function current(){ return safe(() => typeof currentChar === 'function' ? currentChar() : null, null); }
-  function esc(value){
-    return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
-  }
-  function text(value, fallback = '-'){
-    const v = String(value ?? '').trim();
-    return v || fallback;
-  }
-  function nl(value){
-    return esc(text(value, '')).replace(/\n/g, '<br>');
-  }
-  function moduleByKey(key){
-    return document.querySelector(`.od170-module[data-od170-key="${key}"]`);
-  }
-  function setSummary(module, className, html){
-    if (!module) return null;
-    let box = module.querySelector(`:scope > .${className}`);
-    const head = module.querySelector(':scope > .od170-module-head');
-    if (!box) {
-      box = document.createElement('div');
-      box.className = `od177-reduced-view ${className}`;
-      if (head?.nextSibling) module.insertBefore(box, head.nextSibling);
-      else module.appendChild(box);
-    }
-    box.innerHTML = html;
-    return box;
-  }
-  function money(char){
-    return text(char?.money ?? $('money')?.value ?? '0', '0');
-  }
-  function weightCurrent(char){
-    return text(char?.weightCurrent ?? $('weight-current')?.value ?? '0', '0');
-  }
-  function weightMax(char){
-    return text(char?.weightMax ?? $('weight-max')?.value ?? '0', '0');
-  }
-  function isBlockMode(char = current()){
-    return !!char?.blockInventoryMode || !!$('block-inventory-panel')?.classList.contains('active');
-  }
 
-  function modeLabel(char = current()){
-    return isBlockMode(char) ? 'MODO BLOCK INVENTORY' : 'MODO TEXTO';
-  }
-
-  function updateInventoryHeader(char = current()){
-    const tab = $('tab-equipamentos');
-    if (!tab) return;
-    const title = tab.querySelector(':scope > .section-title-row h3') || tab.querySelector('.section-title-row h3');
-    if (title) title.textContent = 'Inventário';
-
-    const subtitle = tab.querySelector(':scope > .section-title-row .helper-text') || tab.querySelector('.section-title-row .helper-text');
-    if (subtitle) subtitle.textContent = isBlockMode(char)
-      ? 'Modo ativo: Block Inventory. Use o inventário modular por slots.'
-      : 'Modo ativo: Texto. Use cards de itens em lista.';
-
-    const head = tab.querySelector(':scope > .section-title-row') || tab.querySelector('.section-title-row');
-    if (head && !head.querySelector('.od177-mode-banner')) {
-      const banner = document.createElement('div');
-      banner.className = 'od177-mode-banner';
-      banner.innerHTML = `<span>Inventário</span><strong></strong>`;
-      head.appendChild(banner);
-    }
-    const bannerText = head?.querySelector('.od177-mode-banner strong');
-    if (bannerText) bannerText.textContent = modeLabel(char);
-
-    const toggle = $('block-inventory-toggle');
-    if (toggle) {
-      toggle.classList.add('od177-mode-toggle');
-      toggle.textContent = isBlockMode(char) ? 'Trocar para Texto' : 'Trocar para Block Inventory';
-      toggle.setAttribute('aria-label', toggle.textContent);
-    }
-  }
-
-  function cleanupOldInventorySummaries(){
-    document.querySelectorAll([
-      '.od176-equipment-summary',
-      '.od1715-equipment-summary',
-      '.od1761-old-summary-disabled'
-    ].join(',')).forEach(el => {
-      if (!el.classList.contains('od177-inventory-text-summary') && !el.classList.contains('od177-inventory-summary')) {
-        el.remove();
-      }
-    });
-  }
-
-  function renderInventorySummary(char = current()){
-    const module = moduleByKey('equip-resumo');
-    if (!module || !char) return;
-    const status = $('weight-status')?.textContent || 'Peso dentro do limite.';
-    const overweight = safe(() => typeof isOverweight === 'function' ? isOverweight(char) : false, false);
-    const html = `
-      <div class="od177-summary-grid">
-        <article>
-          <small>Dinheiro</small>
-          <strong>${esc(money(char))}</strong>
-        </article>
-        <article>
-          <small>Peso Atual</small>
-          <strong>${esc(weightCurrent(char))}</strong>
-        </article>
-        <article>
-          <small>Peso Máximo</small>
-          <strong>${esc(weightMax(char))}</strong>
-        </article>
-      </div>
-      <div class="od177-weight-status ${overweight ? 'danger' : ''}">${esc(status)}</div>`;
-    setSummary(module, 'od177-inventory-summary', html);
-  }
-
-  function renderTextInventoryReduced(char = current()){
-    const module = moduleByKey('equip-lista-simples');
-    if (!module || !char) return;
-    const items = Array.isArray(char.inventoryItems) ? char.inventoryItems : [];
-    const html = items.length ? `
-      <div class="od177-text-items">
-        ${items.map(item => {
-          const id = esc(item.id || '');
-          return `<article class="od177-text-item-card">
-            <header>
-              <strong>${esc(item.name || 'Item')}</strong>
-              <span>${esc(text(item.type || item.category, 'Item'))}</span>
-            </header>
-            <div class="od177-item-metrics">
-              <span><small>Peso</small><b>${esc(text(item.weight, '0'))}</b></span>
-              <span><small>Usos</small><b>${esc(text(item.uses, '0'))}</b></span>
-            </div>
-            <p>${text(item.desc, '') ? nl(item.desc) : '<em>Sem descrição.</em>'}</p>
-            <div class="od177-item-actions">
-              <button class="ghost-btn small" data-transfer-simple-item="${id}" type="button">Transferir</button>
-              <button class="ghost-btn small" data-drop-simple-item="${id}" type="button">Enviar para Drop</button>
-            </div>
-          </article>`;
-        }).join('')}
-      </div>` : `<div class="od177-empty">Nenhum item cadastrado.</div>`;
-    setSummary(module, 'od177-inventory-text-summary', html);
-  }
-
-  function syncModuleButtons(){
-    document.querySelectorAll('.od170-module').forEach(module => {
-      const btn = module.querySelector(':scope > .od170-module-head .od170-module-toggle');
-      if (!btn) return;
-      const collapsed = module.classList.contains('od170-collapsed');
-      btn.textContent = collapsed ? 'Expandir' : 'Reduzir';
-      btn.setAttribute('aria-expanded', String(!collapsed));
-    });
-
-    const textToggle = $('simple-inventory-compact-toggle');
-    const textModule = moduleByKey('equip-lista-simples');
-    if (textToggle && textModule) {
-      const collapsed = textModule.classList.contains('od170-collapsed');
-      textToggle.textContent = collapsed ? 'Expandir Texto' : 'Reduzir Texto';
-      textToggle.dataset.od177ToggleTextInventory = '1';
-    }
-  }
-
-  function forceInventoryOrder(){
-    const tab = $('tab-equipamentos');
-    if (!tab) return;
-    const summary = moduleByKey('equip-resumo');
-    const prof = moduleByKey('equip-proficiencias');
-    const textModule = moduleByKey('equip-lista-simples');
-    const block = moduleByKey('equip-modular');
-    [summary, prof, textModule, block].forEach(module => {
-      if (module && module.parentElement === tab) tab.appendChild(module);
-    });
-    summary?.classList.add('od177-inventory-section', 'od177-summary-section');
-    prof?.classList.add('od177-inventory-section', 'od177-prof-section');
-    textModule?.classList.add('od177-inventory-section', 'od177-text-section');
-    block?.classList.add('od177-inventory-section', 'od177-block-section');
-  }
-
-  function sync(){
-    const char = current();
-    updateInventoryHeader(char);
-    cleanupOldInventorySummaries();
-    forceInventoryOrder();
-    renderInventorySummary(char);
-    renderTextInventoryReduced(char);
-    syncModuleButtons();
-  }
-
-  function schedule(){
-    if (scheduled) return;
-    scheduled = true;
-    requestAnimationFrame(() => {
-      scheduled = false;
-      sync();
-    });
-  }
-
-  document.addEventListener('click', event => {
-    const textToggle = event.target.closest?.('[data-od177-toggle-text-inventory], #simple-inventory-compact-toggle');
-    if (textToggle) {
-      const textModule = moduleByKey('equip-lista-simples');
-      if (textModule && event.target.id === 'simple-inventory-compact-toggle') {
-        event.preventDefault();
-        event.stopPropagation();
-        const btn = textModule.querySelector(':scope > .od170-module-head .od170-module-toggle');
-        if (btn) btn.click();
-        else textModule.classList.toggle('od170-collapsed');
-        schedule();
-        return;
-      }
-    }
-
-    if (event.target.closest?.('#block-inventory-toggle, [data-od170-toggle], #od170-collapse-all, #od170-expand-all')) {
-      setTimeout(schedule, 0);
-      setTimeout(schedule, 140);
-    }
-
-    if (event.target.closest?.('[data-transfer-simple-item], [data-drop-simple-item]')) {
-      setTimeout(schedule, 180);
-      setTimeout(schedule, 650);
-    }
-  }, true);
-
-  document.addEventListener('input', event => {
-    if (event.target.closest?.('#tab-equipamentos')) schedule();
-  }, true);
-  document.addEventListener('change', event => {
-    if (event.target.closest?.('#tab-equipamentos')) setTimeout(schedule, 0);
-  }, true);
-
-  const observer = new MutationObserver(schedule);
-  observer.observe(document.body, { childList: true, subtree: true });
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', sync, { once: true });
-  else sync();
-
-  setTimeout(sync, 120);
-  setTimeout(sync, 650);
-  setTimeout(sync, 1400);
-
-  window.od177InventoryRework = { sync };
-})();
-
-
-/* =========================
-   V177.1 - Hotfix visual da aba Equipamentos
-   - Remove fundo preto extra da aba.
-   - Só mostra "Inventário Modular" quando Block Inventory estiver ativo.
-========================= */
-(function od1771EquipmentVisualHotfix(){
-  'use strict';
-  if (window.__od1771EquipmentVisualHotfixInstalled) return;
-  window.__od1771EquipmentVisualHotfixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
-
-  function $(id){ return document.getElementById(id); }
-  function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
-  function current(){ return safe(() => typeof currentChar === 'function' ? currentChar() : null, null); }
-  function blockMode(){
-    const char = current();
-    return !!char?.blockInventoryMode || !!$('block-inventory-panel')?.classList.contains('active');
-  }
-  function sync(){
-    const active = blockMode();
-    const tab = $('tab-equipamentos');
-    const blockPanel = $('block-inventory-panel');
-    const blockModule = document.querySelector('.od170-module[data-od170-key="equip-modular"]');
-    tab?.classList.toggle('od1771-block-mode', active);
-    tab?.classList.toggle('od1771-text-mode', !active);
-    blockPanel?.classList.toggle('od1771-hidden-modular', !active);
-    blockModule?.classList.toggle('od1771-hidden-modular', !active);
-
-    const title = blockModule?.querySelector(':scope > .od170-module-head h2, :scope > .od170-module-head h3');
-    if (title && !active) title.setAttribute('aria-hidden', 'true');
-    if (title && active) title.removeAttribute('aria-hidden');
-  }
-  function schedule(){
-    clearTimeout(window.__od1771EquipmentVisualTimer);
-    window.__od1771EquipmentVisualTimer = setTimeout(sync, 40);
-  }
-
-  document.addEventListener('click', event => {
-    if (event.target.closest?.('#block-inventory-toggle, [data-od170-toggle], #od170-collapse-all, #od170-expand-all')) {
-      schedule();
-      setTimeout(sync, 180);
-    }
-  }, true);
-
-  const observer = new MutationObserver(schedule);
-  observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', sync, { once: true });
-  else sync();
-
-  setTimeout(sync, 120);
-  setTimeout(sync, 650);
-})();
-
-
-/* =========================
-   V177.2 - Hotfix Equipamentos/Magias
-   - Block Inventory só ativa por botão explícito.
-   - Dinheiro/Peso máximo ficam editáveis.
-   - Remove botões antigos Editar/Resumo das magias.
-   - Melhora edição dos itens de texto.
-========================= */
-(function od1772EquipmentMagicHotfix(){
-  'use strict';
-  if (window.__od1772EquipmentMagicHotfixInstalled) return;
-  window.__od1772EquipmentMagicHotfixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
-
-  let saveGuard = false;
-
-  function $(id){ return document.getElementById(id); }
-  function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
-  function current(){ return safe(() => typeof currentChar === 'function' ? currentChar() : null, null); }
-  function charKey(char = current()){
-    return `od1772_block_inventory_enabled_${String(char?.id || 'local')}`;
-  }
-  function explicitBlockEnabled(char = current()){
-    if (!char) return false;
-    try {
-      const stored = localStorage.getItem(charKey(char));
-      // Sem marcador explícito, considera desligado para corrigir o auto-ativo das versões anteriores.
-      if (stored === null) return false;
-      return stored === '1' && !!char.blockInventoryMode;
-    } catch (_) {
-      return !!char.blockInventoryMode;
-    }
-  }
-  function setExplicitBlockEnabled(value, char = current()){
-    const enabled = !!value;
-    try { localStorage.setItem(charKey(char), enabled ? '1' : '0'); } catch (_) {}
-    if (typeof updateChar === 'function') {
-      updateChar(c => { c.blockInventoryMode = enabled; });
-    } else if (char) {
-      char.blockInventoryMode = enabled;
-    }
-  }
-
-  function applyMode(char = current()){
-    const enabled = explicitBlockEnabled(char);
-    const simple = $('simple-inventory-panel');
-    const block = $('block-inventory-panel');
-    const tab = $('tab-equipamentos');
-    const module = document.querySelector('.od170-module[data-od170-key="equip-modular"]');
-
-    simple?.classList.toggle('active', !enabled);
-    block?.classList.toggle('active', enabled);
-    tab?.classList.toggle('block-inventory-active', enabled);
-    tab?.classList.toggle('od1771-block-mode', enabled);
-    tab?.classList.toggle('od1771-text-mode', !enabled);
-    tab?.classList.toggle('od1772-block-enabled', enabled);
-    tab?.classList.toggle('od1772-block-disabled', !enabled);
-    document.body.classList.toggle('block-inventory-active', enabled);
-
-    block?.classList.toggle('od1771-hidden-modular', !enabled);
-    module?.classList.toggle('od1771-hidden-modular', !enabled);
-    module?.classList.toggle('od1772-hidden-modular', !enabled);
-
-    const btn = $('block-inventory-toggle');
-    if (btn) {
-      btn.textContent = enabled ? 'Desativar Block Inventory' : 'Ativar Block Inventory';
-      btn.setAttribute('aria-pressed', String(enabled));
-    }
-
-    // O inventário modular não deve aparecer em modo texto.
-    if (!enabled) {
-      block?.classList.remove('active');
-      module?.classList.add('od1772-hidden-modular');
-    }
-
-    makeMoneyAndWeightEditable();
-  }
-
-  function makeMoneyAndWeightEditable(){
-    const money = $('money');
-    if (money) {
-      money.disabled = false;
-      money.readOnly = false;
-      money.removeAttribute('readonly');
-      money.removeAttribute('disabled');
-    }
-    const max = $('weight-max');
-    if (max) {
-      max.disabled = false;
-      max.readOnly = false;
-      max.removeAttribute('readonly');
-      max.removeAttribute('disabled');
-    }
-    const currentWeight = $('weight-current');
-    if (currentWeight) {
-      currentWeight.readOnly = true;
-      currentWeight.setAttribute('readonly', 'readonly');
-    }
-  }
-
-  function disableOldMagicSummary(){
-    try {
-      localStorage.setItem('od62_spells-list_summary', 'false');
-      localStorage.setItem('od62_abilities-list_summary', 'false');
-    } catch (_) {}
-
-    document.querySelectorAll('#tab-magias [data-od62-summary-toggle], #tab-magias .od62-summary-toggle, #tab-magias [data-od62-summary-list], #tab-magias .od62-summary-grid').forEach(el => {
-      el.classList.add('od1772-magic-old-summary-disabled');
-      el.setAttribute('aria-hidden', 'true');
-    });
-
-    const spellsList = $('spells-list');
-    const spellModule = document.querySelector('.od170-module[data-od170-key="magias-lista"]');
-    if (spellsList && spellModule && !spellModule.classList.contains('od170-collapsed')) {
-      spellsList.classList.remove('hidden');
-      spellsList.style.removeProperty('display');
-    }
-
-    document.querySelectorAll('.od170-module[data-od170-key="magias-lista"] .od176-mode-tag, .od170-module[data-od170-key="magias-conjurador"] .od176-mode-tag').forEach(tag => {
-      tag.classList.add('od1772-hide-mode-tag');
-    });
-  }
-
-  function improveTextItemEdit(){
-    document.querySelectorAll('#simple-inventory-list .simple-inventory-card').forEach(card => {
-      card.classList.add('od1772-edit-item-card');
-      const actions = card.querySelector('.item-card-actions');
-      if (actions) actions.classList.add('od1772-item-actions-edit');
-      card.querySelectorAll('input, textarea').forEach(input => {
-        input.disabled = false;
-        if (input.tagName !== 'TEXTAREA') input.removeAttribute('readonly');
-      });
-    });
-  }
-
-  function sync(){
-    applyMode();
-    makeMoneyAndWeightEditable();
-    disableOldMagicSummary();
-    improveTextItemEdit();
-  }
-  function schedule(){
-    clearTimeout(window.__od1772HotfixTimer);
-    window.__od1772HotfixTimer = setTimeout(sync, 50);
-  }
-
-  document.addEventListener('click', event => {
-    const toggle = event.target.closest?.('#block-inventory-toggle');
-    if (toggle) {
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopImmediatePropagation();
-
-      const char = current();
-      const next = !explicitBlockEnabled(char);
-      setExplicitBlockEnabled(next, char);
-      applyMode(current());
-      if (next && typeof renderBlockInventory === 'function') renderBlockInventory(current());
-      if (typeof saveCurrentCharacter === 'function') setTimeout(() => saveCurrentCharacter(), 80);
-      return;
-    }
-
-    if (event.target.closest?.('[data-od170-toggle], #od170-collapse-all, #od170-expand-all, #add-simple-inventory-item, [data-remove-simple-item]')) {
-      schedule();
-      setTimeout(sync, 180);
-    }
-  }, true);
-
-  document.addEventListener('input', event => {
-    if (event.target.closest?.('#money, #weight-max, #simple-inventory-list')) schedule();
-  }, true);
-
-  document.addEventListener('change', event => {
-    if (event.target.closest?.('#money, #weight-max, #simple-inventory-list')) schedule();
-  }, true);
-
-  // Corrige saves antigos que gravavam blockInventoryMode apenas porque o painel estava ativo.
-  if (typeof saveCurrentCharacter === 'function' && !saveCurrentCharacter.__od1772BlockModeSafe) {
-    const previousSave = saveCurrentCharacter;
-    saveCurrentCharacter = function od1772SaveCurrentCharacter(){
-      if (saveGuard) return previousSave.apply(this, arguments);
-      const beforeChar = current();
-      const explicit = explicitBlockEnabled(beforeChar);
-      saveGuard = true;
-      const result = previousSave.apply(this, arguments);
-      saveGuard = false;
-      try {
-        if (typeof updateChar === 'function') updateChar(c => { c.blockInventoryMode = explicit; });
-        else if (beforeChar) beforeChar.blockInventoryMode = explicit;
-        applyMode(current());
-      } catch (_) {}
-      return result;
-    };
-    saveCurrentCharacter.__od1772BlockModeSafe = true;
-    try { window.saveCurrentCharacter = saveCurrentCharacter; } catch (_) {}
-  }
-
-  if (typeof applyInventoryMode === 'function' && !applyInventoryMode.__od1772ExplicitOnly) {
-    const previousApply = applyInventoryMode;
-    applyInventoryMode = function od1772ApplyInventoryMode(char){
-      const result = previousApply.apply(this, arguments);
-      applyMode(char || current());
-      return result;
-    };
-    applyInventoryMode.__od1772ExplicitOnly = true;
-    try { window.applyInventoryMode = applyInventoryMode; } catch (_) {}
-  }
-
-  const observer = new MutationObserver(schedule);
-  observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'readonly', 'disabled'] });
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', sync, { once: true });
-  else sync();
-
-  setTimeout(sync, 120);
-  setTimeout(sync, 650);
-  setTimeout(sync, 1400);
-
-  window.od1772EquipmentMagicHotfix = { sync, applyMode };
-})();
-
-
-/* =========================
-   V177.3 - Hotfix layout fixo, inventário e habilidades
-   - Dinheiro/Peso Máximo editáveis.
-   - Inventário em Texto com apenas um botão Reduzir/Expandir.
-   - Cards editáveis de item mais organizados.
-   - Habilidades sem botão antigo Editar/Resumo.
-   - Ficha com largura estável entre abas.
-========================= */
-(function od1773InventoryAbilityLayoutFix(){
-  'use strict';
-  if (window.__od1773InventoryAbilityLayoutFixInstalled) return;
-  window.__od1773InventoryAbilityLayoutFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
-
-  function $(id){ return document.getElementById(id); }
-  function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
-  function current(){ return safe(() => typeof currentChar === 'function' ? currentChar() : null, null); }
-
-  function normalizeEditableMoneyWeight(){
-    const money = $('money');
-    const max = $('weight-max');
-    const cur = $('weight-current');
-
-    [money, max].forEach(input => {
-      if (!input) return;
-      input.disabled = false;
-      input.readOnly = false;
-      input.removeAttribute('disabled');
-      input.removeAttribute('readonly');
-      input.classList.add('od1773-force-editable');
-      input.style.setProperty('pointer-events', 'auto', 'important');
-      input.style.setProperty('user-select', 'auto', 'important');
-      input.style.setProperty('opacity', '1', 'important');
-      input.tabIndex = 0;
-    });
-
-    if (cur) {
-      cur.readOnly = true;
-      cur.setAttribute('readonly', 'readonly');
-      cur.classList.add('od1773-calculated-field');
-    }
-  }
-
-  function hideDuplicateInventoryTextToggle(){
-    const old = $('simple-inventory-compact-toggle');
-    if (old) {
-      old.classList.add('od1773-hidden-extra-toggle');
-      old.setAttribute('aria-hidden', 'true');
-      old.tabIndex = -1;
-    }
-
-    const module = document.querySelector('.od170-module[data-od170-key="equip-lista-simples"]');
-    const btn = module?.querySelector(':scope > .od170-module-head .od170-module-toggle');
-    if (btn) {
-      const collapsed = module.classList.contains('od170-collapsed');
-      btn.textContent = collapsed ? 'Expandir' : 'Reduzir';
-      btn.setAttribute('aria-label', collapsed ? 'Expandir Inventário em Texto' : 'Reduzir Inventário em Texto');
-    }
-  }
-
-  function disableOldAbilitySummary(){
-    try { localStorage.setItem('od62_abilities-list_summary', 'false'); } catch (_) {}
-
-    document.querySelectorAll('#tab-habilidades [data-od62-summary-toggle], #tab-habilidades .od62-summary-toggle, #tab-habilidades [data-od62-summary-list], #tab-habilidades .od62-summary-grid').forEach(el => {
-      el.classList.add('od1773-ability-old-summary-disabled');
-      el.setAttribute('aria-hidden', 'true');
-    });
-
-    const abilityList = $('abilities-list');
-    const abilityModule = document.querySelector('.od170-module[data-od170-key="habilidades-lista"]');
-    if (abilityList && abilityModule && !abilityModule.classList.contains('od170-collapsed')) {
-      abilityList.classList.remove('hidden');
-      abilityList.style.removeProperty('display');
-    }
-
-    document.querySelectorAll('#tab-habilidades .od176-mode-tag').forEach(tag => {
-      tag.classList.add('od1773-hide-mode-tag');
-    });
-  }
-
-  function normalizeMagicButtons(){
-    try { localStorage.setItem('od62_spells-list_summary', 'false'); } catch (_) {}
-    document.querySelectorAll('#tab-magias [data-od62-summary-toggle], #tab-magias .od62-summary-toggle, #tab-magias [data-od62-summary-list], #tab-magias .od62-summary-grid').forEach(el => {
-      el.classList.add('od1773-magic-old-summary-disabled');
-      el.setAttribute('aria-hidden', 'true');
-    });
-    document.querySelectorAll('#tab-magias .od176-mode-tag').forEach(tag => tag.classList.add('od1773-hide-mode-tag'));
-  }
-
-  function improveSimpleItemEditCards(){
-    document.querySelectorAll('#simple-inventory-list .simple-inventory-card').forEach(card => {
-      card.classList.add('od1773-edit-item-card');
-
-      const name = card.querySelector('[data-inv-field="name"]');
-      const weight = card.querySelector('[data-inv-field="weight"]');
-      const uses = card.querySelector('[data-inv-field="uses"]');
-      const desc = card.querySelector('[data-inv-field="desc"]');
-      const actions = card.querySelector('.item-card-actions');
-      const remove = card.querySelector('[data-remove-simple-item], .mini-danger-btn');
-
-      if (name) name.placeholder = 'Nome do item';
-      if (desc) desc.placeholder = 'Descrição do item';
-      if (actions) actions.classList.add('od1773-item-actions-edit');
-      if (remove) remove.classList.add('od1773-remove-item-btn');
-
-      [name, weight, uses, desc].forEach(input => {
-        if (!input) return;
-        input.disabled = false;
-        input.removeAttribute('disabled');
-        input.classList.add('od1773-item-input');
-      });
-    });
-  }
-
-  function lockSheetWidth(){
-    document.body.classList.add('od1773-stable-sheet-width');
-    const sheet = document.querySelector('.sheet.manga-panel, .sheet');
-    const area = document.querySelector('.sheet-area');
-    sheet?.classList.add('od1773-sheet-fixed');
-    area?.classList.add('od1773-sheet-area-fixed');
-  }
-
-  function sync(){
-    normalizeEditableMoneyWeight();
-    hideDuplicateInventoryTextToggle();
-    disableOldAbilitySummary();
-    normalizeMagicButtons();
-    improveSimpleItemEditCards();
-    lockSheetWidth();
-  }
-
-  function schedule(){
-    clearTimeout(window.__od1773FixTimer);
-    window.__od1773FixTimer = setTimeout(sync, 40);
-  }
-
-  document.addEventListener('click', event => {
-    if (event.target.closest?.('[data-od170-toggle], #add-simple-inventory-item, [data-remove-simple-item], #od170-expand-all, #od170-collapse-all, .sheet-tab')) {
-      schedule();
-      setTimeout(sync, 160);
-    }
-  }, true);
-
-  document.addEventListener('focusin', event => {
-    if (event.target?.matches?.('#money, #weight-max')) normalizeEditableMoneyWeight();
-  }, true);
-
-  document.addEventListener('input', event => {
-    if (event.target.closest?.('#tab-equipamentos, #tab-habilidades, #tab-magias')) schedule();
-  }, true);
-
-  document.addEventListener('change', event => {
-    if (event.target.closest?.('#tab-equipamentos, #tab-habilidades, #tab-magias')) schedule();
-  }, true);
-
-  const observer = new MutationObserver(schedule);
-  observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'disabled', 'readonly', 'style'] });
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', sync, { once: true });
-  else sync();
-
-  setTimeout(sync, 120);
-  setTimeout(sync, 650);
-  setTimeout(sync, 1500);
-
-  window.od1773InventoryAbilityLayoutFix = { sync };
-})();
-
-
-/* =========================
-   V177.4 - Hotfix de layout pós largura fixa
-   - Abas sem barra feia.
-   - Resumo do inventário sem modo reduzido inútil.
-   - Dinheiro/Peso Máximo clicáveis.
-   - Cards editáveis de item, magia e habilidade reorganizados.
-========================= */
-(function od1774LayoutPolish(){
-  'use strict';
-  if (window.__od1774LayoutPolishInstalled) return;
-  window.__od1774LayoutPolishInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
-
-  function $(id){ return document.getElementById(id); }
-
-  function makeInventorySummaryAlwaysEditable(){
-    const summaryModule = document.querySelector('.od170-module[data-od170-key="equip-resumo"]');
-    if (!summaryModule) return;
-
-    // Peso/dinheiro são pequenos; não precisam de modo resumo. Mantém sempre expandido.
-    summaryModule.classList.remove('od170-collapsed');
-    summaryModule.classList.add('od1774-no-collapse-summary');
-
-    summaryModule.querySelectorAll(':scope > .od177-inventory-summary, :scope > .od176-reduced-view, :scope > .od1715-collapse-summary').forEach(el => {
-      el.classList.add('od1774-disabled-summary-view');
-    });
-
-    const btn = summaryModule.querySelector(':scope > .od170-module-head .od170-module-toggle');
-    if (btn) {
-      btn.classList.add('od1774-disabled-summary-toggle');
-      btn.setAttribute('aria-hidden', 'true');
-      btn.tabIndex = -1;
-    }
-
-    const money = $('money');
-    const weightMax = $('weight-max');
-    const weightCurrent = $('weight-current');
-
-    [money, weightMax].forEach(input => {
-      if (!input) return;
-      input.disabled = false;
-      input.readOnly = false;
-      input.removeAttribute('disabled');
-      input.removeAttribute('readonly');
-      input.classList.add('od1774-clickable-field');
-      input.style.setProperty('pointer-events', 'auto', 'important');
-      input.style.setProperty('position', 'relative', 'important');
-      input.style.setProperty('z-index', '30', 'important');
-      input.tabIndex = 0;
-    });
-
-    if (weightCurrent) {
-      weightCurrent.readOnly = true;
-      weightCurrent.setAttribute('readonly', 'readonly');
-    }
-  }
-
-  function hideOldButtons(){
-    // Magias e habilidades: sem editar/resumo antigo.
-    document.querySelectorAll('#tab-magias [data-od62-summary-toggle], #tab-magias .od62-summary-toggle, #tab-habilidades [data-od62-summary-toggle], #tab-habilidades .od62-summary-toggle').forEach(el => {
-      el.classList.add('od1774-hidden-old-summary-button');
-      el.setAttribute('aria-hidden', 'true');
-    });
-
-    // Inventário em texto: deixa só o botão do módulo.
-    const old = $('simple-inventory-compact-toggle');
-    if (old) {
-      old.classList.add('od1774-hidden-old-summary-button');
-      old.setAttribute('aria-hidden', 'true');
-      old.tabIndex = -1;
-    }
-  }
-
-  function tagCards(){
-    document.querySelectorAll('#attributes-grid .attr-card-v2, #attributes-grid [data-attr]').forEach(el => {
-      el.closest('.attr-card-v2')?.classList.add('od1774-attr-card');
-    });
-
-    document.querySelectorAll('#skills-wrap .od79-skill-card').forEach(card => card.classList.add('od1774-skill-card'));
-    document.querySelectorAll('#simple-inventory-list .simple-inventory-card').forEach(card => card.classList.add('od1774-simple-edit-card'));
-    document.querySelectorAll('#spells-list .spell-card').forEach(card => card.classList.add('od1774-spell-edit-card'));
-    document.querySelectorAll('#abilities-list .ability-card').forEach(card => card.classList.add('od1774-ability-edit-card'));
-  }
-
-  function sync(){
-    document.body.classList.add('od1774-layout-polish');
-    makeInventorySummaryAlwaysEditable();
-    hideOldButtons();
-    tagCards();
-  }
-
-  function schedule(){
-    clearTimeout(window.__od1774LayoutTimer);
-    window.__od1774LayoutTimer = setTimeout(sync, 40);
-  }
-
-  document.addEventListener('click', event => {
-    if (event.target.closest?.('[data-od170-toggle], .sheet-tab, #add-simple-inventory-item, #add-spell, #add-ability, [data-remove-simple-item], .remove-spell, .remove-ability')) {
-      schedule();
-      setTimeout(sync, 180);
-    }
-  }, true);
-
-  document.addEventListener('focusin', event => {
-    if (event.target?.matches?.('#money, #weight-max')) makeInventorySummaryAlwaysEditable();
-  }, true);
-
-  document.addEventListener('input', event => {
-    if (event.target.closest?.('.sheet')) schedule();
-  }, true);
-
-  const observer = new MutationObserver(schedule);
-  observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style', 'disabled', 'readonly'] });
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', sync, { once: true });
-  else sync();
-
-  setTimeout(sync, 120);
-  setTimeout(sync, 650);
-  setTimeout(sync, 1500);
-
-  window.od1774LayoutPolish = { sync };
-})();
 
 
 /* =========================
@@ -19155,7 +18013,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1775ReloadRouteRestoreInstalled) return;
   window.__od1775ReloadRouteRestoreInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   const INITIAL_PATH = location.pathname + location.search;
   const INITIAL_PARTS = location.pathname.split('/').filter(Boolean).map(part => {
@@ -19345,748 +18203,7 @@ function od66InventoryMutationUnlockSoon() {
 })();
 
 
-/* =========================
-   V177.6 - Hotfix real de edição/layout
-   - Reorganiza DOM dos itens em texto para não sobrepor botões.
-   - Adiciona ordem real dos itens.
-   - Força dinheiro/peso máximo a serem clicáveis e salvos.
-   - Marca cards de magia/habilidade para layout limpo.
-   - Substitui carregamento transparente por overlay sólido animado.
-========================= */
-(function od1776RealEditLayoutFix(){
-  'use strict';
-  if (window.__od1776RealEditLayoutFixInstalled) return;
-  window.__od1776RealEditLayoutFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
 
-  let saveMoneyTimer = null;
-  let syncTimer = null;
-
-  function $(id){ return document.getElementById(id); }
-  function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
-  function current(){ return safe(() => typeof currentChar === 'function' ? currentChar() : null, null); }
-  function escapeText(value){
-    return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
-  }
-
-  function showSolidLoader(){
-    if (!document.documentElement.classList.contains('od1775-restoring-route') && !document.body.classList.contains('od1775-restoring-route')) return;
-    let overlay = document.getElementById('od1776-solid-loader');
-    if (!overlay) {
-      overlay = document.createElement('div');
-      overlay.id = 'od1776-solid-loader';
-      overlay.innerHTML = `<div class="od1776-loader-card"><span></span><strong>Carregando ficha</strong><small>Aguarde enquanto a sessão é restaurada</small></div>`;
-      document.documentElement.appendChild(overlay);
-    }
-  }
-
-  function hideSolidLoader(){
-    const overlay = document.getElementById('od1776-solid-loader');
-    if (overlay) overlay.remove();
-    document.documentElement.classList.remove('od1775-restoring-route');
-    document.body.classList.remove('od1775-restoring-route');
-  }
-
-  function forceMoneyWeightEditable(){
-    const fields = [$('#money'), $('#weight-max')].filter(Boolean);
-    fields.forEach(input => {
-      input.disabled = false;
-      input.readOnly = false;
-      input.removeAttribute('disabled');
-      input.removeAttribute('readonly');
-      input.classList.add('od1776-force-editable-field');
-      input.style.setProperty('pointer-events', 'auto', 'important');
-      input.style.setProperty('user-select', 'text', 'important');
-      input.style.setProperty('position', 'relative', 'important');
-      input.style.setProperty('z-index', '999', 'important');
-      input.tabIndex = 0;
-    });
-
-    const currentWeight = $('#weight-current');
-    if (currentWeight) {
-      currentWeight.readOnly = true;
-      currentWeight.setAttribute('readonly', 'readonly');
-      currentWeight.classList.add('od1776-calculated-field');
-    }
-
-    const summary = document.querySelector('.od170-module[data-od170-key="equip-resumo"]');
-    if (summary) {
-      summary.classList.remove('od170-collapsed');
-      summary.classList.add('od1776-summary-always-open');
-      summary.querySelector(':scope > .od170-module-body')?.style?.setProperty('display', 'block', 'important');
-      summary.querySelectorAll(':scope > .od177-inventory-summary, :scope > .od176-reduced-view, :scope > .od1715-collapse-summary').forEach(el => el.remove());
-      const btn = summary.querySelector(':scope > .od170-module-head .od170-module-toggle');
-      if (btn) btn.remove();
-    }
-  }
-
-  function saveMoneyWeightNow(){
-    const char = current();
-    if (!char) return;
-    if (typeof updateChar === 'function') {
-      updateChar(c => {
-        c.money = $('#money')?.value ?? c.money ?? '0';
-        c.weightMax = Number(String($('#weight-max')?.value ?? c.weightMax ?? 0).replace(',', '.')) || 0;
-      });
-      const updated = current();
-      if (typeof updateDerivedStatsDisplay === 'function') updateDerivedStatsDisplay(updated);
-      if (typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(updated);
-      else if (typeof saveCurrentCharacter === 'function') saveCurrentCharacter();
-    }
-  }
-
-  function decorateSimpleInventoryCards(){
-    document.querySelectorAll('#simple-inventory-list .simple-inventory-card').forEach((card, index) => {
-      card.classList.add('od1776-inventory-edit-card');
-
-      const nameRow = card.querySelector('.simple-inventory-name-row');
-      const top = card.querySelector('.simple-inventory-card-top');
-      const remove = card.querySelector('[data-remove-simple-item], .mini-danger-btn');
-      const desc = card.querySelector('[data-inv-field="desc"]');
-
-      if (remove && nameRow && remove.parentElement !== nameRow) {
-        nameRow.appendChild(remove);
-      }
-
-      if (top && !top.querySelector('.od1776-item-order-actions')) {
-        const order = document.createElement('div');
-        order.className = 'od1776-item-order-actions';
-        order.innerHTML = `
-          <button class="ghost-btn small" data-od1776-move-item="${index}" data-dir="-1" type="button" aria-label="Subir item">▲</button>
-          <button class="ghost-btn small" data-od1776-move-item="${index}" data-dir="1" type="button" aria-label="Descer item">▼</button>`;
-        top.appendChild(order);
-      } else if (top) {
-        top.querySelectorAll('[data-od1776-move-item]').forEach(btn => btn.dataset.od1776MoveItem = String(index));
-      }
-
-      card.querySelectorAll('[data-inv-field="weight"], [data-inv-field="uses"]').forEach(input => {
-        input.classList.add('od1776-metric-input');
-      });
-
-      if (desc) desc.classList.add('od1776-desc-input');
-    });
-  }
-
-  function moveInventoryItem(index, dir){
-    const char = current();
-    if (!char) return;
-    const items = Array.isArray(char.inventoryItems) ? [...char.inventoryItems] : [];
-    const from = Number(index);
-    const to = from + Number(dir);
-    if (from < 0 || from >= items.length || to < 0 || to >= items.length) return;
-    const [item] = items.splice(from, 1);
-    items.splice(to, 0, item);
-
-    if (typeof updateChar === 'function') updateChar(c => { c.inventoryItems = items; });
-    else char.inventoryItems = items;
-
-    if (typeof renderSimpleInventory === 'function') renderSimpleInventory(current());
-    decorateSimpleInventoryCards();
-    if (typeof saveCurrentCharacter === 'function') saveCurrentCharacter();
-  }
-
-  function decorateSpellCards(){
-    document.querySelectorAll('#spells-list .spell-card').forEach(card => {
-      card.classList.add('od1776-spell-card-clean');
-      card.querySelector('.spell-fields-grid')?.classList.add('od1776-spell-fields-clean');
-      card.querySelectorAll('.spell-text-label').forEach(label => label.classList.add('od1776-spell-text-clean'));
-    });
-  }
-
-  function decorateAbilityCards(){
-    document.querySelectorAll('#abilities-list .ability-card').forEach(card => {
-      card.classList.add('od1776-ability-card-clean');
-      card.querySelector('.ability-fields-grid')?.classList.add('od1776-ability-fields-clean');
-      card.querySelector('.ability-description-wrap')?.classList.add('od1776-ability-desc-clean');
-      card.querySelector('.ability-card-actions')?.classList.add('od1776-ability-actions-clean');
-    });
-  }
-
-  function decorateSkillCards(){
-    document.querySelectorAll('#skills-wrap .od79-skill-card').forEach(card => card.classList.add('od1776-skill-card-clean'));
-  }
-
-  function decorateAttributeCards(){
-    document.querySelectorAll('#attributes-grid .attr-card-v2').forEach(card => card.classList.add('od1776-attr-card-clean'));
-  }
-
-  function sync(){
-    document.body.classList.add('od1776-layout-final');
-    showSolidLoader();
-    forceMoneyWeightEditable();
-    decorateSimpleInventoryCards();
-    decorateSpellCards();
-    decorateAbilityCards();
-    decorateSkillCards();
-    decorateAttributeCards();
-  }
-
-  function schedule(){
-    clearTimeout(syncTimer);
-    syncTimer = setTimeout(sync, 35);
-  }
-
-  document.addEventListener('click', event => {
-    const move = event.target.closest?.('[data-od1776-move-item]');
-    if (move) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      moveInventoryItem(move.dataset.od1776MoveItem, move.dataset.dir);
-      return;
-    }
-
-    if (event.target.closest?.('#money, #weight-max')) {
-      forceMoneyWeightEditable();
-      event.target.focus?.();
-      return;
-    }
-
-    if (event.target.closest?.('[data-od170-toggle], .sheet-tab, #add-simple-inventory-item, [data-remove-simple-item], #add-spell, #add-ability, .remove-card')) {
-      schedule();
-      setTimeout(sync, 140);
-    }
-  }, true);
-
-  document.addEventListener('mousedown', event => {
-    const field = event.target.closest?.('#money, #weight-max');
-    if (!field) return;
-    forceMoneyWeightEditable();
-    field.focus();
-  }, true);
-
-  document.addEventListener('input', event => {
-    if (event.target.closest?.('#money, #weight-max')) {
-      clearTimeout(saveMoneyTimer);
-      saveMoneyTimer = setTimeout(saveMoneyWeightNow, 250);
-      return;
-    }
-    if (event.target.closest?.('.sheet')) schedule();
-  }, true);
-
-  document.addEventListener('change', event => {
-    if (event.target.closest?.('#money, #weight-max')) saveMoneyWeightNow();
-    if (event.target.closest?.('.sheet')) schedule();
-  }, true);
-
-  const observer = new MutationObserver(schedule);
-  observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style', 'disabled', 'readonly'] });
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', sync, { once: true });
-  else sync();
-
-  // Remove loader quando a ficha abrir ou após limite seguro.
-  const loaderWatcher = setInterval(() => {
-    const appActive = document.getElementById('app-screen')?.classList.contains('active');
-    const hasSheet = !!document.querySelector('.sheet-area .sheet, .sheet.manga-panel');
-    if (appActive && hasSheet && !document.getElementById('auth-screen')?.classList.contains('active')) {
-      hideSolidLoader();
-      clearInterval(loaderWatcher);
-    }
-  }, 180);
-
-  setTimeout(sync, 120);
-  setTimeout(sync, 650);
-  setTimeout(sync, 1500);
-  setTimeout(() => { hideSolidLoader(); clearInterval(loaderWatcher); }, 6500);
-
-  window.od1776RealEditLayoutFix = { sync, forceMoneyWeightEditable };
-})();
-
-
-/* =========================
-   V177.7 - Reset real dos layouts quebrados
-   Esta camada para de tentar encaixar por cima dos grids quebrados:
-   - recria o resumo do inventário com inputs limpos e clicáveis;
-   - reorganiza DOM dos cards de inventário;
-   - força magias/habilidades para layout flex estável;
-   - remove overlays/posicionamentos antigos nos cards;
-   - aplica classes finais para CSS de alta prioridade.
-========================= */
-(function od1777HardLayoutReset(){
-  'use strict';
-  if (window.__od1777HardLayoutResetInstalled) return;
-  window.__od1777HardLayoutResetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
-
-  let timer = null;
-  let savingMoney = null;
-
-  function $(id){ return document.getElementById(id); }
-  function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
-  function current(){ return safe(() => typeof currentChar === 'function' ? currentChar() : null, null); }
-  function numberBr(value){
-    const n = Number(String(value ?? 0).replace(',', '.'));
-    if (!Number.isFinite(n)) return '0';
-    return String(n).replace('.', ',');
-  }
-
-  function saveMoneyWeight(){
-    clearTimeout(savingMoney);
-    savingMoney = setTimeout(() => {
-      const char = current();
-      if (!char) return;
-      const money = $('money')?.value ?? '0';
-      const max = Number(String($('weight-max')?.value ?? 0).replace(',', '.')) || 0;
-      if (typeof updateChar === 'function') {
-        updateChar(c => {
-          c.money = money;
-          c.weightMax = max;
-        });
-      } else {
-        char.money = money;
-        char.weightMax = max;
-      }
-      if (typeof updateDerivedStatsDisplay === 'function') updateDerivedStatsDisplay(current());
-      if (typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(current());
-    }, 180);
-  }
-
-  function rebuildInventorySummary(){
-    const grid = document.querySelector('#tab-equipamentos .inventory-summary-grid');
-    if (!grid || grid.dataset.od1777Ready === '1') return;
-
-    const char = current() || {};
-    const moneyValue = $('money')?.value ?? char.money ?? '0';
-    const currentValue = $('weight-current')?.value ?? char.weightCurrent ?? '0';
-    const maxValue = $('weight-max')?.value ?? char.weightMax ?? '15';
-
-    grid.classList.add('od1777-inventory-summary-grid');
-    grid.dataset.od1777Ready = '1';
-    grid.innerHTML = `
-      <label class="od1777-summary-field">Dinheiro
-        <input id="money" class="od1777-money-input" type="text" value="${String(moneyValue).replace(/"/g, '&quot;')}" autocomplete="off" />
-      </label>
-      <label class="od1777-summary-field">Peso Atual
-        <input id="weight-current" class="od1777-weight-current" type="text" value="${String(currentValue).replace(/"/g, '&quot;')}" readonly />
-      </label>
-      <label class="od1777-summary-field">Peso Máximo
-        <input id="weight-max" class="od1777-weight-max-input" type="number" value="${String(maxValue).replace(/"/g, '&quot;')}" min="0" step="0.5" autocomplete="off" />
-      </label>`;
-
-    ['money','weight-max'].forEach(id => {
-      const input = $(id);
-      if (!input) return;
-      input.disabled = false;
-      input.readOnly = false;
-      input.removeAttribute('disabled');
-      input.removeAttribute('readonly');
-      input.addEventListener('input', saveMoneyWeight);
-      input.addEventListener('change', saveMoneyWeight);
-      input.addEventListener('mousedown', () => {
-        input.disabled = false;
-        input.readOnly = false;
-        input.focus();
-      }, true);
-    });
-  }
-
-  function forceInventorySummaryOpen(){
-    const module = document.querySelector('.od170-module[data-od170-key="equip-resumo"]');
-    if (!module) return;
-    module.classList.remove('od170-collapsed');
-    module.classList.add('od1777-summary-open');
-    module.querySelectorAll(':scope > .od176-reduced-view, :scope > .od177-reduced-view, :scope > .od1715-collapse-summary').forEach(el => el.remove());
-    const toggle = module.querySelector(':scope > .od170-module-head .od170-module-toggle');
-    if (toggle) toggle.remove();
-  }
-
-  function rebuildInventoryCards(){
-    document.querySelectorAll('#simple-inventory-list .simple-inventory-card').forEach((card, index) => {
-      card.classList.add('od1777-item-card');
-      card.style.removeProperty('grid-template');
-      card.style.removeProperty('grid-template-areas');
-
-      const nameRow = card.querySelector('.simple-inventory-name-row');
-      const name = card.querySelector('[data-inv-field="name"]');
-      const remove = card.querySelector('[data-remove-simple-item], .mini-danger-btn');
-      const top = card.querySelector('.simple-inventory-card-top');
-      const desc = card.querySelector('[data-inv-field="desc"]');
-      const actions = card.querySelector('.item-card-actions');
-
-      if (nameRow) nameRow.classList.add('od1777-item-name-row');
-      if (name) name.classList.add('od1777-item-name');
-      if (remove) {
-        remove.classList.add('od1777-item-remove');
-        if (nameRow && remove.parentElement !== nameRow) nameRow.appendChild(remove);
-      }
-
-      if (desc) desc.classList.add('od1777-item-desc');
-
-      if (top) {
-        top.classList.add('od1777-item-metrics-row');
-        if (!top.querySelector('.od1777-order-box')) {
-          const order = document.createElement('div');
-          order.className = 'od1777-order-box';
-          order.innerHTML = `
-            <button class="ghost-btn small od1777-order-btn" data-od1777-move="${index}" data-dir="-1" type="button">▲</button>
-            <button class="ghost-btn small od1777-order-btn" data-od1777-move="${index}" data-dir="1" type="button">▼</button>`;
-          top.appendChild(order);
-        } else {
-          top.querySelectorAll('[data-od1777-move]').forEach(btn => btn.dataset.od1777Move = String(index));
-        }
-
-        top.querySelectorAll('.simple-inventory-stepper').forEach(stepper => stepper.classList.add('od1777-stepper'));
-      }
-
-      if (actions) actions.classList.add('od1777-item-actions');
-    });
-  }
-
-  function moveItem(index, dir){
-    const char = current();
-    if (!char) return;
-    const items = Array.isArray(char.inventoryItems) ? [...char.inventoryItems] : [];
-    const from = Number(index);
-    const to = from + Number(dir);
-    if (from < 0 || to < 0 || from >= items.length || to >= items.length) return;
-    const [item] = items.splice(from, 1);
-    items.splice(to, 0, item);
-    if (typeof updateChar === 'function') updateChar(c => c.inventoryItems = items);
-    else char.inventoryItems = items;
-    if (typeof renderSimpleInventory === 'function') renderSimpleInventory(current());
-    setTimeout(sync, 30);
-    if (typeof saveCurrentCharacter === 'function') saveCurrentCharacter();
-  }
-
-  function cleanSpells(){
-    document.querySelectorAll('#spells-list .spell-card').forEach(card => {
-      card.classList.add('od1777-spell-clean');
-      card.querySelector('.spell-fields-grid')?.classList.add('od1777-spell-fields');
-      card.querySelectorAll('.spell-text-label').forEach(label => label.classList.add('od1777-spell-text'));
-      card.querySelector('.remove-card')?.classList.add('od1777-remove-bottom');
-      card.querySelectorAll('*').forEach(el => {
-        el.style.removeProperty('grid-area');
-        el.style.removeProperty('position');
-      });
-    });
-  }
-
-  function cleanAbilities(){
-    document.querySelectorAll('#abilities-list .ability-card').forEach(card => {
-      card.classList.add('od1777-ability-clean');
-      card.querySelector('.ability-fields-grid')?.classList.add('od1777-ability-fields');
-      card.querySelector('.ability-description-wrap')?.classList.add('od1777-ability-text');
-      card.querySelector('.ability-card-actions')?.classList.add('od1777-ability-actions');
-      card.querySelectorAll('*').forEach(el => {
-        el.style.removeProperty('grid-area');
-        el.style.removeProperty('position');
-      });
-    });
-  }
-
-  function cleanSkillsAndAttrs(){
-    document.querySelectorAll('#attributes-grid .attr-card-v2').forEach(card => card.classList.add('od1777-attr-clean'));
-    document.querySelectorAll('#skills-wrap .od79-skill-card').forEach(card => card.classList.add('od1777-skill-clean'));
-  }
-
-  function sync(){
-    document.body.classList.add('od1777-final-layout');
-    forceInventorySummaryOpen();
-    rebuildInventorySummary();
-    rebuildInventoryCards();
-    cleanSpells();
-    cleanAbilities();
-    cleanSkillsAndAttrs();
-  }
-
-  function schedule(){
-    clearTimeout(timer);
-    timer = setTimeout(sync, 40);
-  }
-
-  document.addEventListener('click', event => {
-    const move = event.target.closest?.('[data-od1777-move]');
-    if (move) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      moveItem(move.dataset.od1777Move, move.dataset.dir);
-      return;
-    }
-
-    if (event.target.closest?.('#money, #weight-max')) {
-      const input = event.target.closest('#money, #weight-max');
-      input.disabled = false;
-      input.readOnly = false;
-      input.focus();
-      return;
-    }
-
-    if (event.target.closest?.('[data-od170-toggle], .sheet-tab, #add-simple-inventory-item, [data-remove-simple-item], #add-spell, #add-ability, .remove-card')) {
-      schedule();
-      setTimeout(sync, 140);
-    }
-  }, true);
-
-  document.addEventListener('input', event => {
-    if (event.target.closest?.('#money, #weight-max')) saveMoneyWeight();
-    if (event.target.closest?.('.sheet')) schedule();
-  }, true);
-
-  document.addEventListener('change', event => {
-    if (event.target.closest?.('#money, #weight-max')) saveMoneyWeight();
-    if (event.target.closest?.('.sheet')) schedule();
-  }, true);
-
-  const observer = new MutationObserver(schedule);
-  observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', sync, { once: true });
-  else sync();
-
-  setTimeout(sync, 100);
-  setTimeout(sync, 500);
-  setTimeout(sync, 1300);
-
-  window.od1777HardLayoutReset = { sync };
-})();
-
-
-/* =========================
-   V177.8 - Auditoria e limpeza de conflitos da v1.77.7
-   Correção real:
-   - remove botões antigos de ordem da v1.77.6;
-   - reconstrói money/weight quando necessário, sem depender de "uma vez só";
-   - impede overlays/camadas antigas de bloquear money e weight-max;
-   - marca layout final como versão 1.77.8.
-========================= */
-(function od1778AuditConflictClean(){
-  'use strict';
-  if (window.__od1778AuditConflictCleanInstalled) return;
-  window.__od1778AuditConflictCleanInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
-
-  let timer = null;
-  let saveTimer = null;
-
-  function $(id){ return document.getElementById(id); }
-  function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
-  function current(){ return safe(() => typeof currentChar === 'function' ? currentChar() : null, null); }
-
-  function removeOldInventoryOrderButtons(){
-    document.querySelectorAll('.od1776-item-order-actions, [data-od1776-move-item]').forEach(el => el.remove());
-  }
-
-  function ensureInventorySummaryInputs(){
-    const module = document.querySelector('.od170-module[data-od170-key="equip-resumo"]');
-    if (!module) return;
-
-    module.classList.remove('od170-collapsed');
-    module.classList.add('od1778-summary-fixed');
-
-    module.querySelectorAll(':scope > .od176-reduced-view, :scope > .od177-reduced-view, :scope > .od1715-collapse-summary, :scope > .od177-inventory-summary').forEach(el => el.remove());
-    module.querySelector(':scope > .od170-module-head .od170-module-toggle')?.remove();
-
-    const body = module.querySelector(':scope > .od170-module-body') || module;
-    let grid = module.querySelector('.inventory-summary-grid');
-
-    const char = current() || {};
-    const existingMoney = $('money')?.value ?? char.money ?? '0';
-    const existingCurrent = $('weight-current')?.value ?? char.weightCurrent ?? '0';
-    const existingMax = $('weight-max')?.value ?? char.weightMax ?? '15';
-
-    const needsRebuild = !grid || !grid.querySelector('#money') || !grid.querySelector('#weight-max') || !grid.querySelector('#weight-current');
-
-    if (needsRebuild) {
-      if (!grid) {
-        grid = document.createElement('div');
-        grid.className = 'inventory-summary-grid od1778-summary-grid';
-        body.prepend(grid);
-      }
-      grid.classList.add('od1778-summary-grid');
-      grid.innerHTML = `
-        <label class="od1778-summary-field">Dinheiro
-          <input id="money" class="od1778-money-input" type="text" autocomplete="off" value="${String(existingMoney).replace(/"/g, '&quot;')}" />
-        </label>
-        <label class="od1778-summary-field">Peso Atual
-          <input id="weight-current" class="od1778-weight-current" type="text" readonly value="${String(existingCurrent).replace(/"/g, '&quot;')}" />
-        </label>
-        <label class="od1778-summary-field">Peso Máximo
-          <input id="weight-max" class="od1778-weight-max-input" type="number" min="0" step="0.5" autocomplete="off" value="${String(existingMax).replace(/"/g, '&quot;')}" />
-        </label>`;
-    } else {
-      grid.classList.add('od1778-summary-grid');
-    }
-
-    const money = $('money');
-    const max = $('weight-max');
-    const cur = $('weight-current');
-
-    [money, max].forEach(input => {
-      if (!input) return;
-      input.disabled = false;
-      input.readOnly = false;
-      input.removeAttribute('disabled');
-      input.removeAttribute('readonly');
-      input.classList.add('od1778-clickable');
-      input.style.setProperty('pointer-events', 'auto', 'important');
-      input.style.setProperty('user-select', 'text', 'important');
-      input.style.setProperty('position', 'relative', 'important');
-      input.style.setProperty('z-index', '2147483000', 'important');
-      input.tabIndex = 0;
-    });
-
-    if (cur) {
-      cur.readOnly = true;
-      cur.setAttribute('readonly', 'readonly');
-      cur.classList.add('od1778-readonly');
-    }
-  }
-
-  function saveMoneyWeight(){
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(() => {
-      const money = $('money')?.value ?? '0';
-      const max = Number(String($('weight-max')?.value ?? '0').replace(',', '.')) || 0;
-
-      if (typeof updateChar === 'function') {
-        updateChar(char => {
-          char.money = money;
-          char.weightMax = max;
-        });
-      } else {
-        const char = current();
-        if (char) {
-          char.money = money;
-          char.weightMax = max;
-        }
-      }
-
-      const char = current();
-      if (typeof updateDerivedStatsDisplay === 'function') updateDerivedStatsDisplay(char);
-      if (typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(char);
-      else if (typeof saveCurrentCharacter === 'function') saveCurrentCharacter();
-    }, 120);
-  }
-
-  function normalizeInventoryCards(){
-    removeOldInventoryOrderButtons();
-
-    document.querySelectorAll('#simple-inventory-list .simple-inventory-card').forEach((card, index) => {
-      card.classList.add('od1778-item-card');
-
-      const nameRow = card.querySelector('.simple-inventory-name-row');
-      const remove = card.querySelector('[data-remove-simple-item], .mini-danger-btn');
-      const top = card.querySelector('.simple-inventory-card-top');
-
-      if (nameRow) nameRow.classList.add('od1778-item-name-row');
-      if (remove && nameRow && remove.parentElement !== nameRow) nameRow.appendChild(remove);
-      if (remove) remove.classList.add('od1778-item-remove');
-
-      card.querySelector('[data-inv-field="name"]')?.classList.add('od1778-item-name');
-      card.querySelector('[data-inv-field="desc"]')?.classList.add('od1778-item-desc');
-      card.querySelector('.item-card-actions')?.classList.add('od1778-item-actions');
-
-      if (top) {
-        top.classList.add('od1778-item-metrics-row');
-        top.querySelectorAll('.od1777-order-box').forEach(el => el.remove());
-        let order = top.querySelector('.od1778-order-box');
-        if (!order) {
-          order = document.createElement('div');
-          order.className = 'od1778-order-box';
-          top.appendChild(order);
-        }
-        order.innerHTML = `
-          <button class="ghost-btn small od1778-order-btn" data-od1778-move="${index}" data-dir="-1" type="button">▲</button>
-          <button class="ghost-btn small od1778-order-btn" data-od1778-move="${index}" data-dir="1" type="button">▼</button>`;
-      }
-    });
-  }
-
-  function moveItem(index, dir){
-    const char = current();
-    if (!char) return;
-    const items = Array.isArray(char.inventoryItems) ? [...char.inventoryItems] : [];
-    const from = Number(index);
-    const to = from + Number(dir);
-    if (from < 0 || to < 0 || from >= items.length || to >= items.length) return;
-    const [item] = items.splice(from, 1);
-    items.splice(to, 0, item);
-    if (typeof updateChar === 'function') updateChar(c => { c.inventoryItems = items; });
-    else char.inventoryItems = items;
-    if (typeof renderSimpleInventory === 'function') renderSimpleInventory(current());
-    if (typeof saveCurrentCharacter === 'function') saveCurrentCharacter();
-    setTimeout(sync, 30);
-  }
-
-  function markFinalLayouts(){
-    document.body.classList.add('od1778-final-clean');
-    document.querySelectorAll('#attributes-grid .attr-card-v2').forEach(el => el.classList.add('od1778-attr-card'));
-    document.querySelectorAll('#skills-wrap .od79-skill-card').forEach(el => el.classList.add('od1778-skill-card'));
-    document.querySelectorAll('#spells-list .spell-card').forEach(el => {
-      el.classList.add('od1778-spell-card');
-      el.querySelector('.spell-fields-grid')?.classList.add('od1778-spell-fields');
-      el.querySelectorAll('.spell-text-label').forEach(t => t.classList.add('od1778-spell-text'));
-    });
-    document.querySelectorAll('#abilities-list .ability-card').forEach(el => {
-      el.classList.add('od1778-ability-card');
-      el.querySelector('.ability-fields-grid')?.classList.add('od1778-ability-fields');
-      el.querySelector('.ability-description-wrap')?.classList.add('od1778-ability-text');
-      el.querySelector('.ability-card-actions')?.classList.add('od1778-ability-actions');
-    });
-  }
-
-  function sync(){
-    ensureInventorySummaryInputs();
-    normalizeInventoryCards();
-    markFinalLayouts();
-  }
-
-  function schedule(){
-    clearTimeout(timer);
-    timer = setTimeout(sync, 35);
-  }
-
-  document.addEventListener('click', event => {
-    const move = event.target.closest?.('[data-od1778-move]');
-    if (move) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      moveItem(move.dataset.od1778Move, move.dataset.dir);
-      return;
-    }
-
-    const field = event.target.closest?.('#money, #weight-max');
-    if (field) {
-      ensureInventorySummaryInputs();
-      field.focus();
-      return;
-    }
-
-    if (event.target.closest?.('[data-od170-toggle], .sheet-tab, #add-simple-inventory-item, [data-remove-simple-item], #add-spell, #add-ability, .remove-card')) {
-      schedule();
-      setTimeout(sync, 150);
-    }
-  }, true);
-
-  document.addEventListener('mousedown', event => {
-    const field = event.target.closest?.('#money, #weight-max');
-    if (!field) return;
-    ensureInventorySummaryInputs();
-    field.focus();
-  }, true);
-
-  document.addEventListener('input', event => {
-    if (event.target.closest?.('#money, #weight-max')) saveMoneyWeight();
-    if (event.target.closest?.('.sheet')) schedule();
-  }, true);
-
-  document.addEventListener('change', event => {
-    if (event.target.closest?.('#money, #weight-max')) saveMoneyWeight();
-    if (event.target.closest?.('.sheet')) schedule();
-  }, true);
-
-  const observer = new MutationObserver(schedule);
-  observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', sync, { once: true });
-  else sync();
-
-  setTimeout(sync, 100);
-  setTimeout(sync, 500);
-  setTimeout(sync, 1300);
-
-  window.od1778AuditConflictClean = { sync };
-})();
 
 
 /* =========================
@@ -20101,7 +18218,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od178SkillsDesignPolishInstalled) return;
   window.__od178SkillsDesignPolishInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   let timer = null;
 
@@ -20174,7 +18291,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1781AttributeTextFixInstalled) return;
   window.__od1781AttributeTextFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   let timer = null;
 
@@ -20230,446 +18347,8 @@ function od66InventoryMutationUnlockSoon() {
 })();
 
 
-/* =========================
-   V178.2 - Rebuild real do Inventário em Texto editável
-   Motivo:
-   - As camadas antigas estavam transformando os campos em visualização,
-     então parecia card visual e não dava para escrever.
-   - Este patch sobrescreve o render do Inventário em Texto com HTML limpo,
-     editável e sem layout herdado quebrado.
-========================= */
-(function od1782EditableTextInventory(){
-  'use strict';
-  if (window.__od1782EditableTextInventoryInstalled) return;
-  window.__od1782EditableTextInventoryInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
 
-  let syncTimer = null;
 
-  function by(id){ return document.getElementById(id); }
-  function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
-  function getChar(){ return safe(() => typeof currentChar === 'function' ? currentChar() : null, null); }
-  function h(value){
-    if (typeof escapeHtml === 'function') return escapeHtml(value ?? '');
-    return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
-  }
-  function uidSafe(prefix){
-    return typeof uid === 'function' ? uid(prefix || 'id') : `${prefix || 'id'}_${Date.now()}_${Math.random().toString(16).slice(2)}`;
-  }
-  function normalizeWeightSafe(value){
-    if (typeof normalizeWeight === 'function') return normalizeWeight(value);
-    const n = Number(String(value ?? 0.5).replace(',', '.'));
-    if (!Number.isFinite(n) || n < 0.5) return 0.5;
-    if (n < 1) return 0.5;
-    return Math.round(n);
-  }
-  function formatNumberBrSafe(value){
-    if (typeof formatNumberBr === 'function') return formatNumberBr(value);
-    return String(value).replace('.', ',');
-  }
-
-  function renderEditableInventory(char = getChar()){
-    const list = by('simple-inventory-list');
-    if (!list || !char) return;
-
-    const items = Array.isArray(char.inventoryItems) ? char.inventoryItems : [];
-    list.classList.remove('compact');
-    list.classList.add('od1782-editable-list');
-    list.innerHTML = '';
-
-    if (!items.length) {
-      const empty = document.createElement('div');
-      empty.className = 'simple-inventory-empty od1782-empty';
-      empty.textContent = 'Nenhum item adicionado.';
-      list.appendChild(empty);
-      if (typeof updateInventoryWeightTotal === 'function') updateInventoryWeightTotal();
-      return;
-    }
-
-    items.forEach((item, index) => {
-      const itemId = item.id || uidSafe('inv');
-      if (!item.id) item.id = itemId;
-      const weight = formatNumberBrSafe(normalizeWeightSafe(item.weight ?? 0.5));
-      const uses = Math.max(0, Number(item.uses || 0));
-
-      const card = document.createElement('div');
-      card.className = 'simple-inventory-card od1782-item-card';
-      card.dataset.inventoryIndex = String(index);
-      card.dataset.itemId = itemId;
-      card.innerHTML = `
-        <div class="od1782-name-row simple-inventory-name-row">
-          <input class="simple-inventory-name od1782-name-input" data-inv-field="name" type="text" value="${h(item.name || 'Novo item')}" placeholder="Nome do item" autocomplete="off" />
-          <button class="mini-danger-btn od1782-remove-btn" data-remove-simple-item="${index}" type="button" aria-label="Excluir item">×</button>
-        </div>
-
-        <label class="od1782-desc-label">
-          <span>Descrição</span>
-          <textarea class="simple-inventory-desc od1782-desc-input" data-inv-field="desc" rows="5" placeholder="Descrição do item">${h(item.desc || '')}</textarea>
-        </label>
-
-        <div class="simple-inventory-card-top od1782-bottom-row">
-          <label class="simple-inventory-stepper simple-inventory-weight od1782-stepper">Peso
-            <div class="stepper-control od1782-stepper-control">
-              <button class="stepper-btn" data-step-field="weight" data-step-dir="-1" type="button">−</button>
-              <input data-inv-field="weight" type="text" value="${h(weight)}" inputmode="decimal" />
-              <button class="stepper-btn" data-step-field="weight" data-step-dir="1" type="button">+</button>
-            </div>
-          </label>
-
-          <label class="simple-inventory-stepper simple-inventory-uses od1782-stepper">Usos
-            <div class="stepper-control od1782-stepper-control">
-              <button class="stepper-btn" data-step-field="uses" data-step-dir="-1" type="button">−</button>
-              <input data-inv-field="uses" type="number" min="0" step="1" value="${h(uses)}" placeholder="0" />
-              <button class="stepper-btn" data-step-field="uses" data-step-dir="1" type="button">+</button>
-            </div>
-          </label>
-
-          <div class="od1782-order-box">
-            <button class="ghost-btn small od1782-order-btn" data-od1782-move="${index}" data-dir="-1" type="button" aria-label="Subir item">▲</button>
-            <button class="ghost-btn small od1782-order-btn" data-od1782-move="${index}" data-dir="1" type="button" aria-label="Descer item">▼</button>
-          </div>
-        </div>
-
-        <div class="item-card-actions od1782-actions">
-          <button class="ghost-btn small" data-transfer-simple-item="${h(itemId)}" type="button">Transferir</button>
-          <button class="ghost-btn small" data-drop-simple-item="${h(itemId)}" type="button">Enviar para Drop</button>
-        </div>`;
-      list.appendChild(card);
-    });
-
-    if (typeof updateInventoryWeightTotal === 'function') updateInventoryWeightTotal();
-  }
-
-  function moveItem(index, dir){
-    const char = getChar();
-    if (!char) return;
-    const items = Array.isArray(char.inventoryItems) ? [...char.inventoryItems] : [];
-    const from = Number(index);
-    const to = from + Number(dir);
-    if (from < 0 || to < 0 || from >= items.length || to >= items.length) return;
-    const [item] = items.splice(from, 1);
-    items.splice(to, 0, item);
-    if (typeof updateChar === 'function') updateChar(c => { c.inventoryItems = items; });
-    else char.inventoryItems = items;
-    renderEditableInventory(getChar());
-    if (typeof saveCurrentCharacter === 'function') saveCurrentCharacter();
-  }
-
-  function neutralizeOldInventoryLayers(){
-    const list = by('simple-inventory-list');
-    if (!list) return;
-    list.querySelectorAll('.od1776-item-order-actions, .od1777-order-box, .od1778-order-box, [data-od1776-move-item], [data-od1777-move], [data-od1778-move]').forEach(el => el.remove());
-    list.querySelectorAll('.od176-equipment-summary, .od1715-equipment-summary, .od177-inventory-text-summary').forEach(el => el.remove());
-  }
-
-  const originalRender = typeof renderSimpleInventory === 'function' ? renderSimpleInventory : null;
-  renderSimpleInventory = function od1782RenderSimpleInventory(char){
-    // Não chama o render antigo, porque ele é a origem dos cards quebrados por camadas antigas.
-    renderEditableInventory(char || getChar());
-    neutralizeOldInventoryLayers();
-  };
-  try { window.renderSimpleInventory = renderSimpleInventory; } catch (_) {}
-
-  document.addEventListener('click', event => {
-    const move = event.target.closest?.('[data-od1782-move]');
-    if (move) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      moveItem(move.dataset.od1782Move, move.dataset.dir);
-      return;
-    }
-
-    if (event.target.closest?.('#add-simple-inventory-item')) {
-      setTimeout(() => renderEditableInventory(getChar()), 60);
-      setTimeout(() => neutralizeOldInventoryLayers(), 100);
-    }
-
-    if (event.target.closest?.('#simple-inventory-list [data-remove-simple-item], [data-od170-toggle], .sheet-tab')) {
-      setTimeout(() => renderEditableInventory(getChar()), 80);
-      setTimeout(() => neutralizeOldInventoryLayers(), 120);
-    }
-  }, true);
-
-  document.addEventListener('input', event => {
-    if (!event.target.closest?.('#simple-inventory-list')) return;
-    event.target.classList.add('od1782-editing-now');
-    if (typeof updateInventoryWeightTotal === 'function') updateInventoryWeightTotal();
-    if (typeof queueSave === 'function') queueSave();
-  }, true);
-
-  document.addEventListener('change', event => {
-    if (!event.target.closest?.('#simple-inventory-list')) return;
-    if (typeof updateInventoryWeightTotal === 'function') updateInventoryWeightTotal();
-    if (typeof saveCurrentCharacter === 'function') saveCurrentCharacter();
-  }, true);
-
-  const observer = new MutationObserver(() => {
-    clearTimeout(syncTimer);
-    syncTimer = setTimeout(neutralizeOldInventoryLayers, 30);
-  });
-  observer.observe(document.body, { childList: true, subtree: true });
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => renderEditableInventory(getChar()), { once: true });
-  } else {
-    renderEditableInventory(getChar());
-  }
-
-  setTimeout(() => renderEditableInventory(getChar()), 120);
-  setTimeout(() => renderEditableInventory(getChar()), 700);
-  setTimeout(() => neutralizeOldInventoryLayers(), 1000);
-
-  window.od1782EditableTextInventory = { renderEditableInventory, neutralizeOldInventoryLayers };
-})();
-
-
-/* =========================
-   V178.3 - Redesign compacto da edição de Magias
-   Foco:
-   - remover espaçamento exagerado;
-   - organizar campos em linhas úteis;
-   - descrição/aprimoramentos com largura total;
-   - botão remover no rodapé;
-   - sem mexer em regra/salvamento.
-========================= */
-(function od1783MagicEditDesign(){
-  'use strict';
-  if (window.__od1783MagicEditDesignInstalled) return;
-  window.__od1783MagicEditDesignInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
-
-  let timer = null;
-
-  function decorate(){
-    document.body.classList.add('od1783-magic-design');
-
-    const list = document.getElementById('spells-list');
-    if (list) list.classList.add('od1783-spells-list');
-
-    document.querySelectorAll('#spells-list .spell-card').forEach(card => {
-      card.classList.add('od1783-spell-card');
-
-      const name = card.querySelector('.spell-name');
-      if (name) name.classList.add('od1783-spell-name');
-
-      const fields = card.querySelector('.spell-fields-grid');
-      if (fields) fields.classList.add('od1783-spell-fields');
-
-      card.querySelectorAll('.spell-fields-grid label').forEach(label => {
-        label.classList.add('od1783-spell-field');
-      });
-
-      card.querySelectorAll('.spell-text-label').forEach(label => {
-        label.classList.add('od1783-spell-text-block');
-      });
-
-      const desc = card.querySelector('.spell-description');
-      if (desc) desc.classList.add('od1783-spell-description');
-
-      const upgrades = card.querySelector('.spell-upgrades');
-      if (upgrades) upgrades.classList.add('od1783-spell-upgrades');
-
-      const remove = card.querySelector('.remove-card');
-      if (remove) remove.classList.add('od1783-spell-remove');
-
-      // Garante que estilos inline de patches antigos não prendam posição/grid.
-      card.querySelectorAll('*').forEach(el => {
-        el.style.removeProperty('grid-area');
-        el.style.removeProperty('position');
-        el.style.removeProperty('left');
-        el.style.removeProperty('right');
-        el.style.removeProperty('top');
-        el.style.removeProperty('bottom');
-      });
-    });
-  }
-
-  function schedule(){
-    clearTimeout(timer);
-    timer = setTimeout(decorate, 35);
-  }
-
-  document.addEventListener('click', event => {
-    if (event.target.closest?.('#tab-magias, #add-spell, .remove-card, [data-od170-toggle], .sheet-tab')) {
-      schedule();
-      setTimeout(decorate, 140);
-    }
-  }, true);
-
-  document.addEventListener('input', event => {
-    if (event.target.closest?.('#spells-list')) schedule();
-  }, true);
-
-  const observer = new MutationObserver(schedule);
-  observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', decorate, { once: true });
-  else decorate();
-
-  setTimeout(decorate, 100);
-  setTimeout(decorate, 500);
-  setTimeout(decorate, 1200);
-
-  window.od1783MagicEditDesign = { decorate };
-})();
-
-
-/* =========================
-   V178.4 - Redesign compacto da edição de Habilidades
-========================= */
-(function od1784AbilityEditDesign(){
-  'use strict';
-  if (window.__od1784AbilityEditDesignInstalled) return;
-  window.__od1784AbilityEditDesignInstalled = true;
-  let timer = null;
-
-  function decorate(){
-    document.body.classList.add('od1784-ability-design');
-    const list = document.getElementById('abilities-list');
-    if (list) list.classList.add('od1784-abilities-list');
-
-    document.querySelectorAll('#abilities-list .ability-card').forEach(card => {
-      card.classList.add('od1784-ability-card');
-      card.querySelector('.ability-name')?.classList.add('od1784-ability-name');
-      card.querySelector('.ability-fields-grid')?.classList.add('od1784-ability-fields');
-      card.querySelectorAll('.ability-fields-grid label').forEach(el => el.classList.add('od1784-ability-field'));
-      card.querySelector('.ability-description-wrap')?.classList.add('od1784-ability-description-wrap');
-      card.querySelector('.ability-description')?.classList.add('od1784-ability-description');
-      card.querySelector('.ability-card-actions')?.classList.add('od1784-ability-actions');
-      card.querySelector('.remove-card')?.classList.add('od1784-ability-remove');
-      card.querySelector('.use-ability')?.classList.add('od1784-ability-use');
-      card.querySelector(':scope > .od80-card-order')?.classList.add('od1784-ability-order');
-    });
-  }
-
-  function schedule(){ clearTimeout(timer); timer = setTimeout(decorate, 40); }
-
-  document.addEventListener('click', event => {
-    if (event.target.closest?.('#tab-habilidades, #add-ability, .remove-card, .use-ability, [data-od170-toggle], .sheet-tab, .od80-order-btn')) {
-      schedule();
-      setTimeout(decorate, 160);
-    }
-  }, true);
-
-  document.addEventListener('input', event => {
-    if (event.target.closest?.('#abilities-list')) schedule();
-  }, true);
-
-  new MutationObserver(schedule).observe(document.body, { childList:true, subtree:true, attributes:true, attributeFilter:['class'] });
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', decorate, {once:true});
-  else decorate();
-  setTimeout(decorate, 120);
-  setTimeout(decorate, 600);
-  setTimeout(decorate, 1200);
-})();
-
-
-/* =========================
-   V178.5 - Resumo do Inventário lado a lado + edição real
-========================= */
-(function od1785InventorySummaryFix(){
-  'use strict';
-  if (window.__od1785InventorySummaryFixInstalled) return;
-  window.__od1785InventorySummaryFixInstalled = true;
-
-  function $(id){ return document.getElementById(id); }
-  function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
-  function current(){ return safe(() => typeof currentChar === 'function' ? currentChar() : null, null); }
-  let saveTimer = null;
-
-  function syncCharValues(){
-    const char = current();
-    const money = $('money');
-    const max = $('weight-max');
-    if (!char || !money || !max) return;
-    const parsedMax = Number(String(max.value || '').replace(',', '.'));
-    if (typeof updateChar === 'function') {
-      updateChar(c => {
-        c.money = String(money.value ?? '0');
-        c.weightMax = Number.isFinite(parsedMax) ? parsedMax : (c.weightMax ?? 0);
-      });
-    } else {
-      char.money = String(money.value ?? '0');
-      if (Number.isFinite(parsedMax)) char.weightMax = parsedMax;
-    }
-  }
-
-  function scheduleSave(){
-    syncCharValues();
-    safe(() => typeof queueSave === 'function' && queueSave(), null);
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(() => {
-      syncCharValues();
-      safe(() => typeof saveCurrentCharacter === 'function' && saveCurrentCharacter(), null);
-    }, 220);
-  }
-
-  function decorate(){
-    const module = document.querySelector('.od170-module[data-od170-key="equip-resumo"]');
-    const grid = document.querySelector('#tab-equipamentos .inventory-summary-grid');
-    const status = $('weight-status');
-    if (!grid) return;
-
-    module?.classList.add('od1785-summary-module');
-    grid.classList.add('od1785-summary-grid');
-    status?.classList.add('od1785-weight-status');
-
-    grid.querySelectorAll('label').forEach(label => {
-      label.classList.add('od1785-summary-field');
-      const input = label.querySelector('input');
-      if (!input) return;
-      input.classList.add('od1785-summary-input');
-      input.style.setProperty('pointer-events', 'auto', 'important');
-      input.style.setProperty('user-select', 'text', 'important');
-      input.style.setProperty('opacity', '1', 'important');
-      input.tabIndex = 0;
-
-      if (input.id === 'weight-current') {
-        input.readOnly = true;
-        input.setAttribute('readonly', 'readonly');
-        input.classList.add('od1785-summary-readonly');
-      } else {
-        input.disabled = false;
-        input.readOnly = false;
-        input.removeAttribute('disabled');
-        input.removeAttribute('readonly');
-        input.classList.add('od1785-summary-editable');
-      }
-    });
-  }
-
-  document.addEventListener('click', event => {
-    const label = event.target.closest?.('#tab-equipamentos .inventory-summary-grid label');
-    if (label && !event.target.matches('input')) {
-      label.querySelector('input')?.focus();
-    }
-    if (event.target.matches?.('#money, #weight-max')) {
-      decorate();
-    }
-  }, true);
-
-  document.addEventListener('focusin', event => {
-    if (event.target.matches?.('#money, #weight-max')) decorate();
-  }, true);
-
-  document.addEventListener('input', event => {
-    if (event.target.matches?.('#money, #weight-max')) scheduleSave();
-  }, true);
-
-  document.addEventListener('change', event => {
-    if (event.target.matches?.('#money, #weight-max')) scheduleSave();
-  }, true);
-
-  const observer = new MutationObserver(() => setTimeout(decorate, 20));
-  observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'readonly', 'disabled', 'style'] });
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', decorate, { once: true });
-  else decorate();
-  setTimeout(decorate, 120);
-  setTimeout(decorate, 600);
-  setTimeout(decorate, 1200);
-})();
 
 
 /* =========================
@@ -20799,7 +18478,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1787AttributeNameNoEllipsisInstalled) return;
   window.__od1787AttributeNameNoEllipsisInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   const DISPLAY = {
     'força': 'FORÇA',
@@ -20895,7 +18574,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1788AttributeFullNamesInstalled) return;
   window.__od1788AttributeFullNamesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   const FULL = {
     forca: 'FORÇA',
@@ -20981,658 +18660,7 @@ function od66InventoryMutationUnlockSoon() {
 })();
 
 
-/* =========================
-   V178.10 - Inventário em Texto refeito justo e estável
-   Corrige cards quebrados por camadas antigas:
-   - nome editável no topo;
-   - excluir ao lado do nome;
-   - descrição grande e editável;
-   - peso/usos compactos;
-   - ordem separada;
-   - ações no rodapé.
-========================= */
-(function od17810FairTextInventory(){
-  'use strict';
-  if (window.__od17810FairTextInventoryInstalled) return;
-  window.__od17810FairTextInventoryInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
 
-  let renderTimer = null;
-  let saveTimer = null;
-
-  function $(id){ return document.getElementById(id); }
-  function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
-  function getChar(){ return safe(() => typeof currentChar === 'function' ? currentChar() : null, null); }
-  function uidSafe(prefix){
-    return typeof uid === 'function' ? uid(prefix || 'id') : `${prefix || 'id'}_${Date.now()}_${Math.random().toString(16).slice(2)}`;
-  }
-  function esc(value){
-    if (typeof escapeHtml === 'function') return escapeHtml(value ?? '');
-    return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
-  }
-  function formatWeight(value){
-    if (typeof normalizeWeight === 'function' && typeof formatNumberBr === 'function') return formatNumberBr(normalizeWeight(value));
-    const n = Number(String(value ?? 0.5).replace(',', '.'));
-    if (!Number.isFinite(n)) return '0,5';
-    return Number.isInteger(n) ? String(n) : String(n).replace('.', ',');
-  }
-  function normalizeWeightSafe(value){
-    if (typeof normalizeWeight === 'function') return normalizeWeight(value);
-    const n = Number(String(value ?? 0.5).replace(',', '.'));
-    if (!Number.isFinite(n) || n < 0.5) return 0.5;
-    if (n < 1) return 0.5;
-    return Math.round(n);
-  }
-
-  function currentItemsFromDom(){
-    const list = $('simple-inventory-list');
-    if (!list) return [];
-    return [...list.querySelectorAll('.od17810-item-card')].map(card => ({
-      id: card.dataset.itemId || uidSafe('inv'),
-      name: card.querySelector('[data-inv-field="name"]')?.value?.trim() || 'Item',
-      weight: normalizeWeightSafe(card.querySelector('[data-inv-field="weight"]')?.value || 0.5),
-      uses: Math.max(0, Number(card.querySelector('[data-inv-field="uses"]')?.value || 0)),
-      desc: card.querySelector('[data-inv-field="desc"]')?.value || ''
-    }));
-  }
-
-  function writeDomToChar(){
-    const char = getChar();
-    if (!char) return;
-    const items = currentItemsFromDom();
-    if (typeof updateChar === 'function') updateChar(c => { c.inventoryItems = items; });
-    else char.inventoryItems = items;
-    if (typeof updateInventoryWeightTotal === 'function') updateInventoryWeightTotal();
-  }
-
-  function scheduleSave(){
-    writeDomToChar();
-    if (typeof queueSave === 'function') queueSave();
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(() => {
-      writeDomToChar();
-      if (typeof saveCurrentCharacter === 'function') saveCurrentCharacter();
-    }, 250);
-  }
-
-  function renderInventory(char = getChar()){
-    const list = $('simple-inventory-list');
-    if (!list || !char) return;
-
-    const items = Array.isArray(char.inventoryItems) ? char.inventoryItems : [];
-    list.className = 'simple-inventory-list od17810-inventory-list';
-    list.innerHTML = '';
-
-    if (!items.length) {
-      const empty = document.createElement('div');
-      empty.className = 'simple-inventory-empty od17810-empty';
-      empty.textContent = 'Nenhum item adicionado.';
-      list.appendChild(empty);
-      if (typeof updateInventoryWeightTotal === 'function') updateInventoryWeightTotal();
-      return;
-    }
-
-    items.forEach((item, index) => {
-      const itemId = item.id || uidSafe('inv');
-      item.id = itemId;
-
-      const card = document.createElement('article');
-      card.className = 'simple-inventory-card od17810-item-card';
-      card.dataset.inventoryIndex = String(index);
-      card.dataset.itemId = itemId;
-
-      card.innerHTML = `
-        <div class="od17810-row od17810-name-row">
-          <input class="simple-inventory-name od17810-name-input" data-inv-field="name" type="text" value="${esc(item.name || 'Novo item')}" placeholder="Nome do item" autocomplete="off" />
-          <button class="mini-danger-btn od17810-remove-btn" data-remove-simple-item="${index}" type="button" aria-label="Excluir item">×</button>
-        </div>
-
-        <label class="od17810-desc-wrap">
-          <span>Descrição</span>
-          <textarea class="simple-inventory-desc od17810-desc-input" data-inv-field="desc" rows="4" placeholder="Descrição do item">${esc(item.desc || '')}</textarea>
-        </label>
-
-        <div class="od17810-row od17810-meta-row">
-          <label class="od17810-box od17810-weight-box">
-            <span>Peso</span>
-            <div class="od17810-stepper">
-              <button class="stepper-btn od17810-step-btn" data-step-field="weight" data-step-dir="-1" type="button">−</button>
-              <input data-inv-field="weight" type="text" value="${esc(formatWeight(item.weight ?? 0.5))}" inputmode="decimal" />
-              <button class="stepper-btn od17810-step-btn" data-step-field="weight" data-step-dir="1" type="button">+</button>
-            </div>
-          </label>
-
-          <label class="od17810-box od17810-uses-box">
-            <span>Usos</span>
-            <div class="od17810-stepper">
-              <button class="stepper-btn od17810-step-btn" data-step-field="uses" data-step-dir="-1" type="button">−</button>
-              <input data-inv-field="uses" type="number" min="0" step="1" value="${esc(Math.max(0, Number(item.uses || 0)))}" />
-              <button class="stepper-btn od17810-step-btn" data-step-field="uses" data-step-dir="1" type="button">+</button>
-            </div>
-          </label>
-
-          <div class="od17810-order-box">
-            <button class="ghost-btn small od17810-order-btn" data-od17810-move="${index}" data-dir="-1" type="button" aria-label="Subir item">▲</button>
-            <button class="ghost-btn small od17810-order-btn" data-od17810-move="${index}" data-dir="1" type="button" aria-label="Descer item">▼</button>
-          </div>
-        </div>
-
-        <div class="item-card-actions od17810-actions">
-          <button class="ghost-btn small" data-transfer-simple-item="${esc(itemId)}" type="button">Transferir</button>
-          <button class="ghost-btn small" data-drop-simple-item="${esc(itemId)}" type="button">Enviar para Drop</button>
-        </div>`;
-
-      list.appendChild(card);
-    });
-
-    if (typeof updateInventoryWeightTotal === 'function') updateInventoryWeightTotal();
-  }
-
-  function moveItem(index, dir){
-    writeDomToChar();
-    const char = getChar();
-    if (!char) return;
-    const items = Array.isArray(char.inventoryItems) ? [...char.inventoryItems] : [];
-    const from = Number(index);
-    const to = from + Number(dir);
-    if (from < 0 || to < 0 || from >= items.length || to >= items.length) return;
-
-    const [item] = items.splice(from, 1);
-    items.splice(to, 0, item);
-
-    if (typeof updateChar === 'function') updateChar(c => { c.inventoryItems = items; });
-    else char.inventoryItems = items;
-
-    renderInventory(getChar());
-    if (typeof saveCurrentCharacter === 'function') saveCurrentCharacter();
-  }
-
-  function neutralizeOldInventory(){
-    const list = $('simple-inventory-list');
-    if (!list) return;
-    list.querySelectorAll('.od1776-item-order-actions, .od1777-order-box, .od1778-order-box, .od1782-order-box, [data-od1776-move-item], [data-od1777-move], [data-od1778-move], [data-od1782-move]').forEach(el => {
-      if (!el.closest('.od17810-item-card')) el.remove();
-    });
-  }
-
-  renderSimpleInventory = function od17810RenderSimpleInventory(char){
-    renderInventory(char || getChar());
-    neutralizeOldInventory();
-  };
-  try { window.renderSimpleInventory = renderSimpleInventory; } catch (_) {}
-
-  // Mantém a leitura do save compatível com os novos cards.
-  readSimpleInventoryFromDOM = function od17810ReadSimpleInventoryFromDOM(){
-    return currentItemsFromDom();
-  };
-  try { window.readSimpleInventoryFromDOM = readSimpleInventoryFromDOM; } catch (_) {}
-
-  document.addEventListener('click', event => {
-    const move = event.target.closest?.('[data-od17810-move]');
-    if (move) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      moveItem(move.dataset.od17810Move, move.dataset.dir);
-      return;
-    }
-
-    const step = event.target.closest?.('#simple-inventory-list .od17810-step-btn');
-    if (step) {
-      const card = step.closest('.od17810-item-card');
-      const field = step.dataset.stepField;
-      const dir = Number(step.dataset.stepDir || 0);
-      const input = card?.querySelector(`[data-inv-field="${field}"]`);
-      if (!input) return;
-
-      event.preventDefault();
-      event.stopImmediatePropagation();
-
-      if (field === 'weight') {
-        const current = normalizeWeightSafe(input.value);
-        const next = dir > 0 ? (current < 1 ? 1 : current + 1) : (current <= 1 ? 0.5 : current - 1);
-        input.value = formatWeight(next);
-      } else if (field === 'uses') {
-        input.value = String(Math.max(0, Number(input.value || 0) + dir));
-      }
-
-      scheduleSave();
-      return;
-    }
-
-    if (event.target.closest?.('#add-simple-inventory-item, [data-remove-simple-item]')) {
-      setTimeout(() => renderInventory(getChar()), 80);
-    }
-  }, true);
-
-  document.addEventListener('input', event => {
-    if (event.target.closest?.('#simple-inventory-list .od17810-item-card')) {
-      scheduleSave();
-    }
-  }, true);
-
-  document.addEventListener('change', event => {
-    if (event.target.closest?.('#simple-inventory-list .od17810-item-card')) {
-      scheduleSave();
-    }
-  }, true);
-
-  const observer = new MutationObserver(() => {
-    clearTimeout(renderTimer);
-    renderTimer = setTimeout(neutralizeOldInventory, 40);
-  });
-  observer.observe(document.body, { childList: true, subtree: true });
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => renderInventory(getChar()), { once: true });
-  else renderInventory(getChar());
-
-  setTimeout(() => renderInventory(getChar()), 120);
-  setTimeout(() => renderInventory(getChar()), 800);
-
-  window.od17810FairTextInventory = { renderInventory, currentItemsFromDom };
-})();
-
-
-/* =========================
-   V178.11 - Magias: edição reestruturada de verdade
-   Corrige layout espaçado/quebrado substituindo o render final das magias.
-========================= */
-(function od17811SpellEditorRebuild(){
-  'use strict';
-  if (window.__od17811SpellEditorRebuildInstalled) return;
-  window.__od17811SpellEditorRebuildInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
-
-  let saveTimer = null;
-
-  function $(id){ return document.getElementById(id); }
-  function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
-  function getChar(){ return safe(() => typeof currentChar === 'function' ? currentChar() : null, null); }
-  function esc(value){
-    if (typeof escapeHtml === 'function') return escapeHtml(value ?? '');
-    return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-  }
-
-  function readSpellsFromDom(){
-    return [...document.querySelectorAll('#spells-list .spell-card')].map(card => ({
-      name: card.querySelector('.spell-name')?.value || '',
-      circle: card.querySelector('.spell-circle')?.value || '',
-      exec: card.querySelector('.spell-exec')?.value || '',
-      range: card.querySelector('.spell-range')?.value || '',
-      cost: card.querySelector('.spell-cost')?.value || '',
-      components: card.querySelector('.spell-components')?.value || '',
-      description: card.querySelector('.spell-description')?.value || '',
-      upgrades: card.querySelector('.spell-upgrades')?.value || ''
-    }));
-  }
-
-  function writeSpellsToChar(){
-    const char = getChar();
-    if (!char) return;
-    const spells = readSpellsFromDom();
-    if (typeof updateChar === 'function') updateChar(c => { c.spells = spells; });
-    else char.spells = spells;
-  }
-
-  function scheduleSave(){
-    writeSpellsToChar();
-    if (typeof queueSave === 'function') queueSave();
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(() => {
-      writeSpellsToChar();
-      if (typeof saveCurrentCharacter === 'function') saveCurrentCharacter();
-    }, 260);
-  }
-
-  function spellCardHtml(spell, index){
-    return `
-      <article class="mini-card spell-card od17811-spell-card" data-index="${index}">
-        <div class="od17811-spell-head">
-          <input class="spell-name od17811-spell-name" placeholder="Nome da magia" value="${esc(spell.name || '')}" />
-        </div>
-
-        <div class="spell-fields-grid od17811-spell-fields">
-          <label><span>Círculo</span><input class="spell-circle" placeholder="1º" value="${esc(spell.circle || '')}" /></label>
-          <label><span>Execução</span><input class="spell-exec" placeholder="Ação" value="${esc(spell.exec || '')}" /></label>
-          <label><span>Alcance</span><input class="spell-range" placeholder="9 m" value="${esc(spell.range || '')}" /></label>
-          <label><span>Custo</span><input class="spell-cost" placeholder="2 PE" value="${esc(spell.cost || spell.pe || '')}" /></label>
-          <label><span>Componentes</span><input class="spell-components" placeholder="V, S, M" value="${esc(spell.components || '')}" /></label>
-        </div>
-
-        <div class="od17811-spell-text-grid">
-          <label class="spell-text-label od17811-spell-text-block"><span>Descrição</span>
-            <textarea class="spell-description" rows="5" placeholder="Descrição da magia">${esc(spell.description || spell.effect || '')}</textarea>
-          </label>
-          <label class="spell-text-label od17811-spell-text-block"><span>Aprimoramentos</span>
-            <textarea class="spell-upgrades" rows="4" placeholder="Aprimoramentos, versões superiores ou gastos extras">${esc(spell.upgrades || '')}</textarea>
-          </label>
-        </div>
-
-        <div class="od17811-spell-footer">
-          <button class="remove-card danger-btn small od17811-remove-card" type="button">Remover</button>
-        </div>
-      </article>`;
-  }
-
-  function renderSpellList(char = getChar()){
-    const list = $('spells-list');
-    if (!list || !char) return;
-    const spells = Array.isArray(char.spells) ? char.spells : [];
-    list.className = 'cards-list od17811-spells-list';
-    list.innerHTML = spells.length
-      ? spells.map((spell, index) => spellCardHtml(spell, index)).join('')
-      : '<div class="simple-inventory-empty od17811-spell-empty">Nenhuma magia adicionada.</div>';
-
-    // O sistema de ordenação antigo adiciona controles depois; aqui só reposicionamos visualmente.
-    setTimeout(() => {
-      list.querySelectorAll('.spell-card').forEach(card => card.classList.add('od17811-spell-card'));
-    }, 20);
-  }
-
-  addSpellCard = function od17811AddSpellCard(spell = {}, index = null){
-    const list = $('spells-list');
-    if (!list) return;
-    if (list.querySelector('.od17811-spell-empty')) list.innerHTML = '';
-    list.classList.add('od17811-spells-list');
-    const idx = index ?? list.querySelectorAll('.spell-card').length;
-    const wrap = document.createElement('div');
-    wrap.innerHTML = spellCardHtml(spell, idx).trim();
-    list.appendChild(wrap.firstElementChild);
-  };
-  try { window.addSpellCard = addSpellCard; } catch (_) {}
-
-  renderSpells = function od17811RenderSpells(char){
-    renderSpellList(char || getChar());
-  };
-  try { window.renderSpells = renderSpells; } catch (_) {}
-
-  // Compatibilidade com camadas que usam v39ReadSpellsFromDOM.
-  if (typeof v39ReadSpellsFromDOM === 'function') {
-    v39ReadSpellsFromDOM = readSpellsFromDom;
-    try { window.v39ReadSpellsFromDOM = v39ReadSpellsFromDOM; } catch (_) {}
-  }
-
-  document.addEventListener('input', event => {
-    if (event.target.closest?.('#spells-list .spell-card')) scheduleSave();
-  }, true);
-
-  document.addEventListener('change', event => {
-    if (event.target.closest?.('#spells-list .spell-card')) scheduleSave();
-  }, true);
-
-  document.addEventListener('click', event => {
-    if (event.target.closest?.('#add-spell')) {
-      setTimeout(() => document.querySelectorAll('#spells-list .spell-card').forEach(card => card.classList.add('od17811-spell-card')), 80);
-    }
-    if (event.target.closest?.('#spells-list .remove-card')) {
-      setTimeout(() => {
-        writeSpellsToChar();
-        if (typeof saveCurrentCharacter === 'function') saveCurrentCharacter();
-      }, 50);
-    }
-  }, true);
-
-  const char = getChar();
-  if (char && document.getElementById('spells-list')) renderSpellList(char);
-  setTimeout(() => { const c = getChar(); if (c) renderSpellList(c); }, 150);
-  setTimeout(() => { const c = getChar(); if (c) renderSpellList(c); }, 800);
-
-  window.od17811SpellEditorRebuild = { renderSpellList, readSpellsFromDom };
-})();
-
-
-/* V178.12 - Hotfix final dos nomes dos atributos: fonte reduzida para não cortar AGILIDADE/INTELECTO. */
-
-
-/* =========================
-   V178.13 - Inventário em Texto final
-   - elimina flicker entre modelo antigo/novo;
-   - intercepta o botão +ITEM para usar só o render final;
-   - título e descrição em largura total;
-   - remove setas pequenas de ordenação;
-   - mantém edição estável.
-========================= */
-(function od17813TextInventoryFinal(){
-  'use strict';
-  if (window.__od17813TextInventoryFinalInstalled) return;
-  window.__od17813TextInventoryFinalInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
-
-  let renderTimer = null;
-  let saveTimer = null;
-  let rendering = false;
-
-  function $(id){ return document.getElementById(id); }
-  function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
-  function getChar(){ return safe(() => typeof currentChar === 'function' ? currentChar() : null, null); }
-  function uidSafe(prefix){ return typeof uid === 'function' ? uid(prefix || 'inv') : `${prefix || 'inv'}_${Date.now()}_${Math.random().toString(16).slice(2)}`; }
-  function esc(value){
-    if (typeof escapeHtml === 'function') return escapeHtml(value ?? '');
-    return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-  }
-  function normalizeWeightSafe(value){
-    if (typeof normalizeWeight === 'function') return normalizeWeight(value);
-    const n = Number(String(value ?? 0.5).replace(',', '.'));
-    if (!Number.isFinite(n) || n < 0.5) return 0.5;
-    if (n < 1) return 0.5;
-    return Math.round(n);
-  }
-  function formatWeight(value){
-    const n = normalizeWeightSafe(value);
-    if (typeof formatNumberBr === 'function') return formatNumberBr(n);
-    return Number.isInteger(n) ? String(n) : String(n).replace('.', ',');
-  }
-  function ensureItems(char){
-    if (!char) return [];
-    char.inventoryItems = Array.isArray(char.inventoryItems) ? char.inventoryItems : [];
-    return char.inventoryItems;
-  }
-
-  function currentItemsFromDom(){
-    const list = $('simple-inventory-list');
-    if (!list) return [];
-    return [...list.querySelectorAll('.od17813-item-card')].map(card => ({
-      id: card.dataset.itemId || uidSafe('inv'),
-      name: card.querySelector('[data-inv-field="name"]')?.value?.trim() || 'Novo item',
-      weight: normalizeWeightSafe(card.querySelector('[data-inv-field="weight"]')?.value || 0.5),
-      uses: Math.max(0, Number(card.querySelector('[data-inv-field="uses"]')?.value || 0)),
-      desc: card.querySelector('[data-inv-field="desc"]')?.value || ''
-    }));
-  }
-
-  function writeDomToChar(){
-    const char = getChar();
-    if (!char) return;
-    const items = currentItemsFromDom();
-    if (typeof updateChar === 'function') updateChar(c => { c.inventoryItems = items; });
-    else char.inventoryItems = items;
-    if (typeof updateInventoryWeightTotal === 'function') updateInventoryWeightTotal();
-  }
-
-  function scheduleSave(){
-    writeDomToChar();
-    if (typeof queueSave === 'function') queueSave();
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(() => {
-      writeDomToChar();
-      if (typeof saveCurrentCharacter === 'function') saveCurrentCharacter();
-    }, 220);
-  }
-
-  function buildCard(item){
-    const itemId = item.id || uidSafe('inv');
-    item.id = itemId;
-    return `
-      <article class="simple-inventory-card od17813-item-card" data-item-id="${esc(itemId)}">
-        <div class="item-card-actions od17813-actions od17813-actions-top">
-          <button class="ghost-btn small" data-transfer-simple-item="${esc(itemId)}" type="button">Transferir</button>
-          <button class="ghost-btn small" data-drop-simple-item="${esc(itemId)}" type="button">Enviar para Drop</button>
-        </div>
-
-        <div class="od17813-title-row">
-          <input class="simple-inventory-name od17813-title-input" data-inv-field="name" type="text" value="${esc(item.name || 'Novo item')}" placeholder="Nome do item" autocomplete="off" />
-          <button class="mini-danger-btn od17813-remove-btn" data-od17813-remove="${esc(itemId)}" type="button" aria-label="Excluir item">×</button>
-        </div>
-
-        <label class="od17813-block od17813-desc-block">
-          <span>Descrição</span>
-          <textarea class="simple-inventory-desc od17813-desc-input" data-inv-field="desc" rows="4" placeholder="Descrição do item">${esc(item.desc || '')}</textarea>
-        </label>
-
-        <div class="od17813-meta-row">
-          <label class="od17813-box">
-            <span>Peso</span>
-            <div class="od17813-stepper">
-              <button class="stepper-btn od17813-step-btn" data-step-field="weight" data-step-dir="-1" type="button">−</button>
-              <input data-inv-field="weight" type="text" value="${esc(formatWeight(item.weight ?? 0.5))}" inputmode="decimal" />
-              <button class="stepper-btn od17813-step-btn" data-step-field="weight" data-step-dir="1" type="button">+</button>
-            </div>
-          </label>
-          <label class="od17813-box">
-            <span>Usos</span>
-            <div class="od17813-stepper">
-              <button class="stepper-btn od17813-step-btn" data-step-field="uses" data-step-dir="-1" type="button">−</button>
-              <input data-inv-field="uses" type="number" min="0" step="1" value="${esc(Math.max(0, Number(item.uses || 0)))}" />
-              <button class="stepper-btn od17813-step-btn" data-step-field="uses" data-step-dir="1" type="button">+</button>
-            </div>
-          </label>
-        </div>
-      </article>`;
-  }
-
-  function renderInventory(char = getChar()){
-    const list = $('simple-inventory-list');
-    if (!list || !char || rendering) return;
-    rendering = true;
-    try {
-      const items = ensureItems(char);
-      list.className = 'simple-inventory-list od17813-inventory-list';
-      list.innerHTML = '';
-      if (!items.length) {
-        list.innerHTML = '<div class="simple-inventory-empty od17813-empty">Nenhum item adicionado.</div>';
-      } else {
-        list.innerHTML = items.map(buildCard).join('');
-      }
-      list.querySelectorAll('.od1776-item-order-actions, .od1777-order-box, .od1778-order-box, .od1782-order-box, .od17810-order-box, [data-od1776-move-item], [data-od1777-move], [data-od1778-move], [data-od1782-move], [data-od17810-move]').forEach(el => el.remove());
-      if (typeof updateInventoryWeightTotal === 'function') updateInventoryWeightTotal();
-    } finally {
-      rendering = false;
-    }
-  }
-
-  function addItem(){
-    const char = getChar();
-    if (!char) return;
-    const items = ensureItems(char);
-    items.push({ id: uidSafe('inv'), name: 'Novo item', weight: 0.5, uses: 0, desc: '' });
-    if (typeof updateChar === 'function') updateChar(c => { c.inventoryItems = items; });
-    else char.inventoryItems = items;
-    renderInventory(getChar());
-    if (typeof queueSave === 'function') queueSave();
-    if (typeof saveCurrentCharacter === 'function') saveCurrentCharacter();
-  }
-
-  function removeItem(itemId){
-    writeDomToChar();
-    const char = getChar();
-    if (!char) return;
-    const items = ensureItems(char).filter(item => String(item.id) !== String(itemId));
-    if (typeof updateChar === 'function') updateChar(c => { c.inventoryItems = items; });
-    else char.inventoryItems = items;
-    renderInventory(getChar());
-    if (typeof queueSave === 'function') queueSave();
-    if (typeof saveCurrentCharacter === 'function') saveCurrentCharacter();
-  }
-
-  function stepValue(card, field, dir){
-    const input = card?.querySelector(`[data-inv-field="${field}"]`);
-    if (!input) return;
-    if (field === 'weight') {
-      const current = normalizeWeightSafe(input.value);
-      const next = dir > 0 ? (current < 1 ? 1 : current + 1) : (current <= 1 ? 0.5 : current - 1);
-      input.value = formatWeight(next);
-    } else if (field === 'uses') {
-      input.value = String(Math.max(0, Number(input.value || 0) + dir));
-    }
-    scheduleSave();
-  }
-
-  function shouldRepairList(){
-    const list = $('simple-inventory-list');
-    if (!list) return false;
-    if (!list.classList.contains('od17813-inventory-list')) return true;
-    if (list.querySelector('.simple-inventory-card:not(.od17813-item-card)')) return true;
-    if (list.querySelector('.od1776-item-order-actions, .od1777-order-box, .od1778-order-box, .od1782-order-box, .od17810-order-box, [data-od1776-move-item], [data-od1777-move], [data-od1778-move], [data-od1782-move], [data-od17810-move]')) return true;
-    return false;
-  }
-
-  function scheduleRender(delay = 30){
-    clearTimeout(renderTimer);
-    renderTimer = setTimeout(() => renderInventory(getChar()), delay);
-  }
-
-  renderSimpleInventory = function od17813RenderSimpleInventory(char){ renderInventory(char || getChar()); };
-  readSimpleInventoryFromDOM = function od17813ReadSimpleInventoryFromDOM(){ return currentItemsFromDom(); };
-  try { window.renderSimpleInventory = renderSimpleInventory; } catch(_) {}
-  try { window.readSimpleInventoryFromDOM = readSimpleInventoryFromDOM; } catch(_) {}
-
-  document.addEventListener('click', event => {
-    const addBtn = event.target.closest?.('#add-simple-inventory-item');
-    if (addBtn) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      addItem();
-      scheduleRender(20);
-      return;
-    }
-
-    const removeBtn = event.target.closest?.('[data-od17813-remove]');
-    if (removeBtn) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      removeItem(removeBtn.dataset.od17813Remove);
-      return;
-    }
-
-    const stepBtn = event.target.closest?.('#simple-inventory-list .od17813-step-btn');
-    if (stepBtn) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      stepValue(stepBtn.closest('.od17813-item-card'), stepBtn.dataset.stepField, Number(stepBtn.dataset.stepDir || 0));
-      return;
-    }
-
-    if (event.target.closest?.('[data-od170-toggle], .sheet-tab')) {
-      scheduleRender(50);
-      setTimeout(() => renderInventory(getChar()), 160);
-    }
-  }, true);
-
-  document.addEventListener('input', event => {
-    if (event.target.closest?.('#simple-inventory-list .od17813-item-card')) {
-      scheduleSave();
-    }
-  }, true);
-
-  document.addEventListener('change', event => {
-    if (event.target.closest?.('#simple-inventory-list .od17813-item-card')) {
-      scheduleSave();
-    }
-  }, true);
-
-  const bodyObserver = new MutationObserver(() => {
-    if (rendering) return;
-    if (shouldRepairList()) scheduleRender(20);
-  });
-  bodyObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => renderInventory(getChar()), { once: true });
-  else renderInventory(getChar());
-  setTimeout(() => renderInventory(getChar()), 80);
-  setTimeout(() => renderInventory(getChar()), 300);
-  setTimeout(() => renderInventory(getChar()), 900);
-
-  window.od17813TextInventoryFinal = { renderInventory, addItem, removeItem };
-})();
 
 
 /* =========================
@@ -21646,7 +18674,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od17814AttributesStableFinalInstalled) return;
   window.__od17814AttributesStableFinalInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   const ATTRS = [
     ['forca', 'FORÇA'],
@@ -21803,687 +18831,6 @@ function od66InventoryMutationUnlockSoon() {
 })();
 
 
-/* =========================
-   V178.15 - Magias com leitura real
-   - aumenta descrição e aprimoramentos;
-   - campos em 2 colunas x até 3 linhas;
-   - sem truncar rótulos;
-   - layout mais legível.
-========================= */
-(function od17815SpellEditorReadable(){
-  'use strict';
-  if (window.__od17815SpellEditorReadableInstalled) return;
-  window.__od17815SpellEditorReadableInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
-
-  let saveTimer = null;
-  function $(id){ return document.getElementById(id); }
-  function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
-  function getChar(){ return safe(() => typeof currentChar === 'function' ? currentChar() : null, null); }
-  function esc(value){
-    if (typeof escapeHtml === 'function') return escapeHtml(value ?? '');
-    return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-  }
-
-  function readSpellsFromDom(){
-    return [...document.querySelectorAll('#spells-list .spell-card')].map(card => ({
-      name: card.querySelector('.spell-name')?.value || '',
-      circle: card.querySelector('.spell-circle')?.value || '',
-      exec: card.querySelector('.spell-exec')?.value || '',
-      range: card.querySelector('.spell-range')?.value || '',
-      cost: card.querySelector('.spell-cost')?.value || '',
-      components: card.querySelector('.spell-components')?.value || '',
-      description: card.querySelector('.spell-description')?.value || '',
-      upgrades: card.querySelector('.spell-upgrades')?.value || ''
-    }));
-  }
-
-  function writeSpellsToChar(){
-    const char = getChar();
-    if (!char) return;
-    const spells = readSpellsFromDom();
-    if (typeof updateChar === 'function') updateChar(c => { c.spells = spells; });
-    else char.spells = spells;
-  }
-
-  function scheduleSave(){
-    writeSpellsToChar();
-    if (typeof queueSave === 'function') queueSave();
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(() => {
-      writeSpellsToChar();
-      if (typeof saveCurrentCharacter === 'function') saveCurrentCharacter();
-    }, 260);
-  }
-
-  function field(label, cls, placeholder, value, extra=''){
-    return `<label class="od17815-spell-field"><span>${label}</span><input class="${cls}" placeholder="${placeholder}" value="${esc(value || '')}" ${extra}/></label>`;
-  }
-
-  function spellCardHtml(spell, index){
-    return `
-      <article class="mini-card spell-card od17815-spell-card" data-index="${index}">
-        <div class="od17815-spell-head">
-          <input class="spell-name od17815-spell-name" placeholder="Nome da magia" value="${esc(spell.name || '')}" />
-        </div>
-
-        <div class="spell-fields-grid od17815-spell-fields">
-          ${field('Círculo', 'spell-circle', '1º', spell.circle || '')}
-          ${field('Execução', 'spell-exec', 'Ação', spell.exec || '')}
-          ${field('Alcance', 'spell-range', '9 m', spell.range || '')}
-          ${field('Custo', 'spell-cost', '2 PE', spell.cost || spell.pe || '')}
-          ${field('Componentes', 'spell-components', 'V, S, M', spell.components || '')}
-          <div class="od17815-spell-field od17815-spell-field-spacer" aria-hidden="true"></div>
-        </div>
-
-        <div class="od17815-spell-text-grid">
-          <label class="spell-text-label od17815-spell-text-block od17815-spell-description-wrap"><span>Descrição</span>
-            <textarea class="spell-description" rows="7" placeholder="Descrição da magia">${esc(spell.description || spell.effect || '')}</textarea>
-          </label>
-          <label class="spell-text-label od17815-spell-text-block od17815-spell-upgrades-wrap"><span>Aprimoramentos</span>
-            <textarea class="spell-upgrades" rows="6" placeholder="Aprimoramentos, versões superiores ou gastos extras">${esc(spell.upgrades || '')}</textarea>
-          </label>
-        </div>
-
-        <div class="od17815-spell-footer">
-          <button class="remove-card danger-btn small od17815-remove-card" type="button">Remover</button>
-        </div>
-      </article>`;
-  }
-
-  function renderSpellList(char = getChar()){
-    const list = $('spells-list');
-    if (!list || !char) return;
-    const spells = Array.isArray(char.spells) ? char.spells : [];
-    list.className = 'cards-list od17815-spells-list';
-    list.innerHTML = spells.length
-      ? spells.map((spell, index) => spellCardHtml(spell, index)).join('')
-      : '<div class="simple-inventory-empty od17815-spell-empty">Nenhuma magia adicionada.</div>';
-  }
-
-  addSpellCard = function od17815AddSpellCard(spell = {}, index = null){
-    const list = $('spells-list');
-    if (!list) return;
-    if (list.querySelector('.od17815-spell-empty')) list.innerHTML = '';
-    list.classList.add('od17815-spells-list');
-    const idx = index ?? list.querySelectorAll('.spell-card').length;
-    const wrap = document.createElement('div');
-    wrap.innerHTML = spellCardHtml(spell, idx).trim();
-    list.appendChild(wrap.firstElementChild);
-  };
-  try { window.addSpellCard = addSpellCard; } catch (_) {}
-
-  renderSpells = function od17815RenderSpells(char){
-    renderSpellList(char || getChar());
-  };
-  try { window.renderSpells = renderSpells; } catch (_) {}
-
-  if (typeof v39ReadSpellsFromDOM === 'function') {
-    v39ReadSpellsFromDOM = readSpellsFromDom;
-    try { window.v39ReadSpellsFromDOM = v39ReadSpellsFromDOM; } catch (_) {}
-  }
-
-  document.addEventListener('input', event => {
-    if (event.target.closest?.('#spells-list .spell-card')) scheduleSave();
-  }, true);
-
-  document.addEventListener('change', event => {
-    if (event.target.closest?.('#spells-list .spell-card')) scheduleSave();
-  }, true);
-
-  document.addEventListener('click', event => {
-    if (event.target.closest?.('#add-spell')) {
-      setTimeout(() => { const c = getChar(); if (c) renderSpellList(c); }, 40);
-      setTimeout(() => { const c = getChar(); if (c) renderSpellList(c); }, 180);
-    }
-    if (event.target.closest?.('#spells-list .remove-card')) {
-      setTimeout(() => {
-        writeSpellsToChar();
-        if (typeof saveCurrentCharacter === 'function') saveCurrentCharacter();
-      }, 50);
-    }
-  }, true);
-
-  const char = getChar();
-  if (char && document.getElementById('spells-list')) renderSpellList(char);
-  setTimeout(() => { const c = getChar(); if (c) renderSpellList(c); }, 150);
-  setTimeout(() => { const c = getChar(); if (c) renderSpellList(c); }, 700);
-})();
-
-
-/* =========================
-   V179 - Limpeza profunda das áreas de edição
-   Equipamentos (Inventário em Texto), Magias, Habilidades e Atributos.
-   Objetivos:
-   - Um render final único por área.
-   - Evitar flicker de modelos antigos.
-   - Garantir edição/apagar/salvar ao reduzir/fechar.
-   - Cards em 2 colunas no desktop, ocupando a largura útil.
-========================= */
-(function od179DeepEditorCleanup(){
-  'use strict';
-  if (window.__od179DeepEditorCleanupInstalled) return;
-  window.__od179DeepEditorCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
-
-  const ATTRS = [
-    ['forca', 'FORÇA'],
-    ['agilidade', 'AGILIDADE'],
-    ['vigor', 'VIGOR'],
-    ['intelecto', 'INTELECTO'],
-    ['presenca', 'PRESENÇA']
-  ];
-
-  let saveTimer = null;
-  let repairTimer = null;
-  let rendering = false;
-  let lastActiveTab = '';
-
-  function $(id){ return document.getElementById(id); }
-  function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
-  function char(){ return safe(() => typeof currentChar === 'function' ? currentChar() : null, null); }
-  function uidSafe(prefix){ return typeof uid === 'function' ? uid(prefix || 'id') : `${prefix || 'id'}_${Date.now()}_${Math.random().toString(16).slice(2)}`; }
-  function esc(value){
-    return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-  }
-  function number(value, fallback = 0){
-    const n = Number(String(value ?? '').replace(',', '.'));
-    return Number.isFinite(n) ? n : fallback;
-  }
-  function normalizeWeight179(value){
-    if (typeof normalizeWeight === 'function') return normalizeWeight(value);
-    const n = number(value, 0.5);
-    if (n <= 0.5) return 0.5;
-    return Math.max(0.5, Math.round(n * 2) / 2);
-  }
-  function formatWeight179(value){
-    const n = normalizeWeight179(value);
-    if (typeof formatNumberBr === 'function') return formatNumberBr(n);
-    return Number.isInteger(n) ? String(n) : String(n).replace('.', ',');
-  }
-  function modOf(value){
-    const v = Math.max(1, Math.round(Number(value) || 10));
-    return Math.floor((v - 10) / 2);
-  }
-  function fmtMod(value){ return `${value >= 0 ? '+' : ''}${value}`; }
-  function saveNowSoon(){
-    if (typeof queueSave === 'function') queueSave();
-    clearTimeout(saveTimer);
-    saveTimer = setTimeout(() => {
-      syncFinalAreasToCharacter();
-      if (typeof saveCurrentCharacter === 'function') saveCurrentCharacter();
-    }, 180);
-  }
-
-  function ensureArrays(c){
-    if (!c) return;
-    c.inventoryItems = Array.isArray(c.inventoryItems) ? c.inventoryItems : [];
-    c.spells = Array.isArray(c.spells) ? c.spells : [];
-    c.abilities = Array.isArray(c.abilities) ? c.abilities : [];
-    c.attrs = c.attrs || {};
-  }
-
-  /* ---------- ATRIBUTOS ---------- */
-  function renderAttributes179(c = char()){
-    const grid = $('attributes-grid');
-    if (!grid || !c) return;
-    ensureArrays(c);
-    grid.className = 'attributes-grid od179-attributes-grid';
-    grid.innerHTML = ATTRS.map(([key, label]) => {
-      const value = Math.max(1, Math.round(Number(c.attrs?.[key] ?? 10)));
-      return `<article class="od179-attr-card" data-od179-attr="${esc(key)}">
-        <div class="od179-attr-head">
-          <span class="od179-attr-name" title="${esc(label)}">${esc(label)}</span>
-          <span class="od179-attr-mod">${esc(fmtMod(modOf(value)))}</span>
-        </div>
-        <div class="od179-attr-row">
-          <span class="od179-dice-label">D20</span>
-          <button type="button" class="od179-attr-step" data-od179-attr-step="${esc(key)}" data-dir="-1">−</button>
-          <input class="od179-attr-value" data-attr="${esc(key)}" data-od179-attr-input="${esc(key)}" type="number" min="1" step="1" value="${esc(value)}" />
-          <button type="button" class="od179-attr-step" data-od179-attr-step="${esc(key)}" data-dir="1">+</button>
-        </div>
-        <button type="button" class="primary-btn small roll-attr od179-attr-roll" data-roll-attr="${esc(key)}">D20</button>
-      </article>`;
-    }).join('');
-  }
-
-  function updateAttr179(key, value, rerender = true){
-    const c = char();
-    if (!c || !key) return;
-    const next = Math.max(1, Math.round(Number(value) || 1));
-    if (typeof updateChar === 'function') updateChar(saved => {
-      saved.attrs = saved.attrs || {};
-      saved.attrs[key] = next;
-    }); else {
-      c.attrs = c.attrs || {};
-      c.attrs[key] = next;
-    }
-    if (typeof updateDerivedStatsDisplay === 'function') updateDerivedStatsDisplay(char() || c);
-    if (rerender) renderAttributes179(char() || c);
-    saveNowSoon();
-  }
-
-  /* ---------- INVENTÁRIO EM TEXTO ---------- */
-  function readInventory179(){
-    const list = $('simple-inventory-list');
-    if (!list) return [];
-    return [...list.querySelectorAll('.od179-inventory-card')].map(card => ({
-      id: card.dataset.itemId || uidSafe('inv'),
-      name: card.querySelector('[data-inv-field="name"]')?.value ?? '',
-      weight: normalizeWeight179(card.querySelector('[data-inv-field="weight"]')?.value || 0.5),
-      uses: Math.max(0, Math.round(number(card.querySelector('[data-inv-field="uses"]')?.value, 0))),
-      desc: card.querySelector('[data-inv-field="desc"]')?.value ?? ''
-    }));
-  }
-
-  function inventoryCardHtml(item){
-    const id = item.id || uidSafe('inv');
-    item.id = id;
-    return `<article class="simple-inventory-card od179-editor-card od179-inventory-card" data-item-id="${esc(id)}">
-      <div class="od179-inventory-top-actions">
-        <button class="ghost-btn small" data-transfer-simple-item="${esc(id)}" type="button">Transferir</button>
-        <button class="ghost-btn small" data-drop-simple-item="${esc(id)}" type="button">Enviar para Drop</button>
-      </div>
-      <div class="od179-title-row">
-        <input class="simple-inventory-name od179-title-input" data-inv-field="name" type="text" value="${esc(item.name ?? '')}" placeholder="Nome do item" autocomplete="off" />
-        <button class="mini-danger-btn od179-remove-btn" data-od179-remove-inventory="${esc(id)}" type="button" aria-label="Excluir item">×</button>
-      </div>
-      <label class="od179-wide-field od179-description-field"><span>Descrição</span>
-        <textarea class="simple-inventory-desc od179-textarea" data-inv-field="desc" rows="6" placeholder="Descrição do item">${esc(item.desc ?? '')}</textarea>
-      </label>
-      <div class="od179-two-fields od179-inventory-meta">
-        <label class="od179-small-field"><span>Peso</span><div class="od179-stepper"><button class="stepper-btn od179-step-btn" data-od179-inv-step="weight" data-dir="-1" type="button">−</button><input data-inv-field="weight" type="text" value="${esc(formatWeight179(item.weight ?? 0.5))}" inputmode="decimal" /><button class="stepper-btn od179-step-btn" data-od179-inv-step="weight" data-dir="1" type="button">+</button></div></label>
-        <label class="od179-small-field"><span>Usos</span><div class="od179-stepper"><button class="stepper-btn od179-step-btn" data-od179-inv-step="uses" data-dir="-1" type="button">−</button><input data-inv-field="uses" type="number" min="0" step="1" value="${esc(Math.max(0, Number(item.uses || 0)))}" /><button class="stepper-btn od179-step-btn" data-od179-inv-step="uses" data-dir="1" type="button">+</button></div></label>
-      </div>
-    </article>`;
-  }
-
-  function renderInventory179(c = char()){
-    const list = $('simple-inventory-list');
-    if (!list || !c) return;
-    ensureArrays(c);
-    list.className = 'simple-inventory-list od179-editor-list od179-inventory-list';
-    list.innerHTML = c.inventoryItems.length
-      ? c.inventoryItems.map(inventoryCardHtml).join('')
-      : '<div class="simple-inventory-empty od179-empty">Nenhum item adicionado.</div>';
-    if (typeof updateInventoryWeightTotal === 'function') updateInventoryWeightTotal();
-  }
-
-  function addInventoryItem179(){
-    syncFinalAreasToCharacter();
-    const c = char();
-    if (!c) return;
-    ensureArrays(c);
-    c.inventoryItems.push({ id: uidSafe('inv'), name: 'Novo item', weight: 0.5, uses: 0, desc: '' });
-    if (typeof updateChar === 'function') updateChar(saved => { saved.inventoryItems = c.inventoryItems; });
-    renderInventory179(char() || c);
-    saveNowSoon();
-  }
-
-  function removeInventoryItem179(id){
-    syncFinalAreasToCharacter();
-    const c = char();
-    if (!c) return;
-    ensureArrays(c);
-    const next = c.inventoryItems.filter(item => String(item.id) !== String(id));
-    if (typeof updateChar === 'function') updateChar(saved => { saved.inventoryItems = next; }); else c.inventoryItems = next;
-    renderInventory179(char() || c);
-    saveNowSoon();
-  }
-
-  function stepInventory179(btn){
-    const card = btn.closest('.od179-inventory-card');
-    const field = btn.dataset.od179InvStep;
-    const dir = Number(btn.dataset.dir || 0);
-    const input = card?.querySelector(`[data-inv-field="${field}"]`);
-    if (!input) return;
-    if (field === 'weight') {
-      const current = normalizeWeight179(input.value);
-      input.value = formatWeight179(dir > 0 ? (current < 1 ? 1 : current + 1) : (current <= 1 ? 0.5 : current - 1));
-    } else if (field === 'uses') {
-      input.value = String(Math.max(0, Math.round(number(input.value, 0) + dir)));
-    }
-    syncInventoryToChar179();
-    saveNowSoon();
-  }
-
-  function syncInventoryToChar179(){
-    const c = char();
-    const list = $('simple-inventory-list');
-    if (!c || !list || !list.classList.contains('od179-inventory-list')) return;
-    const items = readInventory179();
-    if (typeof updateChar === 'function') updateChar(saved => {
-      saved.inventoryItems = items;
-      saved.weightCurrent = items.reduce((sum, item) => sum + (Number(item.weight) || 0), 0);
-      saved.equipmentNotes = items.map(item => `${item.name || ''} | Peso: ${item.weight || 0} | Usos: ${item.uses || 0} | ${item.desc || ''}`).join('\n');
-    }); else {
-      c.inventoryItems = items;
-      c.weightCurrent = items.reduce((sum, item) => sum + (Number(item.weight) || 0), 0);
-    }
-    if (typeof updateInventoryWeightTotal === 'function') updateInventoryWeightTotal();
-  }
-
-  /* ---------- MAGIAS ---------- */
-  function readSpells179(){
-    return [...document.querySelectorAll('#spells-list .od179-spell-card')].map(card => ({
-      name: card.querySelector('.spell-name')?.value ?? '',
-      circle: card.querySelector('.spell-circle')?.value ?? '',
-      exec: card.querySelector('.spell-exec')?.value ?? '',
-      range: card.querySelector('.spell-range')?.value ?? '',
-      cost: card.querySelector('.spell-cost')?.value ?? '',
-      components: card.querySelector('.spell-components')?.value ?? '',
-      description: card.querySelector('.spell-description')?.value ?? '',
-      upgrades: card.querySelector('.spell-upgrades')?.value ?? ''
-    }));
-  }
-  function spellField179(label, cls, placeholder, value){
-    return `<label class="od179-small-field od179-spell-field"><span>${label}</span><input class="${cls}" placeholder="${esc(placeholder)}" value="${esc(value ?? '')}" /></label>`;
-  }
-  function spellCardHtml179(spell, index){
-    return `<article class="mini-card spell-card od179-editor-card od179-spell-card" data-index="${index}">
-      <div class="od179-title-row od179-title-row-single"><input class="spell-name od179-title-input" placeholder="Nome da magia" value="${esc(spell.name ?? '')}" /></div>
-      <div class="od179-two-fields od179-magic-small-grid">
-        ${spellField179('Círculo', 'spell-circle', '1º', spell.circle)}
-        ${spellField179('Execução', 'spell-exec', 'Ação', spell.exec)}
-        ${spellField179('Alcance', 'spell-range', '9 m', spell.range)}
-        ${spellField179('Custo', 'spell-cost', '2 PE', spell.cost ?? spell.pe)}
-        ${spellField179('Componentes', 'spell-components', 'V, S, M', spell.components)}
-      </div>
-      <label class="od179-wide-field"><span>Descrição</span><textarea class="spell-description od179-textarea od179-large-textarea" rows="8" placeholder="Descrição da magia">${esc(spell.description ?? spell.effect ?? '')}</textarea></label>
-      <label class="od179-wide-field"><span>Aprimoramentos</span><textarea class="spell-upgrades od179-textarea od179-medium-textarea" rows="6" placeholder="Aprimoramentos, versões superiores ou gastos extras">${esc(spell.upgrades ?? '')}</textarea></label>
-      <div class="od179-footer"><button class="remove-card danger-btn small od179-remove-card" data-od179-remove-spell="${index}" type="button">Remover</button></div>
-    </article>`;
-  }
-  function renderSpells179(c = char()){
-    const list = $('spells-list');
-    if (!list || !c) return;
-    ensureArrays(c);
-    list.className = 'cards-list od179-editor-list od179-spells-list';
-    list.innerHTML = c.spells.length ? c.spells.map(spellCardHtml179).join('') : '<div class="simple-inventory-empty od179-empty">Nenhuma magia adicionada.</div>';
-  }
-  function syncSpellsToChar179(){
-    const c = char();
-    const list = $('spells-list');
-    if (!c || !list || !list.classList.contains('od179-spells-list')) return;
-    const spells = readSpells179();
-    if (typeof updateChar === 'function') updateChar(saved => { saved.spells = spells; }); else c.spells = spells;
-  }
-  function addSpell179(){
-    syncFinalAreasToCharacter();
-    const c = char();
-    if (!c) return;
-    ensureArrays(c);
-    c.spells.push({ name: '', circle: '', exec: '', range: '', cost: '', components: '', description: '', upgrades: '' });
-    if (typeof updateChar === 'function') updateChar(saved => { saved.spells = c.spells; });
-    renderSpells179(char() || c);
-    saveNowSoon();
-  }
-  function removeSpell179(index){
-    syncFinalAreasToCharacter();
-    const c = char();
-    if (!c) return;
-    ensureArrays(c);
-    const next = c.spells.filter((_, i) => i !== Number(index));
-    if (typeof updateChar === 'function') updateChar(saved => { saved.spells = next; }); else c.spells = next;
-    renderSpells179(char() || c);
-    saveNowSoon();
-  }
-
-  /* ---------- HABILIDADES ---------- */
-  function normalizeAbilityCost179(ability = {}){
-    const amount = Number(ability.costAmount ?? ability.costValue ?? (String(ability.cost || '').match(/\d+/)?.[0]) ?? 0) || 0;
-    const raw = String(ability.costResource ?? ability.resource ?? ability.cost ?? 'PE').toUpperCase();
-    const resource = raw.includes('PV') ? 'PV' : 'PE';
-    return { amount, resource };
-  }
-  function readAbilities179(){
-    return [...document.querySelectorAll('#abilities-list .od179-ability-card')].map(card => {
-      const costAmount = Math.max(0, Math.round(number(card.querySelector('.ability-cost-amount')?.value, 0)));
-      const costResource = card.querySelector('.ability-cost-resource')?.value || 'PE';
-      return {
-        name: card.querySelector('.ability-name')?.value ?? '',
-        costAmount,
-        costResource,
-        cost: costAmount > 0 ? `${costAmount} ${costResource}` : '',
-        bonus: card.querySelector('.ability-bonus')?.value ?? '',
-        action: card.querySelector('.ability-action')?.value ?? 'Padrão',
-        description: card.querySelector('.ability-description')?.value ?? ''
-      };
-    });
-  }
-  function abilityCardHtml179(ability, index){
-    const cost = normalizeAbilityCost179(ability);
-    return `<article class="mini-card ability-card od179-editor-card od179-ability-card" data-index="${index}">
-      <div class="od179-title-row od179-title-row-single"><input class="ability-name od179-title-input" placeholder="Nome da habilidade" value="${esc(ability.name ?? '')}" /></div>
-      <div class="od179-two-fields od179-ability-small-grid">
-        <label class="od179-small-field"><span>Custo</span><div class="od179-stepper"><button class="ghost-btn small ability-cost-minus od179-step-btn" data-od179-ability-cost="-1" type="button">−</button><input class="ability-cost-amount" type="number" min="0" step="1" value="${esc(cost.amount)}" /><button class="ghost-btn small ability-cost-plus od179-step-btn" data-od179-ability-cost="1" type="button">+</button></div></label>
-        <label class="od179-small-field"><span>Tipo de custo</span><select class="ability-cost-resource"><option value="PE" ${cost.resource === 'PE' ? 'selected' : ''}>PE</option><option value="PV" ${cost.resource === 'PV' ? 'selected' : ''}>PV</option></select></label>
-        <label class="od179-small-field"><span>Bônus</span><input class="ability-bonus" placeholder="Ex: +2, +1d6" value="${esc(ability.bonus ?? '')}" /></label>
-        <label class="od179-small-field"><span>Ação</span><select class="ability-action"><option value="Padrão" ${String(ability.action || 'Padrão') === 'Padrão' ? 'selected' : ''}>Padrão</option><option value="Movimento" ${ability.action === 'Movimento' ? 'selected' : ''}>Movimento</option><option value="Reação" ${ability.action === 'Reação' ? 'selected' : ''}>Reação</option><option value="Livre" ${ability.action === 'Livre' ? 'selected' : ''}>Livre</option></select></label>
-      </div>
-      <label class="od179-wide-field"><span>Descrição</span><textarea class="ability-description od179-textarea od179-large-textarea" rows="8" placeholder="Descrição da habilidade">${esc(ability.description ?? ability.desc ?? '')}</textarea></label>
-      <div class="od179-footer"><button class="use-ability primary-btn small od179-use-card" data-od179-use-ability="${index}" type="button">Usar</button><button class="remove-card danger-btn small od179-remove-card" data-od179-remove-ability="${index}" type="button">Remover</button></div>
-    </article>`;
-  }
-  function renderAbilities179(c = char()){
-    const list = $('abilities-list');
-    if (!list || !c) return;
-    ensureArrays(c);
-    list.className = 'cards-list od179-editor-list od179-abilities-list';
-    list.innerHTML = c.abilities.length ? c.abilities.map(abilityCardHtml179).join('') : '<div class="simple-inventory-empty od179-empty">Nenhuma habilidade adicionada.</div>';
-  }
-  function syncAbilitiesToChar179(){
-    const c = char();
-    const list = $('abilities-list');
-    if (!c || !list || !list.classList.contains('od179-abilities-list')) return;
-    const abilities = readAbilities179();
-    if (typeof updateChar === 'function') updateChar(saved => {
-      saved.abilities = abilities;
-      saved.abilitiesNotes = abilities.map(item => `${item.name || ''} | Custo: ${item.cost || '0 ' + (item.costResource || 'PE')} | Bônus: ${item.bonus || ''} | Ação: ${item.action || ''} | ${item.description || ''}`).join('\n');
-    }); else c.abilities = abilities;
-  }
-  function addAbility179(){
-    syncFinalAreasToCharacter();
-    const c = char();
-    if (!c) return;
-    ensureArrays(c);
-    c.abilities.push({ name: '', costAmount: 0, costResource: 'PE', bonus: '', action: 'Padrão', description: '' });
-    if (typeof updateChar === 'function') updateChar(saved => { saved.abilities = c.abilities; });
-    renderAbilities179(char() || c);
-    saveNowSoon();
-  }
-  function removeAbility179(index){
-    syncFinalAreasToCharacter();
-    const c = char();
-    if (!c) return;
-    ensureArrays(c);
-    const next = c.abilities.filter((_, i) => i !== Number(index));
-    if (typeof updateChar === 'function') updateChar(saved => { saved.abilities = next; }); else c.abilities = next;
-    renderAbilities179(char() || c);
-    saveNowSoon();
-  }
-  function stepAbilityCost179(btn){
-    const card = btn.closest('.od179-ability-card');
-    const input = card?.querySelector('.ability-cost-amount');
-    if (!input) return;
-    input.value = String(Math.max(0, Math.round(number(input.value, 0) + Number(btn.dataset.od179AbilityCost || 0))));
-    syncAbilitiesToChar179();
-    saveNowSoon();
-  }
-
-  function syncFinalAreasToCharacter(){
-    if (rendering) return;
-    syncInventoryToChar179();
-    syncSpellsToChar179();
-    syncAbilitiesToChar179();
-  }
-
-  function renderVisibleFinal(c = char()){
-    if (!c) return;
-    rendering = true;
-    try {
-      ensureArrays(c);
-      if ($('attributes-grid')) renderAttributes179(c);
-      if ($('simple-inventory-list')) renderInventory179(c);
-      if ($('spells-list')) renderSpells179(c);
-      if ($('abilities-list')) renderAbilities179(c);
-    } finally { rendering = false; }
-  }
-
-  function repairFinalAreas(){
-    const c = char();
-    if (!c) return;
-    const inv = $('simple-inventory-list');
-    const sp = $('spells-list');
-    const ab = $('abilities-list');
-    const at = $('attributes-grid');
-    const needs =
-      (inv && (!inv.classList.contains('od179-inventory-list') || inv.querySelector('.simple-inventory-card:not(.od179-inventory-card)'))) ||
-      (sp && (!sp.classList.contains('od179-spells-list') || sp.querySelector('.spell-card:not(.od179-spell-card)'))) ||
-      (ab && (!ab.classList.contains('od179-abilities-list') || ab.querySelector('.ability-card:not(.od179-ability-card)'))) ||
-      (at && (!at.classList.contains('od179-attributes-grid') || at.querySelector(':scope > *:not(.od179-attr-card)')));
-    if (needs) renderVisibleFinal(c);
-  }
-  function scheduleRepair(delay = 20){
-    clearTimeout(repairTimer);
-    repairTimer = setTimeout(repairFinalAreas, delay);
-  }
-
-  // Override render/read functions after older patches.
-  renderAttributes = renderAttributes179;
-  renderSimpleInventory = renderInventory179;
-  readSimpleInventoryFromDOM = readInventory179;
-  addSimpleInventoryItem = addInventoryItem179;
-  renderSpells = renderSpells179;
-  addSpellCard = function od179AddSpellCard(spell = {}, index = null){
-    syncFinalAreasToCharacter();
-    const c = char(); if (!c) return;
-    ensureArrays(c);
-    if (typeof index === 'number') c.spells.splice(index, 0, spell); else c.spells.push(spell);
-    if (typeof updateChar === 'function') updateChar(saved => { saved.spells = c.spells; });
-    renderSpells179(char() || c); saveNowSoon();
-  };
-  renderAbilities = renderAbilities179;
-  addAbilityCard = function od179AddAbilityCard(ability = {}, index = null){
-    syncFinalAreasToCharacter();
-    const c = char(); if (!c) return;
-    ensureArrays(c);
-    if (typeof index === 'number') c.abilities.splice(index, 0, ability); else c.abilities.push(ability);
-    if (typeof updateChar === 'function') updateChar(saved => { saved.abilities = c.abilities; });
-    renderAbilities179(char() || c); saveNowSoon();
-  };
-  readAbilitiesFromDOM = readAbilities179;
-  if (typeof v39ReadSpellsFromDOM === 'function') v39ReadSpellsFromDOM = readSpells179;
-
-  try {
-    Object.assign(window, {
-      renderAttributes,
-      renderSimpleInventory,
-      readSimpleInventoryFromDOM,
-      addSimpleInventoryItem,
-      renderSpells,
-      addSpellCard,
-      renderAbilities,
-      addAbilityCard,
-      readAbilitiesFromDOM,
-      v39ReadSpellsFromDOM,
-      od179DeepEditorCleanup: { renderVisibleFinal, syncFinalAreasToCharacter, readInventory179, readSpells179, readAbilities179 }
-    });
-  } catch (_) {}
-
-  // Wrap save once: any save reads final DOM first, so blank/delete really persists.
-  if (typeof saveCurrentCharacter === 'function' && !saveCurrentCharacter.__od179Wrapped) {
-    const previousSave = saveCurrentCharacter;
-    saveCurrentCharacter = function od179SaveCurrentCharacter(){
-      syncFinalAreasToCharacter();
-      return previousSave.apply(this, arguments);
-    };
-    saveCurrentCharacter.__od179Wrapped = true;
-    try { window.saveCurrentCharacter = saveCurrentCharacter; } catch (_) {}
-  }
-
-  document.addEventListener('click', event => {
-    // Persist before leaving/collapsing edit modules.
-    if (event.target.closest?.('[data-od170-toggle], .sheet-tab, .od170-module-toggle')) {
-      syncFinalAreasToCharacter();
-      saveNowSoon();
-      setTimeout(() => renderVisibleFinal(char()), 120);
-      return;
-    }
-
-    const addInv = event.target.closest?.('#add-simple-inventory-item');
-    if (addInv) { event.preventDefault(); event.stopImmediatePropagation(); addInventoryItem179(); return; }
-
-    const addSpell = event.target.closest?.('#add-spell');
-    if (addSpell) { event.preventDefault(); event.stopImmediatePropagation(); addSpell179(); return; }
-
-    const addAbility = event.target.closest?.('#add-ability');
-    if (addAbility) { event.preventDefault(); event.stopImmediatePropagation(); addAbility179(); return; }
-
-    const remInv = event.target.closest?.('[data-od179-remove-inventory]');
-    if (remInv) { event.preventDefault(); event.stopImmediatePropagation(); removeInventoryItem179(remInv.dataset.od179RemoveInventory); return; }
-
-    const remSpell = event.target.closest?.('[data-od179-remove-spell]');
-    if (remSpell) { event.preventDefault(); event.stopImmediatePropagation(); removeSpell179(remSpell.dataset.od179RemoveSpell); return; }
-
-    const remAbility = event.target.closest?.('[data-od179-remove-ability]');
-    if (remAbility) { event.preventDefault(); event.stopImmediatePropagation(); removeAbility179(remAbility.dataset.od179RemoveAbility); return; }
-
-    const invStep = event.target.closest?.('[data-od179-inv-step]');
-    if (invStep) { event.preventDefault(); event.stopImmediatePropagation(); stepInventory179(invStep); return; }
-
-    const attrStep = event.target.closest?.('[data-od179-attr-step]');
-    if (attrStep) {
-      event.preventDefault(); event.stopImmediatePropagation();
-      const c = char(); if (!c) return;
-      updateAttr179(attrStep.dataset.od179AttrStep, Number(c.attrs?.[attrStep.dataset.od179AttrStep] ?? 10) + Number(attrStep.dataset.dir || 0));
-      return;
-    }
-
-    const abilityStep = event.target.closest?.('[data-od179-ability-cost]');
-    if (abilityStep) { event.preventDefault(); event.stopImmediatePropagation(); stepAbilityCost179(abilityStep); return; }
-
-    const useAbility = event.target.closest?.('[data-od179-use-ability]');
-    if (useAbility) {
-      syncAbilitiesToChar179();
-      saveNowSoon();
-      if (typeof useAbilityCard === 'function') useAbilityCard(useAbility.closest('.ability-card'));
-      return;
-    }
-  }, true);
-
-  document.addEventListener('input', event => {
-    if (event.target.closest?.('#simple-inventory-list .od179-inventory-card')) { syncInventoryToChar179(); saveNowSoon(); return; }
-    if (event.target.closest?.('#spells-list .od179-spell-card')) { syncSpellsToChar179(); saveNowSoon(); return; }
-    if (event.target.closest?.('#abilities-list .od179-ability-card')) { syncAbilitiesToChar179(); saveNowSoon(); return; }
-    const attrInput = event.target.closest?.('[data-od179-attr-input]');
-    if (attrInput) { updateAttr179(attrInput.dataset.od179AttrInput, attrInput.value, false); return; }
-  }, true);
-
-  document.addEventListener('change', event => {
-    if (event.target.closest?.('#simple-inventory-list .od179-inventory-card')) { syncInventoryToChar179(); saveNowSoon(); return; }
-    if (event.target.closest?.('#spells-list .od179-spell-card')) { syncSpellsToChar179(); saveNowSoon(); return; }
-    if (event.target.closest?.('#abilities-list .od179-ability-card')) { syncAbilitiesToChar179(); saveNowSoon(); return; }
-    const attrInput = event.target.closest?.('[data-od179-attr-input]');
-    if (attrInput) { updateAttr179(attrInput.dataset.od179AttrInput, attrInput.value); return; }
-  }, true);
-
-  const observer = new MutationObserver(() => {
-    if (rendering) return;
-    scheduleRepair(15);
-  });
-  observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
-
-  document.addEventListener('visibilitychange', () => { if (document.hidden) syncFinalAreasToCharacter(); });
-  window.addEventListener('beforeunload', syncFinalAreasToCharacter);
-
-  function boot(){ renderVisibleFinal(char()); }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true }); else boot();
-  setTimeout(boot, 80);
-  setTimeout(boot, 350);
-  setTimeout(boot, 900);
-  setTimeout(boot, 1800);
-})();
 
 
 /* =========================
@@ -22498,7 +18845,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1801SafeShellInstalled) return;
   window.__od1801SafeShellInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   const SETTINGS_KEY = 'od_settings';
   const DEFAULTS = { theme: 'dark', accent: 'red', skillsCompact: true, font: 'impact', sound: true };
@@ -22698,7 +19045,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1802RobustLoginInstalled) return;
   window.__od1802RobustLoginInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   function $(id){ return document.getElementById(id); }
   function cleanNick(value){
@@ -22839,7 +19186,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1803AreaCleanupInstalled) return;
   window.__od1803AreaCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   const AREA = {
     AUTH: 'login',
@@ -23079,7 +19426,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1804LoginAndAudioFixInstalled) return;
   window.__od1804LoginAndAudioFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.4';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
 
   let loginBusy = false;
   let loginTicket = 0;
@@ -23322,4 +19669,715 @@ function od66InventoryMutationUnlockSoon() {
   setTimeout(disableLegacyPointerSound, 800);
 
   window.od1804LoginAndAudioFix = { finalLogin, forceEnterInicio, disableLegacyPointerSound, closeLoaders };
+})();
+
+
+/* =========================
+   V180.5 - Shell final: loading obrigatório, logout limpo e sem tela antiga
+   Objetivo:
+   - cobrir o site na abertura/refresh antes de qualquer render antigo aparecer;
+   - remover/fechar painel de aparência ao sair da conta;
+   - aplicar o shell novo imediatamente depois do login;
+   - neutralizar camadas visuais antigas de início/login que causavam flicker.
+========================= */
+(function od1805FinalShell(){
+  'use strict';
+  if (window.__od1805FinalShellInstalled) return;
+  window.__od1805FinalShellInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+
+  let hideTimer = null;
+  let shellTimer = null;
+
+  function $(id){ return document.getElementById(id); }
+  function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
+
+  function bootScreen(){
+    let boot = $('od1805-boot-screen');
+    if (boot) return boot;
+
+    boot = document.createElement('div');
+    boot.id = 'od1805-boot-screen';
+    boot.setAttribute('aria-live', 'polite');
+    boot.setAttribute('aria-busy', 'true');
+    boot.innerHTML = `
+      <div class="od1805-loader-box">
+        <div class="od1805-ring" aria-hidden="true"></div>
+        <div class="od1805-load-title">Carregando One Dice</div>
+        <div class="od1805-load-sub">Preparando interface escura</div>
+      </div>`;
+    document.body.prepend(boot);
+    return boot;
+  }
+
+  function showBoot(){
+    document.documentElement.classList.add('od1805-booting');
+    document.body?.classList.add('od1805-booting-body');
+    bootScreen();
+    clearTimeout(hideTimer);
+  }
+
+  function hideBoot(delay = 260){
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(() => {
+      document.documentElement.classList.remove('od1805-booting');
+      document.body?.classList.remove('od1805-booting-body');
+      const boot = $('od1805-boot-screen');
+      if (boot) {
+        boot.classList.add('od1805-fade-out');
+        setTimeout(() => boot.remove(), 260);
+      }
+    }, delay);
+  }
+
+  function closeFloatingPanels(){
+    const ids = [
+      'od84-theme-panel',
+      'sessions-menu-panel',
+      'account-menu-panel',
+      'settings-menu-panel',
+      'appearance-panel'
+    ];
+    ids.forEach(id => {
+      const el = $(id);
+      if (!el) return;
+      el.classList.add('hidden');
+      el.classList.remove('active','open','show');
+      el.removeAttribute('open');
+      el.style.pointerEvents = '';
+    });
+
+    document.querySelectorAll('.od84-theme-panel,.sessions-menu-panel,.account-menu-panel,.floating-menu,.dropdown-menu,.menu-panel').forEach(el => {
+      el.classList.add('hidden');
+      el.classList.remove('active','open','show');
+      el.removeAttribute('open');
+    });
+
+    document.querySelectorAll('#od84-theme-btn,#od71-settings-btn,#sessions-menu-btn,#toggle-account-panel-btn').forEach(btn => {
+      btn.classList.remove('active','open');
+      btn.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  function forceDarkTheme(){
+    document.documentElement.classList.add('od1805-dark-root','od1803-dark-only-root');
+    document.body?.classList.add('od1805-dark-only','od1803-dark-only','dark-sheet');
+    document.documentElement.classList.remove('theme-light','light-sheet','paper-light');
+    document.body?.classList.remove('theme-light','light-sheet','paper-light');
+    safe(() => {
+      if (typeof get === 'function' && typeof set === 'function' && typeof STORAGE !== 'undefined') {
+        const st = get(STORAGE.settings, {});
+        st.theme = 'dark';
+        set(STORAGE.settings, st);
+      }
+    }, null);
+  }
+
+  function removeOldHomeVisualClasses(){
+    // Não remove dados nem funções: apenas neutraliza camadas visuais antigas que estavam aparecendo no carregamento.
+    document.body?.classList.remove(
+      'light-sheet','theme-light','paper-light',
+      'od84-session-home','od71-home','od75-home',
+      'od180-booting-body','od1775-restoring-route'
+    );
+    document.documentElement.classList.remove('od180-booting','od1775-restoring-route');
+    document.querySelectorAll('#od180-boot-screen,#od1776-solid-loader,.od1776-solid-loader,.od180-loader-stuck').forEach(el => {
+      if (el.id !== 'od1805-boot-screen') el.remove();
+    });
+  }
+
+  function modernizeShell(){
+    forceDarkTheme();
+    removeOldHomeVisualClasses();
+
+    const auth = $('auth-screen');
+    const sessions = $('sessions-screen');
+    const app = $('app-screen');
+
+    document.querySelectorAll('.sessions-shell').forEach(el => el.classList.add('od1805-sessions-shell','od1803-sessions-shell'));
+    document.querySelectorAll('.sessions-head').forEach(el => el.classList.add('od1805-sessions-head','od1803-sessions-head'));
+    document.querySelectorAll('.sessions-actions,.sessions-list-panel,.account-sheets-panel').forEach(el => el.classList.add('od1805-panel','od1803-panel'));
+
+    const panel = $('account-sheets-panel');
+    if (panel) panel.classList.add('hidden','collapsed-account-panel');
+
+    const area = auth?.classList.contains('active') ? 'login'
+      : app?.classList.contains('active') ? ((typeof currentCampaignId !== 'undefined' && currentCampaignId) ? 'mesa' : 'ficha')
+      : 'inicio';
+
+    document.documentElement.dataset.odArea = area;
+    document.body.dataset.odArea = area;
+    document.documentElement.dataset.od180Area = area;
+    document.body.dataset.od180Area = area;
+    document.body.classList.toggle('od1803-login-area', area === 'login');
+    document.body.classList.toggle('od1803-home-area', area === 'inicio');
+
+    if (sessions?.classList.contains('active')) {
+      document.body.classList.remove('od1803-login-area');
+      document.body.classList.add('od1803-home-area');
+      document.documentElement.dataset.odArea = 'inicio';
+      document.body.dataset.odArea = 'inicio';
+    }
+  }
+
+  function scheduleShell(){
+    clearTimeout(shellTimer);
+    shellTimer = setTimeout(() => {
+      modernizeShell();
+      hideBoot(120);
+    }, 60);
+  }
+
+  function forceLoginScreenClean(){
+    closeFloatingPanels();
+    const auth = $('auth-screen');
+    const sessions = $('sessions-screen');
+    const app = $('app-screen');
+    auth?.classList.add('active');
+    sessions?.classList.remove('active');
+    app?.classList.remove('active');
+    document.body.classList.add('od1803-login-area');
+    document.body.classList.remove('od1803-home-area');
+    document.documentElement.dataset.odArea = 'login';
+    document.body.dataset.odArea = 'login';
+    modernizeShell();
+  }
+
+  function forceHomeScreenClean(){
+    closeFloatingPanels();
+    const auth = $('auth-screen');
+    const sessions = $('sessions-screen');
+    const app = $('app-screen');
+    auth?.classList.remove('active');
+    sessions?.classList.add('active');
+    app?.classList.remove('active');
+    document.body.classList.remove('od1803-login-area');
+    document.body.classList.add('od1803-home-area');
+    document.documentElement.dataset.odArea = 'inicio';
+    document.body.dataset.odArea = 'inicio';
+    safe(() => renderAccountCharacterMenu(), null);
+    safe(() => renderCampaignMenu(), null);
+    modernizeShell();
+  }
+
+  // Wrappers finais para impedir que login/logout deixem visual antigo.
+  function wrapShow(name, after){
+    try {
+      const original = window[name] || eval(name);
+      if (typeof original !== 'function' || original.__od1805Wrapped) return;
+      const wrapped = function(...args){
+        showBoot();
+        const result = original.apply(this, args);
+        setTimeout(() => {
+          safe(after || (() => {}), null);
+          scheduleShell();
+        }, 0);
+        setTimeout(() => {
+          safe(after || (() => {}), null);
+          scheduleShell();
+        }, 220);
+        return result;
+      };
+      wrapped.__od1805Wrapped = true;
+      try { window[name] = wrapped; } catch (_) {}
+      try { eval(`${name} = wrapped`); } catch (_) {}
+    } catch (_) {}
+  }
+
+  wrapShow('showAuth', forceLoginScreenClean);
+  wrapShow('showSessions', forceHomeScreenClean);
+
+  // Corrige logout do painel Aparência que ficava aberto na tela de login.
+  document.addEventListener('click', event => {
+    const logout = event.target.closest?.('#od87-logout-btn,#sessions-logout,[data-logout],#logout-account-btn');
+    if (!logout) return;
+
+    closeFloatingPanels();
+    showBoot();
+
+    setTimeout(() => {
+      closeFloatingPanels();
+      if (document.querySelector('#auth-screen.active')) forceLoginScreenClean();
+      hideBoot(220);
+    }, 120);
+
+    setTimeout(() => {
+      closeFloatingPanels();
+      if (document.querySelector('#auth-screen.active')) forceLoginScreenClean();
+    }, 450);
+  }, true);
+
+  // Depois de login, garante que não fique no shell antigo até atualizar.
+  document.addEventListener('submit', event => {
+    if (!event.target.closest?.('#login-form')) return;
+    showBoot();
+    setTimeout(() => {
+      if ($('sessions-screen')?.classList.contains('active')) forceHomeScreenClean();
+      scheduleShell();
+    }, 650);
+    setTimeout(() => {
+      if ($('sessions-screen')?.classList.contains('active')) forceHomeScreenClean();
+      scheduleShell();
+    }, 1400);
+  }, true);
+
+  document.addEventListener('click', event => {
+    if (event.target.closest?.('#login-form button,#login-form [type="submit"]')) {
+      showBoot();
+      setTimeout(() => {
+        if ($('sessions-screen')?.classList.contains('active')) forceHomeScreenClean();
+        scheduleShell();
+      }, 650);
+      setTimeout(() => {
+        if ($('sessions-screen')?.classList.contains('active')) forceHomeScreenClean();
+        scheduleShell();
+      }, 1400);
+    }
+
+    if (event.target.closest?.('#sessions-menu-btn,#toggle-account-panel-btn,#od84-theme-btn,#od71-settings-btn')) {
+      setTimeout(modernizeShell, 50);
+    }
+  }, true);
+
+  // Se a sessão já está ativa na abertura, cobre o visual antigo até aplicar o shell.
+  showBoot();
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      modernizeShell();
+      setTimeout(scheduleShell, 200);
+      setTimeout(scheduleShell, 900);
+    }, { once: true });
+  } else {
+    modernizeShell();
+    setTimeout(scheduleShell, 200);
+    setTimeout(scheduleShell, 900);
+  }
+
+  window.addEventListener('load', () => {
+    modernizeShell();
+    setTimeout(scheduleShell, 260);
+    setTimeout(scheduleShell, 1000);
+  }, { once: true });
+
+  // Failsafe: a tela de loading nunca fica infinita.
+  setTimeout(() => {
+    modernizeShell();
+    hideBoot(0);
+  }, 4500);
+
+  window.od1805FinalShell = {
+    showBoot,
+    hideBoot,
+    closeFloatingPanels,
+    modernizeShell,
+    forceLoginScreenClean,
+    forceHomeScreenClean
+  };
+})();
+
+
+
+
+
+/* =========================
+   V180.7 - Editores refeitos do zero: Inventário, Magias e Habilidades
+   Regra desta atualização:
+   - os blocos antigos dessas áreas foram removidos fisicamente;
+   - este é o único render final ativo para as três áreas;
+   - eventos antigos de adicionar/remover/editar são bloqueados antes de rodar;
+   - salvar sempre sincroniza a fonte da ficha antes de enviar ao servidor.
+========================= */
+(function od1807CleanEditors(){
+  'use strict';
+  if (window.__od1807CleanEditorsInstalled) return;
+  window.__od1807CleanEditorsInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.80.7';
+
+  let saveTimer = null;
+  let rendering = false;
+
+  function $(id){ return document.getElementById(id); }
+  function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
+  function cchar(){ return safe(() => typeof currentChar === 'function' ? currentChar() : null, null); }
+  function uidSafe(prefix){ return typeof uid === 'function' ? uid(prefix || 'id') : `${prefix || 'id'}_${Date.now()}_${Math.random().toString(16).slice(2)}`; }
+  function esc(value){
+    return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  }
+  function number(value, fallback = 0){
+    const n = Number(String(value ?? '').replace(',', '.'));
+    return Number.isFinite(n) ? n : fallback;
+  }
+  function weightValue(value){
+    const n = number(value, .5);
+    if (!Number.isFinite(n) || n <= 0) return .5;
+    return n < 1 ? .5 : Math.round(n * 2) / 2;
+  }
+  function fmt(value){
+    const n = number(value, 0);
+    return Number.isInteger(n) ? String(n) : String(n).replace('.', ',');
+  }
+  function cloneItem(item = {}){
+    return {
+      id: item.id || uidSafe('inv'),
+      name: item.name || 'Novo item',
+      weight: weightValue(item.weight ?? .5),
+      uses: Math.max(0, Math.round(number(item.uses, 0))),
+      desc: item.desc || item.description || ''
+    };
+  }
+  function ensureItems(char = cchar()){
+    if (!char) return [];
+    char.inventoryItems = Array.isArray(char.inventoryItems) ? char.inventoryItems.map(cloneItem) : [];
+    return char.inventoryItems;
+  }
+  function currentWeight(items){ return (items || []).reduce((sum, item) => sum + weightValue(item.weight), 0); }
+  function isInventoryReduced(char = cchar()){ return !!char?.simpleInventoryCompact; }
+  function setChar(mutator){
+    const char = cchar();
+    if (!char) return null;
+    if (typeof updateChar === 'function') updateChar(mutator);
+    else mutator(char);
+    return cchar() || char;
+  }
+  function saveSoon(immediate = false){
+    syncAllFromDOM();
+    if (typeof queueSave === 'function') safe(() => queueSave(), null);
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      syncAllFromDOM();
+      safe(() => typeof saveCurrentCharacter === 'function' && saveCurrentCharacter(), null);
+      const char = cchar();
+      if (char && typeof od44SaveCharacterOnline === 'function') safe(() => od44SaveCharacterOnline(char), null);
+      else if (char && typeof od42ScheduleCharacterSave === 'function') safe(() => od42ScheduleCharacterSave(char), null);
+    }, immediate ? 20 : 240);
+  }
+
+  /* INVENTÁRIO */
+  function readInventoryDOM(){
+    const char = cchar();
+    const list = $('simple-inventory-list');
+    if (!list || !list.classList.contains('od1807-inventory-list') || isInventoryReduced(char)) return ensureItems(char).map(cloneItem);
+    return [...list.querySelectorAll('.od1807-inv-card-edit')].map(card => cloneItem({
+      id: card.dataset.itemId,
+      name: card.querySelector('[data-od1807-inv="name"]')?.value || 'Novo item',
+      weight: card.querySelector('[data-od1807-inv="weight"]')?.value || .5,
+      uses: card.querySelector('[data-od1807-inv="uses"]')?.value || 0,
+      desc: card.querySelector('[data-od1807-inv="desc"]')?.value || ''
+    }));
+  }
+  function persistInventory(items, renderSummary = true){
+    const normalized = (items || []).map(cloneItem);
+    const weight = currentWeight(normalized);
+    const money = $('money')?.value ?? cchar()?.money ?? '0';
+    const weightMax = number($('weight-max')?.value ?? cchar()?.weightMax ?? 0, 0);
+    const char = setChar(saved => {
+      saved.inventoryItems = normalized;
+      saved.weightCurrent = weight;
+      saved.weightMax = weightMax;
+      saved.money = String(money);
+      saved.equipmentNotes = normalized.map(item => `${item.name || 'Item'} | Peso: ${item.weight || 0} | Usos: ${item.uses || 0} | ${item.desc || ''}`).join('\n');
+    });
+    if (renderSummary) renderInventorySummary(char);
+  }
+  function renderInventorySummary(char = cchar()){
+    if (!char) return;
+    const grid = document.querySelector('#tab-equipamentos .inventory-summary-grid');
+    const status = $('weight-status');
+    if (!grid) return;
+    const items = ensureItems(char);
+    const weight = currentWeight(items);
+    const max = number(char.weightMax ?? 0, 0);
+    const money = String(char.money ?? '0');
+    grid.className = 'equipment-grid inventory-summary-grid od1807-summary-grid';
+    grid.innerHTML = `
+      <label class="od1807-summary-card"><span>Dinheiro</span><input id="money" type="text" value="${esc(money)}" autocomplete="off"></label>
+      <label class="od1807-summary-card od1807-readonly"><span>Peso Atual</span><input id="weight-current" type="text" value="${esc(fmt(weight))}" readonly></label>
+      <label class="od1807-summary-card"><span>Peso Máximo</span><input id="weight-max" type="number" min="0" step="0.5" value="${esc(max)}"></label>`;
+    if (status) {
+      status.className = 'weight-status-line od1807-weight-status';
+      status.innerHTML = `<span class="od1807-status-icon">⚖</span><span>${weight <= max || !max ? 'Peso dentro do limite.' : 'Peso acima do limite.'} Peso ${esc(fmt(weight))} / ${esc(fmt(max))}.</span>`;
+    }
+  }
+  function renderInventoryHeader(char = cchar()){
+    const panel = $('simple-inventory-panel');
+    const head = panel?.querySelector('.inventory-text-head');
+    if (!head) return;
+    panel.classList.add('od1807-inventory-panel');
+    head.classList.add('od1807-editor-head');
+    const reduced = isInventoryReduced(char);
+    const title = head.querySelector('h3');
+    if (title) title.textContent = 'Inventário em Texto';
+    const toggle = $('simple-inventory-compact-toggle');
+    if (toggle) {
+      toggle.textContent = reduced ? 'Expandir' : 'Reduzir';
+      toggle.classList.add('od1807-head-btn');
+    }
+    const add = $('add-simple-inventory-item');
+    if (add) {
+      add.textContent = '+ Item';
+      add.classList.add('od1807-head-btn','od1807-add-btn');
+      add.hidden = reduced;
+      add.disabled = reduced;
+    }
+  }
+  function inventoryViewCard(item){
+    return `<article class="od1807-inv-card-view" data-item-id="${esc(item.id)}">
+      <div class="od1807-card-actions">
+        <button class="ghost-btn small" data-transfer-simple-item="${esc(item.id)}" type="button">↔ Transferir</button>
+        <button class="ghost-btn small" data-drop-simple-item="${esc(item.id)}" type="button">▣ Enviar para Drop</button>
+      </div>
+      <div class="od1807-view-body">
+        <h4>${esc(item.name || 'Item')}</h4>
+        <div class="od1807-tags"><span>Peso: ${esc(fmt(item.weight))}</span><span>Usos: ${esc(item.uses || 0)}</span></div>
+        <p>${esc(item.desc || 'Sem descrição.')}</p>
+      </div>
+    </article>`;
+  }
+  function inventoryEditCard(item, index, total){
+    return `<article class="od1807-inv-card-edit" data-item-id="${esc(item.id)}">
+      <div class="od1807-card-actions">
+        <button class="ghost-btn small" data-transfer-simple-item="${esc(item.id)}" type="button">↔ Transferir</button>
+        <button class="ghost-btn small" data-drop-simple-item="${esc(item.id)}" type="button">▣ Enviar para Drop</button>
+      </div>
+      <label class="od1807-field"><span>Nome do item</span><div class="od1807-title-row"><input data-od1807-inv="name" data-inv-field="name" type="text" value="${esc(item.name || 'Novo item')}" placeholder="Nome do item"><button class="mini-danger-btn od1807-delete" data-od1807-remove-inventory="${esc(item.id)}" type="button">×</button></div></label>
+      <label class="od1807-field"><span>Descrição</span><textarea data-od1807-inv="desc" data-inv-field="desc" rows="6" placeholder="Descrição do item...">${esc(item.desc || '')}</textarea></label>
+      <div class="od1807-inv-bottom">
+        <label class="od1807-box"><span>⚖ Peso</span><div class="od1807-stepper"><button data-od1807-step="weight" data-dir="-1" type="button">−</button><input data-od1807-inv="weight" data-inv-field="weight" type="text" inputmode="decimal" value="${esc(fmt(item.weight))}"><button data-od1807-step="weight" data-dir="1" type="button">+</button></div></label>
+        <label class="od1807-box"><span>⌛ Usos</span><div class="od1807-stepper"><button data-od1807-step="uses" data-dir="-1" type="button">−</button><input data-od1807-inv="uses" data-inv-field="uses" type="number" min="0" step="1" value="${esc(item.uses || 0)}"><button data-od1807-step="uses" data-dir="1" type="button">+</button></div></label>
+        <div class="od1807-order"><span>Ordem</span><div><button class="ghost-btn small" data-od1807-move-inventory="${esc(item.id)}" data-dir="-1" type="button" ${index === 0 ? 'disabled' : ''}>↑ Subir</button><button class="ghost-btn small" data-od1807-move-inventory="${esc(item.id)}" data-dir="1" type="button" ${index >= total - 1 ? 'disabled' : ''}>↓ Descer</button></div></div>
+      </div>
+    </article>`;
+  }
+  function renderInventory(char = cchar()){
+    const list = $('simple-inventory-list');
+    if (!char || !list || rendering) return;
+    rendering = true;
+    try {
+      const items = ensureItems(char);
+      const reduced = isInventoryReduced(char);
+      renderInventoryHeader(char);
+      renderInventorySummary(char);
+      list.className = `simple-inventory-list od1807-inventory-list ${reduced ? 'od1807-reduced' : 'od1807-expanded'}`;
+      if (!items.length) list.innerHTML = '<div class="simple-inventory-empty od1807-empty">Nenhum item adicionado.</div>';
+      else list.innerHTML = reduced ? items.map(inventoryViewCard).join('') : items.map((item,i)=>inventoryEditCard(item,i,items.length)).join('');
+    } finally { rendering = false; }
+  }
+  function addInventoryItem(){
+    persistInventory(readInventoryDOM().concat([{ id: uidSafe('inv'), name: 'Novo item', weight: .5, uses: 0, desc: '' }]));
+    setChar(saved => { saved.simpleInventoryCompact = false; });
+    renderInventory();
+    saveSoon(true);
+  }
+  function removeInventoryItem(id){
+    persistInventory(readInventoryDOM().filter(item => String(item.id) !== String(id)));
+    renderInventory();
+    saveSoon(true);
+  }
+  function moveInventory(id, dir){
+    const items = readInventoryDOM();
+    const from = items.findIndex(item => String(item.id) === String(id));
+    const to = from + Number(dir);
+    if (from < 0 || to < 0 || to >= items.length) return;
+    const [item] = items.splice(from, 1);
+    items.splice(to, 0, item);
+    persistInventory(items);
+    renderInventory();
+    saveSoon(true);
+  }
+  function stepInventory(btn){
+    const card = btn.closest('.od1807-inv-card-edit');
+    const field = btn.dataset.od1807Step;
+    const input = card?.querySelector(`[data-od1807-inv="${field}"]`);
+    if (!input) return;
+    const dir = Number(btn.dataset.dir || 0);
+    if (field === 'weight') {
+      const current = weightValue(input.value);
+      input.value = fmt(dir > 0 ? (current < 1 ? 1 : current + .5) : (current <= .5 ? .5 : current - .5));
+    } else {
+      input.value = String(Math.max(0, Math.round(number(input.value,0) + dir)));
+    }
+    saveSoon();
+  }
+
+  /* MAGIAS */
+  function ensureSpells(char = cchar()){
+    if (!char) return [];
+    char.spells = Array.isArray(char.spells) ? char.spells : [];
+    return char.spells;
+  }
+  function readSpellsDOM(){
+    const list = $('spells-list');
+    if (!list || !list.classList.contains('od1807-spells-list')) return ensureSpells().map(spell => ({...spell}));
+    return [...list.querySelectorAll('.od1807-spell-card')].map(card => ({
+      name: card.querySelector('.spell-name')?.value || '',
+      circle: card.querySelector('.spell-circle')?.value || '',
+      exec: card.querySelector('.spell-exec')?.value || '',
+      range: card.querySelector('.spell-range')?.value || '',
+      cost: card.querySelector('.spell-cost')?.value || '',
+      components: card.querySelector('.spell-components')?.value || '',
+      description: card.querySelector('.spell-description')?.value || '',
+      upgrades: card.querySelector('.spell-upgrades')?.value || ''
+    }));
+  }
+  function persistSpells(spells){ setChar(saved => { saved.spells = Array.isArray(spells) ? spells : []; }); }
+  function smallField(label, cls, placeholder, value){ return `<label class="od1807-small-field"><span>${label}</span><input class="${cls}" placeholder="${placeholder}" value="${esc(value || '')}"></label>`; }
+  function spellCard(spell = {}, index = 0, total = 1){
+    return `<article class="mini-card spell-card od1807-editor-card od1807-spell-card" data-index="${index}">
+      <label class="od1807-field od1807-title-field"><input class="spell-name od1807-title-input" placeholder="Nome da magia" value="${esc(spell.name || '')}"></label>
+      <div class="od1807-small-grid">
+        ${smallField('Círculo','spell-circle','1º',spell.circle || '')}
+        ${smallField('Execução','spell-exec','Ação',spell.exec || '')}
+        ${smallField('Alcance','spell-range','9 m',spell.range || '')}
+        ${smallField('Custo','spell-cost','2 PE',spell.cost || spell.pe || '')}
+        ${smallField('Componentes','spell-components','V, S, M',spell.components || '')}
+        <div class="od1807-order od1807-card-order"><span>Ordem</span><div><button class="ghost-btn small" data-od1807-move-spell="${index}" data-dir="-1" type="button" ${index === 0 ? 'disabled' : ''}>↑</button><button class="ghost-btn small" data-od1807-move-spell="${index}" data-dir="1" type="button" ${index >= total - 1 ? 'disabled' : ''}>↓</button></div></div>
+      </div>
+      <label class="od1807-field"><span>Descrição</span><textarea class="spell-description od1807-big-text" rows="8" placeholder="Descrição da magia">${esc(spell.description || spell.effect || '')}</textarea></label>
+      <label class="od1807-field"><span>Aprimoramentos</span><textarea class="spell-upgrades od1807-mid-text" rows="6" placeholder="Aprimoramentos, versões superiores ou gastos extras">${esc(spell.upgrades || '')}</textarea></label>
+      <div class="od1807-footer"><button class="danger-btn small od1807-remove" data-od1807-remove-spell="${index}" type="button">🗑 Remover</button></div>
+    </article>`;
+  }
+  function renderSpellsFinal(char = cchar()){
+    const list = $('spells-list');
+    if (!list || !char) return;
+    const spells = ensureSpells(char);
+    list.className = 'cards-list od1807-editor-list od1807-spells-list';
+    list.innerHTML = spells.length ? spells.map((spell,i)=>spellCard(spell,i,spells.length)).join('') : '<div class="simple-inventory-empty od1807-empty">Nenhuma magia adicionada.</div>';
+  }
+  function addSpellFinal(spell = {}){
+    const spells = readSpellsDOM();
+    spells.push({ name: spell.name || '', circle: spell.circle || '', exec: spell.exec || '', range: spell.range || '', cost: spell.cost || '', components: spell.components || '', description: spell.description || '', upgrades: spell.upgrades || '' });
+    persistSpells(spells); renderSpellsFinal(); saveSoon(true);
+  }
+  function removeSpell(index){ const spells = readSpellsDOM(); spells.splice(Number(index), 1); persistSpells(spells); renderSpellsFinal(); saveSoon(true); }
+  function moveSpell(index, dir){ const spells = readSpellsDOM(); const from=Number(index), to=from+Number(dir); if (to<0||to>=spells.length) return; const [x]=spells.splice(from,1); spells.splice(to,0,x); persistSpells(spells); renderSpellsFinal(); saveSoon(true); }
+
+  /* HABILIDADES */
+  function ensureAbilities(char = cchar()){
+    if (!char) return [];
+    char.abilities = Array.isArray(char.abilities) ? char.abilities : [];
+    return char.abilities;
+  }
+  function readAbilitiesDOMFinal(){
+    const list = $('abilities-list');
+    if (!list || !list.classList.contains('od1807-abilities-list')) return ensureAbilities().map(a => ({...a}));
+    return [...list.querySelectorAll('.od1807-ability-card')].map(card => {
+      const costAmount = Math.max(0, Math.round(number(card.querySelector('.ability-cost-amount')?.value, 0)));
+      const costResource = card.querySelector('.ability-cost-resource')?.value || 'PE';
+      return {
+        name: card.querySelector('.ability-name')?.value || '',
+        costAmount,
+        costResource,
+        cost: costAmount > 0 ? `${costAmount} ${costResource}` : '',
+        bonus: card.querySelector('.ability-bonus')?.value || '',
+        action: card.querySelector('.ability-action')?.value || 'Padrão',
+        description: card.querySelector('.ability-description')?.value || ''
+      };
+    });
+  }
+  function persistAbilities(abilities){
+    setChar(saved => {
+      saved.abilities = Array.isArray(abilities) ? abilities : [];
+      saved.abilitiesNotes = saved.abilities.map(item => `${item.name || 'Habilidade'} | Custo: ${item.cost || '0 ' + (item.costResource || 'PE')} | Bônus: ${item.bonus || '-'} | Ação: ${item.action || 'Padrão'} | ${item.description || ''}`).join('\n');
+    });
+  }
+  function abilityCard(ability = {}, index = 0, total = 1){
+    const amount = Number.isFinite(Number(ability.costAmount)) ? Number(ability.costAmount) : Number(String(ability.cost || '').match(/\d+/)?.[0] || 0);
+    const resource = ability.costResource || (String(ability.cost || '').includes('PV') ? 'PV' : 'PE');
+    return `<article class="mini-card ability-card od1807-editor-card od1807-ability-card" data-index="${index}">
+      <label class="od1807-field od1807-title-field"><input class="ability-name od1807-title-input" placeholder="Nome da habilidade" value="${esc(ability.name || '')}"></label>
+      <div class="od1807-small-grid">
+        <label class="od1807-small-field"><span>Custo</span><div class="od1807-stepper"><button data-od1807-ability-cost="-1" type="button">−</button><input class="ability-cost-amount" type="number" min="0" step="1" value="${esc(amount)}"><button data-od1807-ability-cost="1" type="button">+</button></div></label>
+        <label class="od1807-small-field"><span>Tipo de custo</span><select class="ability-cost-resource"><option value="PE" ${resource === 'PE' ? 'selected' : ''}>PE</option><option value="PV" ${resource === 'PV' ? 'selected' : ''}>PV</option></select></label>
+        <label class="od1807-small-field"><span>Bônus</span><input class="ability-bonus" placeholder="Ex: +2, +1d6" value="${esc(ability.bonus || '')}"></label>
+        <label class="od1807-small-field"><span>Ação</span><select class="ability-action"><option value="Padrão" ${String(ability.action || 'Padrão') === 'Padrão' ? 'selected' : ''}>Padrão</option><option value="Movimento" ${ability.action === 'Movimento' ? 'selected' : ''}>Movimento</option><option value="Reação" ${ability.action === 'Reação' ? 'selected' : ''}>Reação</option><option value="Livre" ${ability.action === 'Livre' ? 'selected' : ''}>Livre</option></select></label>
+        <div class="od1807-order od1807-card-order"><span>Ordem</span><div><button class="ghost-btn small" data-od1807-move-ability="${index}" data-dir="-1" type="button" ${index === 0 ? 'disabled' : ''}>↑</button><button class="ghost-btn small" data-od1807-move-ability="${index}" data-dir="1" type="button" ${index >= total - 1 ? 'disabled' : ''}>↓</button></div></div>
+      </div>
+      <label class="od1807-field"><span>Descrição</span><textarea class="ability-description od1807-big-text" rows="8" placeholder="Descrição da habilidade">${esc(ability.description || ability.desc || '')}</textarea></label>
+      <div class="od1807-footer"><button class="primary-btn small od1807-use" data-od1807-use-ability="${index}" type="button">Usar</button><button class="danger-btn small od1807-remove" data-od1807-remove-ability="${index}" type="button">🗑 Remover</button></div>
+    </article>`;
+  }
+  function renderAbilitiesFinal(char = cchar()){
+    const list = $('abilities-list');
+    if (!list || !char) return;
+    const abilities = ensureAbilities(char);
+    list.className = 'cards-list od1807-editor-list od1807-abilities-list';
+    list.innerHTML = abilities.length ? abilities.map((ability,i)=>abilityCard(ability,i,abilities.length)).join('') : '<div class="simple-inventory-empty od1807-empty">Nenhuma habilidade adicionada.</div>';
+  }
+  function addAbilityFinal(ability = {}){
+    const abilities = readAbilitiesDOMFinal();
+    abilities.push({ name: ability.name || '', costAmount: Number(ability.costAmount || 0), costResource: ability.costResource || 'PE', cost: ability.cost || '', bonus: ability.bonus || '', action: ability.action || 'Padrão', description: ability.description || '' });
+    persistAbilities(abilities); renderAbilitiesFinal(); saveSoon(true);
+  }
+  function removeAbility(index){ const abilities = readAbilitiesDOMFinal(); abilities.splice(Number(index), 1); persistAbilities(abilities); renderAbilitiesFinal(); saveSoon(true); }
+  function moveAbility(index, dir){ const abilities = readAbilitiesDOMFinal(); const from=Number(index), to=from+Number(dir); if (to<0||to>=abilities.length) return; const [x]=abilities.splice(from,1); abilities.splice(to,0,x); persistAbilities(abilities); renderAbilitiesFinal(); saveSoon(true); }
+  function abilityCostStep(btn){ const input = btn.closest('.od1807-stepper')?.querySelector('.ability-cost-amount'); if (!input) return; input.value = String(Math.max(0, Math.round(number(input.value,0) + Number(btn.dataset.od1807AbilityCost || 0)))); persistAbilities(readAbilitiesDOMFinal()); saveSoon(); }
+
+  function syncAllFromDOM(){
+    const char = cchar(); if (!char) return;
+    if ($('simple-inventory-list')?.classList.contains('od1807-inventory-list') && !isInventoryReduced(char)) persistInventory(readInventoryDOM(), true);
+    if ($('spells-list')?.classList.contains('od1807-spells-list')) persistSpells(readSpellsDOM());
+    if ($('abilities-list')?.classList.contains('od1807-abilities-list')) persistAbilities(readAbilitiesDOMFinal());
+  }
+  function renderAll(char = cchar()){
+    if (!char) return;
+    renderInventory(char);
+    renderSpellsFinal(char);
+    renderAbilitiesFinal(char);
+  }
+
+  // Exports finais: as funções antigas deixam de ser fonte das áreas.
+  renderSimpleInventory = renderInventory;
+  readSimpleInventoryFromDOM = readInventoryDOM;
+  renderSpells = renderSpellsFinal;
+  addSpellCard = addSpellFinal;
+  renderAbilities = renderAbilitiesFinal;
+  addAbilityCard = addAbilityFinal;
+  readAbilitiesFromDOM = readAbilitiesDOMFinal;
+  if (typeof v39ReadSpellsFromDOM !== 'undefined') v39ReadSpellsFromDOM = readSpellsDOM;
+  try { Object.assign(window, { renderSimpleInventory, readSimpleInventoryFromDOM, renderSpells, addSpellCard, renderAbilities, addAbilityCard, readAbilitiesFromDOM }); } catch (_) {}
+
+  document.addEventListener('click', event => {
+    const target = event.target;
+    const invToggle = target.closest?.('#simple-inventory-compact-toggle');
+    if (invToggle) { event.preventDefault(); event.stopImmediatePropagation(); syncAllFromDOM(); setChar(saved => { saved.simpleInventoryCompact = !saved.simpleInventoryCompact; }); renderInventory(); saveSoon(true); return; }
+    const addInv = target.closest?.('#add-simple-inventory-item');
+    if (addInv) { event.preventDefault(); event.stopImmediatePropagation(); addInventoryItem(); return; }
+    const remInv = target.closest?.('[data-od1807-remove-inventory]');
+    if (remInv) { event.preventDefault(); event.stopImmediatePropagation(); removeInventoryItem(remInv.dataset.od1807RemoveInventory); return; }
+    const moveInv = target.closest?.('[data-od1807-move-inventory]');
+    if (moveInv) { event.preventDefault(); event.stopImmediatePropagation(); moveInventory(moveInv.dataset.od1807MoveInventory, moveInv.dataset.dir); return; }
+    const invStep = target.closest?.('[data-od1807-step]');
+    if (invStep) { event.preventDefault(); event.stopImmediatePropagation(); stepInventory(invStep); return; }
+
+    const addSpell = target.closest?.('#add-spell');
+    if (addSpell) { event.preventDefault(); event.stopImmediatePropagation(); addSpellFinal({}); return; }
+    const remSpell = target.closest?.('[data-od1807-remove-spell]');
+    if (remSpell) { event.preventDefault(); event.stopImmediatePropagation(); removeSpell(remSpell.dataset.od1807RemoveSpell); return; }
+    const moveSp = target.closest?.('[data-od1807-move-spell]');
+    if (moveSp) { event.preventDefault(); event.stopImmediatePropagation(); moveSpell(moveSp.dataset.od1807MoveSpell, moveSp.dataset.dir); return; }
+
+    const addAbility = target.closest?.('#add-ability');
+    if (addAbility) { event.preventDefault(); event.stopImmediatePropagation(); addAbilityFinal({}); return; }
+    const remAbility = target.closest?.('[data-od1807-remove-ability]');
+    if (remAbility) { event.preventDefault(); event.stopImmediatePropagation(); removeAbility(remAbility.dataset.od1807RemoveAbility); return; }
+    const moveAb = target.closest?.('[data-od1807-move-ability]');
+    if (moveAb) { event.preventDefault(); event.stopImmediatePropagation(); moveAbility(moveAb.dataset.od1807MoveAbility, moveAb.dataset.dir); return; }
+    const abCost = target.closest?.('[data-od1807-ability-cost]');
+    if (abCost) { event.preventDefault(); event.stopImmediatePropagation(); abilityCostStep(abCost); return; }
+    const useAb = target.closest?.('[data-od1807-use-ability]');
+    if (useAb) { event.preventDefault(); event.stopImmediatePropagation(); persistAbilities(readAbilitiesDOMFinal()); safe(() => useAbilityCard(useAb.closest('.ability-card')), null); saveSoon(); return; }
+
+    if (target.closest?.('.sheet-tab,[data-od170-toggle]')) setTimeout(() => renderAll(cchar()), 80);
+  }, true);
+  document.addEventListener('input', event => { if (event.target.closest?.('.od1807-inv-card-edit,.od1807-spell-card,.od1807-ability-card,#money,#weight-max')) saveSoon(); }, true);
+  document.addEventListener('change', event => { if (event.target.closest?.('.od1807-inv-card-edit,.od1807-spell-card,.od1807-ability-card,#money,#weight-max')) saveSoon(); }, true);
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => renderAll(cchar()), { once: true });
+  else renderAll(cchar());
+  setTimeout(() => renderAll(cchar()), 180);
+  setTimeout(() => renderAll(cchar()), 900);
+
+  window.od1807CleanEditors = { renderAll, renderInventory, renderSpellsFinal, renderAbilitiesFinal, readInventoryDOM, readSpellsDOM, readAbilitiesDOMFinal };
 })();
