@@ -1,34 +1,84 @@
-# One Dice Online v0.41
+# One Dice Site v1.90.1
 
-Esta versão é a primeira base preparada para servidor.
+## Foco da atualização
 
-Ela ainda mantém o visual do site atual em `client/`, mas adiciona:
+Reformulação da parte interna das campanhas/mesas.
 
-- Node.js/Express
-- PostgreSQL
-- Socket.IO
-- Docker Compose
-- Estrutura de banco para usuários, fichas, mesas, membros, chat, iniciativa, loja, drop, inventário e transformações
+A entrada da campanha agora abre um **Gerenciador de Campanha** separado da ficha, com abas próprias no estilo de sites como LitchRPG/Roll20.
 
-## Arquivos principais
+## Novo fluxo interno
 
-```txt
-client/       visual atual do site
-server/       servidor Node.js
-database/     schema do PostgreSQL
-uploads/      imagens futuras
-docker-compose.yml
-Dockerfile
-.env.example
-```
+Ao clicar em **Acessar** em uma campanha, o sistema abre o novo gerenciador com as abas:
 
-## Como será usado na VPS
+1. Personagens;
+2. Combate;
+3. Jogadores;
+4. Chat;
+5. Escudo.
 
-1. Criar um arquivo `.env` baseado no `.env.example`.
-2. Subir com Docker Compose.
-3. Acessar o site pela porta 3000 ou por domínio configurado no Nginx.
+## Aba Personagens
 
-## Importante
+Mostra todos os personagens da campanha com:
 
-A v0.41 é uma fundação. Ela não migra automaticamente todo o sistema antigo do `localStorage` para o banco ainda.
-As próximas versões conectam a interface aos endpoints online por etapas.
+- retrato;
+- nome;
+- raça/classe/nível;
+- jogador dono;
+- entrada na mesa.
+
+Para o mestre, aparecem ações:
+
+- Acessar Ficha;
+- OBS;
+- Remover jogador da mesa.
+
+Para jogadores, aparece apenas o acesso permitido à própria ficha.
+
+## Aba Combate
+
+Nova preparação de combate:
+
+- lista personagens participantes;
+- botão **Rolar Iniciativa**;
+- ordem de turno organizada automaticamente;
+- mestre pode iniciar/encerrar combate;
+- mestre pode limpar a ordem de iniciativa.
+
+Os jogadores podem rolar iniciativa no menu de combate.
+Também foi adicionado botão de iniciativa dentro da ficha quando aberta pela campanha.
+
+## Aba Jogadores
+
+Mostra as contas vinculadas à campanha:
+
+- nome da conta;
+- função;
+- entrada;
+- status online/offline local.
+
+## Aba Chat
+
+Chat ao vivo da campanha com mensagens dos jogadores.
+
+## Aba Escudo
+
+Disponível apenas para o mestre.
+
+Mostra:
+
+- foto do personagem;
+- nome;
+- jogador;
+- PV;
+- PE;
+- acesso rápido à ficha.
+
+## Limpeza de camadas antigas
+
+O novo gerenciador assume o fluxo interno da campanha e oculta o app-grid antigo da ficha/painel enquanto estiver no gerenciamento.
+
+O banco/localStorage não foi apagado para não destruir campanhas já criadas. A limpeza foi feita no fluxo visual e de renderização para evitar sobreposição com as camadas antigas.
+
+## Versão
+
+1.90.1
