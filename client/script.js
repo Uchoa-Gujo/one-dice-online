@@ -5,7 +5,7 @@
 ========================= */
 (function od139EarlyGuards(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
   if (!window.CSS) window.CSS = {};
   if (typeof window.CSS.escape !== 'function') {
     window.CSS.escape = function(value) {
@@ -10848,22 +10848,7 @@ function od66InventoryMutationUnlockSoon() {
   }
 
   function renderMenuPanel(){
-    const card = document.querySelector('#sessions-menu-panel .od90-user-menu-card');
-    if (!card) return;
-    const char = getChar();
-    const camp = getCamp();
-    const html = `
-      <img class="od90-user-avatar" src="${esc(avatar())}" alt="Foto do usuário" onerror="this.src='assets/account-logo.png'" />
-      <div class="od90-user-info od108-panel-user-info">
-        <strong>${esc(userName())}</strong>
-        <small>${esc(getUser()?.nick ? '@' + getUser().nick : 'Conta One Dice')}</small>
-        <small>${esc(roleLabel())} • ${esc(camp?.name || 'Fora de mesa')}</small>
-        <small>${esc(char?.name || 'Sem ficha aberta')}</small>
-      </div>`;
-    if (card.dataset.od108PanelHtml !== html) {
-      card.dataset.od108PanelHtml = html;
-      card.innerHTML = html;
-    }
+    document.querySelectorAll('#sessions-menu-panel .od90-user-menu-card, #sessions-menu-panel .od75-account-menu-card, .od90-user-menu-card, .od75-account-menu-card, .od108-panel-user-info').forEach(el => el.remove());
   }
 
   function run(){
@@ -11831,7 +11816,7 @@ function od66InventoryMutationUnlockSoon() {
    Este bloco não altera regras de ficha; apenas melhora autonomia e experiência.
 ========================= */
 (function od115Maintenance(){
-  const VERSION = '1.80.11';
+  const VERSION = '1.80.13';
   const STORAGE_PREFIX = 'od_';
   const routeMap = {
     home: '/inicio',
@@ -13432,7 +13417,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od136AttributesClean(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   const ATTRS = [
     ['forca', 'Força'], ['agilidade', 'Agilidade'], ['vigor', 'Vigor'], ['intelecto', 'Intelecto'], ['presenca', 'Presença']
@@ -13600,7 +13585,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od137SheetStabilityAndManualDefenseDodge(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   const $ = id => document.getElementById(id);
   const EDITABLE = 'input, textarea, select, [contenteditable="true"]';
@@ -13962,7 +13947,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od138AuditAndDuplicateSheetInstalled) return;
   window.__od138AuditAndDuplicateSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   const DUP_SELECTOR = '[data-od138-duplicate-character], [data-od71-copy-character], [data-copy-account-character]';
 
@@ -14155,7 +14140,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od139ExtraErrorFixesInstalled) return;
   window.__od139ExtraErrorFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   const IMAGE_KEYS = [
     'portrait','portraitUrl','image','imageUrl','photo','photoUrl','avatar','avatarUrl','retrato','foto',
@@ -14310,7 +14295,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od140GeneralImprovementsInstalled) return;
   window.__od140GeneralImprovementsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   const VERSION = '1.80.5';
   const BACKUP_KEY = 'od_sheet_backups_v140';
@@ -14791,7 +14776,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od141AuditHardeningInstalled) return;
   window.__od141AuditHardeningInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   function pruneBackups(){
     try {
@@ -14842,7 +14827,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od142FinalCleanupInstalled) return;
   window.__od142FinalCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   function keepFirst(selector){
     const nodes = Array.from(document.querySelectorAll(selector));
@@ -14928,7 +14913,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od148SafeRollbackPatchInstalled) return;
   window.__od148SafeRollbackPatchInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   function hideManualNotes(){
     ['defense-effective-note','dodge-formula-note'].forEach(id => {
@@ -14981,7 +14966,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od152StableLayoutFixesInstalled) return;
   window.__od152StableLayoutFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   const $ = id => document.getElementById(id);
   const n = (value, fallback = 0) => {
@@ -15173,7 +15158,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od155SessionDashboardStability(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   const STORE_PREFIX = 'od155_dashboard_collapsed_';
   const lastSig = { player: '', master: '' };
@@ -15329,7 +15314,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od156ProtectOtherPlayersSheetsInstalled) return;
   window.__od156ProtectOtherPlayersSheetsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   const PROTECTED_ARRAYS = ['inventoryItems','blockInventory','abilities','spells','attacks','conditions','transformations','dropItems'];
   const PROTECTED_OBJECTS = ['skills','resistances','attrs','caster','obsIcons','portraitCrop','settings'];
@@ -15434,7 +15419,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od157ProtectOwnSheetPartialAutosaveInstalled) return;
   window.__od157ProtectOwnSheetPartialAutosaveInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   function clone(value){
     try { return structuredClone(value); } catch (_) {
@@ -15590,7 +15575,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od159StableSessionRenderInstalled) return;
   window.__od159StableSessionRenderInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   const $ = id => document.getElementById(id);
   const last = { tableSig: '', tableAt: 0, playerSig: '', masterSig: '' };
@@ -15723,7 +15708,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od160AccountSheetIsolationInstalled) return;
   window.__od160AccountSheetIsolationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   const $ = id => document.getElementById(id);
 
@@ -15874,7 +15859,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od161EquipmentProficienciesInstalled) return;
   window.__od161EquipmentProficienciesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   const GROUPS = {
     weapons: [
@@ -16041,7 +16026,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od164StableCleanRoutesInstalled) return;
   window.__od164StableCleanRoutesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   const VERSION = '1.80.5';
   let applyingRoute = false;
@@ -16249,7 +16234,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od165ExactPortraitCrop(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
   if (window.__od165ExactPortraitCropInstalled) return;
   window.__od165ExactPortraitCropInstalled = true;
 
@@ -16371,7 +16356,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1685AreaSeparationInstalled) return;
   window.__od1685AreaSeparationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   const AREA = {
     AUTH: 'login',
@@ -16560,7 +16545,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1699StableSkillUntrainInstalled) return;
   window.__od1699StableSkillUntrainInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   const pending = new Map();
   let flushTimer = null;
@@ -16788,7 +16773,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16910SkillSaveMergeInstalled) return;
   window.__od16910SkillSaveMergeInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   let lastExplicit = {};
   let lastExplicitAt = 0;
@@ -17004,7 +16989,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16911StablePortraitDuringResourcesInstalled) return;
   window.__od16911StablePortraitDuringResourcesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   const RESOURCE_SELECTOR = '#pv-current, #pv-max, #pe-current, #pe-max';
   const MAIN_SELECTOR = '#char-portrait-preview';
@@ -17176,7 +17161,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od170ModularSheetInstalled) return;
   window.__od170ModularSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   const STORE_KEY = 'od170_modules_state_v1';
   const DENSE_KEY = 'od170_dense_sheet_v1';
@@ -17420,7 +17405,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od171HubNavigationAndScrollInstalled) return;
   window.__od171HubNavigationAndScrollInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   let pending = false;
 
@@ -17544,7 +17529,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1715ScrollAndSmartCollapseInstalled) return;
   window.__od1715ScrollAndSmartCollapseInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   let scheduled = false;
 
@@ -17786,7 +17771,7 @@ function od66InventoryMutationUnlockSoon() {
    A correção principal está no index.html e no server/server.js.
 ========================= */
 (function od1762ReloadPathFixMarker(){
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 })();
 
 
@@ -17809,7 +17794,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1775ReloadRouteRestoreInstalled) return;
   window.__od1775ReloadRouteRestoreInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   const INITIAL_PATH = location.pathname + location.search;
   const INITIAL_PARTS = location.pathname.split('/').filter(Boolean).map(part => {
@@ -18014,7 +17999,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od178SkillsDesignPolishInstalled) return;
   window.__od178SkillsDesignPolishInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   let timer = null;
 
@@ -18087,7 +18072,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1781AttributeTextFixInstalled) return;
   window.__od1781AttributeTextFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   let timer = null;
 
@@ -18274,7 +18259,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1787AttributeNameNoEllipsisInstalled) return;
   window.__od1787AttributeNameNoEllipsisInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   const DISPLAY = {
     'força': 'FORÇA',
@@ -18370,7 +18355,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1788AttributeFullNamesInstalled) return;
   window.__od1788AttributeFullNamesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   const FULL = {
     forca: 'FORÇA',
@@ -18470,7 +18455,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od17814AttributesStableFinalInstalled) return;
   window.__od17814AttributesStableFinalInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   const ATTRS = [
     ['forca', 'FORÇA'],
@@ -18641,7 +18626,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1801SafeShellInstalled) return;
   window.__od1801SafeShellInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   const SETTINGS_KEY = 'od_settings';
   const DEFAULTS = { theme: 'dark', accent: 'red', skillsCompact: true, font: 'impact', sound: true };
@@ -18841,7 +18826,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1802RobustLoginInstalled) return;
   window.__od1802RobustLoginInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   function $(id){ return document.getElementById(id); }
   function cleanNick(value){
@@ -18982,7 +18967,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1803AreaCleanupInstalled) return;
   window.__od1803AreaCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   const AREA = {
     AUTH: 'login',
@@ -19222,7 +19207,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1804LoginAndAudioFixInstalled) return;
   window.__od1804LoginAndAudioFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   let loginBusy = false;
   let loginTicket = 0;
@@ -19480,7 +19465,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1805FinalShellInstalled) return;
   window.__od1805FinalShellInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   let hideTimer = null;
   let shellTimer = null;
@@ -19790,7 +19775,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1809CleanEditorsModesInstalled) return;
   window.__od1809CleanEditorsModesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   let saveTimer = null;
   let renderTimer = null;
@@ -20383,7 +20368,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1810FinalFixesInstalled) return;
   window.__od1810FinalFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   function $(id){ return document.getElementById(id); }
   function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
@@ -20491,7 +20476,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1811HubRefreshInstalled) return;
   window.__od1811HubRefreshInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
 
   function cleanSessionProfile(){
     document.querySelectorAll('.od108-info-card,.od90-profile-card,[data-od90-profile-card],.session-profile-card,.account-profile-card,.menu-profile-card,#session-profile-card,#account-menu-profile,.od108-panel-user-info').forEach(el => el.remove());
@@ -20525,4 +20510,139 @@ function od66InventoryMutationUnlockSoon() {
   else run();
   setTimeout(run, 300);
   setTimeout(run, 900);
+})();
+
+
+/* =========================
+   V1812 - Compactação do hub e remoção total do card One Dice/Ficha Avulsa do menu
+========================= */
+(function od1812CompactHubAndRemoveProfileCard(){
+  'use strict';
+  if (window.__od1812CompactHubInstalled) return;
+  window.__od1812CompactHubInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
+
+  function removeProfileCards(){
+    document.querySelectorAll('#sessions-menu-panel .od90-user-menu-card, #sessions-menu-panel .od75-account-menu-card, .od90-user-menu-card, .od75-account-menu-card, .od108-panel-user-info, .od108-info-card, .od171-back-home').forEach(el => el.remove());
+  }
+
+  function compactHub(){
+    document.querySelector('#sessions-screen.active .od71-shell')?.classList.add('od1812-compact-shell');
+    document.querySelector('#sessions-screen.active .od71-topbar')?.classList.add('od1812-compact-topbar');
+    document.querySelector('#sessions-screen.active #od71-content')?.classList.add('od1812-compact-content');
+    removeProfileCards();
+  }
+
+  document.addEventListener('click', event => {
+    if (event.target.closest?.('#sessions-menu-btn,#toggle-account-panel-btn,#od71-settings-btn,[data-od71-tab],#back-to-sessions-btn')) {
+      setTimeout(compactHub, 0);
+      setTimeout(compactHub, 120);
+    }
+  }, true);
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', compactHub, { once: true });
+  else compactHub();
+  setTimeout(compactHub, 250);
+  setTimeout(compactHub, 900);
+
+  window.od1812CompactHubAndRemoveProfileCard = { compactHub, removeProfileCards };
+})();
+
+
+/* =========================
+   V1813 - Cores do hub novo vinculadas ao tema
+   Mantém o modo escuro, mas atualiza a cor de destaque do redesign
+   conforme a cor escolhida na conta.
+========================= */
+(function od1813ThemeLinkedHub(){
+  'use strict';
+  if (window.__od1813ThemeLinkedHubInstalled) return;
+  window.__od1813ThemeLinkedHubInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.80.13';
+
+  const THEMES = {
+    red:     { main: '#ef2f3b', dark: '#9d1018', soft: 'rgba(239,47,59,.16)', line: 'rgba(239,47,59,.72)' },
+    vermelho:{ main: '#ef2f3b', dark: '#9d1018', soft: 'rgba(239,47,59,.16)', line: 'rgba(239,47,59,.72)' },
+    green:   { main: '#22c55e', dark: '#137a38', soft: 'rgba(34,197,94,.16)', line: 'rgba(34,197,94,.72)' },
+    verde:   { main: '#22c55e', dark: '#137a38', soft: 'rgba(34,197,94,.16)', line: 'rgba(34,197,94,.72)' },
+    blue:    { main: '#38bdf8', dark: '#075985', soft: 'rgba(56,189,248,.16)', line: 'rgba(56,189,248,.72)' },
+    azul:    { main: '#38bdf8', dark: '#075985', soft: 'rgba(56,189,248,.16)', line: 'rgba(56,189,248,.72)' },
+    gold:    { main: '#f5c542', dark: '#8a5a00', soft: 'rgba(245,197,66,.16)', line: 'rgba(245,197,66,.72)' },
+    dourado: { main: '#f5c542', dark: '#8a5a00', soft: 'rgba(245,197,66,.16)', line: 'rgba(245,197,66,.72)' },
+    purple:  { main: '#a855f7', dark: '#581c87', soft: 'rgba(168,85,247,.16)', line: 'rgba(168,85,247,.72)' },
+    roxo:    { main: '#a855f7', dark: '#581c87', soft: 'rgba(168,85,247,.16)', line: 'rgba(168,85,247,.72)' },
+    black:   { main: '#d1d5db', dark: '#374151', soft: 'rgba(209,213,219,.12)', line: 'rgba(209,213,219,.55)' },
+    preto:   { main: '#d1d5db', dark: '#374151', soft: 'rgba(209,213,219,.12)', line: 'rgba(209,213,219,.55)' }
+  };
+
+  function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
+
+  function readSettings(){
+    let settings = {};
+    safe(() => {
+      if (typeof get === 'function' && typeof STORAGE !== 'undefined') {
+        settings = get(STORAGE.settings, {}) || {};
+      }
+    }, null);
+
+    if (!settings || !Object.keys(settings).length) {
+      safe(() => { settings = JSON.parse(localStorage.getItem('one-dice-settings') || '{}') || {}; }, null);
+    }
+
+    return settings || {};
+  }
+
+  function normalizeAccent(value){
+    return String(value || '').trim().toLowerCase()
+      .replace(/[áàãâ]/g, 'a')
+      .replace(/[éê]/g, 'e')
+      .replace(/[í]/g, 'i')
+      .replace(/[óôõ]/g, 'o')
+      .replace(/[ú]/g, 'u')
+      .replace(/[ç]/g, 'c');
+  }
+
+  function applyTheme(){
+    const settings = readSettings();
+    const raw = settings.accent || settings.color || settings.themeColor || settings.accentColor || document.body?.dataset?.accent || 'red';
+    const key = normalizeAccent(raw);
+    const theme = THEMES[key] || THEMES.red;
+
+    const root = document.documentElement;
+    root.style.setProperty('--od-theme-main', theme.main);
+    root.style.setProperty('--od-theme-dark', theme.dark);
+    root.style.setProperty('--od-theme-soft', theme.soft);
+    root.style.setProperty('--od-theme-line', theme.line);
+
+    // Liga também no nome antigo usado por muitos blocos do site.
+    root.style.setProperty('--accent', theme.main);
+    root.style.setProperty('--accent-dark', theme.dark);
+    root.style.setProperty('--accent-soft', theme.soft);
+
+    document.body?.setAttribute('data-od1813-accent', key);
+    root.setAttribute('data-od1813-accent', key);
+  }
+
+  document.addEventListener('change', event => {
+    if (event.target.closest?.('#accent-select,#appearance-accent,[name="accent"],[data-accent-select]')) {
+      setTimeout(applyTheme, 0);
+      setTimeout(applyTheme, 120);
+    }
+  }, true);
+
+  document.addEventListener('click', event => {
+    if (event.target.closest?.('#od84-theme-panel,#sessions-menu-btn,#od71-settings-btn,#theme-toggle,#sessions-theme-toggle')) {
+      setTimeout(applyTheme, 0);
+      setTimeout(applyTheme, 180);
+    }
+  }, true);
+
+  window.addEventListener('storage', applyTheme);
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', applyTheme, { once: true });
+  else applyTheme();
+
+  setTimeout(applyTheme, 250);
+  setTimeout(applyTheme, 900);
+
+  window.od1813ThemeLinkedHub = { applyTheme };
 })();
