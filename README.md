@@ -1,84 +1,83 @@
-# One Dice Site v1.90.1
+# One Dice Site v1.90.2
 
-## Foco da atualização
+## Objetivo
 
-Reformulação da parte interna das campanhas/mesas.
+Patch corretivo da v1.90.1, focado nos bugs visuais e de fluxo do menu inicial, personagens, campanhas e gerenciador interno de campanha.
 
-A entrada da campanha agora abre um **Gerenciador de Campanha** separado da ficha, com abas próprias no estilo de sites como LitchRPG/Roll20.
+## Correções feitas
 
-## Novo fluxo interno
+### 1. Menu principal centralizado
 
-Ao clicar em **Acessar** em uma campanha, o sistema abre o novo gerenciador com as abas:
+A barra com:
 
-1. Personagens;
-2. Combate;
-3. Jogadores;
-4. Chat;
-5. Escudo.
+- Início;
+- Personagens;
+- Campanhas;
 
-## Aba Personagens
+foi forçada a ficar centralizada dentro da topbar.
 
-Mostra todos os personagens da campanha com:
+### 2. Blocos da página inicial levantados
 
-- retrato;
-- nome;
-- raça/classe/nível;
-- jogador dono;
-- entrada na mesa.
+Os quatro blocos da página inicial foram reposicionados para cima, evitando corte e melhorando a área clicável.
 
-Para o mestre, aparecem ações:
+### 3. Atributos da ficha
 
-- Acessar Ficha;
-- OBS;
-- Remover jogador da mesa.
+Corrigido o clique nos cards de atributos:
 
-Para jogadores, aparece apenas o acesso permitido à própria ficha.
+- clicar no quadrado do atributo rola o teste;
+- D20 usa `1D20 + bônus`;
+- Pool Dice rola pool de D20 e pega o maior resultado.
 
-## Aba Combate
+### 4. Scroll da aba Personagens
 
-Nova preparação de combate:
+A área de personagens ganhou espaçamento lateral para a barra de scroll não ficar colada.
 
-- lista personagens participantes;
-- botão **Rolar Iniciativa**;
-- ordem de turno organizada automaticamente;
-- mestre pode iniciar/encerrar combate;
-- mestre pode limpar a ordem de iniciativa.
+### 5. Cards de personagens em retângulo horizontal
 
-Os jogadores podem rolar iniciativa no menu de combate.
-Também foi adicionado botão de iniciativa dentro da ficha quando aberta pela campanha.
+A aba Personagens foi ajustada para cards horizontais:
 
-## Aba Jogadores
+- imagem à esquerda;
+- informações no centro;
+- botões em uma linha.
 
-Mostra as contas vinculadas à campanha:
+### 6. Menu Minhas Campanhas
 
-- nome da conta;
-- função;
-- entrada;
-- status online/offline local.
+O menu de campanhas foi reorganizado para usar 1 campanha por linha, em formato horizontal, removendo o visual alto demais e desorganizado.
 
-## Aba Chat
+### 7. Campanha sem ficha vinculada
 
-Chat ao vivo da campanha com mensagens dos jogadores.
+Se a campanha não tiver personagem vinculado, o gerenciador mostra:
 
-## Aba Escudo
+- nenhuma ficha vinculada à mesa.
 
-Disponível apenas para o mestre.
+Não cria mais uma informação falsa como se existisse ficha.
 
-Mostra:
+### 8. Aba Jogadores com foto
 
-- foto do personagem;
-- nome;
-- jogador;
-- PV;
-- PE;
-- acesso rápido à ficha.
+A aba Jogadores agora mostra imagem da conta/ficha quando disponível.
 
-## Limpeza de camadas antigas
+### 9. Acesso à ficha pela campanha
 
-O novo gerenciador assume o fluxo interno da campanha e oculta o app-grid antigo da ficha/painel enquanto estiver no gerenciamento.
+A abertura de ficha pelo gerenciador foi protegida para reduzir flicker e evitar sobreposição com o gerenciador.
 
-O banco/localStorage não foi apagado para não destruir campanhas já criadas. A limpeza foi feita no fluxo visual e de renderização para evitar sobreposição com as camadas antigas.
+### 10. Desvincular ficha
+
+Adicionado botão para desvincular a ficha da campanha sem remover o jogador.
+
+### 11. Voltar para campanha
+
+Quando uma ficha é aberta a partir da campanha, aparece o botão:
+
+- Voltar para Campanha.
+
+### 12. Menu da ficha menor
+
+O menu aberto pelas três linhas foi compactado para não ficar com um retângulo enorme vazio.
+
+## Observação importante
+
+Os dados existentes não foram apagados. A correção atua nas camadas visuais e no fluxo de renderização para evitar sobreposição e bugs, sem destruir campanhas, contas ou fichas já criadas.
 
 ## Versão
 
-1.90.1
+1.90.2
