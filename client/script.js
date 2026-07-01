@@ -5,7 +5,7 @@
 ========================= */
 (function od139EarlyGuards(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
   if (!window.CSS) window.CSS = {};
   if (typeof window.CSS.escape !== 'function') {
     window.CSS.escape = function(value) {
@@ -5413,33 +5413,39 @@ function od66InventoryMutationUnlockSoon() {
 
   function od71RenderHome(content) {
     content.innerHTML = `
-      <section class="od71-home-hero">
-        <div class="od71-hero-inner">
-          <img class="od71-hero-logo od82-hero-logo-full" src="assets/logo-completa.png" alt="One Dice" />
-          <div class="od71-divider"></div>
-          <p class="od71-eyebrow">A aventura começa</p>
-          <div class="od71-home-grid">
-            <button class="od71-home-card" type="button" id="od71-create-character">
-              <span class="od71-card-icon">＋</span>
-              <strong>Criar Personagem</strong>
-              <small>Dê vida a um novo herói</small>
-            </button>
-            <button class="od71-home-card" type="button" id="od71-create-campaign-home">
-              <span class="od71-card-icon">♜</span>
-              <strong>Criar Campanha</strong>
-              <small>Forje uma nova aventura</small>
-            </button>
-            <button class="od71-home-card" type="button" data-od71-tab="characters">
-              <span class="od71-card-icon">▱</span>
-              <strong>Meus Personagens</strong>
-              <small>Acesse suas fichas</small>
-            </button>
-            <button class="od71-home-card" type="button" data-od71-tab="campaigns">
-              <span class="od71-card-icon">⚔</span>
-              <strong>Minhas Campanhas</strong>
-              <small>Continue sua jornada</small>
-            </button>
-          </div>
+      <section class="od1811-home-hero od71-home-hero">
+        <div class="od1811-title-wrap">
+          <div class="od1811-title-line"></div>
+          <span class="od1811-title-diamond"></span>
+          <div class="od1811-title-line"></div>
+        </div>
+        <h1 class="od1811-home-title">A AVENTURA COMEÇA</h1>
+        <div class="od1811-title-wrap bottom">
+          <div class="od1811-title-line"></div>
+          <span class="od1811-title-diamond"></span>
+          <div class="od1811-title-line"></div>
+        </div>
+        <div class="od1811-home-grid od71-home-grid">
+          <button class="od1811-home-card od71-home-card" type="button" id="od71-create-character">
+            <span class="od1811-card-icon">＋</span>
+            <strong>Criar Personagem</strong>
+            <small>Dê vida a um novo herói</small>
+          </button>
+          <button class="od1811-home-card od71-home-card" type="button" id="od71-create-campaign-home">
+            <span class="od1811-card-icon">♜</span>
+            <strong>Criar Campanha</strong>
+            <small>Forje sua nova aventura</small>
+          </button>
+          <button class="od1811-home-card od71-home-card" type="button" data-od71-tab="characters">
+            <span class="od1811-card-icon">▣</span>
+            <strong>Meus Personagens</strong>
+            <small>Acesse seus heróis</small>
+          </button>
+          <button class="od1811-home-card od71-home-card" type="button" data-od71-tab="campaigns">
+            <span class="od1811-card-icon">⚔</span>
+            <strong>Minhas Campanhas</strong>
+            <small>Continue sua jornada</small>
+          </button>
         </div>
       </section>`;
   }
@@ -5459,35 +5465,41 @@ function od66InventoryMutationUnlockSoon() {
   function od71RenderCharacters(content) {
     const chars = userCharacters ? userCharacters() : [];
     content.innerHTML = `
-      <section class="od71-page-head">
-        <div>
+      <section class="od1811-page-head od71-page-head">
+        <div class="od1811-head-copy">
+          <div class="od1811-section-mark"><span></span><i></i><span></span></div>
           <h1>Seus Personagens</h1>
           <div class="od71-count">${chars.length}/${OD71_LIMITS.characters} personagens</div>
         </div>
-        <div class="od71-actions">
-          <button class="od71-action primary" type="button" id="od71-new-character">+ Novo Personagem</button>
+        <div class="od1811-head-actions od71-actions">
+          <button class="od1811-outline-btn od71-action" type="button" data-od71-tab="home">← Início</button>
+          <button class="od1811-solid-btn od71-action primary" type="button" id="od71-new-character">+ Novo Personagem</button>
         </div>
       </section>
-      <section class="od71-list od85-character-list" id="od71-character-list"></section>`;
+      <section class="od1811-character-list od71-list od85-character-list" id="od71-character-list"></section>`;
     const list = document.getElementById('od71-character-list');
     if (!list) return;
     if (!chars.length) {
-      list.innerHTML = `<div class="od71-empty">Você ainda não tem personagens. Crie o primeiro para começar.</div>`;
+      list.innerHTML = `<div class="od71-empty od1811-empty">Você ainda não tem personagens. Crie o primeiro para começar.</div>`;
       return;
     }
     list.innerHTML = chars.slice(0, OD71_LIMITS.characters).map(char => {
       const campaignName = od85CampaignNameForCharacter(char);
       return `
-      <article class="od71-character-card od85-character-card">
-        <img src="${escapeHtml(char.portrait || 'assets/logo.jpg')}" alt="" />
-        <div class="od71-card-body">
+      <article class="od1811-character-card od71-character-card od85-character-card">
+        <div class="od1811-character-art">
+          <img src="${escapeHtml(char.portrait || 'assets/logo.jpg')}" alt="" />
+        </div>
+        <div class="od1811-character-main od71-card-body">
           <h3>${escapeHtml(char.name || 'Novo Personagem')}</h3>
+          <div class="od1811-name-divider"></div>
           <div class="od71-card-meta">${escapeHtml(char.race || 'Raça')} • ${escapeHtml(char.className || 'Classe')} • Nv. ${escapeHtml(char.level || 1)}</div>
           <div class="od71-card-row od85-campaign-row"><small>${escapeHtml(campaignName)}</small></div>
-          <div class="od71-card-row end od85-card-actions">
-            <button class="od71-card-btn" type="button" data-od71-open-character="${escapeHtml(char.id)}">Acessar Ficha</button>
-            <button class="od71-card-btn danger od85-delete-character" type="button" data-od71-delete-character="${escapeHtml(char.id)}">Excluir</button>
-          </div>
+        </div>
+        <div class="od1811-character-actions od85-card-actions">
+          <button class="od71-card-btn primary" type="button" data-od71-open-character="${escapeHtml(char.id)}">Acessar Ficha</button>
+          <button class="od71-card-btn" type="button" data-od138-duplicate-character="${escapeHtml(char.id)}">Duplicar</button>
+          <button class="od71-card-btn danger od85-delete-character" type="button" data-od71-delete-character="${escapeHtml(char.id)}">Excluir</button>
         </div>
       </article>`;
     }).join('');
@@ -5498,46 +5510,45 @@ function od66InventoryMutationUnlockSoon() {
     const members = (getMembers ? getMembers() : []).filter(m => m.userId === currentUser?.id);
     const userCampaigns = members.map(member => ({ member, campaign: campaigns.find(c => c.id === member.campaignId) })).filter(x => x.campaign).slice(0, OD71_LIMITS.campaigns);
     content.innerHTML = `
-      <section class="od71-page-head">
-        <div>
+      <section class="od1811-page-head od71-page-head od1811-campaign-head">
+        <div class="od1811-head-copy">
+          <div class="od1811-section-mark"><span></span><i></i><span></span></div>
           <h1>Suas Campanhas</h1>
           <div class="od71-count">${userCampaigns.length}/${OD71_LIMITS.campaigns} campanhas</div>
         </div>
-        <div class="od71-actions">
-          <button class="od71-action" type="button" id="od71-open-join">↪ Entrar</button>
-          <button class="od71-action primary" type="button" id="od71-new-campaign">+ Nova Campanha</button>
+        <div class="od1811-head-actions od71-actions">
+          <button class="od1811-outline-btn od71-action" type="button" data-od71-tab="home">← Início</button>
+          <button class="od1811-outline-btn od71-action" type="button" id="od71-open-join">Entrar</button>
+          <button class="od1811-solid-btn od71-action primary" type="button" id="od71-new-campaign">+ Nova Campanha</button>
         </div>
       </section>
-      <div class="od71-mini-form" id="od71-join-form">
+      <div class="od71-mini-form od1811-mini-form" id="od71-join-form">
         <input id="od71-join-code" maxlength="5" placeholder="Código da campanha" />
-        <button class="od71-action primary" type="button" id="od71-join-confirm">Entrar</button>
+        <button class="od71-action primary od1811-solid-btn" type="button" id="od71-join-confirm">Entrar</button>
       </div>
-      <section class="od71-list" id="od71-campaign-list"></section>`;
+      <section class="od71-list od1811-campaign-list" id="od71-campaign-list"></section>`;
     const list = document.getElementById('od71-campaign-list');
     if (!list) return;
     if (!userCampaigns.length) {
-      list.innerHTML = `<div class="od71-empty">Você ainda não criou ou entrou em nenhuma campanha.</div>`;
+      list.innerHTML = `<div class="od71-empty od1811-empty">Você ainda não criou ou entrou em nenhuma campanha.</div>`;
       return;
     }
     const chars = get(STORAGE.characters, []);
     list.innerHTML = userCampaigns.map(({ member, campaign }) => {
       const char = chars.find(c => c.id === member.characterId);
       return `
-        <article class="od71-campaign-card">
-          <div class="od71-campaign-top">
-            <div class="od71-card-body">
-              <h3>${escapeHtml(campaign.name || 'Campanha')}</h3>
-              <div class="od71-card-meta">Código: <b>${escapeHtml(campaign.code)}</b> • Papel: ${escapeHtml(member.role || 'jogador')}</div>
-            </div>
-            <div class="od71-campaign-preview">
-              <img src="${escapeHtml(char?.portrait || 'assets/logo.jpg')}" alt="" />
-              <span>${char ? escapeHtml(char.name) : 'Sem ficha escolhida'}</span>
-            </div>
+        <article class="od1811-campaign-card od71-campaign-card od86-campaign-card">
+          <div class="od1811-campaign-media od71-campaign-preview"><img src="${escapeHtml(char?.portrait || 'assets/logo.jpg')}" alt="" /></div>
+          <div class="od1811-campaign-main od71-card-body">
+            <h3>${escapeHtml(campaign.name || 'Campanha')}</h3>
+            <div class="od1811-name-divider"></div>
+            <div class="od71-card-meta">Código: <b>${escapeHtml(campaign.code)}</b> • Papel: ${escapeHtml(member.role || 'jogador')}</div>
+            <div class="od71-card-row"><small>${char ? escapeHtml(char.name) : 'Sem ficha escolhida'}</small></div>
           </div>
-          <div class="od71-card-row end">
+          <div class="od1811-campaign-actions od71-card-row end od86-campaign-actions">
             <button class="od71-card-btn primary" type="button" data-enter-campaign="${campaign.id}">Acessar</button>
             <button class="od71-card-btn" type="button" data-choose-campaign-char="${campaign.id}">Escolher Ficha</button>
-            ${campaign.ownerId === currentUser?.id ? `<button class="od71-card-btn" type="button" data-copy-code="${campaign.code}">Copiar Código</button><button class="od71-card-btn" type="button" data-delete-campaign="${campaign.id}">Excluir</button>` : `<button class="od71-card-btn" type="button" data-leave-campaign="${campaign.id}">Sair</button>`}
+            ${campaign.ownerId === currentUser?.id ? `<button class="od71-card-btn" type="button" data-copy-code="${campaign.code}">Copiar Código</button><button class="od71-card-btn danger" type="button" data-delete-campaign="${campaign.id}">Excluir</button>` : `<button class="od71-card-btn" type="button" data-leave-campaign="${campaign.id}">Sair</button>`}
           </div>
         </article>`;
     }).join('');
@@ -10823,35 +10834,16 @@ function od66InventoryMutationUnlockSoon() {
   function renderBrand(){
     const brand = document.querySelector('#main-topbar .brand');
     if (!brand) return;
-
-    const user = getUser();
-    const char = getChar();
-    const camp = getCamp();
-    const hp = numberFrom(char, ['pv', 'hp', 'currentHp', 'vidaAtual']);
-    const hpMax = numberFrom(char, ['pvMax', 'hpMax', 'maxHp', 'vidaMaxima'], 1);
-    const pe = numberFrom(char, ['pe', 'currentPe', 'esforcoAtual']);
-    const peMax = numberFrom(char, ['peMax', 'maxPe', 'esforcoMaximo'], 1);
-
-    const html = `
-      <div class="od108-info-avatar-wrap">
-        <img class="od108-info-avatar" src="${esc(avatar())}" alt="Foto do usuário" onerror="this.src='assets/account-logo.png'" />
-      </div>
-      <div class="od108-info-body">
-        <div class="od108-info-kicker">PERFIL DA SESSÃO</div>
-        <strong class="od108-info-name">${esc(userName())}</strong>
-        <span id="current-user-label" class="od108-compat-label">${esc(user?.nick ? '@' + user.nick : 'Conta One Dice')}</span>
-        <div class="od108-info-pills">
-          <span>${esc(roleLabel())}</span>
-          <span>${esc(camp?.name || 'Fora de mesa')}</span>
-          <span>${esc(char?.name || 'Sem ficha aberta')}</span>
-        </div>
-        ${char ? `<div class="od108-info-stats">${statBlock('PV', hp, hpMax, 'hp')}${statBlock('PE', pe, peMax, 'pe')}</div>` : `<div class="od108-info-empty">Abra uma ficha para ver PV e PE aqui.</div>`}
+    const cleanHtml = `
+      <img src="/assets/logo-texto.png" alt="One Dice" />
+      <div>
+        <strong>One Dice</strong>
+        <span id="current-user-label">Mesa Online</span>
       </div>`;
-
-    if (brand.dataset.od108Html !== html) {
-      brand.dataset.od108Html = html;
-      brand.classList.add('od108-info-card');
-      brand.innerHTML = html;
+    if (brand.dataset.od1811Clean !== cleanHtml) {
+      brand.dataset.od1811Clean = cleanHtml;
+      brand.classList.remove('od108-info-card');
+      brand.innerHTML = cleanHtml;
     }
   }
 
@@ -11839,7 +11831,7 @@ function od66InventoryMutationUnlockSoon() {
    Este bloco não altera regras de ficha; apenas melhora autonomia e experiência.
 ========================= */
 (function od115Maintenance(){
-  const VERSION = '1.80.10';
+  const VERSION = '1.80.11';
   const STORAGE_PREFIX = 'od_';
   const routeMap = {
     home: '/inicio',
@@ -13440,7 +13432,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od136AttributesClean(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   const ATTRS = [
     ['forca', 'Força'], ['agilidade', 'Agilidade'], ['vigor', 'Vigor'], ['intelecto', 'Intelecto'], ['presenca', 'Presença']
@@ -13608,7 +13600,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od137SheetStabilityAndManualDefenseDodge(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   const $ = id => document.getElementById(id);
   const EDITABLE = 'input, textarea, select, [contenteditable="true"]';
@@ -13970,7 +13962,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od138AuditAndDuplicateSheetInstalled) return;
   window.__od138AuditAndDuplicateSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   const DUP_SELECTOR = '[data-od138-duplicate-character], [data-od71-copy-character], [data-copy-account-character]';
 
@@ -14163,7 +14155,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od139ExtraErrorFixesInstalled) return;
   window.__od139ExtraErrorFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   const IMAGE_KEYS = [
     'portrait','portraitUrl','image','imageUrl','photo','photoUrl','avatar','avatarUrl','retrato','foto',
@@ -14318,7 +14310,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od140GeneralImprovementsInstalled) return;
   window.__od140GeneralImprovementsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   const VERSION = '1.80.5';
   const BACKUP_KEY = 'od_sheet_backups_v140';
@@ -14799,7 +14791,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od141AuditHardeningInstalled) return;
   window.__od141AuditHardeningInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   function pruneBackups(){
     try {
@@ -14850,7 +14842,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od142FinalCleanupInstalled) return;
   window.__od142FinalCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   function keepFirst(selector){
     const nodes = Array.from(document.querySelectorAll(selector));
@@ -14936,7 +14928,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od148SafeRollbackPatchInstalled) return;
   window.__od148SafeRollbackPatchInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   function hideManualNotes(){
     ['defense-effective-note','dodge-formula-note'].forEach(id => {
@@ -14989,7 +14981,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od152StableLayoutFixesInstalled) return;
   window.__od152StableLayoutFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   const $ = id => document.getElementById(id);
   const n = (value, fallback = 0) => {
@@ -15181,7 +15173,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od155SessionDashboardStability(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   const STORE_PREFIX = 'od155_dashboard_collapsed_';
   const lastSig = { player: '', master: '' };
@@ -15337,7 +15329,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od156ProtectOtherPlayersSheetsInstalled) return;
   window.__od156ProtectOtherPlayersSheetsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   const PROTECTED_ARRAYS = ['inventoryItems','blockInventory','abilities','spells','attacks','conditions','transformations','dropItems'];
   const PROTECTED_OBJECTS = ['skills','resistances','attrs','caster','obsIcons','portraitCrop','settings'];
@@ -15442,7 +15434,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od157ProtectOwnSheetPartialAutosaveInstalled) return;
   window.__od157ProtectOwnSheetPartialAutosaveInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   function clone(value){
     try { return structuredClone(value); } catch (_) {
@@ -15598,7 +15590,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od159StableSessionRenderInstalled) return;
   window.__od159StableSessionRenderInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   const $ = id => document.getElementById(id);
   const last = { tableSig: '', tableAt: 0, playerSig: '', masterSig: '' };
@@ -15731,7 +15723,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od160AccountSheetIsolationInstalled) return;
   window.__od160AccountSheetIsolationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   const $ = id => document.getElementById(id);
 
@@ -15882,7 +15874,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od161EquipmentProficienciesInstalled) return;
   window.__od161EquipmentProficienciesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   const GROUPS = {
     weapons: [
@@ -16049,7 +16041,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od164StableCleanRoutesInstalled) return;
   window.__od164StableCleanRoutesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   const VERSION = '1.80.5';
   let applyingRoute = false;
@@ -16257,7 +16249,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od165ExactPortraitCrop(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
   if (window.__od165ExactPortraitCropInstalled) return;
   window.__od165ExactPortraitCropInstalled = true;
 
@@ -16379,7 +16371,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1685AreaSeparationInstalled) return;
   window.__od1685AreaSeparationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   const AREA = {
     AUTH: 'login',
@@ -16568,7 +16560,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1699StableSkillUntrainInstalled) return;
   window.__od1699StableSkillUntrainInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   const pending = new Map();
   let flushTimer = null;
@@ -16796,7 +16788,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16910SkillSaveMergeInstalled) return;
   window.__od16910SkillSaveMergeInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   let lastExplicit = {};
   let lastExplicitAt = 0;
@@ -17012,7 +17004,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16911StablePortraitDuringResourcesInstalled) return;
   window.__od16911StablePortraitDuringResourcesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   const RESOURCE_SELECTOR = '#pv-current, #pv-max, #pe-current, #pe-max';
   const MAIN_SELECTOR = '#char-portrait-preview';
@@ -17184,7 +17176,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od170ModularSheetInstalled) return;
   window.__od170ModularSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   const STORE_KEY = 'od170_modules_state_v1';
   const DENSE_KEY = 'od170_dense_sheet_v1';
@@ -17428,7 +17420,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od171HubNavigationAndScrollInstalled) return;
   window.__od171HubNavigationAndScrollInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   let pending = false;
 
@@ -17552,7 +17544,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1715ScrollAndSmartCollapseInstalled) return;
   window.__od1715ScrollAndSmartCollapseInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   let scheduled = false;
 
@@ -17794,7 +17786,7 @@ function od66InventoryMutationUnlockSoon() {
    A correção principal está no index.html e no server/server.js.
 ========================= */
 (function od1762ReloadPathFixMarker(){
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 })();
 
 
@@ -17817,7 +17809,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1775ReloadRouteRestoreInstalled) return;
   window.__od1775ReloadRouteRestoreInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   const INITIAL_PATH = location.pathname + location.search;
   const INITIAL_PARTS = location.pathname.split('/').filter(Boolean).map(part => {
@@ -18022,7 +18014,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od178SkillsDesignPolishInstalled) return;
   window.__od178SkillsDesignPolishInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   let timer = null;
 
@@ -18095,7 +18087,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1781AttributeTextFixInstalled) return;
   window.__od1781AttributeTextFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   let timer = null;
 
@@ -18282,7 +18274,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1787AttributeNameNoEllipsisInstalled) return;
   window.__od1787AttributeNameNoEllipsisInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   const DISPLAY = {
     'força': 'FORÇA',
@@ -18378,7 +18370,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1788AttributeFullNamesInstalled) return;
   window.__od1788AttributeFullNamesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   const FULL = {
     forca: 'FORÇA',
@@ -18478,7 +18470,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od17814AttributesStableFinalInstalled) return;
   window.__od17814AttributesStableFinalInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   const ATTRS = [
     ['forca', 'FORÇA'],
@@ -18649,7 +18641,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1801SafeShellInstalled) return;
   window.__od1801SafeShellInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   const SETTINGS_KEY = 'od_settings';
   const DEFAULTS = { theme: 'dark', accent: 'red', skillsCompact: true, font: 'impact', sound: true };
@@ -18849,7 +18841,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1802RobustLoginInstalled) return;
   window.__od1802RobustLoginInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   function $(id){ return document.getElementById(id); }
   function cleanNick(value){
@@ -18990,7 +18982,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1803AreaCleanupInstalled) return;
   window.__od1803AreaCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   const AREA = {
     AUTH: 'login',
@@ -19230,7 +19222,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1804LoginAndAudioFixInstalled) return;
   window.__od1804LoginAndAudioFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   let loginBusy = false;
   let loginTicket = 0;
@@ -19488,7 +19480,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1805FinalShellInstalled) return;
   window.__od1805FinalShellInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   let hideTimer = null;
   let shellTimer = null;
@@ -19798,7 +19790,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1809CleanEditorsModesInstalled) return;
   window.__od1809CleanEditorsModesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   let saveTimer = null;
   let renderTimer = null;
@@ -20391,7 +20383,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1810FinalFixesInstalled) return;
   window.__od1810FinalFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.80.10';
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
 
   function $(id){ return document.getElementById(id); }
   function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
@@ -20489,4 +20481,48 @@ function od66InventoryMutationUnlockSoon() {
   setTimeout(run, 900);
 
   window.od1810FinalFixes = { run, cleanupSkillsModule, cleanupSessionProfile, refreshSheetButton, applyBlockMode };
+})();
+
+
+/* =========================
+   V1811 - Home principal redesenhado e remoção final do perfil da sessão
+========================= */
+(function od1811HubRefresh(){
+  'use strict';
+  if (window.__od1811HubRefreshInstalled) return;
+  window.__od1811HubRefreshInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.80.11';
+
+  function cleanSessionProfile(){
+    document.querySelectorAll('.od108-info-card,.od90-profile-card,[data-od90-profile-card],.session-profile-card,.account-profile-card,.menu-profile-card,#session-profile-card,#account-menu-profile,.od108-panel-user-info').forEach(el => el.remove());
+    const brand = document.querySelector('#main-topbar .brand');
+    if (brand && !brand.querySelector('img[src*="logo-texto"], img[src="/assets/logo-texto.png"]')) {
+      brand.classList.remove('od108-info-card');
+      brand.innerHTML = '<img src="/assets/logo-texto.png" alt="One Dice" /><div><strong>One Dice</strong><span id="current-user-label">Mesa Online</span></div>';
+    }
+  }
+
+  function decorateHub(){
+    const shell = document.querySelector('#sessions-screen.active .od71-shell');
+    if (shell) shell.classList.add('od1811-shell');
+    const topbar = document.querySelector('#sessions-screen.active .od71-topbar');
+    if (topbar) topbar.classList.add('od1811-topbar');
+  }
+
+  function run(){
+    cleanSessionProfile();
+    decorateHub();
+  }
+
+  document.addEventListener('click', ev => {
+    if (ev.target.closest?.('#toggle-account-panel-btn,#sessions-menu-btn,#back-to-sessions-btn,[data-od71-tab],#od71-new-character,#od71-new-campaign,#od71-create-character,#od71-create-campaign-home')) {
+      setTimeout(run, 0);
+      setTimeout(run, 120);
+    }
+  }, true);
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run, { once: true });
+  else run();
+  setTimeout(run, 300);
+  setTimeout(run, 900);
 })();
