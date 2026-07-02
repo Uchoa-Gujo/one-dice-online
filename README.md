@@ -1,27 +1,30 @@
-# One Dice Site v1.95.2
+# One Dice Site v1.95.3
 
 ## Foco
 
-Hotfix para corrigir regressões da v1.95.1 dentro da ficha e da campanha.
+Hotfix de campanha, combate, chat, Owlbear, boot pós-login e polimento visual.
 
-## Corrigido
+## Correções principais
 
-- Ficha abrindo com layout quebrado;
-- painel de rolagens/chat sobrepondo o menu/miolo da ficha;
-- menu de três linhas sumindo dentro da ficha;
-- o menu de três linhas continua oculto apenas dentro da campanha;
-- abertura de ficha pela aba Personagens da campanha;
-- abertura de ficha pela aba Personagens do hub;
-- campanha ficando preta ao abrir;
-- botão Voltar da campanha voltando para `/campanhas`;
-- botão Voltar mal posicionado na ficha/campanha;
-- retorno da ficha para campanha com botão pequeno e separado;
-- atributos voltam para modelo clássico próximo das versões 1.89/1.90;
-- removidos efeitos de `content-visibility`/`contain` que estavam causando tela preta ou render incompleto na campanha.
+- Reduzidas travas e vai-e-volta do scroll dentro de campanhas;
+- removido o quadrado/retângulo antigo do canto superior direito em campanha;
+- corrigido flicker de botões dentro da campanha;
+- link Owlbear reforçado dentro do editor de campanha;
+- botões Owlbear passam a abrir o link configurado da mesa;
+- botão “Criar mapa Owlbear” continua abrindo https://www.owlbear.rodeo/;
+- chat da campanha ganha avatar/foto em estilo Discord;
+- chat passa a ter cache local para não sumir ao trocar de aba/atualizar;
+- corrigida aba/visual antigo piscando ao voltar para a campanha ou configurar Owlbear;
+- combat screen ajustada para participantes e ordem de turno não quebrarem;
+- mestre pode adicionar nome/NPC manual na ordem;
+- iniciar/encerrar combate reforçados;
+- jogadores só conseguem rolar iniciativa com combate iniciado;
+- menu dos três tracinhos na ficha vira apenas botão, sem retângulo grande atrás;
+- boot pós-login reforçado para não precisar de F5;
+- removido/ocultado Histórico Curto das fichas;
+- arredondamentos corrigidos para evitar fundo quadrado vazando nas quinas.
 
 ## Validação
-
-Validar:
 
 - `npm run check`;
 - `client/script.js`;
@@ -36,4 +39,4 @@ Validar:
 
 ## Versão
 
-1.95.2
+1.95.3

@@ -5,7 +5,7 @@
 ========================= */
 (function od139EarlyGuards(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
   if (!window.CSS) window.CSS = {};
   if (typeof window.CSS.escape !== 'function') {
     window.CSS.escape = function(value) {
@@ -13430,7 +13430,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od136AttributesClean(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const ATTRS = [
     ['forca', 'Força'], ['agilidade', 'Agilidade'], ['vigor', 'Vigor'], ['intelecto', 'Intelecto'], ['presenca', 'Presença']
@@ -13598,7 +13598,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od137SheetStabilityAndManualDefenseDodge(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const $ = id => document.getElementById(id);
   const EDITABLE = 'input, textarea, select, [contenteditable="true"]';
@@ -13960,7 +13960,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od138AuditAndDuplicateSheetInstalled) return;
   window.__od138AuditAndDuplicateSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const DUP_SELECTOR = '[data-od138-duplicate-character], [data-od71-copy-character], [data-copy-account-character]';
 
@@ -14153,7 +14153,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od139ExtraErrorFixesInstalled) return;
   window.__od139ExtraErrorFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const IMAGE_KEYS = [
     'portrait','portraitUrl','image','imageUrl','photo','photoUrl','avatar','avatarUrl','retrato','foto',
@@ -14308,7 +14308,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od140GeneralImprovementsInstalled) return;
   window.__od140GeneralImprovementsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const VERSION = '1.80.5';
   const BACKUP_KEY = 'od_sheet_backups_v140';
@@ -14789,7 +14789,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od141AuditHardeningInstalled) return;
   window.__od141AuditHardeningInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   function pruneBackups(){
     try {
@@ -14840,7 +14840,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od142FinalCleanupInstalled) return;
   window.__od142FinalCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   function keepFirst(selector){
     const nodes = Array.from(document.querySelectorAll(selector));
@@ -14926,7 +14926,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od148SafeRollbackPatchInstalled) return;
   window.__od148SafeRollbackPatchInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   function hideManualNotes(){
     ['defense-effective-note','dodge-formula-note'].forEach(id => {
@@ -14979,7 +14979,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od152StableLayoutFixesInstalled) return;
   window.__od152StableLayoutFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const $ = id => document.getElementById(id);
   const n = (value, fallback = 0) => {
@@ -15171,7 +15171,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od155SessionDashboardStability(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const STORE_PREFIX = 'od155_dashboard_collapsed_';
   const lastSig = { player: '', master: '' };
@@ -15327,7 +15327,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od156ProtectOtherPlayersSheetsInstalled) return;
   window.__od156ProtectOtherPlayersSheetsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const PROTECTED_ARRAYS = ['inventoryItems','blockInventory','abilities','spells','attacks','conditions','transformations','dropItems'];
   const PROTECTED_OBJECTS = ['skills','resistances','attrs','caster','obsIcons','portraitCrop','settings'];
@@ -15432,7 +15432,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od157ProtectOwnSheetPartialAutosaveInstalled) return;
   window.__od157ProtectOwnSheetPartialAutosaveInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   function clone(value){
     try { return structuredClone(value); } catch (_) {
@@ -15588,7 +15588,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od159StableSessionRenderInstalled) return;
   window.__od159StableSessionRenderInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const $ = id => document.getElementById(id);
   const last = { tableSig: '', tableAt: 0, playerSig: '', masterSig: '' };
@@ -15721,7 +15721,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od160AccountSheetIsolationInstalled) return;
   window.__od160AccountSheetIsolationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const $ = id => document.getElementById(id);
 
@@ -15872,7 +15872,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od161EquipmentProficienciesInstalled) return;
   window.__od161EquipmentProficienciesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const GROUPS = {
     weapons: [
@@ -16039,7 +16039,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od164StableCleanRoutesInstalled) return;
   window.__od164StableCleanRoutesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const VERSION = '1.80.5';
   let applyingRoute = false;
@@ -16247,7 +16247,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od165ExactPortraitCrop(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
   if (window.__od165ExactPortraitCropInstalled) return;
   window.__od165ExactPortraitCropInstalled = true;
 
@@ -16369,7 +16369,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1685AreaSeparationInstalled) return;
   window.__od1685AreaSeparationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const AREA = {
     AUTH: 'login',
@@ -16558,7 +16558,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1699StableSkillUntrainInstalled) return;
   window.__od1699StableSkillUntrainInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const pending = new Map();
   let flushTimer = null;
@@ -16786,7 +16786,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16910SkillSaveMergeInstalled) return;
   window.__od16910SkillSaveMergeInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   let lastExplicit = {};
   let lastExplicitAt = 0;
@@ -17002,7 +17002,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16911StablePortraitDuringResourcesInstalled) return;
   window.__od16911StablePortraitDuringResourcesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const RESOURCE_SELECTOR = '#pv-current, #pv-max, #pe-current, #pe-max';
   const MAIN_SELECTOR = '#char-portrait-preview';
@@ -17174,7 +17174,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od170ModularSheetInstalled) return;
   window.__od170ModularSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const STORE_KEY = 'od170_modules_state_v1';
   const DENSE_KEY = 'od170_dense_sheet_v1';
@@ -17418,7 +17418,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od171HubNavigationAndScrollInstalled) return;
   window.__od171HubNavigationAndScrollInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   let pending = false;
 
@@ -17542,7 +17542,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1715ScrollAndSmartCollapseInstalled) return;
   window.__od1715ScrollAndSmartCollapseInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   let scheduled = false;
 
@@ -17784,7 +17784,7 @@ function od66InventoryMutationUnlockSoon() {
    A correção principal está no index.html e no server/server.js.
 ========================= */
 (function od1762ReloadPathFixMarker(){
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 })();
 
 
@@ -17807,7 +17807,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1775ReloadRouteRestoreInstalled) return;
   window.__od1775ReloadRouteRestoreInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const INITIAL_PATH = location.pathname + location.search;
   const INITIAL_PARTS = location.pathname.split('/').filter(Boolean).map(part => {
@@ -18012,7 +18012,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od178SkillsDesignPolishInstalled) return;
   window.__od178SkillsDesignPolishInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   let timer = null;
 
@@ -18085,7 +18085,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1781AttributeTextFixInstalled) return;
   window.__od1781AttributeTextFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   let timer = null;
 
@@ -18272,7 +18272,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1787AttributeNameNoEllipsisInstalled) return;
   window.__od1787AttributeNameNoEllipsisInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const DISPLAY = {
     'força': 'FORÇA',
@@ -18368,7 +18368,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1788AttributeFullNamesInstalled) return;
   window.__od1788AttributeFullNamesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const FULL = {
     forca: 'FORÇA',
@@ -18468,7 +18468,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od17814AttributesStableFinalInstalled) return;
   window.__od17814AttributesStableFinalInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const ATTRS = [
     ['forca', 'FORÇA'],
@@ -18639,7 +18639,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1801SafeShellInstalled) return;
   window.__od1801SafeShellInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const SETTINGS_KEY = 'od_settings';
   const DEFAULTS = { theme: 'dark', accent: 'red', skillsCompact: true, font: 'impact', sound: true };
@@ -18839,7 +18839,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1802RobustLoginInstalled) return;
   window.__od1802RobustLoginInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   function $(id){ return document.getElementById(id); }
   function cleanNick(value){
@@ -18980,7 +18980,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1803AreaCleanupInstalled) return;
   window.__od1803AreaCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const AREA = {
     AUTH: 'login',
@@ -19220,7 +19220,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1804LoginAndAudioFixInstalled) return;
   window.__od1804LoginAndAudioFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   let loginBusy = false;
   let loginTicket = 0;
@@ -19478,7 +19478,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1805FinalShellInstalled) return;
   window.__od1805FinalShellInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   let hideTimer = null;
   let shellTimer = null;
@@ -19788,7 +19788,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1809CleanEditorsModesInstalled) return;
   window.__od1809CleanEditorsModesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   let saveTimer = null;
   let renderTimer = null;
@@ -20381,7 +20381,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1810FinalFixesInstalled) return;
   window.__od1810FinalFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   function $(id){ return document.getElementById(id); }
   function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
@@ -20489,7 +20489,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1811HubRefreshInstalled) return;
   window.__od1811HubRefreshInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   function cleanSessionProfile(){
     document.querySelectorAll('.od108-info-card,.od90-profile-card,[data-od90-profile-card],.session-profile-card,.account-profile-card,.menu-profile-card,#session-profile-card,#account-menu-profile,.od108-panel-user-info').forEach(el => el.remove());
@@ -20533,7 +20533,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1812CompactHubInstalled) return;
   window.__od1812CompactHubInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   function removeProfileCards(){
     document.querySelectorAll('#sessions-menu-panel .od90-user-menu-card, #sessions-menu-panel .od75-account-menu-card, .od90-user-menu-card, .od75-account-menu-card, .od108-panel-user-info, .od108-info-card, .od171-back-home').forEach(el => el.remove());
@@ -20571,7 +20571,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1813ThemeLinkedHubInstalled) return;
   window.__od1813ThemeLinkedHubInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const THEMES = {
     red:     { main: '#ef2f3b', dark: '#9d1018', soft: 'rgba(239,47,59,.16)', line: 'rgba(239,47,59,.72)' },
@@ -20669,7 +20669,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1815StableSheetTabsRouteInstalled) return;
   window.__od1815StableSheetTabsRouteInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const HUB_ROUTES = new Set(['/inicio', '/personagens', '/campanhas', '/mesas']);
 
@@ -20751,7 +20751,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1816ClickableAttributesInstalled) return;
   window.__od1816ClickableAttributesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const ATTRS = [
     ['forca', 'Força'],
@@ -20911,7 +20911,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1817ClickableAttackDamageInstalled) return;
   window.__od1817ClickableAttackDamageInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   function $(id){ return document.getElementById(id); }
   function esc(value){
@@ -21096,7 +21096,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1818ClickableAbilityCostInstalled) return;
   window.__od1818ClickableAbilityCostInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   function $(id){ return document.getElementById(id); }
   function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
@@ -21241,7 +21241,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1819RemoveFichaAvulsaMenuCardInstalled) return;
   window.__od1819RemoveFichaAvulsaMenuCardInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   function run(){
     const topbar = document.getElementById('main-topbar');
@@ -21289,7 +21289,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od192CompleteCombatManagerInstalled) return;
   window.__od192CompleteCombatManagerInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const previous191 = window.od191CampaignManager || {};
   const previous1902 = window.od1902CampaignAndHubHotfix || {};
@@ -21772,7 +21772,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od193CompleteCampaignEditorInstalled) return;
   window.__od193CompleteCampaignEditorInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   let pendingCoverData = '';
   let pendingBannerData = '';
@@ -22210,7 +22210,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od194OwlbearBasicIntegrationInstalled) return;
   window.__od194OwlbearBasicIntegrationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const OWLBEAR_HOME = 'https://www.owlbear.rodeo/';
   let injectedEditor = false;
@@ -22518,7 +22518,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1941LiveStabilityAndOwlbearFixInstalled) return;
   window.__od1941LiveStabilityAndOwlbearFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const LIVE_MIN_MS = 2200;
   const MESSAGE_MIN_MS = 1400;
@@ -22838,7 +22838,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1942StrongStabilityCoreInstalled) return;
   window.__od1942StrongStabilityCoreInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const STATE_TTL = 2600;
   const MSG_TTL = 1800;
@@ -23105,7 +23105,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1943HostRealtimeOrchestratorInstalled) return;
   window.__od1943HostRealtimeOrchestratorInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const EVENT_POLL_MS = 1650;
   const HOT_POLL_MS = 850;
@@ -23346,7 +23346,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1944FrontendReviewGuardInstalled) return;
   window.__od1944FrontendReviewGuardInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   // Compatibilidade para chamadas antigas que apontavam para nomes não exportados.
   if (!window.od191CampaignManagerRedesign && window.od191CampaignManager) {
@@ -23517,7 +23517,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1945LayeredCampaignCleanupInstalled) return;
   window.__od1945LayeredCampaignCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const VERSION = '1.94.5';
   const SESSION_TABS = { home: '/inicio', characters: '/personagens', campaigns: '/campanhas' };
@@ -23896,7 +23896,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od195LayerByLayerValidationInstalled) return;
   window.__od195LayerByLayerValidationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const VERSION = '1.95.0';
   const CAMPAIGN_TABS = ['visao','personagens','combate','jogadores','chat','escudo'];
@@ -24131,7 +24131,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1951CampaignUsabilityHotfixInstalled) return;
   window.__od1951CampaignUsabilityHotfixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const CAMPAIGN_MODE_CLASSES = [
     'od1901-campaign-manager-mode','od1902-campaign-manager-mode','od191-campaign-manager-mode','od192-campaign-manager-mode',
@@ -24396,7 +24396,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1952CampaignSheetRollbackInstalled) return;
   window.__od1952CampaignSheetRollbackInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.2';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
 
   const TABS = ['visao','personagens','combate','jogadores','chat','escudo'];
 
@@ -24692,4 +24692,530 @@ function od66InventoryMutationUnlockSoon() {
   setInterval(() => { patchApis(); if (document.body?.dataset?.od195Layer === 'sheet') showTopbarMenuInSheet(); }, 2500);
 
   window.od1952CampaignSheetRollback = { openSheetStable, openCampaignStable, openHub, renderClassicAttributes, ensureCampaignRendered };
+})();
+
+
+/* =========================
+   V195.3 - Revisão de campanha: scroll, combate, chat, Owlbear e boot
+   Corrige travas/flicker, remove retângulo antigo do canto, estabiliza chat,
+   adiciona link Owlbear no editor, ajusta combate e bloqueia iniciativa fora de combate.
+========================= */
+(function od1953CampaignBattleChatStability(){
+  'use strict';
+  if (window.__od1953CampaignBattleChatStabilityInstalled) return;
+  window.__od1953CampaignBattleChatStabilityInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.95.3';
+
+  const OWLBEAR_HOME = 'https://www.owlbear.rodeo/';
+  const TABS = ['visao','personagens','combate','jogadores','chat','escudo'];
+  let lastScrollSnapshot = null;
+  let lastRender = 0;
+  let bootRan = false;
+
+  function $(id){ return document.getElementById(id); }
+  function safe(fn, fallback = null){ try { return fn(); } catch (error) { console.warn('[One Dice v1.95.3]', error?.message || error); return fallback; } }
+  function esc(value){ try { return escapeHtml(value ?? ''); } catch (_) { return String(value ?? ''); } }
+  function cleanId(value){ return String(value || '').replace(/^"|"$/g, '').trim(); }
+  function getStore(key, fallback){ return typeof get === 'function' ? get(key, fallback) : fallback; }
+  function setStore(key, value){ if (typeof set === 'function') set(key, value); else localStorage.setItem(key, JSON.stringify(value)); }
+  function tableId(){ return cleanId(currentCampaignId || localStorage.getItem(STORAGE.activeCampaign) || ''); }
+  function campaigns(){ return typeof getCampaigns === 'function' ? getCampaigns() : getStore(STORAGE.campaigns, []); }
+  function members(id = tableId()){ return typeof getMembers === 'function' ? getMembers().filter(m => String(m.campaignId) === String(id)) : []; }
+  function chars(){ return getStore(STORAGE.characters, []); }
+  function users(){ return getStore(STORAGE.users, []); }
+  function userById(id){ return users().find(u => String(u.id) === String(id)); }
+  function charById(id){ return chars().find(c => String(c.id) === String(id)); }
+  function campaign(id = tableId()){ return campaigns().find(c => String(c.id) === String(id)); }
+  function settingsOf(c){ return c?.settings && typeof c.settings === 'object' ? c.settings : {}; }
+  function isCampaignLayer(){ return !!$('od1901-campaign-manager') || document.body?.dataset?.od195Layer === 'campaign' || document.body?.dataset?.od1945Layer === 'campaign'; }
+  function isSheetLayer(){ return document.body?.dataset?.od195Layer === 'sheet' || document.body?.dataset?.od1945Layer === 'sheet' || document.body?.classList.contains('od1952-sheet-open'); }
+  function currentUserName(){ return typeof userDisplayName === 'function' ? userDisplayName(currentUser) : (currentUser?.name || currentUser?.nick || 'Jogador'); }
+  function avatarForName(name){
+    const clean = String(name || '').trim().toLowerCase();
+    const user = users().find(u => [u.name,u.nick,u.email].some(v => String(v || '').trim().toLowerCase() === clean));
+    if (user?.avatar || user?.photo || user?.picture) return user.avatar || user.photo || user.picture;
+    const member = members().find(m => {
+      const u = userById(m.userId);
+      return [u?.name,u?.nick,u?.email].some(v => String(v || '').trim().toLowerCase() === clean);
+    });
+    const linkedChar = member?.characterId ? charById(member.characterId) : null;
+    return linkedChar?.portrait || 'assets/logo.jpg';
+  }
+  function owlbearUrl(c = campaign()){
+    const s = settingsOf(c);
+    return String(s.owlbearSceneUrl || s.owlbearUrl || s.owlbearRoomUrl || c?.owlbearSceneUrl || c?.owlbearUrl || '').trim();
+  }
+
+  function captureCampaignScroll(){
+    return {
+      x: window.scrollX || 0,
+      y: window.scrollY || 0,
+      activeId: document.activeElement?.id || '',
+      items: ['app-screen','od1901-campaign-manager','od1902-chat-log'].map(id => {
+        const el = $(id);
+        return el ? { id, top: el.scrollTop || 0, left: el.scrollLeft || 0 } : null;
+      }).filter(Boolean)
+    };
+  }
+  function restoreCampaignScroll(snapshot){
+    if (!snapshot || !isCampaignLayer()) return;
+    const run = () => {
+      window.scrollTo(snapshot.x || 0, snapshot.y || 0);
+      snapshot.items?.forEach(item => {
+        const el = $(item.id);
+        if (el) { el.scrollTop = item.top || 0; el.scrollLeft = item.left || 0; }
+      });
+      if (snapshot.activeId && $(snapshot.activeId)) safe(() => $(snapshot.activeId).focus({ preventScroll: true }), null);
+    };
+    requestAnimationFrame(run);
+    setTimeout(run, 80);
+  }
+  function hideCampaignJunk(){
+    if (!isCampaignLayer()) return;
+    document.querySelectorAll('#main-topbar,.topbar:not(#od1901-campaign-manager .topbar),#topbar-menu-toggle,.topbar-menu-toggle,#sidebar-dock-btn,#master-dashboard-dock-btn,[data-master-dashboard-toggle],[data-player-dashboard-toggle]').forEach(el => {
+      el.dataset.od1953CampaignHidden = 'true';
+      el.setAttribute('aria-hidden','true');
+    });
+    document.querySelectorAll('#session-history-box,[data-toggle-chat="session-history-box"],#toggle-history-btn').forEach(el => el.remove());
+  }
+  function restoreSheetMenu(){
+    if (!isSheetLayer()) return;
+    document.querySelectorAll('[data-od1953-campaign-hidden="true"],[data-od1951-hidden-in-campaign="true"]').forEach(el => {
+      el.removeAttribute('data-od1953-campaign-hidden');
+      el.removeAttribute('data-od1951-hidden-in-campaign');
+      el.removeAttribute('aria-hidden');
+    });
+    const topbar = $('main-topbar');
+    if (topbar) {
+      topbar.style.display = '';
+      topbar.style.visibility = '';
+    }
+  }
+
+  function wrapManagerRender(api){
+    if (!api || typeof api.renderManager !== 'function' || api.renderManager.__od1953Wrapped) return;
+    const base = api.renderManager;
+    api.renderManager = function od1953RenderManager(){
+      const snapshot = isCampaignLayer() ? captureCampaignScroll() : null;
+      const now = Date.now();
+      if (isCampaignLayer() && now - lastRender < 180) return;
+      lastRender = now;
+      const result = base.apply(this, arguments);
+      hideCampaignJunk();
+      decorateCampaignChat();
+      injectOwlbearButtons();
+      patchCombatButtonsAndLayout();
+      restoreCampaignScroll(snapshot);
+      return result;
+    };
+    api.renderManager.__od1953Wrapped = true;
+  }
+  function patchManagerApis(){
+    ['od192CompleteCombatManager','od191CampaignManager','od1902CampaignAndHubHotfix','od1901CampaignManager'].forEach(name => wrapManagerRender(window[name]));
+  }
+
+  function chatCacheKey(id = tableId()){ return `od1953_chat_cache_${id || 'global'}`; }
+  function localChatList(){
+    const id = tableId();
+    const list = safe(() => getStore(`${STORAGE.chat}_${id}`, []), []) || [];
+    if (list.length) return list;
+    return safe(() => JSON.parse(localStorage.getItem(chatCacheKey(id)) || '[]'), []);
+  }
+  function saveChatCache(){
+    const id = tableId();
+    if (!id) return;
+    const local = safe(() => getStore(`${STORAGE.chat}_${id}`, []), []) || [];
+    if (local.length) localStorage.setItem(chatCacheKey(id), JSON.stringify(local.slice(-200)));
+  }
+  function restoreChatIfEmpty(){
+    const log = $('od1902-chat-log');
+    if (!log || !isCampaignLayer()) return;
+    if (log.querySelector('.od191-chat-msg,.od1953-chat-msg')) return;
+    const list = localChatList();
+    if (!list.length) return;
+    log.innerHTML = list.map(msg => `<div class="od191-chat-msg od1953-chat-msg ${msg.type === 'roll' ? 'roll' : ''}" data-od1953-user="${esc(msg.user || msg.name || 'Mesa')}"><img src="${esc(msg.avatar || avatarForName(msg.user || msg.name))}" alt=""><div><small>${esc(msg.user || msg.name || 'Mesa')} • ${esc(msg.at || '')}</small><p>${esc(msg.text || msg.content || msg.message || '')}</p></div></div>`).join('');
+  }
+  function decorateCampaignChat(){
+    const log = $('od1902-chat-log');
+    if (!log || !isCampaignLayer()) return;
+    saveChatCache();
+    restoreChatIfEmpty();
+    log.querySelectorAll('.od191-chat-msg:not(.od1953-chat-msg)').forEach(msg => {
+      const small = msg.querySelector('small');
+      const user = String(small?.textContent || 'Mesa').split('•')[0].trim() || 'Mesa';
+      const text = msg.querySelector('p')?.innerHTML || msg.innerHTML;
+      msg.classList.add('od1953-chat-msg');
+      msg.dataset.od1953User = user;
+      if (!msg.querySelector('img')) {
+        const avatar = document.createElement('img');
+        avatar.src = avatarForName(user);
+        avatar.alt = '';
+        msg.prepend(avatar);
+      }
+      if (!msg.querySelector('.od1953-chat-body')) {
+        const body = document.createElement('div');
+        body.className = 'od1953-chat-body';
+        while (msg.childNodes.length > 1) body.appendChild(msg.childNodes[1]);
+        msg.appendChild(body);
+      }
+    });
+  }
+  if (typeof addChat === 'function' && !addChat.__od1953Cache) {
+    const base = addChat;
+    addChat = function od1953AddChat(){
+      const result = base.apply(this, arguments);
+      setTimeout(() => { saveChatCache(); decorateCampaignChat(); }, 80);
+      return result;
+    };
+    addChat.__od1953Cache = true;
+  }
+  if (typeof od44LoadMessages === 'function' && !od44LoadMessages.__od1953NoEmptyWipe) {
+    const base = od44LoadMessages;
+    od44LoadMessages = async function od1953LoadMessagesNoEmptyWipe(table){
+      const id = table || tableId();
+      const before = safe(() => getStore(`${STORAGE.chat}_${id}`, []), []) || [];
+      const result = await base.apply(this, arguments);
+      const after = safe(() => getStore(`${STORAGE.chat}_${id}`, []), []) || [];
+      if (!after.length && before.length) setStore(`${STORAGE.chat}_${id}`, before.slice(-200));
+      saveChatCache();
+      setTimeout(decorateCampaignChat, 60);
+      return result;
+    };
+    od44LoadMessages.__od1953NoEmptyWipe = true;
+  }
+
+  function ensureOwlbearEditor(){
+    const dialog = $('od193-campaign-editor');
+    if (!dialog) return;
+    const tabs = dialog.querySelector('.od193-editor-tabs');
+    const body = dialog.querySelector('.od193-editor-body');
+    if (!tabs || !body) return;
+    if (!tabs.querySelector('[data-od193-editor-tab="od1953-owlbear"]')) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.dataset.od193EditorTab = 'od1953-owlbear';
+      btn.textContent = 'Owlbear';
+      tabs.appendChild(btn);
+    }
+    if (!$('od1953-owlbear-panel')) {
+      const panel = document.createElement('section');
+      panel.id = 'od1953-owlbear-panel';
+      panel.className = 'od193-editor-panel od1953-owlbear-panel';
+      panel.dataset.od193Panel = 'od1953-owlbear';
+      panel.innerHTML = `<div class="od1953-editor-note"><strong>Link da sala Owlbear</strong><p>Cole aqui o link da sala/mesa. Todos os botões Owlbear da campanha abrirão este link.</p></div>
+        <label>Link Owlbear da mesa
+          <input id="od1953-owlbear-url" type="url" placeholder="https://www.owlbear.rodeo/room/...">
+        </label>
+        <label>Observação para os jogadores
+          <textarea id="od1953-owlbear-note" maxlength="1000" placeholder="Ex.: usem este mapa durante o combate."></textarea>
+        </label>
+        <div class="od1953-editor-actions">
+          <button type="button" id="od1953-open-owlbear-home">Criar mapa Owlbear</button>
+          <button type="button" class="primary-btn" id="od1953-save-owlbear">Salvar link Owlbear</button>
+        </div>`;
+      body.appendChild(panel);
+    }
+    const c = campaign();
+    const s = settingsOf(c);
+    if ($('od1953-owlbear-url') && !$('od1953-owlbear-url').value) $('od1953-owlbear-url').value = owlbearUrl(c);
+    if ($('od1953-owlbear-note') && !$('od1953-owlbear-note').value) $('od1953-owlbear-note').value = s.owlbearNote || '';
+  }
+  async function saveOwlbearLink(){
+    const c = campaign();
+    if (!c) return alert('Campanha não encontrada.');
+    const url = String($('od1953-owlbear-url')?.value || $('od194-editor-room-url')?.value || $('od194-room-url')?.value || '').trim();
+    const note = String($('od1953-owlbear-note')?.value || $('od194-editor-note')?.value || $('od194-note')?.value || '').trim();
+    const settings = {
+      ...settingsOf(c),
+      owlbearEnabled: !!url,
+      owlbearUrl: url,
+      owlbearRoomUrl: url,
+      owlbearSceneUrl: '',
+      owlbearNote: note
+    };
+    const payload = {
+      name: c.name || 'Campanha',
+      description: c.description || settings.description || '',
+      logoUrl: c.logoUrl || c.logo || settings.logoUrl || '',
+      systemType: settings.systemType || c.systemType || 'd20',
+      systemModel: settings.systemModel || c.systemModel || 'd20',
+      settings
+    };
+    try {
+      if (typeof od42Api === 'function' && typeof od42Token === 'function' && od42Token()) {
+        const data = await od42Api(`/api/tables/${encodeURIComponent(c.id)}`, { method:'PUT', body: JSON.stringify(payload) });
+        if (data?.table && typeof od42RefreshTables === 'function') await od42RefreshTables();
+      } else {
+        const all = campaigns().map(item => String(item.id) === String(c.id) ? { ...item, settings, owlbearUrl: url, owlbearRoomUrl: url } : item);
+        if (typeof setCampaigns === 'function') setCampaigns(all);
+        else setStore(STORAGE.campaigns, all);
+      }
+      alert('Link Owlbear salvo.');
+      setTimeout(() => { injectOwlbearButtons(true); safe(() => window.od192CompleteCombatManager?.renderManager?.(), null); }, 120);
+    } catch (error) {
+      alert(error.message || 'Erro ao salvar link do Owlbear.');
+    }
+  }
+  function openEditorOwlbear(){
+    const editBtn = document.querySelector('[data-od192-edit], [data-od191-edit]');
+    if (window.od193CompleteCampaignEditor?.openEditor) {
+      window.od193CompleteCampaignEditor.openEditor(currentCampaignId);
+      setTimeout(() => {
+        ensureOwlbearEditor();
+        const tab = document.querySelector('[data-od193-editor-tab="od1953-owlbear"]');
+        tab?.click();
+      }, 120);
+    } else if (editBtn) editBtn.click();
+  }
+  function injectOwlbearButtons(force = false){
+    if (!isCampaignLayer()) return;
+    const c = campaign();
+    const configured = owlbearUrl(c);
+    document.querySelectorAll('[data-od194-open-map],[data-od1941-map-top],[data-od1941-map-overview],[data-od1941-map-combat]').forEach(btn => {
+      const text = (btn.textContent || '').toLowerCase();
+      if (text.includes('criar')) {
+        btn.dataset.od1953OwlbearCreate = 'true';
+        btn.dataset.od194OpenMap = OWLBEAR_HOME;
+        return;
+      }
+      btn.dataset.od1953OwlbearDirect = 'true';
+      btn.dataset.od194OpenMap = configured || '';
+      if (configured && /configurar|owlbear|mapa/i.test(btn.textContent || '')) btn.textContent = btn.closest('.od192-combat-controls') ? 'Owlbear' : 'Abrir Mapa Owlbear';
+      if (!configured && /configurar/i.test(btn.textContent || '')) btn.textContent = 'Configurar/Owlbear';
+    });
+  }
+
+  function getCombatState(){
+    return safe(() => typeof getInitiativeState === 'function' ? getInitiativeState() : null, null)
+      || safe(() => getStore(typeof v35InitiativeKey === 'function' ? v35InitiativeKey() : `od_initiative_${tableId()}`, null), null)
+      || { active:false, round:1, turnIndex:0, entries:[] };
+  }
+  function setCombatState(state, reason = ''){
+    const clean = {
+      active: !!state.active,
+      round: Math.max(1, Number(state.round || 1)),
+      turnIndex: Math.max(0, Number(state.turnIndex || 0)),
+      entries: Array.isArray(state.entries) ? state.entries.map((e,i) => ({
+        id: e.id || `manual-${Date.now()}-${i}`,
+        memberId: e.memberId || '',
+        characterId: e.characterId || '',
+        userId: e.userId || '',
+        name: e.name || 'Participante',
+        playerName: e.playerName || '',
+        value: Number(e.value || 0),
+        status: e.status || 'normal',
+        hidden: !!e.hidden,
+        note: e.note || '',
+        manual: !!e.manual
+      })).sort((a,b)=>Number(b.value||0)-Number(a.value||0)) : []
+    };
+    if (clean.turnIndex >= clean.entries.length) clean.turnIndex = Math.max(0, clean.entries.length - 1);
+    safe(() => typeof setInitiativeState === 'function' && setInitiativeState(clean), null);
+    safe(() => typeof setStore === 'function' && typeof v35InitiativeKey === 'function' && setStore(v35InitiativeKey(), clean), null);
+    if (typeof od44PersistInitiativeNow === 'function') safe(() => od44PersistInitiativeNow(clean), null);
+    else if (typeof od42Api === 'function' && typeof od42Token === 'function' && od42Token() && tableId()) safe(() => od42Api(`/api/tables/${encodeURIComponent(tableId())}/initiative`, { method:'PUT', body: JSON.stringify({ initiative: clean }) }), null);
+    if (reason) safe(() => addChat(`[Combate] ${reason}`, 'roll'), null);
+    setTimeout(() => safe(() => window.od192CompleteCombatManager?.renderManager?.(), null), 60);
+  }
+  function linkedEntries(){
+    return members().map(m => {
+      const ch = charById(m.characterId);
+      if (!ch) return null;
+      return {
+        id: m.id || ch.id,
+        memberId: m.id || '',
+        characterId: ch.id,
+        userId: m.userId || '',
+        name: ch.name || 'Personagem',
+        playerName: userById(m.userId)?.name || userById(m.userId)?.nick || '',
+        value: 0,
+        status: 'normal',
+        hidden: false,
+        manual: false
+      };
+    }).filter(Boolean);
+  }
+  function startCombatStable(){
+    const state = getCombatState();
+    state.active = true;
+    state.round = Math.max(1, Number(state.round || 1));
+    if (!Array.isArray(state.entries)) state.entries = [];
+    linkedEntries().forEach(entry => {
+      if (!state.entries.some(e => String(e.characterId) === String(entry.characterId))) state.entries.push(entry);
+    });
+    state.turnIndex = Math.max(0, Math.min(Number(state.turnIndex || 0), Math.max(0, state.entries.length - 1)));
+    setCombatState(state, 'Combate iniciado.');
+  }
+  function endCombatStable(){
+    const state = getCombatState();
+    state.active = false;
+    state.turnIndex = 0;
+    setCombatState(state, 'Combate encerrado. Jogadores não podem rolar iniciativa fora de combate.');
+  }
+  function addManualEntry(){
+    const name = prompt('Nome do participante/NPC na ordem:', 'NPC');
+    if (!name || !name.trim()) return;
+    const value = Number(prompt('Iniciativa manual:', '0') || 0);
+    const state = getCombatState();
+    state.entries = Array.isArray(state.entries) ? state.entries : [];
+    state.entries.push({
+      id: `manual-${Date.now()}`,
+      memberId: '',
+      characterId: '',
+      userId: '',
+      name: name.trim(),
+      playerName: 'Manual',
+      value,
+      status: 'normal',
+      hidden: false,
+      manual: true,
+      note: 'Entrada manual'
+    });
+    setCombatState(state, `${name.trim()} entrou manualmente na ordem.`);
+  }
+  function patchCombatButtonsAndLayout(){
+    const controls = document.querySelector('.od192-combat-controls');
+    if (controls && !controls.querySelector('[data-od1953-add-manual]')) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.dataset.od1953AddManual = '1';
+      btn.textContent = '+ Nome/NPC';
+      controls.appendChild(btn);
+    }
+    const state = getCombatState();
+    document.querySelectorAll('[data-od192-roll-init]').forEach(btn => {
+      if (!state.active) {
+        btn.disabled = true;
+        btn.title = 'Iniciativa só pode ser rolada com o combate iniciado.';
+      }
+    });
+    document.querySelectorAll('.od192-turn-row').forEach(row => {
+      if (!row.querySelector('img')) return;
+      row.classList.add('od1953-turn-row-fixed');
+    });
+  }
+
+  window.addEventListener('click', event => {
+    const owlbear = event.target.closest?.('[data-od1953-owlbear-direct], [data-od1953-owlbear-create], [data-od194-open-map], [data-od1941-map-top], [data-od1941-map-overview], [data-od1941-map-combat]');
+    if (owlbear) {
+      const isCreate = owlbear.dataset.od1953OwlbearCreate === 'true' || /criar/i.test(owlbear.textContent || '');
+      const direct = owlbearUrl();
+      if (!isCreate && !direct && /configurar/i.test(owlbear.textContent || '')) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        return openEditorOwlbear();
+      }
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return window.open(isCreate ? OWLBEAR_HOME : (direct || OWLBEAR_HOME), '_blank', 'noopener,noreferrer');
+    }
+
+    if (event.target.closest?.('[data-od192-start]')) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return startCombatStable();
+    }
+    if (event.target.closest?.('[data-od192-end]')) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return endCombatStable();
+    }
+    if (event.target.closest?.('[data-od1953-add-manual]')) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return addManualEntry();
+    }
+    const roll = event.target.closest?.('[data-od192-roll-init],[data-od191-roll-init],[data-od1902-roll-init]');
+    if (roll && !getCombatState().active) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return alert('O combate precisa estar iniciado para jogadores rolarem iniciativa.');
+    }
+    if (event.target.closest?.('#toggle-history-btn,[data-toggle-chat="session-history-box"]')) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      return false;
+    }
+  }, true);
+
+  document.addEventListener('click', event => {
+    if (event.target.closest?.('[data-od193-editor-tab="od1953-owlbear"]')) setTimeout(ensureOwlbearEditor, 40);
+    if (event.target.closest?.('#od1953-open-owlbear-home')) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      window.open(OWLBEAR_HOME, '_blank', 'noopener,noreferrer');
+    }
+    if (event.target.closest?.('#od1953-save-owlbear')) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      saveOwlbearLink();
+    }
+  }, true);
+
+  // Evita tela antiga/flicker ao voltar de outra aba.
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && isCampaignLayer()) {
+      const snap = captureCampaignScroll();
+      hideCampaignJunk();
+      patchCombatButtonsAndLayout();
+      decorateCampaignChat();
+      injectOwlbearButtons();
+      restoreCampaignScroll(snap);
+    }
+  });
+
+  // Boot pós-login sem F5: força render do hub moderno depois da autenticação.
+  function afterLoginBoot(){
+    setTimeout(() => {
+      if (document.body?.dataset?.od195Layer === 'auth' || $('auth-screen')?.classList.contains('active') || location.pathname === '/login' || location.pathname === '/') {
+        safe(() => window.od1952CampaignSheetRollback?.openHub?.(), null);
+        safe(() => renderAccountCharacterMenu?.(), null);
+        safe(() => renderCampaignMenu?.(), null);
+      }
+      restoreSheetMenu();
+    }, 120);
+  }
+  ['od42Login','od42Register','login'].forEach(name => {
+    const fn = window[name] || safe(() => eval(name), null);
+    if (typeof fn !== 'function' || fn.__od1953LoginBoot) return;
+    const wrapped = function od1953LoginBootWrapper(){
+      const result = fn.apply(this, arguments);
+      Promise.resolve(result).finally(afterLoginBoot);
+      return result;
+    };
+    wrapped.__od1953LoginBoot = true;
+    try { window[name] = wrapped; eval(`${name} = window["${name}"]`); } catch (_) {}
+  });
+
+  function tick(){
+    patchManagerApis();
+    if (isCampaignLayer()) {
+      hideCampaignJunk();
+      injectOwlbearButtons();
+      decorateCampaignChat();
+      patchCombatButtonsAndLayout();
+    }
+    if (isSheetLayer()) restoreSheetMenu();
+    ensureOwlbearEditor();
+    document.querySelectorAll('#session-history-box,[data-toggle-chat="session-history-box"],#toggle-history-btn').forEach(el => el.remove());
+  }
+  const observer = new MutationObserver(() => {
+    clearTimeout(window.__od1953Tick);
+    window.__od1953Tick = setTimeout(tick, 120);
+  });
+  if (document.body) observer.observe(document.body, { childList:true, subtree:true });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tick, { once:true });
+  else tick();
+  [250, 900, 1800, 3200].forEach(ms => setTimeout(tick, ms));
+  setInterval(tick, 3500);
+
+  window.od1953CampaignBattleChatStability = {
+    tick,
+    startCombatStable,
+    endCombatStable,
+    addManualEntry,
+    saveOwlbearLink,
+    decorateCampaignChat,
+    injectOwlbearButtons
+  };
 })();

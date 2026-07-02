@@ -19812,3 +19812,305 @@ body.dark-sheet .od1952-attr-card {
     grid-template-columns: 1fr !important;
   }
 }
+
+
+/* =========================
+   V195.3 - Correção de campanha, combate, chat, Owlbear e arredondamentos
+========================= */
+
+/* Remove o quadrado/retângulo antigo no canto superior direito dentro de campanha. */
+body.od195-campaign-layer #main-topbar,
+body.od1945-campaign-layer #main-topbar,
+body.od195-campaign-layer .topbar:not(#od1901-campaign-manager .topbar),
+body.od1945-campaign-layer .topbar:not(#od1901-campaign-manager .topbar),
+body.od195-campaign-layer #topbar-menu-toggle,
+body.od1945-campaign-layer #topbar-menu-toggle,
+body.od195-campaign-layer .topbar-menu-toggle,
+body.od1945-campaign-layer .topbar-menu-toggle,
+body.od195-campaign-layer [data-od1953-campaign-hidden="true"],
+body.od1945-campaign-layer [data-od1953-campaign-hidden="true"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Na ficha, o menu de três linhas volta a ser só o botão, sem retângulo grande atrás. */
+body.od195-sheet-layer #main-topbar.topbar.collapsed,
+body.od1945-sheet-layer #main-topbar.topbar.collapsed,
+body.od1952-sheet-open #main-topbar.topbar.collapsed {
+  width: auto !important;
+  min-width: 0 !important;
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  display: inline-grid !important;
+  grid-template-columns: 1fr !important;
+}
+
+body.od195-sheet-layer #main-topbar .topbar-menu-toggle,
+body.od1945-sheet-layer #main-topbar .topbar-menu-toggle,
+body.od1952-sheet-open #main-topbar .topbar-menu-toggle {
+  border-radius: 14px !important;
+  border: 2px solid rgba(255,255,255,.22) !important;
+  box-shadow: 0 10px 22px rgba(0,0,0,.35) !important;
+}
+
+/* Estabiliza scroll e elimina renderização incompleta/preta. */
+body.od195-campaign-layer #od1901-campaign-manager,
+body.od1945-campaign-layer #od1901-campaign-manager,
+body.od195-campaign-layer #od1901-campaign-manager *,
+body.od1945-campaign-layer #od1901-campaign-manager * {
+  content-visibility: visible !important;
+  contain: none !important;
+  contain-intrinsic-size: auto !important;
+  scroll-behavior: auto !important;
+}
+
+body.od195-campaign-layer #app-screen,
+body.od1945-campaign-layer #app-screen {
+  overflow-x: hidden !important;
+  overscroll-behavior: none !important;
+}
+
+/* Botões não somem/flickam durante re-render. */
+#od1901-campaign-manager .od191-hero-actions,
+#od1901-campaign-manager .od192-combat-controls,
+#od1901-campaign-manager .od191-feature-actions {
+  min-height: 48px !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  contain: none !important;
+}
+
+#od1901-campaign-manager button {
+  backface-visibility: hidden !important;
+}
+
+/* Chat estilo Discord dentro da campanha. */
+.od1953-chat-msg,
+#od1902-chat-log .od191-chat-msg.od1953-chat-msg {
+  display: grid !important;
+  grid-template-columns: 42px minmax(0, 1fr) !important;
+  gap: 10px !important;
+  align-items: start !important;
+  padding: 10px 12px !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  background: rgba(255,255,255,.035) !important;
+  margin-bottom: 8px !important;
+}
+
+.od1953-chat-msg > img {
+  width: 42px !important;
+  height: 42px !important;
+  object-fit: cover !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(255,255,255,.16) !important;
+}
+
+.od1953-chat-body,
+.od1953-chat-msg > div {
+  min-width: 0 !important;
+}
+
+.od1953-chat-msg small {
+  display: block !important;
+  color: rgba(255,255,255,.62) !important;
+  font-size: .78rem !important;
+  margin-bottom: 4px !important;
+}
+
+.od1953-chat-msg p {
+  margin: 0 !important;
+  color: rgba(255,255,255,.9) !important;
+  line-height: 1.45 !important;
+  overflow-wrap: anywhere !important;
+}
+
+/* Combate: nova resolução para participantes e ordem de turno. */
+.od192-combat-grid {
+  grid-template-columns: minmax(360px, .9fr) minmax(520px, 1.35fr) !important;
+  align-items: start !important;
+  gap: 18px !important;
+}
+
+.od192-participant-list,
+.od192-turn-list {
+  display: grid !important;
+  gap: 12px !important;
+  overflow-x: auto !important;
+  padding-bottom: 4px !important;
+}
+
+.od192-participant,
+.od192-turn-row,
+.od1953-turn-row-fixed {
+  display: grid !important;
+  grid-template-columns: 56px minmax(180px, 1fr) auto !important;
+  gap: 12px !important;
+  align-items: center !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: visible !important;
+}
+
+.od192-turn-row,
+.od1953-turn-row-fixed {
+  grid-template-columns: 54px 58px minmax(220px, 1fr) minmax(90px, auto) minmax(130px, auto) auto !important;
+}
+
+.od192-participant img,
+.od192-turn-row img {
+  width: 54px !important;
+  height: 54px !important;
+  object-fit: cover !important;
+  border-radius: 14px !important;
+}
+
+.od192-participant strong,
+.od192-turn-info strong,
+.od192-turn-row strong {
+  display: block !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: anywhere !important;
+  line-height: 1.15 !important;
+  font-size: clamp(1rem, 1.2vw, 1.25rem) !important;
+  max-width: 100% !important;
+}
+
+.od192-participant small,
+.od192-turn-info small,
+.od192-turn-info span {
+  white-space: normal !important;
+  word-break: normal !important;
+  line-height: 1.25 !important;
+}
+
+.od192-participant-actions,
+.od192-turn-actions,
+.od192-combat-controls {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+}
+
+.od192-init-edit,
+.od192-status-edit {
+  min-width: 86px !important;
+}
+
+.od192-init-edit input {
+  width: 76px !important;
+  text-align: center !important;
+}
+
+.od192-status-edit select {
+  min-width: 116px !important;
+}
+
+/* Editor Owlbear. */
+.od1953-owlbear-panel {
+  gap: 14px !important;
+}
+
+.od1953-editor-note {
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 16px;
+  padding: 14px;
+  background: rgba(255,255,255,.035);
+}
+
+.od1953-editor-note strong {
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.od1953-editor-note p {
+  margin: 6px 0 0;
+  color: rgba(255,255,255,.68);
+}
+
+.od1953-editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Remove histórico inútil. */
+#session-history-box,
+[data-toggle-chat="session-history-box"],
+#toggle-history-btn {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Arredondamentos: impede fundo quadrado vazando nas quinas. */
+.manga-panel,
+.auth-card,
+.sessions-card,
+.od191-panel,
+.od192-combat-head,
+.od191-hero,
+.od194-owlbear-card,
+.od193-editor-card,
+.account-character-card,
+.campaign-card,
+.character-pill,
+.vital-card,
+.stat-card,
+.mini-card,
+.chat-box,
+.dice-box,
+.modal-card {
+  overflow: hidden !important;
+  background-clip: padding-box !important;
+  isolation: isolate !important;
+}
+
+.manga-panel::before,
+.auth-card::before,
+.od191-panel::before,
+.od191-hero::before {
+  border-radius: inherit !important;
+}
+
+/* Responsivo do combate. */
+@media (max-width: 1180px) {
+  .od192-combat-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .od192-turn-row,
+  .od1953-turn-row-fixed {
+    grid-template-columns: 44px 50px minmax(180px, 1fr) !important;
+  }
+  .od192-init-edit,
+  .od192-status-edit,
+  .od192-turn-actions {
+    grid-column: 3 / -1 !important;
+    justify-content: flex-start !important;
+  }
+}
+
+@media (max-width: 680px) {
+  .od192-participant,
+  .od192-turn-row,
+  .od1953-turn-row-fixed {
+    grid-template-columns: 48px minmax(0, 1fr) !important;
+  }
+  .od192-participant-actions,
+  .od192-turn-actions,
+  .od192-init-edit,
+  .od192-status-edit {
+    grid-column: 1 / -1 !important;
+  }
+}
