@@ -1,25 +1,29 @@
-# One Dice Site v1.95.1
+# One Dice Site v1.95.2
 
 ## Foco
 
-Hotfix da v1.95 para corrigir problemas dentro da campanha depois da validação de camadas.
+Hotfix para corrigir regressões da v1.95.1 dentro da ficha e da campanha.
 
-## Correções principais
+## Corrigido
 
-- Corrigido reset de scroll dentro da campanha.
-- Renderizações do gerenciador agora preservam posição de scroll.
-- Abertura de ficha foi refeita para não cair no modelo antigo.
-- Botões de ficha da campanha e da aba Personagens agora usam uma ponte estável.
-- Botão Voltar da campanha agora volta direto para `/campanhas`, sem tela preta.
-- Camada de ficha remove o gerenciador da campanha antes de carregar a ficha.
-- Corrigida resolução/overflow dentro da campanha.
-- Escondido o botão antigo das três setas dentro da campanha.
-- Reforçada a remoção visual dos controles antigos na camada campanha.
+- Ficha abrindo com layout quebrado;
+- painel de rolagens/chat sobrepondo o menu/miolo da ficha;
+- menu de três linhas sumindo dentro da ficha;
+- o menu de três linhas continua oculto apenas dentro da campanha;
+- abertura de ficha pela aba Personagens da campanha;
+- abertura de ficha pela aba Personagens do hub;
+- campanha ficando preta ao abrir;
+- botão Voltar da campanha voltando para `/campanhas`;
+- botão Voltar mal posicionado na ficha/campanha;
+- retorno da ficha para campanha com botão pequeno e separado;
+- atributos voltam para modelo clássico próximo das versões 1.89/1.90;
+- removidos efeitos de `content-visibility`/`contain` que estavam causando tela preta ou render incompleto na campanha.
 
 ## Validação
 
 Validar:
 
+- `npm run check`;
 - `client/script.js`;
 - `client/obs.js`;
 - `server/server.js`;
@@ -32,4 +36,4 @@ Validar:
 
 ## Versão
 
-1.95.1
+1.95.2

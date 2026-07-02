@@ -19504,8 +19504,7 @@ body.od1945-campaign-layer [data-topbar-menu-toggle],
 body.od1945-campaign-layer #sidebar-dock-btn,
 body.od1945-campaign-layer #master-dashboard-dock-btn,
 body.od1945-campaign-layer [data-master-dashboard-toggle],
-body.od1945-campaign-layer [data-player-dashboard-toggle],
-[data-od1951-hidden-in-campaign="true"] {
+body.od1945-campaign-layer [data-player-dashboard-toggle] {
   display: none !important;
   visibility: hidden !important;
   pointer-events: none !important;
@@ -19545,5 +19544,271 @@ body.od1951-sheet-open #app-screen.active {
   body.od195-campaign-layer .od191-hero-actions,
   body.od1945-campaign-layer .od191-hero-actions {
     flex-wrap: wrap !important;
+  }
+}
+
+
+/* =========================
+   V195.2 - Correção definitiva de ficha/campanha/layout
+========================= */
+
+/* O item marcado como oculto pela campanha só pode sumir dentro da campanha.
+   Na ficha, o menu de três linhas precisa continuar funcional. */
+body.od195-campaign-layer [data-od1951-hidden-in-campaign="true"],
+body.od1945-campaign-layer [data-od1951-hidden-in-campaign="true"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+body.od195-sheet-layer [data-od1951-hidden-in-campaign="true"],
+body.od1945-sheet-layer [data-od1951-hidden-in-campaign="true"],
+body.od1952-sheet-open [data-od1951-hidden-in-campaign="true"] {
+  display: revert !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+/* Campanha: a topbar antiga sai; o gerenciador moderno manda. */
+body.od195-campaign-layer #main-topbar,
+body.od1945-campaign-layer #main-topbar {
+  display: none !important;
+}
+
+/* Ficha: restaura layout estável e impede o painel direito de sobrepor o menu/miolo. */
+body.od195-sheet-layer #main-topbar,
+body.od1945-sheet-layer #main-topbar,
+body.od1952-sheet-open #main-topbar {
+  display: grid !important;
+  visibility: visible !important;
+}
+
+body.od195-sheet-layer #topbar-menu-toggle,
+body.od1945-sheet-layer #topbar-menu-toggle,
+body.od1952-sheet-open #topbar-menu-toggle,
+body.od195-sheet-layer .topbar-menu-toggle,
+body.od1945-sheet-layer .topbar-menu-toggle,
+body.od1952-sheet-open .topbar-menu-toggle {
+  display: grid !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+body.od195-sheet-layer .app-grid,
+body.od1945-sheet-layer .app-grid,
+body.od1952-sheet-open .app-grid {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 340px) !important;
+  grid-template-areas: "sheet right" !important;
+  gap: 24px !important;
+  width: min(100%, 1740px) !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  padding: 92px 28px 28px !important;
+  align-items: start !important;
+  overflow: visible !important;
+}
+
+body.od195-sheet-layer .sidebar,
+body.od1945-sheet-layer .sidebar,
+body.od1952-sheet-open .sidebar,
+body.od195-sheet-layer #players-sidebar,
+body.od1945-sheet-layer #players-sidebar,
+body.od1952-sheet-open #players-sidebar {
+  display: none !important;
+}
+
+body.od195-sheet-layer .sheet-area,
+body.od1945-sheet-layer .sheet-area,
+body.od1952-sheet-open .sheet-area {
+  grid-area: sheet !important;
+  display: block !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: visible !important;
+}
+
+body.od195-sheet-layer .right-panel,
+body.od1945-sheet-layer .right-panel,
+body.od1952-sheet-open .right-panel {
+  grid-area: right !important;
+  display: grid !important;
+  position: static !important;
+  inset: auto !important;
+  transform: none !important;
+  z-index: auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  align-self: start !important;
+}
+
+body.od195-sheet-layer .right-panel .manga-panel,
+body.od1945-sheet-layer .right-panel .manga-panel,
+body.od1952-sheet-open .right-panel .manga-panel {
+  position: static !important;
+  transform: none !important;
+  max-width: 100% !important;
+}
+
+body.od195-sheet-layer .sheet,
+body.od1945-sheet-layer .sheet,
+body.od1952-sheet-open .sheet {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: visible !important;
+}
+
+body.od195-sheet-layer .sheet-header,
+body.od1945-sheet-layer .sheet-header,
+body.od1952-sheet-open .sheet-header {
+  grid-template-columns: 220px minmax(0, 1fr) !important;
+  max-width: 100% !important;
+}
+
+body.od195-sheet-layer .identity-grid,
+body.od1945-sheet-layer .identity-grid,
+body.od1952-sheet-open .identity-grid {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+/* Botão de retorno da ficha para campanha: pequeno, fora do menu de três linhas. */
+.od1951-return-campaign {
+  display: none !important;
+}
+
+.od1952-return-campaign {
+  position: fixed !important;
+  left: 18px !important;
+  bottom: 18px !important;
+  z-index: 9995 !important;
+  width: auto !important;
+  height: auto !important;
+  min-height: 38px !important;
+  padding: 8px 12px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(255,255,255,.18) !important;
+  background: rgba(10,12,16,.88) !important;
+  color: #fff !important;
+  font-weight: 900 !important;
+  box-shadow: 0 12px 28px rgba(0,0,0,.34) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+/* Campanha sem tela preta: remove content-visibility/contain excessivo dos patches anteriores. */
+body.od195-campaign-layer #od1901-campaign-manager,
+body.od1945-campaign-layer #od1901-campaign-manager,
+body.od195-campaign-layer #od1901-campaign-manager .od191-content,
+body.od1945-campaign-layer #od1901-campaign-manager .od191-content,
+body.od195-campaign-layer #od1901-campaign-manager .od192-content,
+body.od1945-campaign-layer #od1901-campaign-manager .od192-content {
+  content-visibility: visible !important;
+  contain: none !important;
+  contain-intrinsic-size: auto !important;
+  min-height: auto !important;
+}
+
+body.od195-campaign-layer #od1901-campaign-manager,
+body.od1945-campaign-layer #od1901-campaign-manager {
+  width: min(100%, 1480px) !important;
+  margin-inline: auto !important;
+  background: transparent !important;
+}
+
+/* Botão voltar da campanha fica pequeno e alinhado ao hero. */
+#od1901-campaign-manager .od191-back,
+#od1901-campaign-manager .od1901-back,
+#od1901-campaign-manager .od1952-back {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  min-height: 40px !important;
+  padding: 9px 13px !important;
+  border-radius: 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+/* Atributos: modelo clássico próximo às versões 1.89/1.90, sem cards reduzidos quebrados. */
+.od1952-classic-attributes {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(130px, 1fr)) !important;
+  gap: 12px !important;
+}
+
+.od1952-attr-card {
+  border: 4px solid var(--line) !important;
+  background: rgba(255,255,255,.75) !important;
+  padding: 12px !important;
+  text-align: center !important;
+  clip-path: polygon(12% 0, 88% 0, 100% 22%, 100% 78%, 88% 100%, 12% 100%, 0 78%, 0 22%) !important;
+  display: grid !important;
+  gap: 8px !important;
+  align-items: center !important;
+  min-height: 132px !important;
+}
+
+body.dark-sheet .od1952-attr-card {
+  background: rgba(0,0,0,.65) !important;
+  border-color: rgba(var(--accent-rgb), .85) !important;
+}
+
+.od1952-attr-name {
+  text-transform: uppercase !important;
+  letter-spacing: .08em !important;
+  font-weight: 900 !important;
+}
+
+.od1952-attr-value {
+  width: 100% !important;
+  text-align: center !important;
+  font-size: 2rem !important;
+  font-weight: 900 !important;
+  padding: 6px !important;
+}
+
+.od1952-attr-mod {
+  margin: 0 auto !important;
+  font-size: 1.15rem !important;
+}
+
+@media (max-width: 1200px) {
+  body.od195-sheet-layer .app-grid,
+  body.od1945-sheet-layer .app-grid,
+  body.od1952-sheet-open .app-grid {
+    grid-template-columns: 1fr !important;
+    grid-template-areas: "sheet" "right" !important;
+  }
+
+  body.od195-sheet-layer .right-panel,
+  body.od1945-sheet-layer .right-panel,
+  body.od1952-sheet-open .right-panel {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .od1952-classic-attributes {
+    grid-template-columns: repeat(2, minmax(130px, 1fr)) !important;
+  }
+}
+
+@media (max-width: 680px) {
+  body.od195-sheet-layer .app-grid,
+  body.od1945-sheet-layer .app-grid,
+  body.od1952-sheet-open .app-grid {
+    padding: 80px 14px 20px !important;
+  }
+
+  body.od195-sheet-layer .sheet-header,
+  body.od1945-sheet-layer .sheet-header,
+  body.od1952-sheet-open .sheet-header,
+  body.od195-sheet-layer .right-panel,
+  body.od1945-sheet-layer .right-panel,
+  body.od1952-sheet-open .right-panel,
+  .od1952-classic-attributes {
+    grid-template-columns: 1fr !important;
   }
 }
