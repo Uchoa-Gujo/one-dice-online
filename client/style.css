@@ -19406,3 +19406,144 @@ body[data-od195-layer="auth"] .screen.active:not(#auth-screen) {
 #od1901-campaign-manager select {
   max-width: 100% !important;
 }
+
+
+/* =========================
+   V195.1 - Correção de scroll, campanha, ficha e resolução
+========================= */
+html, body {
+  overflow-x: hidden !important;
+  max-width: 100% !important;
+}
+
+body.od195-campaign-layer,
+body.od1945-campaign-layer {
+  background: #050608 !important;
+}
+
+body.od195-campaign-layer #app-screen.active,
+body.od1945-campaign-layer #app-screen.active {
+  display: block !important;
+  width: 100% !important;
+  min-height: 100dvh !important;
+  overflow-x: hidden !important;
+  background: #050608 !important;
+}
+
+body.od195-campaign-layer #od1901-campaign-manager,
+body.od1945-campaign-layer #od1901-campaign-manager {
+  display: block !important;
+  width: min(100%, 1480px) !important;
+  max-width: 100% !important;
+  min-height: 100dvh !important;
+  margin: 0 auto !important;
+  overflow-x: clip !important;
+  contain: layout style paint !important;
+}
+
+body.od195-campaign-layer .od191-content,
+body.od195-campaign-layer .od192-content,
+body.od1945-campaign-layer .od191-content,
+body.od1945-campaign-layer .od192-content {
+  width: min(100%, 1480px) !important;
+  max-width: 100% !important;
+  margin-inline: auto !important;
+  overflow-x: clip !important;
+  scroll-behavior: auto !important;
+}
+
+body.od195-campaign-layer .od191-hero,
+body.od195-campaign-layer .od192-hero,
+body.od1945-campaign-layer .od191-hero,
+body.od1945-campaign-layer .od192-hero {
+  max-width: 100% !important;
+  overflow: hidden !important;
+}
+
+body.od195-campaign-layer .od191-overview-grid,
+body.od195-campaign-layer .od192-combat-grid,
+body.od195-campaign-layer .od191-character-grid,
+body.od195-campaign-layer .od191-player-grid,
+body.od1945-campaign-layer .od191-overview-grid,
+body.od1945-campaign-layer .od192-combat-grid,
+body.od1945-campaign-layer .od191-character-grid,
+body.od1945-campaign-layer .od191-player-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)) !important;
+  max-width: 100% !important;
+}
+
+body.od195-campaign-layer .od192-turn-row,
+body.od195-campaign-layer .od192-participant,
+body.od195-campaign-layer .od191-character-card,
+body.od1945-campaign-layer .od192-turn-row,
+body.od1945-campaign-layer .od192-participant,
+body.od1945-campaign-layer .od191-character-card {
+  max-width: 100% !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+body.od195-campaign-layer .od192-turn-info,
+body.od195-campaign-layer .od191-character-card > div,
+body.od1945-campaign-layer .od192-turn-info,
+body.od1945-campaign-layer .od191-character-card > div {
+  min-width: 0 !important;
+  overflow-wrap: anywhere !important;
+}
+
+body.od195-campaign-layer #topbar-menu-toggle,
+body.od195-campaign-layer .topbar-menu-toggle,
+body.od195-campaign-layer [data-topbar-menu-toggle],
+body.od195-campaign-layer #sidebar-dock-btn,
+body.od195-campaign-layer #master-dashboard-dock-btn,
+body.od195-campaign-layer [data-master-dashboard-toggle],
+body.od195-campaign-layer [data-player-dashboard-toggle],
+body.od1945-campaign-layer #topbar-menu-toggle,
+body.od1945-campaign-layer .topbar-menu-toggle,
+body.od1945-campaign-layer [data-topbar-menu-toggle],
+body.od1945-campaign-layer #sidebar-dock-btn,
+body.od1945-campaign-layer #master-dashboard-dock-btn,
+body.od1945-campaign-layer [data-master-dashboard-toggle],
+body.od1945-campaign-layer [data-player-dashboard-toggle],
+[data-od1951-hidden-in-campaign="true"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+body.od195-sheet-layer #od1901-campaign-manager,
+body.od1945-sheet-layer #od1901-campaign-manager,
+body.od1951-sheet-open #od1901-campaign-manager {
+  display: none !important;
+}
+
+body.od195-sheet-layer #app-screen.active,
+body.od1945-sheet-layer #app-screen.active,
+body.od1951-sheet-open #app-screen.active {
+  display: block !important;
+  min-height: 100dvh !important;
+  overflow-x: hidden !important;
+}
+
+.od1951-return-campaign {
+  margin-right: .75rem !important;
+  border-radius: 999px !important;
+  padding: .55rem .9rem !important;
+  border: 1px solid rgba(255,255,255,.14) !important;
+  background: rgba(255,255,255,.06) !important;
+  color: #fff !important;
+  font-weight: 800 !important;
+}
+
+@media (max-width: 760px) {
+  body.od195-campaign-layer .od191-hero-main,
+  body.od195-campaign-layer .od192-hero .od191-hero-main,
+  body.od1945-campaign-layer .od191-hero-main,
+  body.od1945-campaign-layer .od192-hero .od191-hero-main {
+    grid-template-columns: 1fr !important;
+  }
+  body.od195-campaign-layer .od191-hero-actions,
+  body.od1945-campaign-layer .od191-hero-actions {
+    flex-wrap: wrap !important;
+  }
+}

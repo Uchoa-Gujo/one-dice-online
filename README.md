@@ -1,98 +1,35 @@
-# One Dice Site v1.95.0
+# One Dice Site v1.95.1
 
 ## Foco
 
-Update de validação camada por camada, revisão de estrutura e otimização geral.
+Hotfix da v1.95 para corrigir problemas dentro da campanha depois da validação de camadas.
 
-Esta versão foi feita a partir da v1.94.5 e revisa o projeto como camadas:
+## Correções principais
 
-- auth;
-- hub;
-- campaign;
-- sheet;
-- realtime;
-- database;
-- assets/static.
+- Corrigido reset de scroll dentro da campanha.
+- Renderizações do gerenciador agora preservam posição de scroll.
+- Abertura de ficha foi refeita para não cair no modelo antigo.
+- Botões de ficha da campanha e da aba Personagens agora usam uma ponte estável.
+- Botão Voltar da campanha agora volta direto para `/campanhas`, sem tela preta.
+- Camada de ficha remove o gerenciador da campanha antes de carregar a ficha.
+- Corrigida resolução/overflow dentro da campanha.
+- Escondido o botão antigo das três setas dentro da campanha.
+- Reforçada a remoção visual dos controles antigos na camada campanha.
 
-## Varredura feita
+## Validação
 
-Foram revisados os arquivos principais do pacote:
+Validar:
 
-- HTML;
-- CSS;
-- JavaScript do cliente;
-- OBS;
-- rotas do servidor;
-- sockets;
-- banco de dados;
-- Docker;
-- variáveis de ambiente;
-- assets e referências internas.
-
-## Limpeza funcional
-
-Removidos do JavaScript ativo os blocos antigos de gerenciador de campanha **V190 até V191**, que ainda podiam reativar comportamentos antigos.
-
-O gerenciador moderno passa a ser a camada oficial a partir da estrutura **V192+**.
-
-Para não quebrar chamadas internas já existentes, a v1.95 recria uma ponte moderna compatível com nomes antigos, sem reabrir o layout antigo.
-
-## Núcleo v1.95
-
-Adicionado:
-
-- `od195LayerValidator`;
-- validação de tela ativa única;
-- validação de URL canônica;
-- validação de gerenciador moderno dentro de campanha;
-- bloqueio final de painéis antigos na camada campaign;
-- limpeza de estado local inconsistente;
-- ponte moderna para `od1905LiveCampaignCore`;
-- sincronização de presença com menos ruído;
-- render moderno com lock antiflicker;
-- auditoria salva em `localStorage.od195_last_layer_audit`;
-- log de problemas em `localStorage.od195_layer_issues`.
-
-## URLs organizadas
-
-Mantidas como padrão:
-
-- `/login`;
-- `/inicio`;
-- `/personagens`;
-- `/campanhas`;
-- `/campanha/:id`;
-- `/campanha/:id/:tab`;
-- `/ficha/:id`;
-- `/personagem/:id`.
-
-`/mesa/:id` continua sendo normalizada para `/campanha/:id`.
-
-## Backend
-
-Adicionado endpoint de validação de camadas:
-
-- `GET /api/health/layers`.
-
-Ele valida se as camadas principais do banco e do servidor estão disponíveis.
-
-## Package
-
-Adicionado script:
-
-- `npm run check`.
-
-Ele executa `node --check` nos arquivos principais de JavaScript.
-
-## Resultado da limpeza
-
-- blocos antigos V190-V191 removidos do JavaScript ativo;
-- aproximadamente 115,615 caracteres de código legado retirados;
-- gerenciador moderno preservado;
-- compatibilidade interna preservada;
-- flicker reduzido por render lock;
-- camada campaign protegida contra retorno do modelo antigo.
+- `client/script.js`;
+- `client/obs.js`;
+- `server/server.js`;
+- `server/database.js`;
+- `server/middleware.js`;
+- `server/routes/auth.js`;
+- `server/routes/characters.js`;
+- `server/routes/tables.js`;
+- `server/sockets/index.js`.
 
 ## Versão
 
-1.95.0
+1.95.1
