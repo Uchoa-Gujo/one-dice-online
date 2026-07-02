@@ -1,6 +1,6 @@
 {
   "name": "one-dice-online",
-  "version": "1.90.2",
+  "version": "1.94.0",
   "description": "Base online do One Dice com Node.js, PostgreSQL, Socket.IO e Docker.",
   "main": "server/server.js",
   "scripts": {

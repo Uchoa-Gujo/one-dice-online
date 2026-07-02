@@ -257,7 +257,28 @@ router.put('/:id', requireTableMaster, async (req, res) => {
   const currentTable = await query('select settings from tables where id = $1 and owner_id = $2', [tableId, req.user.id]);
   const previousSettings = currentTable.rows[0]?.settings || {};
   const systemModel = normalizeSystemModel(req.body.systemType || req.body.systemModel || req.body?.settings?.systemType || req.body?.settings?.systemModel || previousSettings.systemType || previousSettings.systemModel);
-  const settings = { ...previousSettings, ...(req.body.settings && typeof req.body.settings === 'object' ? req.body.settings : {}), systemType: systemModel, systemModel };
+  const incomingSettings = req.body.settings && typeof req.body.settings === 'object' ? req.body.settings : {};
+  const settings = {
+    ...previousSettings,
+    ...incomingSettings,
+    systemType: systemModel,
+    systemModel,
+    bannerUrl: String(incomingSettings.bannerUrl || incomingSettings.banner || previousSettings.bannerUrl || previousSettings.banner || '').trim().slice(0, 200000),
+    theme: String(incomingSettings.theme || previousSettings.theme || 'red').trim().slice(0, 32),
+    summary: String(incomingSettings.summary || previousSettings.summary || '').trim().slice(0, 4000),
+    rules: String(incomingSettings.rules || previousSettings.rules || '').trim().slice(0, 6000),
+    inviteText: String(incomingSettings.inviteText || incomingSettings.invite || previousSettings.inviteText || '').trim().slice(0, 1000),
+    tone: String(incomingSettings.tone || previousSettings.tone || '').trim().slice(0, 80),
+    safety: String(incomingSettings.safety || previousSettings.safety || '').trim().slice(0, 1200),
+    tags: Array.isArray(incomingSettings.tags)
+      ? incomingSettings.tags.map(tag => String(tag || '').trim().slice(0, 24)).filter(Boolean).slice(0, 8)
+      : (Array.isArray(previousSettings.tags) ? previousSettings.tags : []),
+    owlbearEnabled: incomingSettings.owlbearEnabled === false ? false : Boolean(incomingSettings.owlbearUrl || incomingSettings.owlbearRoomUrl || previousSettings.owlbearUrl || previousSettings.owlbearRoomUrl || incomingSettings.owlbearEnabled || previousSettings.owlbearEnabled),
+    owlbearUrl: String(incomingSettings.owlbearUrl || incomingSettings.owlbearRoomUrl || previousSettings.owlbearUrl || previousSettings.owlbearRoomUrl || '').trim().slice(0, 2000),
+    owlbearRoomUrl: String(incomingSettings.owlbearRoomUrl || incomingSettings.owlbearUrl || previousSettings.owlbearRoomUrl || previousSettings.owlbearUrl || '').trim().slice(0, 2000),
+    owlbearSceneUrl: String(incomingSettings.owlbearSceneUrl || previousSettings.owlbearSceneUrl || '').trim().slice(0, 2000),
+    owlbearNote: String(incomingSettings.owlbearNote || previousSettings.owlbearNote || '').trim().slice(0, 1000)
+  };
 
   const result = await query(`
     update tables
@@ -302,6 +323,62 @@ router.put('/:id/member', async (req, res) => {
   emitTable(req, tableId, 'member:updated', { reason: 'character-linked', member: updated.rows[0] });
   res.json({ member: updated.rows[0] });
 });
+
+
+router.delete('/:id/members/:memberId/character', requireTableMaster, async (req, res) => {
+  const tableId = req.params.id;
+  const memberId = req.params.memberId;
+
+  const target = await query('select * from table_members where id = $1 and table_id = $2', [memberId, tableId]);
+  if (!target.rowCount) return res.status(404).json({ error: 'Jogador não encontrado nesta campanha.' });
+
+  const member = target.rows[0];
+  const nextRole = member.role === 'master_player' ? 'master' : member.role;
+  const updated = await query(`
+    update table_members
+    set character_id = null, role = $1, updated_at = now()
+    where id = $2 and table_id = $3
+    returning *
+  `, [nextRole, memberId, tableId]);
+
+  emitTable(req, tableId, 'member:updated', {
+    reason: 'character-unlinked-by-master',
+    member: updated.rows[0],
+    userId: member.user_id,
+    removedCharacterId: member.character_id || null
+  });
+  res.json({ ok: true, member: updated.rows[0], removedCharacterId: member.character_id || null });
+});
+
+router.delete('/:id/members/:memberId', requireTableMaster, async (req, res) => {
+  const tableId = req.params.id;
+  const memberId = req.params.memberId;
+
+  const target = await query('select * from table_members where id = $1 and table_id = $2', [memberId, tableId]);
+  if (!target.rowCount) return res.status(404).json({ error: 'Jogador não encontrado nesta campanha.' });
+
+  const member = target.rows[0];
+  if (String(member.user_id) === String(req.user.id)) {
+    return res.status(400).json({ error: 'O mestre não pode remover a própria entrada por aqui.' });
+  }
+
+  await query('delete from table_members where id = $1 and table_id = $2', [memberId, tableId]);
+
+  const remaining = await query('select count(*)::int as total from table_members where table_id = $1', [tableId]);
+  if ((remaining.rows[0]?.total || 0) <= 0) {
+    await query('delete from chat_messages where table_id = $1', [tableId]);
+    emitTable(req, tableId, 'messages:cleared', { reason: 'empty-table' });
+  }
+
+  emitTable(req, tableId, 'member:updated', {
+    reason: 'member-removed',
+    removedMemberId: memberId,
+    userId: member.user_id,
+    characterId: member.character_id || null
+  });
+  res.json({ ok: true, removedMemberId: memberId, userId: member.user_id, characterId: member.character_id || null });
+});
+
 
 
 
@@ -571,9 +648,11 @@ router.delete('/:id/leave', async (req, res) => {
   }
   await query('delete from table_members where table_id = $1 and user_id = $2', [tableId, req.user.id]);
   const remaining = await query('select count(*)::int as total from table_members where table_id = $1', [tableId]);
-  if ((remaining.rows[0]?.total || 0) <= 1) {
+  // v1.90.3: não limpar histórico enquanto ainda existir alguém vinculado à campanha.
+  // O chat só é removido quando não sobrar nenhum membro na mesa.
+  if ((remaining.rows[0]?.total || 0) <= 0) {
     await query('delete from chat_messages where table_id = $1', [tableId]);
-    emitTable(req, tableId, 'messages:cleared', { reason: 'last-player-left' });
+    emitTable(req, tableId, 'messages:cleared', { reason: 'empty-table' });
   }
   emitTable(req, tableId, 'member:updated', { reason: 'leave' });
   res.json({ ok: true });
