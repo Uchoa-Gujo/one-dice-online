@@ -1,11 +1,13 @@
 {
   "name": "one-dice-online",
-  "version": "1.94.0",
+  "version": "1.95.0",
   "description": "Base online do One Dice com Node.js, PostgreSQL, Socket.IO e Docker.",
   "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",
-    "dev": "node server/server.js"
+    "dev": "node server/server.js",
+    "check": "node --check client/script.js && node --check client/obs.js && node --check server/server.js && node --check server/database.js && node --check server/middleware.js && node --check server/routes/auth.js && node --check server/routes/characters.js && node --check server/routes/tables.js && node --check server/sockets/index.js",
+    "health": "node -e \"require('./package.json'); console.log('One Dice health check ready')\""
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

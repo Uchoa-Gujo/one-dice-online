@@ -9,6 +9,7 @@
     (function(){
       try {
         document.documentElement.classList.add('od180-booting');
+        document.documentElement.classList.add('od1945-layered-shell');
         var st = JSON.parse(localStorage.getItem('od_settings') || '{}');
         st.theme = 'dark';
         st.accent = st.accent || 'red';
@@ -16,6 +17,7 @@
         document.documentElement.setAttribute('data-accent', st.accent || 'red');
       } catch (_) {
         document.documentElement.classList.add('od180-booting');
+        document.documentElement.classList.add('od1945-layered-shell');
         document.documentElement.setAttribute('data-accent', 'red');
       }
       try {
@@ -43,7 +45,7 @@
   <link rel="stylesheet" href="/block-inventory/style.css" />
   <link rel="icon" type="image/png" href="/assets/favicon.png" />
   <link rel="shortcut icon" href="/assets/favicon.png" />
-  <link rel="stylesheet" href="/style.css?v=1.94.0" />
+  <link rel="stylesheet" href="/style.css?v=1.95.0" />
 
   <script id="od1805-preboot-script">
     document.documentElement.classList.add('od1805-booting');
@@ -130,8 +132,8 @@
       <p class="subtitle">Ficha digital, rolagens, chat da mesa e controle de PV/PE.</p>
 
       <div class="auth-tabs">
-        <button class="tab-btn active" data-auth="login">Entrar</button>
-        <button class="tab-btn" data-auth="register">Criar conta</button>
+        <button type="button" class="tab-btn active" data-auth="login">Entrar</button>
+        <button type="button" class="tab-btn" data-auth="register">Criar conta</button>
       </div>
 
       <form id="login-form" class="auth-form active">
@@ -306,7 +308,7 @@
         <nav class="top-actions">
           <button id="back-to-sessions-btn" class="ghost-btn" type="button">Mesas</button>
           <button id="campaign-character-btn" class="ghost-btn" type="button">Minha Ficha na Mesa</button>
-          <button id="theme-toggle" class="ghost-btn">Tema Escuro</button>
+          <button type="button" id="theme-toggle" class="ghost-btn">Tema Escuro</button>
           <select id="accent-select" class="accent-select" title="Cor principal">
             <option value="black">Preto</option>
             <option value="green">Verde</option>
@@ -323,7 +325,7 @@
           </select>
           <button id="toggle-history-btn" class="ghost-btn" type="button">Histórico</button>
           <button id="copy-sheet-obs-btn" class="ghost-btn" type="button">OBS</button>
-          <button id="logout-btn" class="danger-btn">Sair da Mesa</button>
+          <button type="button" id="logout-btn" class="danger-btn">Sair da Mesa</button>
         </nav>
       </div>
     </header>
@@ -427,13 +429,13 @@
           </div>
 
           <div class="tabs">
-            <button class="sheet-tab active" data-tab="resumo">Resumo</button>
-            <button class="sheet-tab" data-tab="pericias">Perícias</button>
-            <button class="sheet-tab" data-tab="combate">Combate</button>
-            <button class="sheet-tab" data-tab="equipamentos">Equipamentos</button>
-            <button class="sheet-tab" data-tab="magias">Magias</button>
-            <button class="sheet-tab" data-tab="habilidades">Habilidades</button>
-            <button class="sheet-tab" data-tab="transformacoes">Transformações</button>
+            <button type="button" class="sheet-tab active" data-tab="resumo">Resumo</button>
+            <button type="button" class="sheet-tab" data-tab="pericias">Perícias</button>
+            <button type="button" class="sheet-tab" data-tab="combate">Combate</button>
+            <button type="button" class="sheet-tab" data-tab="equipamentos">Equipamentos</button>
+            <button type="button" class="sheet-tab" data-tab="magias">Magias</button>
+            <button type="button" class="sheet-tab" data-tab="habilidades">Habilidades</button>
+            <button type="button" class="sheet-tab" data-tab="transformacoes">Transformações</button>
           </div>
 
           <div id="tab-resumo" class="tab-panel active">
@@ -449,13 +451,13 @@
                 <h3>Perícias</h3>
                 <p class="helper-text">No modo compacto aparecem apenas as perícias treinadas. O total soma atributo + bônus manual + proficiência. Com sobrepeso, perícias de Agilidade recebem -5.</p>
               </div>
-              <button id="compact-skills-toggle" class="ghost-btn small">Mostrar Todas</button>
+              <button type="button" id="compact-skills-toggle" class="ghost-btn small">Mostrar Todas</button>
             </div>
             <div id="skills-wrap" class="table-wrap compact"><table id="skills-table"></table></div>
           </div>
 
           <div id="tab-combate" class="tab-panel">
-            <div class="section-title-row"><h3>Ataques</h3><button id="add-attack" class="ghost-btn small">+ Ataque</button></div>
+            <div class="section-title-row"><h3>Ataques</h3><button type="button" id="add-attack" class="ghost-btn small">+ Ataque</button></div>
             <div id="attacks-list" class="cards-list"></div>
           </div>
 
@@ -802,7 +804,7 @@
               <label>Classe de Conjuração<input id="spell-dc" type="number" /></label>
               <label>Limite de Poder<input id="power-limit" type="number" /></label>
             </div>
-            <div class="section-title-row"><h3>Magias</h3><button id="add-spell" class="ghost-btn small">+ Magia</button></div>
+            <div class="section-title-row"><h3>Magias</h3><button type="button" id="add-spell" class="ghost-btn small">+ Magia</button></div>
             <div id="spells-list" class="cards-list"></div>
           </div>
 
@@ -812,7 +814,7 @@
                 <h3>Habilidades</h3>
                 <p class="helper-text">Cards de habilidades com custo, ação e descrição ocultável.</p>
               </div>
-              <button id="add-ability" class="ghost-btn small">+ Habilidade</button>
+              <button type="button" id="add-ability" class="ghost-btn small">+ Habilidade</button>
             </div>
             <div class="ability-tools">
               <button id="toggle-ability-desc" class="ghost-btn small" type="button">Ocultar descrições</button>
@@ -850,7 +852,7 @@
             <input id="dice-qty" type="number" value="1" min="1" max="20" />
             <input id="dice-mod" type="number" value="0" />
           </div>
-          <button id="roll-dice" class="primary-btn">Rolar Dados</button>
+          <button type="button" id="roll-dice" class="primary-btn">Rolar Dados</button>
           <div id="last-roll" class="last-roll">—</div>
         </section>
 
@@ -892,7 +894,7 @@
         <div class="overlay-bar"><span>PE</span><div><i id="overlay-pe"></i></div><b id="overlay-pe-text"></b></div>
       </div>
     </div>
-    <button id="close-overlay" class="ghost-btn overlay-close">Voltar</button>
+    <button type="button" id="close-overlay" class="ghost-btn overlay-close">Voltar</button>
   </section>
 
   <template id="attack-template">
@@ -902,8 +904,8 @@
       <input class="attack-damage" placeholder="Dano: 1d8+2" />
       <input class="attack-crit" placeholder="Crítico: 2d8+2" />
       <textarea class="attack-desc" placeholder="Descrição"></textarea>
-      <button class="roll-attack primary-btn small">Rolar ataque</button>
-      <button class="remove-card danger-btn small">Remover</button>
+      <button type="button" class="roll-attack primary-btn small">Rolar ataque</button>
+      <button type="button" class="remove-card danger-btn small">Remover</button>
     </article>
   </template>
 
@@ -927,7 +929,7 @@
         <textarea class="spell-upgrades" placeholder="Aprimoramentos, versões superiores ou gastos extras"></textarea>
       </label>
 
-      <button class="remove-card danger-btn small">Remover</button>
+      <button type="button" class="remove-card danger-btn small">Remover</button>
     </article>
   </template>
 
@@ -971,7 +973,7 @@
     </article>
   </template>
   <script src="/socket.io/socket.io.js"></script>
-  <script src="/script.js?v=1.94.0"></script>
+  <script src="/script.js?v=1.95.0"></script>
   <script type="module" src="/block-inventory/script.js"></script>
 </body>
 </html>

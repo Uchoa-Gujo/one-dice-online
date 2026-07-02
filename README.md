@@ -1,56 +1,98 @@
-# One Dice Site v1.94.0
+# One Dice Site v1.95.0
 
 ## Foco
 
-Integração básica com Owlbear Rodeo.
+Update de validação camada por camada, revisão de estrutura e otimização geral.
 
-A ideia desta versão é não criar mapa/grid dentro do One Dice. O One Dice continua sendo o centro de campanha, fichas, combate, permissões e chat, enquanto o Owlbear Rodeo fica responsável pelo mapa de batalha.
+Esta versão foi feita a partir da v1.94.5 e revisa o projeto como camadas:
 
-## O que foi adicionado
+- auth;
+- hub;
+- campaign;
+- sheet;
+- realtime;
+- database;
+- assets/static.
 
-### Card de Mapa Owlbear no Gerenciador da Campanha
+## Varredura feita
 
-Dentro da campanha aparece um card de **Mapa de Batalha Externo** com:
+Foram revisados os arquivos principais do pacote:
 
-- botão **Abrir Mapa**;
-- botão **Copiar Link**;
-- botão **Ir para Owlbear**;
-- aviso de que fichas, combate e chat continuam no One Dice.
+- HTML;
+- CSS;
+- JavaScript do cliente;
+- OBS;
+- rotas do servidor;
+- sockets;
+- banco de dados;
+- Docker;
+- variáveis de ambiente;
+- assets e referências internas.
 
-### Configuração pelo mestre
+## Limpeza funcional
 
-O mestre pode configurar:
+Removidos do JavaScript ativo os blocos antigos de gerenciador de campanha **V190 até V191**, que ainda podiam reativar comportamentos antigos.
 
-- link da sala Owlbear;
-- link de cena/mapa específico, opcional;
-- nota rápida para jogadores.
+O gerenciador moderno passa a ser a camada oficial a partir da estrutura **V192+**.
 
-### Editor de Campanha
+Para não quebrar chamadas internas já existentes, a v1.95 recria uma ponte moderna compatível com nomes antigos, sem reabrir o layout antigo.
 
-O Editor de Campanha completo ganhou uma seção **Mapa**, com os mesmos campos da integração Owlbear.
+## Núcleo v1.95
 
-### Salvamento
+Adicionado:
 
-Os dados são salvos em `tables.settings`:
+- `od195LayerValidator`;
+- validação de tela ativa única;
+- validação de URL canônica;
+- validação de gerenciador moderno dentro de campanha;
+- bloqueio final de painéis antigos na camada campaign;
+- limpeza de estado local inconsistente;
+- ponte moderna para `od1905LiveCampaignCore`;
+- sincronização de presença com menos ruído;
+- render moderno com lock antiflicker;
+- auditoria salva em `localStorage.od195_last_layer_audit`;
+- log de problemas em `localStorage.od195_layer_issues`.
 
-- `owlbearEnabled`;
-- `owlbearUrl`;
-- `owlbearRoomUrl`;
-- `owlbearSceneUrl`;
-- `owlbearNote`.
+## URLs organizadas
 
-## Como usar
+Mantidas como padrão:
 
-1. O mestre cria ou abre uma sala no Owlbear Rodeo.
-2. Copia o link da sala.
-3. Cola o link no One Dice.
-4. Salva o mapa.
-5. Jogadores clicam em **Abrir Mapa** para ir ao Owlbear.
+- `/login`;
+- `/inicio`;
+- `/personagens`;
+- `/campanhas`;
+- `/campanha/:id`;
+- `/campanha/:id/:tab`;
+- `/ficha/:id`;
+- `/personagem/:id`.
 
-## Importante
+`/mesa/:id` continua sendo normalizada para `/campanha/:id`.
 
-Esta versão não cria extensão Owlbear, não controla tokens e não tenta manipular mapa. É apenas a integração básica por link, mais segura e estável.
+## Backend
+
+Adicionado endpoint de validação de camadas:
+
+- `GET /api/health/layers`.
+
+Ele valida se as camadas principais do banco e do servidor estão disponíveis.
+
+## Package
+
+Adicionado script:
+
+- `npm run check`.
+
+Ele executa `node --check` nos arquivos principais de JavaScript.
+
+## Resultado da limpeza
+
+- blocos antigos V190-V191 removidos do JavaScript ativo;
+- aproximadamente 115,615 caracteres de código legado retirados;
+- gerenciador moderno preservado;
+- compatibilidade interna preservada;
+- flicker reduzido por render lock;
+- camada campaign protegida contra retorno do modelo antigo.
 
 ## Versão
 
-1.94.0
+1.95.0

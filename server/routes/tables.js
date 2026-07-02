@@ -32,9 +32,111 @@ function isMasterRole(role) {
   return role === 'master' || role === 'master_player' || role === 'mestre' || role === 'mestre_jogador';
 }
 
+function trimEventPayload(payload) {
+  try {
+    const text = JSON.stringify(payload || {});
+    if (text.length <= 750000) return payload || {};
+    return { truncated: true, reason: 'payload-too-large', keys: Object.keys(payload || {}) };
+  } catch (_) {
+    return { truncated: true, reason: 'payload-not-json' };
+  }
+}
+
 function emitTable(req, tableId, eventName, payload = {}) {
   const io = req.app.get('io');
-  if (io) io.to(`table:${tableId}`).emit(eventName, { tableId, ...payload });
+  const key = String(tableId);
+  const cleanPayload = { tableId: key, ...trimEventPayload(payload) };
+
+  // V194.3: todo evento da mesa também fica registrado no banco.
+  // Assim, se o socket falhar, o cliente recupera pelo endpoint /events.
+  if (Math.random() < 0.02) {
+    query("delete from table_events where created_at < now() - interval '72 hours'").catch(() => {});
+  }
+  query(
+    'insert into table_events (table_id, event_name, payload) values ($1, $2, $3) returning id, created_at',
+    [key, String(eventName), cleanPayload]
+  ).then(result => {
+    const eventId = result.rows[0]?.id || null;
+    const createdAt = result.rows[0]?.created_at || new Date().toISOString();
+    const eventPayload = { ...cleanPayload, eventId, createdAt };
+    if (io) {
+      io.to(`table:${key}`).emit(eventName, eventPayload);
+      io.to(`table:${key}`).emit('table:event', { tableId: key, eventName, eventId, createdAt, payload: cleanPayload });
+    }
+  }).catch(error => {
+    console.warn('Falha ao persistir evento de mesa:', eventName, error.message || error);
+    if (io) io.to(`table:${key}`).emit(eventName, cleanPayload);
+  });
+}
+
+// V194.1 - presença HTTP como fallback do Socket.IO.
+// Mantém online/offline funcionando mesmo se o socket perder evento no navegador.
+function od1941PresenceStore(req) {
+  let store = req.app.get('od1941PresenceStore');
+  if (!store) {
+    store = new Map();
+    req.app.set('od1941PresenceStore', store);
+  }
+  return store;
+}
+function od1941PresenceList(req, tableId) {
+  const store = od1941PresenceStore(req);
+  const key = String(tableId);
+  const now = Date.now();
+  const table = store.get(key) || new Map();
+  for (const [userId, at] of table.entries()) {
+    if (now - Number(at || 0) > 25000) table.delete(userId);
+  }
+  if (!table.size) store.delete(key);
+  else store.set(key, table);
+  return Array.from(table.keys());
+}
+function od1941TouchPresence(req, tableId) {
+  const store = od1941PresenceStore(req);
+  const key = String(tableId);
+  const table = store.get(key) || new Map();
+  table.set(String(req.user.id), Date.now());
+  store.set(key, table);
+  const onlineUserIds = od1941PresenceList(req, key);
+  const io = req.app.get('io');
+  if (io) io.to(`table:${key}`).emit('presence:updated', { tableId: key, onlineUserIds, at: new Date().toISOString(), source: 'http' });
+  return onlineUserIds;
+}
+
+
+async function od1943TouchPresence(req, tableId) {
+  const key = String(tableId);
+  try {
+    await query(`
+      insert into table_presence (table_id, user_id, last_seen, client_id)
+      values ($1, $2, now(), $3)
+      on conflict (table_id, user_id)
+      do update set last_seen = excluded.last_seen, client_id = excluded.client_id
+    `, [key, req.user.id, String(req.body?.clientId || req.query?.clientId || '').slice(0, 80)]);
+    await query("delete from table_presence where last_seen < now() - interval '35 seconds'");
+    const result = await query(`
+      select user_id
+      from table_presence
+      where table_id = $1 and last_seen > now() - interval '25 seconds'
+      order by last_seen desc
+    `, [key]);
+    const onlineUserIds = result.rows.map(row => row.user_id);
+    const io = req.app.get('io');
+    if (io) io.to(`table:${key}`).emit('presence:updated', { tableId: key, onlineUserIds, at: new Date().toISOString(), source: 'db' });
+    return onlineUserIds;
+  } catch (error) {
+    console.warn('Presença DB indisponível, usando memória:', error.message || error);
+    return od1941TouchPresence(req, key);
+  }
+}
+
+async function od1943LastEventId(tableId) {
+  try {
+    const result = await query('select coalesce(max(id), 0)::bigint as id from table_events where table_id = $1', [String(tableId)]);
+    return Number(result.rows[0]?.id || 0);
+  } catch (_) {
+    return 0;
+  }
 }
 
 async function requireTableMember(req, res, next) {
@@ -67,7 +169,7 @@ function itemWeightTotal(items) {
 async function updateTableDrops(tableId, drops) {
   const result = await query(`
     update tables
-    set settings = jsonb_set(coalesce(settings, '{}'::jsonb), '{drops}', $1::jsonb, true), updated_at = now()
+    set settings = jsonb_set(coalesce(settings, '{}'::jsonb), '{drops}', $1::jsonb, true), revision = coalesce(revision, 0) + 1, updated_at = now()
     where id = $2
     returning settings
   `, [JSON.stringify(drops), tableId]);
@@ -152,16 +254,37 @@ function apiRole(role) {
   return role;
 }
 
+// V194.2 - helpers de revisão para sincronização mais fluida.
+async function touchTableRevision(tableId) {
+  try {
+    await query('update tables set revision = coalesce(revision, 0) + 1, updated_at = now() where id = $1', [tableId]);
+  } catch (error) {
+    // Compatibilidade com bancos antigos sem coluna revision: updated_at já ajuda o cliente.
+    await query('update tables set updated_at = now() where id = $1', [tableId]);
+  }
+}
+function responseHeadersNoStore(res) {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+}
+
 router.get('/', async (req, res) => {
+  responseHeadersNoStore(res);
   const result = await query(`
-    select t.*, tm.role, tm.character_id,
-      (select count(*)::int from table_members where table_id = t.id) as player_count
+    select t.id, t.owner_id, t.name, t.invite_code, t.description, t.logo_url,
+      coalesce(t.settings, '{}'::jsonb) as settings, t.created_at, t.updated_at,
+      coalesce(t.revision, 0) as revision,
+      tm.role, tm.character_id,
+      count(all_tm.id)::int as player_count
     from table_members tm
     join tables t on t.id = tm.table_id
+    left join table_members all_tm on all_tm.table_id = t.id
     where tm.user_id = $1
+    group by t.id, tm.role, tm.character_id
     order by lower(t.name) asc, t.updated_at desc
   `, [req.user.id]);
-  res.json({ tables: result.rows });
+  res.json({ tables: result.rows, serverNow: new Date().toISOString() });
 });
 
 router.post('/', async (req, res) => {
@@ -187,6 +310,7 @@ router.post('/', async (req, res) => {
     [table.id, req.user.id]
   );
 
+  await touchTableRevision(table.id);
   emitTable(req, table.id, 'table:updated', { reason: 'created' });
   res.json({ table });
 });
@@ -224,20 +348,79 @@ router.post('/join', async (req, res) => {
                   updated_at = now()
   `, [table.id, req.user.id, wantedRole, characterId]);
 
+  await touchTableRevision(table.id);
   emitTable(req, table.id, 'member:updated', { reason: 'join' });
   res.json({ table, role: wantedRole });
 });
 
+
+// V194.1 - presença online por HTTP.
+router.post('/:id/presence', requireTableMember, async (req, res) => {
+  responseHeadersNoStore(res);
+  const tableId = req.params.id;
+  const onlineUserIds = await od1943TouchPresence(req, tableId);
+  const lastEventId = await od1943LastEventId(tableId);
+  res.json({ tableId: String(tableId), onlineUserIds, lastEventId, at: new Date().toISOString() });
+});
+
+router.get('/:id/presence', requireTableMember, async (req, res) => {
+  responseHeadersNoStore(res);
+  const tableId = req.params.id;
+  const onlineUserIds = await od1943TouchPresence(req, tableId);
+  const lastEventId = await od1943LastEventId(tableId);
+  res.json({ tableId: String(tableId), onlineUserIds, lastEventId, at: new Date().toISOString() });
+});
+
+router.get('/:id/events', requireTableMember, async (req, res) => {
+  responseHeadersNoStore(res);
+  const tableId = req.params.id;
+  const after = Math.max(0, Number(req.query.after || 0) || 0);
+  const limit = Math.max(1, Math.min(250, Number(req.query.limit || 120) || 120));
+  const onlineUserIds = await od1943TouchPresence(req, tableId);
+  const result = await query(`
+    select id, event_name, payload, created_at
+    from table_events
+    where table_id = $1 and id > $2
+    order by id asc
+    limit $3
+  `, [tableId, after, limit]);
+  const lastEventId = await od1943LastEventId(tableId);
+  res.json({
+    tableId: String(tableId),
+    onlineUserIds,
+    lastEventId,
+    events: result.rows.map(row => ({
+      id: Number(row.id || 0),
+      eventId: Number(row.id || 0),
+      eventName: row.event_name,
+      payload: row.payload || {},
+      createdAt: row.created_at
+    })),
+    serverNow: new Date().toISOString()
+  });
+});
+
 router.get('/:id/state', async (req, res) => {
+  responseHeadersNoStore(res);
   const tableId = req.params.id;
   const isMember = await query('select id from table_members where table_id = $1 and user_id = $2', [tableId, req.user.id]);
   if (!isMember.rowCount) return res.status(403).json({ error: 'Você não participa desta campanha.' });
 
-  const tableResult = await query('select * from tables where id = $1', [tableId]);
+  const tableResult = await query(`
+    select id, owner_id, name, invite_code, description, logo_url,
+      coalesce(settings, '{}'::jsonb) as settings,
+      created_at, updated_at, coalesce(revision, 0) as revision
+    from tables
+    where id = $1
+  `, [tableId]);
   if (!tableResult.rowCount) return res.status(404).json({ error: 'Campanha não encontrada.' });
 
   const members = await query(`
-    select tm.*, u.nick, u.real_name, u.avatar_url, c.name as character_name, c.data as character_data
+    select tm.id, tm.table_id, tm.user_id, tm.role, tm.character_id,
+      tm.created_at, tm.updated_at, coalesce(tm.revision, 0) as revision,
+      u.nick, u.real_name, u.avatar_url, u.updated_at as user_updated_at,
+      c.name as character_name, c.data as character_data,
+      c.updated_at as character_updated_at, coalesce(c.revision, 0) as character_revision
     from table_members tm
     join users u on u.id = tm.user_id
     left join characters c on c.id = tm.character_id
@@ -245,7 +428,26 @@ router.get('/:id/state', async (req, res) => {
     order by lower(coalesce(c.name, u.real_name, u.nick)) asc, tm.created_at asc
   `, [tableId]);
 
-  res.json({ table: tableResult.rows[0], members: members.rows });
+  const onlineUserIds = await od1943TouchPresence(req, tableId);
+  const lastEventId = await od1943LastEventId(tableId);
+  const revision = Math.max(
+    Number(tableResult.rows[0]?.revision || 0),
+    ...members.rows.map(row => Number(row.revision || 0)),
+    ...members.rows.map(row => Number(row.character_revision || 0))
+  );
+
+  res.json({
+    table: tableResult.rows[0],
+    members: members.rows,
+    onlineUserIds,
+    lastEventId,
+    revision,
+    serverNow: new Date().toISOString(),
+    counts: {
+      members: members.rows.length,
+      characters: members.rows.filter(row => row.character_id).length
+    }
+  });
 });
 
 
@@ -282,7 +484,8 @@ router.put('/:id', requireTableMaster, async (req, res) => {
 
   const result = await query(`
     update tables
-    set name = $1, description = $2, logo_url = $3, settings = $4, updated_at = now()
+    set name = $1, description = $2, logo_url = $3, settings = $4,
+        revision = coalesce(revision, 0) + 1, updated_at = now()
     where id = $5 and owner_id = $6
     returning *
   `, [name, description, logoUrl, settings, tableId, req.user.id]);
@@ -315,11 +518,12 @@ router.put('/:id/member', async (req, res) => {
 
   const updated = await query(`
     update table_members
-    set character_id = $1, role = $2, updated_at = now()
+    set character_id = $1, role = $2, revision = coalesce(revision, 0) + 1, updated_at = now()
     where table_id = $3 and user_id = $4
     returning *
   `, [characterId, role, tableId, req.user.id]);
 
+  await touchTableRevision(tableId);
   emitTable(req, tableId, 'member:updated', { reason: 'character-linked', member: updated.rows[0] });
   res.json({ member: updated.rows[0] });
 });
@@ -336,11 +540,12 @@ router.delete('/:id/members/:memberId/character', requireTableMaster, async (req
   const nextRole = member.role === 'master_player' ? 'master' : member.role;
   const updated = await query(`
     update table_members
-    set character_id = null, role = $1, updated_at = now()
+    set character_id = null, role = $1, revision = coalesce(revision, 0) + 1, updated_at = now()
     where id = $2 and table_id = $3
     returning *
   `, [nextRole, memberId, tableId]);
 
+  await touchTableRevision(tableId);
   emitTable(req, tableId, 'member:updated', {
     reason: 'character-unlinked-by-master',
     member: updated.rows[0],
@@ -363,6 +568,7 @@ router.delete('/:id/members/:memberId', requireTableMaster, async (req, res) => 
   }
 
   await query('delete from table_members where id = $1 and table_id = $2', [memberId, tableId]);
+  await touchTableRevision(tableId);
 
   const remaining = await query('select count(*)::int as total from table_members where table_id = $1', [tableId]);
   if ((remaining.rows[0]?.total || 0) <= 0) {
@@ -457,7 +663,7 @@ router.post('/:id/drop-item', requireTableMember, async (req, res) => {
   const [item] = fromItems.splice(index, 1);
   fromData.inventoryItems = fromItems;
   fromData.weightCurrent = itemWeightTotal(fromItems);
-  const updatedFrom = await query('update characters set data = $1, updated_at = now() where id = $2 returning *', [fromData, fromCharacterId]);
+  const updatedFrom = await query('update characters set data = $1, revision = coalesce(revision, 0) + 1, updated_at = now() where id = $2 returning *', [fromData, fromCharacterId]);
 
   const tableResult = await query('select settings from tables where id = $1', [tableId]);
   const drops = normalizeDrops(tableResult.rows[0]?.settings || {});
@@ -505,7 +711,7 @@ router.post('/:id/drops/:dropId/take', requireTableMember, async (req, res) => {
   toItems.push(itemForCharacter);
   toData.inventoryItems = toItems;
   toData.weightCurrent = itemWeightTotal(toItems);
-  const updatedTo = await query('update characters set data = $1, updated_at = now() where id = $2 returning *', [toData, toCharacterId]);
+  const updatedTo = await query('update characters set data = $1, revision = coalesce(revision, 0) + 1, updated_at = now() where id = $2 returning *', [toData, toCharacterId]);
   const savedDrops = await updateTableDrops(tableId, drops);
 
   emitTable(req, tableId, 'character:updated', { character: updatedTo.rows[0] });
@@ -584,8 +790,8 @@ router.post('/:id/transfer-item', requireTableMember, async (req, res) => {
   fromData.weightCurrent = fromItems.reduce((sum, entry) => sum + (Number(entry.weight) || 0), 0);
   toData.weightCurrent = toItems.reduce((sum, entry) => sum + (Number(entry.weight) || 0), 0);
 
-  const updatedFrom = await query('update characters set data = $1, updated_at = now() where id = $2 returning *', [fromData, fromCharacterId]);
-  const updatedTo = await query('update characters set data = $1, updated_at = now() where id = $2 returning *', [toData, toCharacterId]);
+  const updatedFrom = await query('update characters set data = $1, revision = coalesce(revision, 0) + 1, updated_at = now() where id = $2 returning *', [fromData, fromCharacterId]);
+  const updatedTo = await query('update characters set data = $1, revision = coalesce(revision, 0) + 1, updated_at = now() where id = $2 returning *', [toData, toCharacterId]);
 
   emitTable(req, tableId, 'character:updated', { character: updatedFrom.rows[0] });
   emitTable(req, tableId, 'character:updated', { character: updatedTo.rows[0] });
@@ -611,9 +817,10 @@ router.put('/:id/initiative', requireTableMember, async (req, res) => {
 
   const result = await query(`
     update tables
-    set settings = jsonb_set(coalesce(settings, '{}'::jsonb), '{initiative}', $1::jsonb, true), updated_at = now()
+    set settings = jsonb_set(coalesce(settings, '{}'::jsonb), '{initiative}', $1::jsonb, true),
+        revision = coalesce(revision, 0) + 1, updated_at = now()
     where id = $2
-    returning settings
+    returning settings, revision
   `, [JSON.stringify(initiative), tableId]);
   const saved = result.rows[0]?.settings?.initiative || initiative;
   emitTable(req, tableId, 'initiative:updated', { initiative: saved });
@@ -630,9 +837,10 @@ router.put('/:id/characters/:characterId', requireTableMaster, async (req, res) 
   const previous = await query('select data from characters where id = $1', [characterId]);
   const data = mergeCharacterDataSafely(previous.rows[0]?.data || {}, req.body.data || {});
   const result = await query(
-    'update characters set name = $1, data = $2, updated_at = now() where id = $3 returning *',
+    'update characters set name = $1, data = $2, revision = coalesce(revision, 0) + 1, updated_at = now() where id = $3 returning *',
     [name, data, characterId]
   );
+  await touchTableRevision(tableId);
   if (!result.rowCount) return res.status(404).json({ error: 'Ficha não encontrada.' });
   const character = result.rows[0];
   emitTable(req, tableId, 'character:updated', { character });

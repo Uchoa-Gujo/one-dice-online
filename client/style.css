@@ -19056,3 +19056,353 @@ body.od192-campaign-manager-mode #mobile-bottom-nav { display: none !important; 
     padding-top: 16px;
   }
 }
+
+
+/* =========================
+   V194.1 - Estabilidade visual / Owlbear / combate
+========================= */
+
+/* Nome do personagem no turno atual menor e sem estourar o card */
+.od192-current-turn .od192-current-card strong,
+.od192-current-card strong {
+  font-size: clamp(1.25rem, 1.85vw, 2rem) !important;
+  line-height: 1.04 !important;
+  letter-spacing: .045em !important;
+  overflow-wrap: anywhere !important;
+}
+
+.od191-status-grid article:has(small:nth-child(1)) span,
+.od191-status-grid article span {
+  overflow-wrap: anywhere !important;
+}
+
+/* Botões Owlbear fixos no resumo/topo/combate */
+.od1941-map-top,
+.od1941-map-overview,
+.od1941-map-combat {
+  border-color: color-mix(in srgb, var(--od-theme-main, var(--accent, #ef2f3b)), transparent 35%) !important;
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--od-theme-main, var(--accent, #ef2f3b)), transparent 30%),
+      color-mix(in srgb, var(--od-theme-dark, #851019), black 8%)
+    ) !important;
+  color: #fff !important;
+  font-weight: 900 !important;
+}
+
+.od1941-map-overview {
+  order: -1;
+}
+
+.od192-combat-controls .od1941-map-combat {
+  min-width: 132px !important;
+}
+
+/* Card Owlbear menos intrusivo e sempre clicável */
+#od194-owlbear-card {
+  contain: layout paint !important;
+}
+
+#od194-owlbear-card .od194-map-actions button {
+  cursor: pointer !important;
+}
+
+/* Online/offline mais legível */
+.od191-player-card .online,
+.od1901-player-row .online,
+.od1902-player-row .online {
+  color: #b5ffd0 !important;
+  border-color: rgba(34,197,94,.45) !important;
+}
+
+.od191-player-card .offline,
+.od1901-player-row .offline,
+.od1902-player-row .offline {
+  color: rgba(255,255,255,.58) !important;
+}
+
+/* Reduz peso de repintura nas áreas vivas */
+#od1901-campaign-manager .od191-content,
+#od1901-campaign-manager .od192-content {
+  contain: layout style !important;
+}
+
+
+/* =========================
+   V194.2 - fluidez e recuperação visual
+========================= */
+#od1901-campaign-manager {
+  content-visibility: auto;
+  contain-intrinsic-size: 1200px 900px;
+}
+
+.od192-turn-row .od192-turn-info strong,
+.od192-current-card strong {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.od191-chat-log,
+.od192-turn-list,
+.od192-participant-list {
+  overscroll-behavior: contain;
+}
+
+
+/* =========================
+   V194.3 - Organização e fluidez do tempo real
+========================= */
+#od1901-campaign-manager {
+  contain: layout style paint;
+}
+#od1901-campaign-manager .od191-content,
+#od1901-campaign-manager .od192-content,
+#od1901-campaign-manager .od191-panel,
+#od1901-campaign-manager .od192-combat-grid {
+  content-visibility: auto;
+  contain-intrinsic-size: 320px;
+}
+.od191-player-card .online::before,
+.od1901-player-row .online::before,
+.od1902-player-row .online::before {
+  content: "";
+  display: inline-block;
+  width: .55em;
+  height: .55em;
+  margin-right: .45em;
+  border-radius: 999px;
+  background: currentColor;
+  box-shadow: 0 0 12px currentColor;
+}
+.od191-player-card .offline::before,
+.od1901-player-row .offline::before,
+.od1902-player-row .offline::before {
+  content: "";
+  display: inline-block;
+  width: .55em;
+  height: .55em;
+  margin-right: .45em;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: .45;
+}
+
+
+/* =========================
+   V194.4 - Revisão CSS/HTML
+========================= */
+
+/* Aviso discreto de recuperação automática do front-end */
+#od1944-soft-notice {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 99999;
+  max-width: min(360px, calc(100vw - 28px));
+  padding: 12px 14px;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 14px;
+  background: rgba(14, 16, 20, .94);
+  color: #fff;
+  box-shadow: 0 16px 42px rgba(0,0,0,.42);
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity .18s ease, transform .18s ease;
+  font-weight: 800;
+  font-size: .88rem;
+}
+
+#od1944-soft-notice.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Fallback: evita dependência de :has() em navegadores que ainda falham com esse seletor */
+@supports not selector(:has(*)) {
+  .od191-status-grid article span {
+    overflow-wrap: anywhere;
+  }
+}
+
+/* Proteção contra estouro horizontal em cards renderizados por JS */
+.od1944-reviewed,
+.od1944-reviewed * {
+  min-width: 0;
+}
+
+.od1944-reviewed .od191-panel,
+.od1944-reviewed .od192-turn-row,
+.od1944-reviewed .od191-character-card,
+.od1944-reviewed .od191-player-card,
+.od1944-reviewed .od194-owlbear-card {
+  overflow-wrap: anywhere;
+}
+
+/* Botões revisados: previne comportamento acidental de submit em blocos dinâmicos */
+.od1944-reviewed button {
+  touch-action: manipulation;
+}
+
+/* Fallback para imagens quebradas não colapsarem layout */
+.od1944-reviewed img {
+  background: rgba(255,255,255,.035);
+}
+
+
+/* =========================
+   V194.5 - Camadas modernas / remoção visual do legado de campanha
+========================= */
+html.od1945-layered-shell,
+html.od1945-layered-shell body {
+  background: #050608;
+}
+
+body.od1945-modern-layer #auth-screen,
+body.od1945-modern-layer #sessions-screen,
+body.od1945-modern-layer #app-screen {
+  transition: opacity .16s ease, transform .16s ease;
+}
+
+body.od1945-hub-layer #auth-screen,
+body.od1945-hub-layer #app-screen,
+body.od1945-campaign-layer #auth-screen,
+body.od1945-campaign-layer #sessions-screen,
+body.od1945-auth-layer #sessions-screen,
+body.od1945-auth-layer #app-screen {
+  display: none !important;
+}
+
+body.od1945-auth-layer #auth-screen,
+body.od1945-hub-layer #sessions-screen,
+body.od1945-campaign-layer #app-screen,
+body.od1945-sheet-layer #app-screen {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* A camada antiga de campanha não deve mais aparecer nem continuar funcional. */
+body.od1945-campaign-layer #players-sidebar,
+body.od1945-campaign-layer #master-dashboard,
+body.od1945-campaign-layer #player-dashboard,
+body.od1945-campaign-layer #campaign-mini-card,
+body.od1945-campaign-layer #campaign-info,
+body.od1945-campaign-layer #character-list,
+body.od1945-campaign-layer #initiative-panel,
+body.od1945-campaign-layer #master-dashboard-dock-btn,
+body.od1945-campaign-layer #sidebar-dock-btn,
+body.od1945-campaign-layer .table-dashboard,
+body.od1945-campaign-layer .players-sidebar,
+body.od1945-campaign-layer .player-dashboard,
+body.od1945-campaign-layer .campaign-info-box,
+body.od1945-campaign-layer .character-list:not(.od191-character-list):not(.od192-character-list) {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  inset: auto !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+body.od1945-campaign-layer #od1901-campaign-manager {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  min-height: 100vh;
+  isolation: isolate;
+  contain: layout style;
+}
+
+body.od1945-campaign-layer #app-screen {
+  overflow-x: hidden !important;
+}
+
+body.od1945-campaign-layer .sheet-area,
+body.od1945-campaign-layer .right-panel,
+body.od1945-campaign-layer .mobile-identity-panel {
+  display: none !important;
+}
+
+body.od1945-sheet-layer .sheet-area,
+body.od1945-sheet-layer .right-panel {
+  display: block;
+}
+
+/* Evita flicker quando render antigo tenta alternar telas. */
+body.od1945-campaign-layer .screen:not(#app-screen),
+body.od1945-hub-layer .screen:not(#sessions-screen),
+body.od1945-auth-layer .screen:not(#auth-screen) {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+body.od1945-modern-layer [data-od1945-legacy="hidden"],
+body.od1945-modern-layer [data-od1945-legacy="removed"] {
+  display: none !important;
+}
+
+/* URLs/camadas: gerenciador sempre ocupa a frente da campanha. */
+body.od1945-campaign-layer #od1901-campaign-manager .od191-hero,
+body.od1945-campaign-layer #od1901-campaign-manager .od192-hero,
+body.od1945-campaign-layer #od1901-campaign-manager .od191-content,
+body.od1945-campaign-layer #od1901-campaign-manager .od192-content {
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+
+/* =========================
+   V195 - Validação de camadas e neutralização final do legado ativo
+========================= */
+body[data-od195-layer="campaign"] .od195-disabled-legacy,
+body[data-od1945-layer="campaign"] .od195-disabled-legacy,
+body[data-od195-layer="campaign"] #players-sidebar,
+body[data-od195-layer="campaign"] #master-dashboard,
+body[data-od195-layer="campaign"] #player-dashboard,
+body[data-od195-layer="campaign"] #campaign-mini-card,
+body[data-od195-layer="campaign"] #campaign-info,
+body[data-od195-layer="campaign"] #character-list,
+body[data-od195-layer="campaign"] #initiative-panel,
+body[data-od195-layer="campaign"] #master-dashboard-dock-btn,
+body[data-od195-layer="campaign"] #sidebar-dock-btn {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+body[data-od195-layer="campaign"] #od1901-campaign-manager,
+body[data-od1945-layer="campaign"] #od1901-campaign-manager {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+  contain: layout style paint !important;
+}
+
+body[data-od195-layer="campaign"] #app-screen.active,
+body[data-od195-layer="sheet"] #app-screen.active,
+body[data-od195-layer="hub"] #sessions-screen.active,
+body[data-od195-layer="auth"] #auth-screen.active {
+  display: block !important;
+}
+
+body[data-od195-layer="campaign"] .screen.active:not(#app-screen),
+body[data-od195-layer="hub"] .screen.active:not(#sessions-screen),
+body[data-od195-layer="auth"] .screen.active:not(#auth-screen) {
+  display: none !important;
+}
+
+#od1901-campaign-manager .od191-content,
+#od1901-campaign-manager .od192-content {
+  min-width: 0 !important;
+  overflow-x: clip !important;
+}
+
+#od1901-campaign-manager button,
+#od1901-campaign-manager input,
+#od1901-campaign-manager textarea,
+#od1901-campaign-manager select {
+  max-width: 100% !important;
+}

@@ -1,68 +1,82 @@
 const jwt = require('jsonwebtoken');
 
-const tablePresence = new Map();
+// V194.3 - presença por socket organizada por socketId + timestamp.
+// Evita jogador preso online quando o navegador reconecta ou duplica join.
+const tablePresence = new Map(); // tableId -> userId -> socketId -> lastSeen
+const STALE_MS = Number(process.env.SOCKET_PRESENCE_STALE_MS || 45000);
+
+function now() { return Date.now(); }
+function tableKey(tableId) { return String(tableId || ''); }
+function userKey(socket) { return String(socket.user?.id || ''); }
+
+function ensureTable(tableId) {
+  const key = tableKey(tableId);
+  if (!tablePresence.has(key)) tablePresence.set(key, new Map());
+  return tablePresence.get(key);
+}
+
+function cleanupTable(tableId) {
+  const key = tableKey(tableId);
+  const table = tablePresence.get(key);
+  if (!table) return;
+  const cutoff = now() - STALE_MS;
+  for (const [userId, sockets] of table.entries()) {
+    for (const [socketId, lastSeen] of sockets.entries()) {
+      if (Number(lastSeen || 0) < cutoff) sockets.delete(socketId);
+    }
+    if (!sockets.size) table.delete(userId);
+  }
+  if (!table.size) tablePresence.delete(key);
+}
 
 function usersFor(tableId) {
-  const users = tablePresence.get(String(tableId));
+  cleanupTable(tableId);
+  const users = tablePresence.get(tableKey(tableId));
   return users ? Array.from(users.keys()) : [];
 }
 
 function emitPresence(io, tableId, socket = null) {
   const payload = {
-    tableId: String(tableId),
+    tableId: tableKey(tableId),
     onlineUserIds: usersFor(tableId),
-    at: new Date().toISOString()
+    at: new Date().toISOString(),
+    source: 'socket'
   };
   if (socket) socket.emit('presence:updated', payload);
-  else io.to(`table:${tableId}`).emit('presence:updated', payload);
+  else io.to(`table:${tableKey(tableId)}`).emit('presence:updated', payload);
 }
 
 function addPresence(io, socket, tableId) {
-  if (!tableId || !socket.user?.id) return;
-  const key = String(tableId);
+  const key = tableKey(tableId);
+  const uid = userKey(socket);
+  if (!key || !uid) return;
+
   socket.data.tables = socket.data.tables || new Set();
-
-  // v1.90.5: não incrementar presença se este mesmo socket já entrou na sala.
-  // Antes, chamadas repetidas de table:join podiam deixar jogador preso como online.
-  if (socket.data.tables.has(key)) {
-    emitPresence(io, key);
-    return;
-  }
-
   socket.join(`table:${key}`);
   socket.data.tables.add(key);
 
-  if (!tablePresence.has(key)) tablePresence.set(key, new Map());
-  const users = tablePresence.get(key);
-  const userId = String(socket.user.id);
-  users.set(userId, (users.get(userId) || 0) + 1);
+  const table = ensureTable(key);
+  if (!table.has(uid)) table.set(uid, new Map());
+  table.get(uid).set(socket.id, now());
   emitPresence(io, key);
 }
 
 function removePresence(io, socket, tableId) {
-  if (!tableId || !socket.user?.id) return;
-  const key = String(tableId);
+  const key = tableKey(tableId);
+  const uid = userKey(socket);
+  if (!key || !uid) return;
+
   socket.data.tables = socket.data.tables || new Set();
-
-  // Se este socket não estava contado nessa mesa, só devolve o estado atual.
-  if (!socket.data.tables.has(key)) {
-    emitPresence(io, key);
-    return;
-  }
-
   socket.data.tables.delete(key);
   socket.leave(`table:${key}`);
 
-  const users = tablePresence.get(key);
-  if (!users) {
-    emitPresence(io, key);
-    return;
+  const table = tablePresence.get(key);
+  if (table?.has(uid)) {
+    const sockets = table.get(uid);
+    sockets.delete(socket.id);
+    if (!sockets.size) table.delete(uid);
+    if (!table.size) tablePresence.delete(key);
   }
-  const userId = String(socket.user.id);
-  const next = (users.get(userId) || 0) - 1;
-  if (next > 0) users.set(userId, next);
-  else users.delete(userId);
-  if (!users.size) tablePresence.delete(key);
   emitPresence(io, key);
 }
 
@@ -79,34 +93,53 @@ function registerSockets(io) {
     }
   });
 
+  const cleanupTimer = setInterval(() => {
+    for (const tableId of Array.from(tablePresence.keys())) {
+      cleanupTable(tableId);
+      emitPresence(io, tableId);
+    }
+  }, Number(process.env.SOCKET_PRESENCE_CLEANUP_MS || 15000));
+  cleanupTimer.unref?.();
+
   io.on('connection', (socket) => {
-    socket.on('table:join', ({ tableId }) => {
-      if (!tableId) return;
-      addPresence(io, socket, tableId);
+    socket.emit('socket:ready', {
+      userId: socket.user?.id,
+      socketId: socket.id,
+      at: new Date().toISOString()
     });
 
-    socket.on('table:leave', ({ tableId }) => {
+    socket.on('table:join', ({ tableId }, ack) => {
+      if (!tableId) return;
+      addPresence(io, socket, tableId);
+      if (typeof ack === 'function') ack({ ok: true, tableId: tableKey(tableId), onlineUserIds: usersFor(tableId) });
+      socket.emit('table:joined', { tableId: tableKey(tableId), onlineUserIds: usersFor(tableId), at: new Date().toISOString() });
+    });
+
+    socket.on('table:leave', ({ tableId }, ack) => {
       if (!tableId) return;
       removePresence(io, socket, tableId);
+      if (typeof ack === 'function') ack({ ok: true, tableId: tableKey(tableId), onlineUserIds: usersFor(tableId) });
     });
 
-    // v1.90.5: cliente pode pedir uma lista atual sem recontar presença.
-    socket.on('presence:get', ({ tableId }) => {
+    socket.on('presence:get', ({ tableId }, ack) => {
       if (!tableId) return;
-      emitPresence(io, String(tableId), socket);
+      const payload = { tableId: tableKey(tableId), onlineUserIds: usersFor(tableId), at: new Date().toISOString(), source: 'socket-get' };
+      socket.emit('presence:updated', payload);
+      if (typeof ack === 'function') ack(payload);
     });
 
-    // v1.90.5: heartbeat leve; mantém a sala/presença sem duplicar contagem.
-    socket.on('table:ping', ({ tableId }) => {
+    socket.on('table:ping', ({ tableId }, ack) => {
       if (!tableId) return;
       addPresence(io, socket, tableId);
-      emitPresence(io, String(tableId), socket);
+      const payload = { ok: true, tableId: tableKey(tableId), onlineUserIds: usersFor(tableId), at: new Date().toISOString() };
+      socket.emit('presence:updated', { ...payload, source: 'socket-ping' });
+      if (typeof ack === 'function') ack(payload);
     });
 
     socket.on('chat:message', ({ tableId, channel, message }) => {
       if (!tableId || !message) return;
-      io.to(`table:${tableId}`).emit('chat:message', {
-        tableId,
+      io.to(`table:${tableKey(tableId)}`).emit('chat:message', {
+        tableId: tableKey(tableId),
         channel: channel || 'conversation',
         message,
         user: socket.user,

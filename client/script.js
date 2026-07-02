@@ -5,7 +5,7 @@
 ========================= */
 (function od139EarlyGuards(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
   if (!window.CSS) window.CSS = {};
   if (typeof window.CSS.escape !== 'function') {
     window.CSS.escape = function(value) {
@@ -13430,7 +13430,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od136AttributesClean(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const ATTRS = [
     ['forca', 'Força'], ['agilidade', 'Agilidade'], ['vigor', 'Vigor'], ['intelecto', 'Intelecto'], ['presenca', 'Presença']
@@ -13598,7 +13598,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od137SheetStabilityAndManualDefenseDodge(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const $ = id => document.getElementById(id);
   const EDITABLE = 'input, textarea, select, [contenteditable="true"]';
@@ -13960,7 +13960,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od138AuditAndDuplicateSheetInstalled) return;
   window.__od138AuditAndDuplicateSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const DUP_SELECTOR = '[data-od138-duplicate-character], [data-od71-copy-character], [data-copy-account-character]';
 
@@ -14153,7 +14153,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od139ExtraErrorFixesInstalled) return;
   window.__od139ExtraErrorFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const IMAGE_KEYS = [
     'portrait','portraitUrl','image','imageUrl','photo','photoUrl','avatar','avatarUrl','retrato','foto',
@@ -14308,7 +14308,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od140GeneralImprovementsInstalled) return;
   window.__od140GeneralImprovementsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const VERSION = '1.80.5';
   const BACKUP_KEY = 'od_sheet_backups_v140';
@@ -14789,7 +14789,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od141AuditHardeningInstalled) return;
   window.__od141AuditHardeningInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   function pruneBackups(){
     try {
@@ -14840,7 +14840,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od142FinalCleanupInstalled) return;
   window.__od142FinalCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   function keepFirst(selector){
     const nodes = Array.from(document.querySelectorAll(selector));
@@ -14926,7 +14926,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od148SafeRollbackPatchInstalled) return;
   window.__od148SafeRollbackPatchInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   function hideManualNotes(){
     ['defense-effective-note','dodge-formula-note'].forEach(id => {
@@ -14979,7 +14979,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od152StableLayoutFixesInstalled) return;
   window.__od152StableLayoutFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const $ = id => document.getElementById(id);
   const n = (value, fallback = 0) => {
@@ -15171,7 +15171,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od155SessionDashboardStability(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const STORE_PREFIX = 'od155_dashboard_collapsed_';
   const lastSig = { player: '', master: '' };
@@ -15327,7 +15327,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od156ProtectOtherPlayersSheetsInstalled) return;
   window.__od156ProtectOtherPlayersSheetsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const PROTECTED_ARRAYS = ['inventoryItems','blockInventory','abilities','spells','attacks','conditions','transformations','dropItems'];
   const PROTECTED_OBJECTS = ['skills','resistances','attrs','caster','obsIcons','portraitCrop','settings'];
@@ -15432,7 +15432,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od157ProtectOwnSheetPartialAutosaveInstalled) return;
   window.__od157ProtectOwnSheetPartialAutosaveInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   function clone(value){
     try { return structuredClone(value); } catch (_) {
@@ -15588,7 +15588,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od159StableSessionRenderInstalled) return;
   window.__od159StableSessionRenderInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const $ = id => document.getElementById(id);
   const last = { tableSig: '', tableAt: 0, playerSig: '', masterSig: '' };
@@ -15721,7 +15721,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od160AccountSheetIsolationInstalled) return;
   window.__od160AccountSheetIsolationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const $ = id => document.getElementById(id);
 
@@ -15872,7 +15872,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od161EquipmentProficienciesInstalled) return;
   window.__od161EquipmentProficienciesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const GROUPS = {
     weapons: [
@@ -16039,7 +16039,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od164StableCleanRoutesInstalled) return;
   window.__od164StableCleanRoutesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const VERSION = '1.80.5';
   let applyingRoute = false;
@@ -16247,7 +16247,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od165ExactPortraitCrop(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
   if (window.__od165ExactPortraitCropInstalled) return;
   window.__od165ExactPortraitCropInstalled = true;
 
@@ -16369,7 +16369,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1685AreaSeparationInstalled) return;
   window.__od1685AreaSeparationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const AREA = {
     AUTH: 'login',
@@ -16558,7 +16558,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1699StableSkillUntrainInstalled) return;
   window.__od1699StableSkillUntrainInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const pending = new Map();
   let flushTimer = null;
@@ -16786,7 +16786,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16910SkillSaveMergeInstalled) return;
   window.__od16910SkillSaveMergeInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   let lastExplicit = {};
   let lastExplicitAt = 0;
@@ -17002,7 +17002,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16911StablePortraitDuringResourcesInstalled) return;
   window.__od16911StablePortraitDuringResourcesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const RESOURCE_SELECTOR = '#pv-current, #pv-max, #pe-current, #pe-max';
   const MAIN_SELECTOR = '#char-portrait-preview';
@@ -17174,7 +17174,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od170ModularSheetInstalled) return;
   window.__od170ModularSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const STORE_KEY = 'od170_modules_state_v1';
   const DENSE_KEY = 'od170_dense_sheet_v1';
@@ -17418,7 +17418,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od171HubNavigationAndScrollInstalled) return;
   window.__od171HubNavigationAndScrollInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   let pending = false;
 
@@ -17542,7 +17542,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1715ScrollAndSmartCollapseInstalled) return;
   window.__od1715ScrollAndSmartCollapseInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   let scheduled = false;
 
@@ -17784,7 +17784,7 @@ function od66InventoryMutationUnlockSoon() {
    A correção principal está no index.html e no server/server.js.
 ========================= */
 (function od1762ReloadPathFixMarker(){
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 })();
 
 
@@ -17807,7 +17807,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1775ReloadRouteRestoreInstalled) return;
   window.__od1775ReloadRouteRestoreInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const INITIAL_PATH = location.pathname + location.search;
   const INITIAL_PARTS = location.pathname.split('/').filter(Boolean).map(part => {
@@ -18012,7 +18012,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od178SkillsDesignPolishInstalled) return;
   window.__od178SkillsDesignPolishInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   let timer = null;
 
@@ -18085,7 +18085,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1781AttributeTextFixInstalled) return;
   window.__od1781AttributeTextFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   let timer = null;
 
@@ -18272,7 +18272,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1787AttributeNameNoEllipsisInstalled) return;
   window.__od1787AttributeNameNoEllipsisInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const DISPLAY = {
     'força': 'FORÇA',
@@ -18368,7 +18368,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1788AttributeFullNamesInstalled) return;
   window.__od1788AttributeFullNamesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const FULL = {
     forca: 'FORÇA',
@@ -18468,7 +18468,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od17814AttributesStableFinalInstalled) return;
   window.__od17814AttributesStableFinalInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const ATTRS = [
     ['forca', 'FORÇA'],
@@ -18639,7 +18639,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1801SafeShellInstalled) return;
   window.__od1801SafeShellInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const SETTINGS_KEY = 'od_settings';
   const DEFAULTS = { theme: 'dark', accent: 'red', skillsCompact: true, font: 'impact', sound: true };
@@ -18839,7 +18839,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1802RobustLoginInstalled) return;
   window.__od1802RobustLoginInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   function $(id){ return document.getElementById(id); }
   function cleanNick(value){
@@ -18980,7 +18980,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1803AreaCleanupInstalled) return;
   window.__od1803AreaCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const AREA = {
     AUTH: 'login',
@@ -19220,7 +19220,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1804LoginAndAudioFixInstalled) return;
   window.__od1804LoginAndAudioFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   let loginBusy = false;
   let loginTicket = 0;
@@ -19478,7 +19478,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1805FinalShellInstalled) return;
   window.__od1805FinalShellInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   let hideTimer = null;
   let shellTimer = null;
@@ -19788,7 +19788,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1809CleanEditorsModesInstalled) return;
   window.__od1809CleanEditorsModesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   let saveTimer = null;
   let renderTimer = null;
@@ -20381,7 +20381,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1810FinalFixesInstalled) return;
   window.__od1810FinalFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   function $(id){ return document.getElementById(id); }
   function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
@@ -20489,7 +20489,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1811HubRefreshInstalled) return;
   window.__od1811HubRefreshInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   function cleanSessionProfile(){
     document.querySelectorAll('.od108-info-card,.od90-profile-card,[data-od90-profile-card],.session-profile-card,.account-profile-card,.menu-profile-card,#session-profile-card,#account-menu-profile,.od108-panel-user-info').forEach(el => el.remove());
@@ -20533,7 +20533,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1812CompactHubInstalled) return;
   window.__od1812CompactHubInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   function removeProfileCards(){
     document.querySelectorAll('#sessions-menu-panel .od90-user-menu-card, #sessions-menu-panel .od75-account-menu-card, .od90-user-menu-card, .od75-account-menu-card, .od108-panel-user-info, .od108-info-card, .od171-back-home').forEach(el => el.remove());
@@ -20571,7 +20571,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1813ThemeLinkedHubInstalled) return;
   window.__od1813ThemeLinkedHubInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const THEMES = {
     red:     { main: '#ef2f3b', dark: '#9d1018', soft: 'rgba(239,47,59,.16)', line: 'rgba(239,47,59,.72)' },
@@ -20669,7 +20669,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1815StableSheetTabsRouteInstalled) return;
   window.__od1815StableSheetTabsRouteInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const HUB_ROUTES = new Set(['/inicio', '/personagens', '/campanhas', '/mesas']);
 
@@ -20751,7 +20751,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1816ClickableAttributesInstalled) return;
   window.__od1816ClickableAttributesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const ATTRS = [
     ['forca', 'Força'],
@@ -20911,7 +20911,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1817ClickableAttackDamageInstalled) return;
   window.__od1817ClickableAttackDamageInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   function $(id){ return document.getElementById(id); }
   function esc(value){
@@ -21096,7 +21096,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1818ClickableAbilityCostInstalled) return;
   window.__od1818ClickableAbilityCostInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   function $(id){ return document.getElementById(id); }
   function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
@@ -21241,7 +21241,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1819RemoveFichaAvulsaMenuCardInstalled) return;
   window.__od1819RemoveFichaAvulsaMenuCardInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   function run(){
     const topbar = document.getElementById('main-topbar');
@@ -21277,2277 +21277,9 @@ function od66InventoryMutationUnlockSoon() {
 })();
 
 
-/* =========================
-   V190 - Campanhas: portal narrativo redesenhado
-========================= */
-(function od190CampaignPortalRefresh(){
-  'use strict';
-  if (window.__od190CampaignPortalRefreshInstalled) return;
-  window.__od190CampaignPortalRefreshInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
 
-  function isCampaigns(){
-    const path = location.pathname.replace(/\/$/, '') || '/inicio';
-    return path.includes('campanhas') || localStorage.getItem('od71_tab') === 'campaigns';
-  }
-
-  function refresh(){
-    if (!isCampaigns()) return;
-    const content = document.getElementById('od71-content');
-    if (content) {
-      content.classList.remove('od1811-campaign-list', 'od86-campaign-list');
-      content.classList.add('od190-campaign-shell');
-      content.classList.remove('od86-campaigns-ready');
-    }
-    try { if (typeof od86RenderCampaigns === 'function') od86RenderCampaigns(true); } catch (_) {}
-  }
-
-  document.addEventListener('click', event => {
-    if (event.target.closest?.('[data-od71-tab="campaigns"], [data-od75-tab="campaigns"], #od71-open-join, #od86-open-join, #od86-new-campaign, [data-od86-edit-campaign]')) {
-      setTimeout(refresh, 0);
-      setTimeout(refresh, 160);
-    }
-  }, true);
-
-  window.addEventListener('popstate', () => setTimeout(refresh, 120));
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => setTimeout(refresh, 240), { once: true });
-  else setTimeout(refresh, 240);
-
-  window.od190CampaignPortalRefresh = { refresh };
-})();
-
-
-/* =========================
-   V190.1 - Gerência interna de Campanhas/Mesa
-   Novo fluxo independente do painel antigo da ficha.
-========================= */
-(function od1901CampaignManager(){
-  'use strict';
-  if (window.__od1901CampaignManagerInstalled) return;
-  window.__od1901CampaignManagerInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
-
-  const legacyInitApp = typeof initApp === 'function' ? initApp : null;
-  const legacyShowSessions = typeof showSessions === 'function' ? showSessions : null;
-  const TABS = ['personagens', 'combate', 'jogadores', 'chat', 'escudo'];
-
-  function $(id){ return document.getElementById(id); }
-  function esc(value){ try { return escapeHtml(value ?? ''); } catch (_) { return String(value ?? ''); } }
-  function safe(fn, fallback = null){ try { return fn(); } catch (_) { return fallback; } }
-  function nowTime(){ return new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); }
-  function currentCampaign(){ return getCampaigns().find(c => String(c.id) === String(currentCampaignId)) || null; }
-  function campaignMembers(campaignId = currentCampaignId){ return getMembers().filter(m => String(m.campaignId) === String(campaignId)); }
-  function users(){ return get(STORAGE.users, []); }
-  function chars(){ return get(STORAGE.characters, []); }
-  function userById(id){ return users().find(u => String(u.id) === String(id)); }
-  function charById(id){ return chars().find(c => String(c.id) === String(id)); }
-  function campaignRole(member){ return String(member?.role || '').toLowerCase(); }
-  function campaignIsMaster(member = currentMembership()){ return ['mestre','master','mestre_jogador','master_player'].includes(campaignRole(member)); }
-  function memberCharacter(member){ return charById(member?.characterId); }
-  function entryDate(member){
-    const raw = member?.joinedAt || member?.createdAt || member?.at || '';
-    if (!raw) return 'Entrada não registrada';
-    try { return new Date(raw).toLocaleDateString('pt-BR'); } catch (_) { return String(raw); }
-  }
-  function roleLabel(member){
-    const role = campaignRole(member);
-    if (['mestre','master'].includes(role)) return 'Mestre';
-    if (['mestre_jogador','master_player'].includes(role)) return 'Mestre/Jogador';
-    return 'Jogador';
-  }
-  function managerKey(campaignId = currentCampaignId){ return `od1901_campaign_tab_${campaignId || 'none'}`; }
-  function activeTab(){
-    const saved = localStorage.getItem(managerKey()) || 'personagens';
-    const tab = TABS.includes(saved) ? saved : 'personagens';
-    return tab === 'escudo' && !campaignIsMaster() ? 'personagens' : tab;
-  }
-  function setTab(tab){
-    localStorage.setItem(managerKey(), TABS.includes(tab) ? tab : 'personagens');
-    renderManager();
-  }
-  function ensureShell(){
-    const app = $('app-screen');
-    if (!app) return null;
-    let shell = $('od1901-campaign-manager');
-    if (!shell) {
-      shell = document.createElement('section');
-      shell.id = 'od1901-campaign-manager';
-      shell.className = 'od1901-manager';
-      app.appendChild(shell);
-    }
-    return shell;
-  }
-  function setManagerMode(on){
-    document.body.classList.toggle('od1901-campaign-manager-mode', !!on);
-    if (!on) $('od1901-campaign-manager')?.remove();
-  }
-  function openManager(campaignId = currentCampaignId, tab = null){
-    const member = getMembers().find(m => String(m.campaignId) === String(campaignId) && String(m.userId) === String(currentUser?.id));
-    if (!member) return alert('Você não faz parte desta campanha.');
-    currentCampaignId = campaignId;
-    accountSheetMode = false;
-    localStorage.setItem(STORAGE.activeCampaign, JSON.stringify(campaignId));
-    if (tab) localStorage.setItem(managerKey(campaignId), tab);
-    showApp();
-    setManagerMode(true);
-    renderManager();
-  }
-  function openSheet(charId){
-    if (!legacyInitApp) return;
-    const campId = currentCampaignId;
-    setManagerMode(false);
-    window.__od1901OpeningLegacySheet = true;
-    legacyInitApp(campId);
-    window.__od1901OpeningLegacySheet = false;
-    if (charId) {
-      currentCharacterId = charId;
-      setTimeout(() => {
-        safe(() => loadCharacter(charId), null);
-        injectSheetInitiativeButton();
-      }, 0);
-    }
-  }
-  function copyCode(code){
-    navigator.clipboard?.writeText(code).then(() => alert('Código copiado.')).catch(() => prompt('Copie o código:', code));
-  }
-  function openObs(charId){
-    if (!charId) return;
-    const url = `${location.origin}/obs/personagem/${encodeURIComponent(charId)}?modo=card`;
-    window.open(url, '_blank', 'noopener,noreferrer');
-    navigator.clipboard?.writeText(url).catch(() => {});
-  }
-  function removeMember(memberId){
-    const member = getMembers().find(m => String(m.id) === String(memberId));
-    if (!member || String(member.userId) === String(currentUser?.id)) return;
-    const user = userById(member.userId);
-    if (!confirm(`Remover ${userDisplayName(user)} desta campanha?`)) return;
-    setMembers(getMembers().filter(m => String(m.id) !== String(memberId)));
-    renderManager();
-  }
-  function combatState(){
-    return safe(() => getInitiativeState(), get(v35InitiativeKey(), { active: false, round: 1, entries: [] }));
-  }
-  function saveCombatState(state){
-    safe(() => setInitiativeState(state), set(v35InitiativeKey(), state));
-  }
-  function modelOf(char){
-    const raw = String(char?.systemModel || char?.systemType || char?.model || char?.sheetModel || '').toLowerCase().replace(/[\s_-]+/g, '');
-    return ['pool','pooldice','dados','ordem','ordemparanormal'].includes(raw) ? 'pool' : 'd20';
-  }
-  function rollInitiative(memberId){
-    const member = campaignMembers().find(m => String(m.id) === String(memberId));
-    const char = memberCharacter(member);
-    if (!member || !char) return;
-    const mine = String(member.userId) === String(currentUser?.id);
-    if (!campaignIsMaster() && !mine) return alert('Você só pode rolar iniciativa da sua ficha.');
-    const agi = Math.max(1, Number(char.attrs?.agilidade ?? 10) || 10);
-    let total = 0;
-    let detail = '';
-    if (modelOf(char) === 'pool') {
-      const qty = Math.max(1, Math.min(20, agi));
-      const results = Array.from({ length: qty }, () => rollDie(20));
-      total = Math.max(...results);
-      detail = `${qty}D20 [${results.join(', ')}]`;
-    } else {
-      const d20 = rollDie(20);
-      const mod = attrMod(agi);
-      total = d20 + mod;
-      detail = `1D20${mod ? formatMod(mod) : ''} [${d20}]`;
-    }
-    const state = combatState();
-    state.active = true;
-    state.round = state.round || 1;
-    state.entries = Array.isArray(state.entries) ? state.entries : [];
-    const existing = state.entries.find(e => String(e.characterId) === String(char.id));
-    const payload = {
-      id: existing?.id || uid('init'),
-      characterId: char.id,
-      userId: member.userId,
-      memberId: member.id,
-      name: char.name || 'Personagem',
-      playerName: userDisplayName(userById(member.userId)),
-      value: total,
-      manual: false
-    };
-    if (existing) Object.assign(existing, payload);
-    else state.entries.push(payload);
-    state.entries.sort((a,b) => Number(b.value || 0) - Number(a.value || 0));
-    saveCombatState(state);
-    addChat(`Iniciativa de ${char.name || 'Personagem'}: ${detail} = ${total}`, 'roll');
-    renderManager();
-  }
-  function toggleCombat(){
-    const state = combatState();
-    state.active = !state.active;
-    if (!state.active) state.entries = [];
-    if (state.active && !state.round) state.round = 1;
-    saveCombatState(state);
-    addChat(state.active ? 'Combate iniciado no Gerenciador de Campanha.' : 'Combate encerrado no Gerenciador de Campanha.', 'roll');
-    renderManager();
-  }
-  function clearInitiative(){
-    const state = combatState();
-    state.entries = [];
-    saveCombatState(state);
-    renderManager();
-  }
-  function sendManagerChat(text){
-    const clean = String(text || '').trim();
-    if (!clean) return;
-    const key = campaignChatKey();
-    const chat = get(key, []);
-    chat.push({ id: uid('msg'), user: userDisplayName(currentUser), text: clean, type: 'msg', at: nowTime() });
-    set(key, chat.slice(-160));
-    renderManager();
-  }
-  function pageTabs(current, master){
-    const base = [
-      ['personagens','Personagens'],
-      ['combate','Combate'],
-      ['jogadores','Jogadores'],
-      ['chat','Chat']
-    ];
-    if (master) base.push(['escudo','Escudo']);
-    return base.map(([key,label]) => `<button type="button" class="${current === key ? 'active' : ''}" data-od1901-manager-tab="${key}">${label}</button>`).join('');
-  }
-  function hero(campaign, member, tab){
-    const members = campaignMembers();
-    const master = campaignIsMaster(member);
-    return `
-      <header class="od1901-hero">
-        <div class="od1901-hero-top">
-          <button type="button" class="od1901-back" data-od1901-back>← Voltar</button>
-          <div class="od1901-hero-actions">
-            ${master ? `<button type="button" data-od1901-add-characters>Adicionar Personagens</button><button type="button" data-od1901-edit-campaign>Editar Campanha</button>` : ''}
-            <button type="button" data-od1901-copy-code="${esc(campaign.code || '')}">Copiar Código</button>
-          </div>
-        </div>
-        <div class="od1901-hero-main">
-          <div>
-            <p class="od1901-kicker">Gerenciador de Campanha</p>
-            <h1>${esc(campaign.name || 'Campanha')}</h1>
-            <div class="od1901-meta-row">
-              <span>${esc(roleLabel(member))}</span>
-              <span>${members.length} jogador${members.length === 1 ? '' : 'es'}</span>
-              <span>Sistema ${esc(campaign.systemType || campaign.systemModel || campaign.model || 'D20')}</span>
-            </div>
-          </div>
-          <div class="od1901-code-box"><small>Código</small><strong>${esc(campaign.code || '-----')}</strong></div>
-        </div>
-        <nav class="od1901-tabs">${pageTabs(tab, master)}</nav>
-      </header>`;
-  }
-  function renderCharactersTab(){
-    const master = campaignIsMaster();
-    const members = campaignMembers();
-    const rows = members.map(member => {
-      const char = memberCharacter(member);
-      const user = userById(member.userId);
-      if (!char) {
-        return `<article class="od1901-character-row empty"><div><strong>${esc(userDisplayName(user))}</strong><small>Sem personagem vinculado</small></div></article>`;
-      }
-      return `<article class="od1901-character-row">
-        <img src="${esc(char.portrait || 'assets/logo.jpg')}" alt="" />
-        <div class="od1901-character-main">
-          <h2>${esc(char.name || 'Personagem')}</h2>
-          <p>${esc(char.race || 'Raça')} • ${esc(char.className || 'Classe')} • Nv. ${esc(char.level || 1)}</p>
-          <small>Jogador: ${esc(userDisplayName(user))} • Entrada: ${esc(entryDate(member))}</small>
-        </div>
-        <div class="od1901-character-actions">
-          ${(master || String(member.userId) === String(currentUser?.id)) ? `<button type="button" data-od1901-open-sheet="${esc(char.id)}">Acessar Ficha</button>` : ''}
-          ${master ? `<button type="button" data-od1901-open-obs="${esc(char.id)}">OBS</button>` : ''}
-          ${master && String(member.userId) !== String(currentUser?.id) ? `<button type="button" class="danger" data-od1901-remove-member="${esc(member.id)}">Remover</button>` : ''}
-        </div>
-      </article>`;
-    }).join('');
-    return `<section class="od1901-panel"><div class="od1901-section-head"><div><h2>Personagens da Campanha</h2><p>Nomes, jogadores, entrada na mesa e ações rápidas do mestre.</p></div></div><div class="od1901-list">${rows || '<div class="od1901-empty">Nenhum personagem vinculado ainda.</div>'}</div></section>`;
-  }
-  function renderCombatTab(){
-    const master = campaignIsMaster();
-    const members = campaignMembers().filter(m => memberCharacter(m));
-    const state = combatState();
-    const entries = [...(state.entries || [])].sort((a,b) => Number(b.value || 0) - Number(a.value || 0));
-    const participants = members.map(member => {
-      const char = memberCharacter(member);
-      const user = userById(member.userId);
-      const mine = String(member.userId) === String(currentUser?.id);
-      const canRoll = master || mine;
-      return `<article class="od1901-combat-participant">
-        <img src="${esc(char.portrait || 'assets/logo.jpg')}" alt="" />
-        <div><strong>${esc(char.name || 'Personagem')}</strong><small>${esc(userDisplayName(user))} • AGI ${esc(char.attrs?.agilidade ?? 10)}</small></div>
-        <button type="button" ${canRoll ? '' : 'disabled'} data-od1901-roll-init="${esc(member.id)}">Rolar Iniciativa</button>
-      </article>`;
-    }).join('');
-    const order = entries.map((entry, index) => `<div class="od1901-init-row"><b>#${index + 1}</b><span>${esc(entry.name)}</span><small>${esc(entry.playerName || '')}</small><strong>${esc(entry.value)}</strong></div>`).join('');
-    return `<section class="od1901-panel od1901-combat">
-      <div class="od1901-section-head">
-        <div><h2>Combate</h2><p>Jogadores rolam iniciativa e a ordem é organizada automaticamente.</p></div>
-        <div class="od1901-toolbar">
-          ${master ? `<button type="button" data-od1901-toggle-combat>${state.active ? 'Encerrar Combate' : 'Iniciar Combate'}</button><button type="button" data-od1901-clear-init>Limpar Ordem</button>` : ''}
-        </div>
-      </div>
-      <div class="od1901-combat-grid">
-        <div><h3>Participantes</h3><div class="od1901-list compact">${participants || '<div class="od1901-empty">Nenhum personagem para combate.</div>'}</div></div>
-        <div><h3>Ordem de Turno</h3><div class="od1901-init-list">${order || '<div class="od1901-empty">Aguardando rolagens de iniciativa.</div>'}</div></div>
-      </div>
-    </section>`;
-  }
-  function renderPlayersTab(){
-    const rows = campaignMembers().map(member => {
-      const user = userById(member.userId);
-      const online = String(member.userId) === String(currentUser?.id);
-      return `<article class="od1901-player-row">
-        <div class="od1901-avatar">${esc((userDisplayName(user) || '?').slice(0,1).toUpperCase())}</div>
-        <div><strong>${esc(userDisplayName(user))}</strong><small>${esc(roleLabel(member))} • ${esc(entryDate(member))}</small></div>
-        <span class="${online ? 'online' : 'offline'}">${online ? 'Online agora' : 'Offline'}</span>
-      </article>`;
-    }).join('');
-    return `<section class="od1901-panel"><div class="od1901-section-head"><div><h2>Jogadores</h2><p>Contas vinculadas, função e status de presença.</p></div></div><div class="od1901-list">${rows || '<div class="od1901-empty">Nenhum jogador na campanha.</div>'}</div></section>`;
-  }
-  function renderChatTab(){
-    const msgs = get(campaignChatKey(), []);
-    const html = msgs.map(msg => `<div class="od1901-chat-msg"><small>${esc(msg.user)} • ${esc(msg.at || '')}</small><p>${esc(msg.text)}</p></div>`).join('');
-    return `<section class="od1901-panel od1901-chat-panel">
-      <div class="od1901-section-head"><div><h2>Chat ao Vivo</h2><p>Mensagens dos jogadores dentro da campanha.</p></div></div>
-      <div id="od1901-chat-log" class="od1901-chat-log">${html || '<div class="od1901-empty">Nenhuma mensagem ainda.</div>'}</div>
-      <form id="od1901-chat-form" class="od1901-chat-form"><input id="od1901-chat-input" placeholder="Mensagem para a campanha..." autocomplete="off" /><button>Enviar</button></form>
-    </section>`;
-  }
-  function renderShieldTab(){
-    if (!campaignIsMaster()) return `<div class="od1901-empty">Escudo disponível apenas para o mestre.</div>`;
-    const cards = campaignMembers().map(member => {
-      const char = memberCharacter(member);
-      const user = userById(member.userId);
-      if (!char) return '';
-      const pvCur = Number(char.pvCurrent || 0), pvMax = Number(char.pvMax || 0), peCur = Number(char.peCurrent || 0), peMax = Number(char.peMax || 0);
-      const pvPct = pvMax ? Math.max(0, Math.min(100, (pvCur / pvMax) * 100)) : 0;
-      const pePct = peMax ? Math.max(0, Math.min(100, (peCur / peMax) * 100)) : 0;
-      return `<article class="od1901-shield-card">
-        <img src="${esc(char.portrait || 'assets/logo.jpg')}" alt="" />
-        <div class="od1901-shield-body">
-          <h3>${esc(char.name || 'Personagem')}</h3>
-          <small>${esc(userDisplayName(user))}</small>
-          <label>PV <span>${esc(pvCur)} / ${esc(pvMax)}</span><i><b style="width:${pvPct}%"></b></i></label>
-          <label>PE <span>${esc(peCur)} / ${esc(peMax)}</span><i><b style="width:${pePct}%"></b></i></label>
-        </div>
-        <button type="button" data-od1901-open-sheet="${esc(char.id)}">Ficha</button>
-      </article>`;
-    }).join('');
-    return `<section class="od1901-panel"><div class="od1901-section-head"><div><h2>Escudo do Mestre</h2><p>PV, PE, foto e nome dos personagens para consulta rápida.</p></div></div><div class="od1901-shield-grid">${cards || '<div class="od1901-empty">Nenhuma ficha vinculada.</div>'}</div></section>`;
-  }
-  function renderContent(tab){
-    if (tab === 'combate') return renderCombatTab();
-    if (tab === 'jogadores') return renderPlayersTab();
-    if (tab === 'chat') return renderChatTab();
-    if (tab === 'escudo') return renderShieldTab();
-    return renderCharactersTab();
-  }
-  function renderManager(){
-    const shell = ensureShell();
-    const campaign = currentCampaign();
-    const member = currentMembership();
-    if (!shell || !campaign || !member) return;
-    setManagerMode(true);
-    const tab = activeTab();
-    shell.innerHTML = `${hero(campaign, member, tab)}<main class="od1901-content">${renderContent(tab)}</main>`;
-    const chat = $('od1901-chat-log');
-    if (chat) chat.scrollTop = chat.scrollHeight;
-  }
-  function injectSheetInitiativeButton(){
-    if (!currentCampaignId || accountSheetMode) return;
-    const tabs = document.querySelector('.sheet .tabs');
-    if (!tabs || $('od1901-sheet-init-btn')) return;
-    const btn = document.createElement('button');
-    btn.id = 'od1901-sheet-init-btn';
-    btn.type = 'button';
-    btn.className = 'sheet-tab od1901-sheet-init-btn';
-    btn.textContent = 'Iniciativa';
-    btn.addEventListener('click', event => {
-      event.preventDefault();
-      const member = currentMembership();
-      if (member?.id) rollInitiative(member.id);
-    });
-    tabs.appendChild(btn);
-  }
-
-  enterCampaign = function(campaignId){
-    return openManager(campaignId || currentCampaignId);
-  };
-
-  initApp = function(campaignId = currentCampaignId){
-    if (window.__od1901OpeningLegacySheet || accountSheetMode) return legacyInitApp?.(campaignId);
-    if (campaignId && getMembers().some(m => String(m.campaignId) === String(campaignId) && String(m.userId) === String(currentUser?.id))) {
-      return openManager(campaignId);
-    }
-    return legacyInitApp?.(campaignId);
-  };
-
-  showSessions = function(){
-    setManagerMode(false);
-    return legacyShowSessions?.();
-  };
-
-  document.addEventListener('click', event => {
-    const tab = event.target.closest?.('[data-od1901-manager-tab]');
-    if (tab) { event.preventDefault(); return setTab(tab.dataset.od1901ManagerTab); }
-
-    const back = event.target.closest?.('[data-od1901-back]');
-    if (back) { event.preventDefault(); return showSessions(); }
-
-    const add = event.target.closest?.('[data-od1901-add-characters]');
-    if (add) { event.preventDefault(); return openChooseCharacterModal(currentCampaignId); }
-
-    const open = event.target.closest?.('[data-od1901-open-sheet]');
-    if (open) { event.preventDefault(); return openSheet(open.dataset.od1901OpenSheet); }
-
-    const obs = event.target.closest?.('[data-od1901-open-obs]');
-    if (obs) { event.preventDefault(); return openObs(obs.dataset.od1901OpenObs); }
-
-    const remove = event.target.closest?.('[data-od1901-remove-member]');
-    if (remove) { event.preventDefault(); return removeMember(remove.dataset.od1901RemoveMember); }
-
-    const roll = event.target.closest?.('[data-od1901-roll-init]');
-    if (roll) { event.preventDefault(); return rollInitiative(roll.dataset.od1901RollInit); }
-
-    const toggle = event.target.closest?.('[data-od1901-toggle-combat]');
-    if (toggle) { event.preventDefault(); return toggleCombat(); }
-
-    const clear = event.target.closest?.('[data-od1901-clear-init]');
-    if (clear) { event.preventDefault(); return clearInitiative(); }
-
-    const copy = event.target.closest?.('[data-od1901-copy-code]');
-    if (copy) { event.preventDefault(); return copyCode(copy.dataset.od1901CopyCode); }
-
-    const edit = event.target.closest?.('[data-od1901-edit-campaign]');
-    if (edit) { event.preventDefault(); return alert('Editor completo de campanha ficará na próxima etapa. Esta versão entrega a gerência interna sem camadas antigas.'); }
-  }, true);
-
-  document.addEventListener('submit', event => {
-    const form = event.target.closest?.('#od1901-chat-form');
-    if (!form) return;
-    event.preventDefault();
-    const input = $('od1901-chat-input');
-    sendManagerChat(input?.value || '');
-    if (input) input.value = '';
-  }, true);
-
-  document.addEventListener('DOMContentLoaded', () => {
-    const active = safe(() => getSessionValue(), null) && safe(() => JSON.parse(localStorage.getItem(STORAGE.activeCampaign) || 'null'), null);
-    if (active && getMembers().some(m => String(m.campaignId) === String(active) && String(m.userId) === String(currentUser?.id))) {
-      setTimeout(() => openManager(active), 250);
-    }
-  }, { once: true });
-
-  window.od1901CampaignManager = { openManager, renderManager, openSheet, rollInitiative };
-})();
-
-
-/* =========================
-   V190.2 - Correções da v1.90.1
-   Menu centralizado, campanhas horizontais, gerenciador interno corrigido,
-   atributos clicáveis e retorno ficha -> campanha.
-========================= */
-(function od1902CampaignAndHubHotfix(){
-  'use strict';
-  if (window.__od1902CampaignAndHubHotfixInstalled) return;
-  window.__od1902CampaignAndHubHotfixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
-
-  const v1902SheetInitApp = typeof initApp === 'function' ? initApp : null;
-  const v1902ShowSessionsBase = typeof showSessions === 'function' ? showSessions : null;
-  const TABS = ['personagens', 'combate', 'jogadores', 'chat', 'escudo'];
-
-  function $(id){ return document.getElementById(id); }
-  function esc(value){ try { return escapeHtml(value ?? ''); } catch (_) { return String(value ?? ''); } }
-  function safe(fn, fallback = null){ try { return fn(); } catch (_) { return fallback; } }
-  function normNum(value, fallback = 0){ const n = Number(String(value ?? '').replace(',', '.').replace(/[^\d.-]/g, '')); return Number.isFinite(n) ? n : fallback; }
-  function currentCampaign(){ return getCampaigns().find(c => String(c.id) === String(currentCampaignId)) || null; }
-  function campaignMembers(campaignId = currentCampaignId){ return getMembers().filter(m => String(m.campaignId) === String(campaignId)); }
-  function users(){ return get(STORAGE.users, []); }
-  function chars(){ return get(STORAGE.characters, []); }
-  function userById(id){ return users().find(u => String(u.id) === String(id)); }
-  function charById(id){ return chars().find(c => String(c.id) === String(id)); }
-  function memberChar(member){ return charById(member?.characterId); }
-  function roleOf(member){ return String(member?.role || '').toLowerCase(); }
-  function isMaster(member = currentMembership()){ return ['mestre','master','mestre_jogador','master_player'].includes(roleOf(member)); }
-  function roleLabel(member){ return isMaster(member) ? (roleOf(member).includes('jogador') || roleOf(member).includes('player') ? 'Mestre/Jogador' : 'Mestre') : 'Jogador'; }
-  function entryDate(member){
-    const raw = member?.joinedAt || member?.createdAt || member?.at || '';
-    if (!raw) return 'Entrada não registrada';
-    try { return new Date(raw).toLocaleDateString('pt-BR'); } catch (_) { return String(raw); }
-  }
-  function userImage(user){
-    return user?.avatar || user?.avatarUrl || user?.photo || user?.image || user?.portrait || user?.profileImage || 'assets/logo.jpg';
-  }
-  function managerKey(campaignId = currentCampaignId){ return `od1902_campaign_tab_${campaignId || 'none'}`; }
-  function activeTab(){
-    const saved = localStorage.getItem(managerKey()) || 'personagens';
-    const tab = TABS.includes(saved) ? saved : 'personagens';
-    return tab === 'escudo' && !isMaster() ? 'personagens' : tab;
-  }
-  function setTab(tab){
-    localStorage.setItem(managerKey(), TABS.includes(tab) ? tab : 'personagens');
-    renderManager();
-  }
-  function ensureShell(){
-    const app = $('app-screen');
-    if (!app) return null;
-    let shell = $('od1901-campaign-manager');
-    if (!shell) {
-      shell = document.createElement('section');
-      shell.id = 'od1901-campaign-manager';
-      app.appendChild(shell);
-    }
-    shell.className = 'od1901-manager od1902-manager';
-    return shell;
-  }
-  function setManagerMode(on){
-    document.body.classList.toggle('od1901-campaign-manager-mode', !!on);
-    document.body.classList.toggle('od1902-campaign-manager-mode', !!on);
-    if (!on) $('od1901-campaign-manager')?.remove();
-  }
-  function openManager(campaignId = currentCampaignId, tab = null){
-    const member = getMembers().find(m => String(m.campaignId) === String(campaignId) && String(m.userId) === String(currentUser?.id));
-    if (!member) return alert('Você não faz parte desta campanha.');
-    currentCampaignId = campaignId;
-    accountSheetMode = false;
-    localStorage.setItem(STORAGE.activeCampaign, JSON.stringify(campaignId));
-    if (tab) localStorage.setItem(managerKey(campaignId), tab);
-    showApp();
-    setManagerMode(true);
-    renderManager();
-  }
-  function openSheet(charId){
-    const campId = currentCampaignId;
-    if (!campId) return;
-    document.body.classList.add('od1902-opening-sheet', 'od1903-opening-sheet');
-    let overlay = document.getElementById('od1903-sheet-loader');
-    if (!overlay) {
-      overlay = document.createElement('div');
-      overlay.id = 'od1903-sheet-loader';
-      overlay.innerHTML = '<span>Carregando ficha...</span>';
-      document.body.appendChild(overlay);
-    }
-    overlay.classList.add('active');
-    setManagerMode(false);
-    window.__od1901OpeningLegacySheet = true;
-    window.__od1902OpeningLegacySheet = true;
-    safe(() => v1902SheetInitApp?.(campId), null);
-    window.__od1901OpeningLegacySheet = false;
-    window.__od1902OpeningLegacySheet = false;
-    if (charId) currentCharacterId = charId;
-    setTimeout(() => {
-      safe(() => charId && loadCharacter(charId), null);
-      injectSheetReturnButton();
-      injectSheetInitiativeButton();
-      document.body.classList.remove('od1902-opening-sheet', 'od1903-opening-sheet');
-      overlay.classList.remove('active');
-    }, 180);
-  }
-  function copyCode(code){
-    navigator.clipboard?.writeText(code).then(() => alert('Código copiado.')).catch(() => prompt('Copie o código:', code));
-  }
-  function openObs(charId){
-    if (!charId) return;
-    const url = `${location.origin}/obs/personagem/${encodeURIComponent(charId)}?modo=card`;
-    window.open(url, '_blank', 'noopener,noreferrer');
-    navigator.clipboard?.writeText(url).catch(() => {});
-  }
-  function removeMember(memberId){
-    const member = getMembers().find(m => String(m.id) === String(memberId));
-    if (!member || String(member.userId) === String(currentUser?.id)) return;
-    const user = userById(member.userId);
-    if (!confirm(`Remover ${userDisplayName(user)} desta campanha?`)) return;
-    setMembers(getMembers().filter(m => String(m.id) !== String(memberId)));
-    renderManager();
-  }
-  function unlinkMember(memberId){
-    const members = getMembers();
-    const member = members.find(m => String(m.id) === String(memberId));
-    if (!member) return;
-    if (!isMaster() && String(member.userId) !== String(currentUser?.id)) return alert('Você só pode desvincular sua própria ficha.');
-    const char = memberChar(member);
-    if (char && !confirm(`Desvincular a ficha "${char.name || 'Personagem'}" desta campanha?`)) return;
-    member.characterId = null;
-    if (roleOf(member) === 'mestre_jogador') member.role = 'mestre';
-    setMembers(members);
-    renderManager();
-  }
-  function combatState(){ return safe(() => getInitiativeState(), get(v35InitiativeKey(), { active: false, round: 1, entries: [] })); }
-  function saveCombatState(state){ safe(() => setInitiativeState(state), set(v35InitiativeKey(), state)); }
-  function modelOf(char){
-    const raw = String(char?.systemModel || char?.systemType || char?.model || char?.sheetModel || '').toLowerCase().replace(/[\s_-]+/g, '');
-    return ['pool','pooldice','dados','ordem','ordemparanormal'].includes(raw) ? 'pool' : 'd20';
-  }
-  function rollInitiative(memberId){
-    const member = campaignMembers().find(m => String(m.id) === String(memberId));
-    const char = memberChar(member);
-    if (!member || !char) return;
-    const mine = String(member.userId) === String(currentUser?.id);
-    if (!isMaster() && !mine) return alert('Você só pode rolar iniciativa da sua ficha.');
-    const agi = Math.max(1, Number(char.attrs?.agilidade ?? 10) || 10);
-    let total = 0, detail = '';
-    if (modelOf(char) === 'pool') {
-      const qty = Math.max(1, Math.min(20, agi));
-      const results = Array.from({ length: qty }, () => rollDie(20));
-      total = Math.max(...results);
-      detail = `${qty}D20 [${results.join(', ')}]`;
-    } else {
-      const d20 = rollDie(20);
-      const mod = attrMod(agi);
-      total = d20 + mod;
-      detail = `1D20${mod ? formatMod(mod) : ''} [${d20}]`;
-    }
-    const state = combatState();
-    state.active = true;
-    state.round = state.round || 1;
-    state.entries = Array.isArray(state.entries) ? state.entries : [];
-    const existing = state.entries.find(e => String(e.characterId) === String(char.id));
-    const payload = { id: existing?.id || uid('init'), characterId: char.id, userId: member.userId, memberId: member.id, name: char.name || 'Personagem', playerName: userDisplayName(userById(member.userId)), value: total, manual: false };
-    if (existing) Object.assign(existing, payload); else state.entries.push(payload);
-    state.entries.sort((a,b) => Number(b.value || 0) - Number(a.value || 0));
-    saveCombatState(state);
-    addChat(`Iniciativa de ${char.name || 'Personagem'}: ${detail} = ${total}`, 'roll');
-    renderManager();
-  }
-  function toggleCombat(){
-    const state = combatState();
-    state.active = !state.active;
-    if (!state.active) state.entries = [];
-    if (state.active && !state.round) state.round = 1;
-    saveCombatState(state);
-    addChat(state.active ? 'Combate iniciado no Gerenciador de Campanha.' : 'Combate encerrado no Gerenciador de Campanha.', 'roll');
-    renderManager();
-  }
-  function clearInitiative(){ const state = combatState(); state.entries = []; saveCombatState(state); renderManager(); }
-  function sendChat(text){
-    const clean = String(text || '').trim();
-    if (!clean) return;
-    const key = campaignChatKey();
-    const chat = get(key, []);
-    chat.push({ id: uid('msg'), user: userDisplayName(currentUser), text: clean, type: 'msg', at: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) });
-    set(key, chat.slice(-160));
-    renderManager();
-  }
-  function pageTabs(current, master){
-    const base = [['personagens','Personagens'],['combate','Combate'],['jogadores','Jogadores'],['chat','Chat']];
-    if (master) base.push(['escudo','Escudo']);
-    return base.map(([key,label]) => `<button type="button" class="${current === key ? 'active' : ''}" data-od1902-tab="${key}">${label}</button>`).join('');
-  }
-  function hero(campaign, member, tab){
-    const members = campaignMembers();
-    const master = isMaster(member);
-    return `
-      <header class="od1901-hero od1902-hero">
-        <div class="od1901-hero-top">
-          <button type="button" class="od1901-back" data-od1902-back>← Voltar</button>
-          <div class="od1901-hero-actions">
-            ${master ? `<button type="button" data-od1902-add-characters>Adicionar Personagens</button><button type="button" data-od1902-edit-campaign>Editar Campanha</button>` : ''}
-            <button type="button" data-od1902-copy-code="${esc(campaign.code || '')}">Copiar Código</button>
-          </div>
-        </div>
-        <div class="od1901-hero-main">
-          <div>
-            <p class="od1901-kicker">Gerenciador de Campanha</p>
-            <h1>${esc(campaign.name || 'Campanha')}</h1>
-            <div class="od1901-meta-row">
-              <span>${esc(roleLabel(member))}</span>
-              <span>${members.length} jogador${members.length === 1 ? '' : 'es'}</span>
-              <span>Sistema ${esc(campaign.systemType || campaign.systemModel || campaign.model || 'D20')}</span>
-            </div>
-          </div>
-          <div class="od1901-code-box"><small>Código</small><strong>${esc(campaign.code || '-----')}</strong></div>
-        </div>
-        <nav class="od1901-tabs">${pageTabs(tab, master)}</nav>
-      </header>`;
-  }
-  function renderCharactersTab(){
-    const master = isMaster();
-    const linked = campaignMembers().map(member => ({ member, char: memberChar(member), user: userById(member.userId) })).filter(x => !!x.char);
-    if (!linked.length) {
-      return `<section class="od1901-panel"><div class="od1901-section-head"><div><h2>Personagens da Campanha</h2><p>Nenhuma ficha vinculada à mesa.</p></div></div><div class="od1901-empty">Nenhuma ficha vinculada à mesa. Use “Adicionar Personagens” ou “Escolher Ficha” para vincular.</div></section>`;
-    }
-    const rows = linked.map(({member, char, user}) => {
-      const mine = String(member.userId) === String(currentUser?.id);
-      return `<article class="od1901-character-row od1902-character-row">
-        <img src="${esc(char.portrait || 'assets/logo.jpg')}" alt="" />
-        <div class="od1901-character-main">
-          <h2>${esc(char.name || 'Personagem')}</h2>
-          <p>${esc(char.race || 'Raça')} • ${esc(char.className || 'Classe')} • Nv. ${esc(char.level || 1)}</p>
-          <small>Jogador: ${esc(userDisplayName(user))} • Entrada: ${esc(entryDate(member))}</small>
-        </div>
-        <div class="od1901-character-actions">
-          ${(master || mine) ? `<button type="button" data-od1902-open-sheet="${esc(char.id)}">Acessar Ficha</button>` : ''}
-          ${master ? `<button type="button" data-od1902-open-obs="${esc(char.id)}">OBS</button>` : ''}
-          ${(!master && mine) ? `<button type="button" data-od1902-unlink-member="${esc(member.id)}">Desvincular Minha Ficha</button>` : ''}
-          ${master && !mine ? `<button type="button" class="danger" data-od1902-remove-member="${esc(member.id)}">Remover Jogador</button>` : ''}
-        </div>
-      </article>`;
-    }).join('');
-    return `<section class="od1901-panel"><div class="od1901-section-head"><div><h2>Personagens da Campanha</h2><p>Nomes, jogadores, entrada na mesa e ações rápidas do mestre.</p></div></div><div class="od1901-list">${rows}</div></section>`;
-  }
-  function renderCombatTab(){
-    const master = isMaster();
-    const members = campaignMembers().filter(m => memberChar(m));
-    const state = combatState();
-    const entries = [...(state.entries || [])].sort((a,b) => Number(b.value || 0) - Number(a.value || 0));
-    const participants = members.map(member => {
-      const char = memberChar(member), user = userById(member.userId);
-      const canRoll = master || String(member.userId) === String(currentUser?.id);
-      return `<article class="od1901-combat-participant"><img src="${esc(char.portrait || 'assets/logo.jpg')}" alt="" /><div><strong>${esc(char.name || 'Personagem')}</strong><small>${esc(userDisplayName(user))} • AGI ${esc(char.attrs?.agilidade ?? 10)}</small></div><button type="button" ${canRoll ? '' : 'disabled'} data-od1902-roll-init="${esc(member.id)}">Rolar Iniciativa</button></article>`;
-    }).join('');
-    const order = entries.map((entry, index) => `<div class="od1901-init-row"><b>#${index + 1}</b><span>${esc(entry.name)}</span><small>${esc(entry.playerName || '')}</small><strong>${esc(entry.value)}</strong></div>`).join('');
-    return `<section class="od1901-panel od1901-combat"><div class="od1901-section-head"><div><h2>Combate</h2><p>Jogadores rolam iniciativa e a ordem é organizada automaticamente.</p></div><div class="od1901-toolbar">${master ? `<button type="button" data-od1902-toggle-combat>${state.active ? 'Encerrar Combate' : 'Iniciar Combate'}</button><button type="button" data-od1902-clear-init>Limpar Ordem</button>` : ''}</div></div><div class="od1901-combat-grid"><div><h3>Participantes</h3><div class="od1901-list compact">${participants || '<div class="od1901-empty">Nenhuma ficha vinculada à mesa.</div>'}</div></div><div><h3>Ordem de Turno</h3><div class="od1901-init-list">${order || '<div class="od1901-empty">Aguardando rolagens de iniciativa.</div>'}</div></div></div></section>`;
-  }
-  function renderPlayersTab(){
-    const rows = campaignMembers().map(member => {
-      const user = userById(member.userId), char = memberChar(member);
-      const presence = window.od1904OnlineUsers?.[String(currentCampaignId)] || {};
-      const online = !!presence[String(member.userId)] || String(member.userId) === String(currentUser?.id);
-      return `<article class="od1901-player-row od1902-player-row">
-        <img src="${esc(char?.portrait || userImage(user))}" alt="" />
-        <div><strong>${esc(userDisplayName(user))}</strong><small>${esc(roleLabel(member))} • ${esc(entryDate(member))}${char ? ' • ' + esc(char.name) : ' • Sem ficha vinculada'}</small></div>
-        <span class="${online ? 'online' : 'offline'}">${online ? 'Online agora' : 'Offline'}</span>
-      </article>`;
-    }).join('');
-    return `<section class="od1901-panel"><div class="od1901-section-head"><div><h2>Jogadores</h2><p>Contas vinculadas, foto da conta/ficha e presença.</p></div></div><div class="od1901-list">${rows || '<div class="od1901-empty">Nenhum jogador na campanha.</div>'}</div></section>`;
-  }
-  function renderChatTab(){
-    const msgs = get(campaignChatKey(), []);
-    const html = msgs.map(msg => `<div class="od1901-chat-msg"><small>${esc(msg.user)} • ${esc(msg.at || '')}</small><p>${esc(msg.text)}</p></div>`).join('');
-    return `<section class="od1901-panel od1901-chat-panel"><div class="od1901-section-head"><div><h2>Chat ao Vivo</h2><p>Mensagens dos jogadores dentro da campanha.</p></div></div><div id="od1902-chat-log" class="od1901-chat-log">${html || '<div class="od1901-empty">Nenhuma mensagem ainda.</div>'}</div><form id="od1902-chat-form" class="od1901-chat-form"><input id="od1902-chat-input" placeholder="Mensagem para a campanha..." autocomplete="off" /><button>Enviar</button></form></section>`;
-  }
-  function renderShieldTab(){
-    if (!isMaster()) return `<div class="od1901-empty">Escudo disponível apenas para o mestre.</div>`;
-    const cards = campaignMembers().map(member => ({member, char: memberChar(member), user: userById(member.userId)})).filter(x => !!x.char).map(({member, char, user}) => {
-      const pvCur = normNum(char.pvCurrent, 0), pvMax = normNum(char.pvMax, 0), peCur = normNum(char.peCurrent, 0), peMax = normNum(char.peMax, 0);
-      const pvPct = pvMax ? Math.max(0, Math.min(100, (pvCur / pvMax) * 100)) : 0;
-      const pePct = peMax ? Math.max(0, Math.min(100, (peCur / peMax) * 100)) : 0;
-      return `<article class="od1901-shield-card"><img src="${esc(char.portrait || 'assets/logo.jpg')}" alt="" /><div class="od1901-shield-body"><h3>${esc(char.name || 'Personagem')}</h3><small>${esc(userDisplayName(user))}</small><label>PV <span>${esc(pvCur)} / ${esc(pvMax)}</span><i><b style="width:${pvPct}%"></b></i></label><label>PE <span>${esc(peCur)} / ${esc(peMax)}</span><i><b style="width:${pePct}%"></b></i></label></div><button type="button" data-od1902-open-sheet="${esc(char.id)}">Ficha</button></article>`;
-    }).join('');
-    return `<section class="od1901-panel"><div class="od1901-section-head"><div><h2>Escudo do Mestre</h2><p>PV, PE, foto e nome dos personagens.</p></div></div><div class="od1901-shield-grid">${cards || '<div class="od1901-empty">Nenhuma ficha vinculada à mesa.</div>'}</div></section>`;
-  }
-  function renderContent(tab){
-    if (tab === 'combate') return renderCombatTab();
-    if (tab === 'jogadores') return renderPlayersTab();
-    if (tab === 'chat') return renderChatTab();
-    if (tab === 'escudo') return renderShieldTab();
-    return renderCharactersTab();
-  }
-  function renderManager(){
-    const shell = ensureShell(), campaign = currentCampaign(), member = currentMembership();
-    if (!shell || !campaign || !member) return;
-    setManagerMode(true);
-    const tab = activeTab();
-    shell.innerHTML = `${hero(campaign, member, tab)}<main class="od1901-content">${renderContent(tab)}</main>`;
-    const chat = $('od1902-chat-log');
-    if (chat) chat.scrollTop = chat.scrollHeight;
-  }
-  function injectSheetReturnButton(){
-    if (!currentCampaignId) return;
-    const nav = document.querySelector('#main-topbar .top-actions');
-    if (!nav || $('od1902-return-campaign')) return;
-    const btn = document.createElement('button');
-    btn.id = 'od1902-return-campaign';
-    btn.className = 'ghost-btn';
-    btn.type = 'button';
-    btn.textContent = 'Voltar para Campanha';
-    btn.addEventListener('click', event => {
-      event.preventDefault();
-      openManager(currentCampaignId);
-    });
-    nav.insertBefore(btn, nav.firstChild);
-  }
-  function injectSheetInitiativeButton(){
-    if (!currentCampaignId || accountSheetMode) return;
-    const tabs = document.querySelector('.sheet .tabs');
-    if (!tabs || $('od1902-sheet-init-btn')) return;
-    const btn = document.createElement('button');
-    btn.id = 'od1902-sheet-init-btn';
-    btn.type = 'button';
-    btn.className = 'sheet-tab od1902-sheet-init-btn';
-    btn.textContent = 'Iniciativa';
-    btn.addEventListener('click', event => {
-      event.preventDefault();
-      const member = currentMembership();
-      if (member?.id) rollInitiative(member.id);
-    });
-    tabs.appendChild(btn);
-  }
-  function rollAttributeCard(card){
-    const input = card?.querySelector?.('input[data-attr]');
-    const key = input?.dataset?.attr;
-    if (!key) return;
-    const char = typeof currentChar === 'function' ? currentChar() : null;
-    if (!char) return;
-    const labels = { forca:'Força', agilidade:'Agilidade', vigor:'Vigor', intelecto:'Intelecto', presenca:'Presença' };
-    const value = Number(char.attrs?.[key] ?? input.value ?? 10) || 10;
-    if (modelOf(char) === 'pool') {
-      const qty = Math.max(1, Math.min(20, value));
-      const results = Array.from({ length: qty }, () => rollDie(20));
-      const total = Math.max(...results);
-      const text = `Teste de ${labels[key] || key}: ${qty}D20 → [${results.join(', ')}] = ${total}`;
-      const last = $('last-roll');
-      if (last) { last.textContent = text; last.classList.remove('shake'); void last.offsetWidth; last.classList.add('shake'); }
-      addChat(text, 'roll');
-    } else {
-      doRoll(`Teste de ${labels[key] || key}`, 1, 20, attrMod(value));
-    }
-  }
-
-  enterCampaign = function(campaignId){ return openManager(campaignId || currentCampaignId); };
-  initApp = function(campaignId = currentCampaignId){
-    if (window.__od1901OpeningLegacySheet || window.__od1902OpeningLegacySheet || accountSheetMode) return v1902SheetInitApp?.(campaignId);
-    if (campaignId && getMembers().some(m => String(m.campaignId) === String(campaignId) && String(m.userId) === String(currentUser?.id))) return openManager(campaignId);
-    return v1902SheetInitApp?.(campaignId);
-  };
-  showSessions = function(){
-    setManagerMode(false);
-    const result = v1902ShowSessionsBase?.();
-    setTimeout(forceHubFixes, 0);
-    setTimeout(forceHubFixes, 160);
-    return result;
-  };
-
-  function forceHubFixes(){
-    const topbar = document.querySelector('#sessions-screen.active .od71-topbar');
-    const grid = document.querySelector('#sessions-screen.active .od1811-home-grid, #sessions-screen.active .od71-home-grid');
-    const content = document.querySelector('#sessions-screen.active #od71-content');
-    if (topbar) topbar.classList.add('od1902-topbar-centered');
-    if (grid) grid.classList.add('od1902-home-grid-up');
-    if (content) content.classList.add('od1902-content-pad');
-  }
-
-  document.addEventListener('click', event => {
-    const tab = event.target.closest?.('[data-od1902-tab]');
-    if (tab) { event.preventDefault(); return setTab(tab.dataset.od1902Tab); }
-    const back = event.target.closest?.('[data-od1902-back]');
-    if (back) { event.preventDefault(); return showSessions(); }
-    const add = event.target.closest?.('[data-od1902-add-characters]');
-    if (add) { event.preventDefault(); return openChooseCharacterModal(currentCampaignId); }
-    const open = event.target.closest?.('[data-od1902-open-sheet]');
-    if (open) { event.preventDefault(); return openSheet(open.dataset.od1902OpenSheet); }
-    const obs = event.target.closest?.('[data-od1902-open-obs]');
-    if (obs) { event.preventDefault(); return openObs(obs.dataset.od1902OpenObs); }
-    const unlink = event.target.closest?.('[data-od1902-unlink-member]');
-    if (unlink) { event.preventDefault(); return unlinkMember(unlink.dataset.od1902UnlinkMember); }
-    const remove = event.target.closest?.('[data-od1902-remove-member]');
-    if (remove) { event.preventDefault(); return removeMember(remove.dataset.od1902RemoveMember); }
-    const roll = event.target.closest?.('[data-od1902-roll-init]');
-    if (roll) { event.preventDefault(); return rollInitiative(roll.dataset.od1902RollInit); }
-    const toggle = event.target.closest?.('[data-od1902-toggle-combat]');
-    if (toggle) { event.preventDefault(); return toggleCombat(); }
-    const clear = event.target.closest?.('[data-od1902-clear-init]');
-    if (clear) { event.preventDefault(); return clearInitiative(); }
-    const copy = event.target.closest?.('[data-od1902-copy-code]');
-    if (copy) { event.preventDefault(); return copyCode(copy.dataset.od1902CopyCode); }
-    const edit = event.target.closest?.('[data-od1902-edit-campaign]');
-    if (edit) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      const fake = document.createElement('button');
-      fake.type = 'button';
-      fake.dataset.od86EditCampaign = String(currentCampaignId || '');
-      fake.style.display = 'none';
-      document.body.appendChild(fake);
-      fake.click();
-      fake.remove();
-      return;
-    }
-
-    /* v1.91.0: clique direto no card de atributo removido para evitar bugs/flicker. */
-  }, true);
-
-  document.addEventListener('submit', event => {
-    const form = event.target.closest?.('#od1902-chat-form');
-    if (!form) return;
-    event.preventDefault();
-    const input = $('od1902-chat-input');
-    sendChat(input?.value || '');
-    if (input) input.value = '';
-  }, true);
-
-  document.addEventListener('DOMContentLoaded', () => {
-    forceHubFixes();
-    setTimeout(forceHubFixes, 300);
-    setTimeout(forceHubFixes, 900);
-  }, { once: true });
-  setTimeout(forceHubFixes, 300);
-
-  window.od1902CampaignAndHubHotfix = { openManager, renderManager, openSheet, rollInitiative, forceHubFixes };
-})();
-
-
-/* =========================
-   V190.3 - Regras de jogadores, menu compacto, chat persistente e edição de campanha
-========================= */
-(function od1903SessionRulesAndMenuFixes(){
-  'use strict';
-  if (window.__od1903SessionRulesAndMenuFixesInstalled) return;
-  window.__od1903SessionRulesAndMenuFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
-
-  function $(id){ return document.getElementById(id); }
-  function campaignMembers(campaignId = currentCampaignId){ return typeof getMembers === 'function' ? getMembers().filter(m => String(m.campaignId) === String(campaignId)) : []; }
-  function ownMember(campaignId = currentCampaignId){ return campaignMembers(campaignId).find(m => String(m.userId) === String(currentUser?.id)); }
-  function roleOf(member){ return String(member?.role || '').toLowerCase(); }
-  function isMaster(member = ownMember()){ return ['mestre','master','mestre_jogador','master_player'].includes(roleOf(member)); }
-  function currentCharIdFromMember(campaignId = currentCampaignId){ return ownMember(campaignId)?.characterId || null; }
-  function safeAlert(text){ try { alert(text); } catch (_) {} }
-
-  function closeSheetMenu(){
-    const topbar = $('main-topbar');
-    const toggle = $('topbar-menu-toggle');
-    if (!topbar) return;
-    topbar.classList.add('collapsed');
-    if (toggle) {
-      toggle.textContent = '☰';
-      toggle.title = 'Abrir menu';
-      toggle.setAttribute('aria-expanded', 'false');
-    }
-  }
-
-  function syncTopbarToggle(){
-    const topbar = $('main-topbar');
-    const toggle = $('topbar-menu-toggle');
-    if (!topbar || !toggle) return;
-    const closed = topbar.classList.contains('collapsed');
-    toggle.textContent = closed ? '☰' : '×';
-    toggle.title = closed ? 'Abrir menu' : 'Fechar menu';
-    toggle.setAttribute('aria-expanded', String(!closed));
-  }
-
-  function openExistingCampaignEditor(campaignId = currentCampaignId){
-    const fake = document.createElement('button');
-    fake.type = 'button';
-    fake.dataset.od86EditCampaign = String(campaignId || '');
-    fake.style.display = 'none';
-    document.body.appendChild(fake);
-    fake.click();
-    fake.remove();
-  }
-
-  function enforceOneCharacterMessage(){
-    safeAlert('Jogador só pode adicionar uma ficha por campanha. Desvincule a ficha atual antes de escolher outra.');
-  }
-
-  // Regra: jogador não troca/adiciona segunda ficha na mesma campanha.
-  if (typeof openChooseCharacterModal === 'function' && !openChooseCharacterModal.__od1903OneSheetRule) {
-    const baseOpenChoose = openChooseCharacterModal;
-    openChooseCharacterModal = function od1903OpenChooseCharacterModal(campaignId = currentCampaignId){
-      const member = ownMember(campaignId);
-      if (member?.characterId && !isMaster(member)) {
-        enforceOneCharacterMessage();
-        return;
-      }
-      return baseOpenChoose.apply(this, arguments);
-    };
-    openChooseCharacterModal.__od1903OneSheetRule = true;
-  }
-
-  if (typeof attachCharacterToCampaign === 'function' && !attachCharacterToCampaign.__od1903OneSheetRule) {
-    const baseAttach = attachCharacterToCampaign;
-    attachCharacterToCampaign = async function od1903AttachCharacterToCampaign(campaignId, characterId){
-      const member = ownMember(campaignId);
-      if (member?.characterId && String(member.characterId) !== String(characterId) && !isMaster(member)) {
-        enforceOneCharacterMessage();
-        return;
-      }
-      return baseAttach.apply(this, arguments);
-    };
-    attachCharacterToCampaign.__od1903OneSheetRule = true;
-  }
-
-  // Regra: jogador só abre a própria ficha quando estiver dentro de campanha.
-  if (typeof loadCharacter === 'function' && !loadCharacter.__od1903OpenOwnSheetOnly) {
-    const baseLoad = loadCharacter;
-    loadCharacter = function od1903LoadCharacter(id){
-      const member = ownMember();
-      if (currentCampaignId && !accountSheetMode && member && !isMaster(member) && String(member.characterId || '') !== String(id || '')) {
-        safeAlert('Jogador só pode abrir a própria ficha dentro da campanha.');
-        return;
-      }
-      return baseLoad.apply(this, arguments);
-    };
-    loadCharacter.__od1903OpenOwnSheetOnly = true;
-  }
-
-  // Regra: jogador só rola iniciativa da própria ficha.
-  document.addEventListener('click', event => {
-    const roll = event.target.closest?.('[data-od1902-roll-init], [data-od1901-roll-init]');
-    if (!roll) return;
-    const memberId = roll.dataset.od1902RollInit || roll.dataset.od1901RollInit;
-    const targetMember = campaignMembers().find(m => String(m.id) === String(memberId));
-    const mine = String(targetMember?.userId || '') === String(currentUser?.id || '');
-    if (!mine && !isMaster()) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      safeAlert('Jogador só pode rolar iniciativa da própria ficha.');
-    }
-  }, true);
-
-  // Menu das três linhas: X fecha corretamente e não reabre por conflito de listeners antigos.
-  document.addEventListener('click', event => {
-    const toggle = event.target.closest?.('#topbar-menu-toggle');
-    if (!toggle) return;
-    const topbar = $('main-topbar');
-    if (!topbar) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    topbar.classList.toggle('collapsed');
-    syncTopbarToggle();
-  }, true);
-
-  // Botão editar campanha dentro do gerenciador abre o editor real já existente.
-  document.addEventListener('click', event => {
-    const edit = event.target.closest?.('[data-od1902-edit-campaign], [data-od1903-edit-campaign]');
-    if (!edit) return;
-    if (!isMaster()) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    openExistingCampaignEditor(currentCampaignId);
-  }, true);
-
-  // Chat: manter histórico local e remoto enquanto houver membros vinculados.
-  if (typeof addChat === 'function' && !addChat.__od1903Persistent) {
-    const baseAddChat = addChat;
-    addChat = function od1903PersistentAddChat(text, type = 'msg'){
-      const tableId = currentCampaignId;
-      if (tableId && campaignMembers(tableId).length <= 0) {
-        try {
-          localStorage.removeItem(`${STORAGE.chat}_${tableId}`);
-          localStorage.removeItem(`${STORAGE.chat}_${tableId}_rolls`);
-          if (typeof od42Token === 'function' && od42Token() && typeof od42Api === 'function') {
-            od42Api(`/api/tables/${encodeURIComponent(tableId)}/messages`, { method: 'DELETE' }).catch(() => {});
-          }
-        } catch (_) {}
-        return;
-      }
-      return baseAddChat.apply(this, arguments);
-    };
-    addChat.__od1903Persistent = true;
-  }
-
-  // Se alguma camada antiga tentar apagar o chat ao voltar/sair, restaurar do backup da sessão.
-  let chatBackup = {};
-  function backupChat(){
-    if (!currentCampaignId || !STORAGE?.chat) return;
-    const conv = `${STORAGE.chat}_${currentCampaignId}`;
-    const rolls = `${STORAGE.chat}_${currentCampaignId}_rolls`;
-    try {
-      chatBackup[conv] = localStorage.getItem(conv);
-      chatBackup[rolls] = localStorage.getItem(rolls);
-    } catch (_) {}
-  }
-  function restoreChat(){
-    if (!currentCampaignId || !STORAGE?.chat || campaignMembers(currentCampaignId).length <= 0) return;
-    const conv = `${STORAGE.chat}_${currentCampaignId}`;
-    const rolls = `${STORAGE.chat}_${currentCampaignId}_rolls`;
-    try {
-      if (!localStorage.getItem(conv) && chatBackup[conv]) localStorage.setItem(conv, chatBackup[conv]);
-      if (!localStorage.getItem(rolls) && chatBackup[rolls]) localStorage.setItem(rolls, chatBackup[rolls]);
-    } catch (_) {}
-  }
-  document.addEventListener('click', event => {
-    if (event.target.closest?.('#back-to-sessions-btn,#logout-btn,#topbar-menu-toggle,[data-od1902-open-sheet],[data-od1901-open-sheet]')) {
-      backupChat();
-      setTimeout(restoreChat, 120);
-      setTimeout(restoreChat, 600);
-    }
-  }, true);
-
-  // O card de atributo deixou de ser clicável. Mantém apenas inputs/botões próprios quando expandido.
-  document.addEventListener('click', event => {
-    const card = event.target.closest?.('#attributes-grid .attr-card-v2');
-    if (!card) return;
-    if (!event.target.closest?.('button,input,select,textarea')) {
-      event.stopPropagation();
-    }
-  }, true);
-
-  // Garante o botão voltar para campanha após carregamento da ficha.
-  function ensureReturnButton(){
-    if (!currentCampaignId || accountSheetMode) return;
-    const nav = document.querySelector('#main-topbar .top-actions');
-    if (!nav || $('od1903-return-campaign')) return;
-    const btn = document.createElement('button');
-    btn.id = 'od1903-return-campaign';
-    btn.className = 'ghost-btn';
-    btn.type = 'button';
-    btn.textContent = 'Voltar para Campanha';
-    btn.addEventListener('click', event => {
-      event.preventDefault();
-      if (window.od1902CampaignAndHubHotfix?.openManager) window.od1902CampaignAndHubHotfix.openManager(currentCampaignId);
-      else if (window.od1901CampaignManager?.openManager) window.od1901CampaignManager.openManager(currentCampaignId);
-    });
-    nav.insertBefore(btn, nav.firstChild);
-  }
-
-  function postSheetFixes(){
-    ensureReturnButton();
-    syncTopbarToggle();
-    document.body.classList.add('od1903-attrs-no-click');
-  }
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', postSheetFixes, { once: true });
-  else postSheetFixes();
-  setTimeout(postSheetFixes, 300);
-  setTimeout(postSheetFixes, 1000);
-  setTimeout(postSheetFixes, 1800);
-
-  window.od1903SessionRulesAndMenuFixes = { closeSheetMenu, syncTopbarToggle, openExistingCampaignEditor, ensureReturnButton };
-})();
-
-/* =========================
-   V190.4 - Sessão ao vivo, presença online e remoção correta por mestre
-========================= */
-(function od1904LiveCampaignSession(){
-  'use strict';
-  if (window.__od1904LiveCampaignSessionInstalled) return;
-  window.__od1904LiveCampaignSessionInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
-
-  window.od1904OnlineUsers = window.od1904OnlineUsers || {};
-  let pollTimer = null;
-  let reloadBusy = false;
-  let lastReload = 0;
-
-  function cleanStoredId(value){
-    return String(value || '').replace(/^"|"$/g, '');
-  }
-  function tableId(){
-    return currentCampaignId || cleanStoredId(localStorage.getItem(STORAGE.activeCampaign) || '');
-  }
-  function isManagerOpen(){
-    return document.body.classList.contains('od1901-campaign-manager-mode') && !!document.getElementById('od1901-campaign-manager');
-  }
-  function members(campaignId = tableId()){
-    return typeof getMembers === 'function' ? getMembers().filter(m => String(m.campaignId) === String(campaignId)) : [];
-  }
-  function memberById(id){
-    return (typeof getMembers === 'function' ? getMembers() : []).find(m => String(m.id) === String(id));
-  }
-  function roleOf(member){
-    return String(member?.role || '').toLowerCase();
-  }
-  function isMaster(member = members().find(m => String(m.userId) === String(currentUser?.id))){
-    return ['mestre','master','mestre_jogador','master_player'].includes(roleOf(member));
-  }
-  function isEditing(){
-    const el = document.activeElement;
-    return !!(el && el.matches && el.matches('input, textarea, select, [contenteditable="true"]'));
-  }
-  function renderCampaignView(){
-    try { window.od1902CampaignAndHubHotfix?.renderManager?.(); } catch (_) {}
-    try { window.od1901CampaignManager?.renderManager?.(); } catch (_) {}
-    const chat = document.getElementById('od1902-chat-log') || document.getElementById('od1901-chat-log');
-    if (chat) chat.scrollTop = chat.scrollHeight;
-  }
-
-  async function reloadLive(reason = 'sync', force = false){
-    const id = tableId();
-    if (!id || reloadBusy || typeof od42Token !== 'function' || !od42Token()) return;
-    const now = Date.now();
-    if (!force && now - lastReload < 700) return;
-    lastReload = now;
-    reloadBusy = true;
-    try {
-      if (typeof od42LoadTableState === 'function') await od42LoadTableState(id);
-      if (typeof od44LoadMessages === 'function') await od44LoadMessages(id);
-      if (typeof od44LoadInitiative === 'function') await od44LoadInitiative(id);
-      if (isManagerOpen()) renderCampaignView();
-      else if (typeof renderTableExperience === 'function') renderTableExperience();
-
-      if (currentCharacterId && !isEditing()) {
-        const stillLinked = members(id).some(m => String(m.characterId) === String(currentCharacterId));
-        if (stillLinked && typeof loadCharacter === 'function') loadCharacter(currentCharacterId);
-      }
-    } catch (error) {
-      if (String(error?.message || '').includes('participa') || String(error?.message || '').includes('403')) {
-        try {
-          if (String(currentCampaignId) === String(id)) currentCampaignId = null;
-          showSessions?.();
-          alert('Você foi removido desta campanha pelo mestre.');
-        } catch (_) {}
-      } else {
-        console.warn('[One Dice v1.91.0] Falha ao atualizar sessão ao vivo:', error);
-      }
-    } finally {
-      reloadBusy = false;
-    }
-  }
-
-  function joinCurrentRoom(){
-    const id = tableId();
-    if (!id || typeof od44EnsureSocket !== 'function') return;
-    try {
-      const socket = od44EnsureSocket();
-      if (!socket) return;
-      if (socket.connected) socket.emit('table:join', { tableId: id });
-      else socket.once('connect', () => socket.emit('table:join', { tableId: id }));
-    } catch (_) {}
-  }
-
-  if (typeof od44EnsureSocket === 'function' && !od44EnsureSocket.__od1904LiveWrapped) {
-    const baseEnsure = od44EnsureSocket;
-    od44EnsureSocket = function od1904EnsureSocket(){
-      const socket = baseEnsure.apply(this, arguments);
-      if (!socket || socket.__od1904LivePatched) return socket;
-      socket.__od1904LivePatched = true;
-
-      socket.on('connect', () => {
-        joinCurrentRoom();
-        reloadLive('connect', true);
-      });
-
-      socket.on('presence:updated', payload => {
-        if (!payload?.tableId) return;
-        const map = {};
-        (payload.onlineUserIds || []).forEach(id => map[String(id)] = true);
-        if (currentUser?.id) map[String(currentUser.id)] = true;
-        window.od1904OnlineUsers[String(payload.tableId)] = map;
-        if (String(payload.tableId) === String(tableId()) && isManagerOpen()) renderCampaignView();
-      });
-
-      ['member:updated', 'table:updated', 'character:updated', 'character:deleted', 'inventory:updated'].forEach(name => {
-        socket.on(name, payload => {
-          if (payload?.tableId && String(payload.tableId) !== String(tableId())) return;
-          reloadLive(name, true);
-        });
-      });
-
-      socket.on('message:created', payload => {
-        if (payload?.tableId && String(payload.tableId) !== String(tableId())) return;
-        try {
-          if (payload?.message) {
-            if (typeof od63StoreMessage === 'function') od63StoreMessage(payload.message);
-            else if (typeof od44StoreMessage === 'function') od44StoreMessage(payload.message);
-          }
-          if (typeof renderChat === 'function') renderChat();
-          if (isManagerOpen()) renderCampaignView();
-        } catch (_) {
-          reloadLive('message', true);
-        }
-      });
-
-      socket.on('messages:cleared', payload => {
-        if (payload?.tableId && String(payload.tableId) !== String(tableId())) return;
-        try {
-          localStorage.removeItem(`${STORAGE.chat}_${payload.tableId}`);
-          localStorage.removeItem(`${STORAGE.chat}_${payload.tableId}_rolls`);
-          if (typeof renderChat === 'function') renderChat();
-          if (isManagerOpen()) renderCampaignView();
-        } catch (_) {}
-      });
-
-      socket.on('initiative:updated', payload => {
-        if (payload?.tableId && String(payload.tableId) !== String(tableId())) return;
-        try {
-          if (payload?.initiative && typeof set === 'function' && typeof v35InitiativeKey === 'function') {
-            set(v35InitiativeKey(), payload.initiative);
-          }
-          if (typeof renderInitiativePanel === 'function') renderInitiativePanel();
-          if (isManagerOpen()) renderCampaignView();
-        } catch (_) {
-          reloadLive('initiative', true);
-        }
-      });
-
-      return socket;
-    };
-    od44EnsureSocket.__od1904LiveWrapped = true;
-  }
-
-  async function masterRemoveMember(memberId){
-    const id = tableId();
-    const member = memberById(memberId);
-    if (!id || !member || !isMaster()) return;
-    if (String(member.userId) === String(currentUser?.id)) return alert('O mestre não pode remover a própria entrada por aqui.');
-    const user = (typeof userById === 'function' ? userById(member.userId) : null);
-    const name = typeof userDisplayName === 'function' ? userDisplayName(user || { id: member.userId }) : 'jogador';
-    if (!confirm(`Remover ${name} da campanha? Isso remove o jogador e a ficha vinculada dele da mesa.`)) return;
-    try {
-      if (typeof od42Api === 'function' && typeof od42Token === 'function' && od42Token()) {
-        await od42Api(`/api/tables/${encodeURIComponent(id)}/members/${encodeURIComponent(memberId)}`, { method: 'DELETE' });
-        await reloadLive('member-remove', true);
-      } else {
-        if (typeof setMembers === 'function') setMembers((typeof getMembers === 'function' ? getMembers() : []).filter(m => String(m.id) !== String(memberId)));
-        renderCampaignView();
-      }
-    } catch (error) {
-      alert(error.message || 'Erro ao remover jogador da campanha.');
-    }
-  }
-
-  document.addEventListener('click', event => {
-    const remove = event.target.closest?.('[data-od1902-remove-member], [data-od1901-remove-member]');
-    if (remove) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      return masterRemoveMember(remove.dataset.od1902RemoveMember || remove.dataset.od1901RemoveMember);
-    }
-
-    const unlink = event.target.closest?.('[data-od1902-unlink-member], [data-od1901-unlink-member]');
-    if (unlink) {
-      const member = memberById(unlink.dataset.od1902UnlinkMember || unlink.dataset.od1901UnlinkMember);
-      if (isMaster() && member && String(member.userId) !== String(currentUser?.id)) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        return masterRemoveMember(member.id);
-      }
-    }
-  }, true);
-
-  function fixMasterButtons(){
-    if (!isManagerOpen()) return;
-    if (!isMaster()) return;
-    document.querySelectorAll('[data-od1902-unlink-member], [data-od1901-unlink-member]').forEach(btn => {
-      const member = memberById(btn.dataset.od1902UnlinkMember || btn.dataset.od1901UnlinkMember);
-      if (member && String(member.userId) !== String(currentUser?.id)) {
-        btn.textContent = 'Remover Jogador';
-        btn.classList.add('danger');
-        btn.dataset.od1902RemoveMember = member.id;
-        btn.removeAttribute('data-od1902-unlink-member');
-        btn.removeAttribute('data-od1901-unlink-member');
-      } else {
-        btn.remove();
-      }
-    });
-  }
-
-  const managerApi = window.od1902CampaignAndHubHotfix;
-  if (managerApi?.renderManager && !managerApi.renderManager.__od1904ButtonFix) {
-    const baseRender = managerApi.renderManager;
-    managerApi.renderManager = function od1904RenderManager(){
-      const result = baseRender.apply(this, arguments);
-      fixMasterButtons();
-      joinCurrentRoom();
-      return result;
-    };
-    managerApi.renderManager.__od1904ButtonFix = true;
-  }
-
-  function startPolling(){
-    clearInterval(pollTimer);
-    pollTimer = setInterval(() => {
-      if (document.hidden || !tableId()) return;
-      joinCurrentRoom();
-      reloadLive('poll', false);
-    }, 1500);
-  }
-
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) {
-      joinCurrentRoom();
-      reloadLive('visible', true);
-    }
-  });
-
-  document.addEventListener('click', event => {
-    if (event.target.closest?.('[data-enter-campaign], [data-od1902-tab], [data-od1902-open-sheet], [data-od1902-back]')) {
-      setTimeout(joinCurrentRoom, 80);
-      setTimeout(() => reloadLive('click', true), 180);
-    }
-  }, true);
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => { joinCurrentRoom(); startPolling(); }, { once: true });
-  else { joinCurrentRoom(); startPolling(); }
-
-  setTimeout(joinCurrentRoom, 300);
-  setTimeout(() => reloadLive('boot', true), 900);
-  window.od1904LiveCampaignSession = { reloadLive, joinCurrentRoom, masterRemoveMember };
-})();
-
-
-/* =========================
-   V190.5 - Núcleo ao vivo definitivo de campanhas
-   - presença online real sem contagem duplicada;
-   - chat do gerenciador usa API/socket, não localStorage isolado;
-   - fichas, membros, campanha, iniciativa e inventário sincronizam;
-   - mestre pode Remover Ficha ou Remover Jogador;
-   - jogador só mexe no que é dele.
-========================= */
-(function od1905LiveCampaignCore(){
-  'use strict';
-  if (window.__od1905LiveCampaignCoreInstalled) return;
-  window.__od1905LiveCampaignCoreInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
-
-  window.od1905OnlineUsers = window.od1905OnlineUsers || window.od1904OnlineUsers || {};
-  window.od1904OnlineUsers = window.od1905OnlineUsers;
-
-  let liveTimer = null;
-  let liveBusy = false;
-  let lastFullSync = 0;
-
-  function $(id){ return document.getElementById(id); }
-  function safe(fn, fallback = null){ try { return fn(); } catch (_) { return fallback; } }
-  function esc(value){ try { return escapeHtml(value ?? ''); } catch (_) { return String(value ?? ''); } }
-  function cleanId(value){ return String(value || '').replace(/^"|"$/g, ''); }
-  function tableId(){ return currentCampaignId || cleanId(localStorage.getItem(STORAGE.activeCampaign) || ''); }
-  function isManagerOpen(){ return document.body.classList.contains('od1901-campaign-manager-mode') && !!$('od1901-campaign-manager'); }
-  function allMembers(){ return typeof getMembers === 'function' ? getMembers() : []; }
-  function members(id = tableId()){ return allMembers().filter(m => String(m.campaignId) === String(id)); }
-  function ownMember(id = tableId()){ return members(id).find(m => String(m.userId) === String(currentUser?.id)); }
-  function memberById(id){ return allMembers().find(m => String(m.id) === String(id)); }
-  function roleOf(member){ return String(member?.role || '').toLowerCase(); }
-  function isMaster(member = ownMember()){ return ['mestre','master','mestre_jogador','master_player'].includes(roleOf(member)); }
-  function userByIdLocal(id){ return (typeof get === 'function' ? get(STORAGE.users, []) : []).find(u => String(u.id) === String(id)); }
-  function userName(member){
-    const user = userByIdLocal(member?.userId);
-    return typeof userDisplayName === 'function' ? userDisplayName(user || { id: member?.userId }) : (user?.name || user?.nick || 'jogador');
-  }
-  function characterById(id){ return (typeof get === 'function' ? get(STORAGE.characters, []) : []).find(c => String(c.id) === String(id)); }
-  function activeEditor(){
-    const el = document.activeElement;
-    return !!(el && el.matches && el.matches('input, textarea, select, [contenteditable="true"]'));
-  }
-  function renderManager(){
-    safe(() => window.od1902CampaignAndHubHotfix?.renderManager?.(), null);
-    safe(() => window.od1901CampaignManager?.renderManager?.(), null);
-    patchMasterButtons();
-    patchOnlineBadges();
-    const chat = $('od1902-chat-log') || $('od1901-chat-log');
-    if (chat) chat.scrollTop = chat.scrollHeight;
-  }
-  function renderAll(reason = 'sync'){
-    if (isManagerOpen()) renderManager();
-    else {
-      safe(() => typeof renderTableExperience === 'function' && renderTableExperience(), null);
-      safe(() => typeof renderCampaignMenu === 'function' && renderCampaignMenu(), null);
-      safe(() => typeof renderChat === 'function' && renderChat(), null);
-      safe(() => typeof renderInitiativePanel === 'function' && renderInitiativePanel(), null);
-    }
-  }
-
-  async function loadLiveState(reason = 'sync', force = false){
-    const id = tableId();
-    if (!id || liveBusy || typeof od42Token !== 'function' || !od42Token()) return;
-    const now = Date.now();
-    if (!force && now - lastFullSync < 800) return;
-    lastFullSync = now;
-    liveBusy = true;
-    try {
-      if (typeof od42LoadTableState === 'function') await od42LoadTableState(id);
-      if (typeof od44LoadMessages === 'function') await od44LoadMessages(id);
-      if (typeof od44LoadInitiative === 'function') await od44LoadInitiative(id);
-      renderAll(reason);
-
-      if (currentCharacterId && !activeEditor()) {
-        const stillLinked = members(id).some(m => String(m.characterId) === String(currentCharacterId));
-        if (stillLinked && typeof loadCharacter === 'function' && !document.body.classList.contains('od1903-opening-sheet')) {
-          safe(() => loadCharacter(currentCharacterId), null);
-        }
-      }
-    } catch (error) {
-      const msg = String(error?.message || '');
-      if (msg.includes('participa') || msg.includes('403')) {
-        if (String(currentCampaignId) === String(id)) currentCampaignId = null;
-        safe(() => showSessions?.(), null);
-        safe(() => alert('Você foi removido desta campanha pelo mestre.'), null);
-      } else {
-        console.warn('[One Dice v1.91.0] Falha ao sincronizar campanha:', error);
-      }
-    } finally {
-      liveBusy = false;
-    }
-  }
-
-  function updatePresence(payload){
-    if (!payload?.tableId) return;
-    const id = String(payload.tableId);
-    const map = {};
-    (payload.onlineUserIds || []).forEach(userId => { map[String(userId)] = true; });
-    if (String(id) === String(tableId()) && currentUser?.id) map[String(currentUser.id)] = true;
-    window.od1905OnlineUsers[id] = map;
-    window.od1904OnlineUsers = window.od1905OnlineUsers;
-    if (String(id) === String(tableId())) patchOnlineBadges();
-    if (String(id) === String(tableId()) && isManagerOpen()) renderManager();
-  }
-
-  function ensureSocket(){
-    if (typeof od44EnsureSocket !== 'function') return null;
-    const socket = safe(() => od44EnsureSocket(), null);
-    if (!socket || socket.__od1905CorePatched) return socket;
-    socket.__od1905CorePatched = true;
-
-    socket.on('connect', () => {
-      joinRoom(true);
-      loadLiveState('connect', true);
-    });
-
-    socket.on('presence:updated', updatePresence);
-
-    ['member:updated', 'table:updated', 'character:updated', 'character:deleted', 'inventory:updated', 'initiative:updated'].forEach(eventName => {
-      socket.on(eventName, payload => {
-        if (payload?.tableId && String(payload.tableId) !== String(tableId())) return;
-        if (eventName === 'initiative:updated' && payload?.initiative && typeof set === 'function' && typeof v35InitiativeKey === 'function') {
-          safe(() => set(v35InitiativeKey(), payload.initiative), null);
-        }
-        loadLiveState(eventName, true);
-      });
-    });
-
-    socket.on('message:created', payload => {
-      if (payload?.tableId && String(payload.tableId) !== String(tableId())) return;
-      if (payload?.message) {
-        safe(() => typeof od44StoreMessage === 'function' && od44StoreMessage(payload.message), null);
-        safe(() => typeof od63StoreMessage === 'function' && od63StoreMessage(payload.message), null);
-      }
-      // O store pode ignorar duplicado; a recarga garante consistência entre contas.
-      setTimeout(() => loadLiveState('message', true), 80);
-    });
-
-    socket.on('messages:cleared', payload => {
-      if (payload?.tableId && String(payload.tableId) !== String(tableId())) return;
-      safe(() => localStorage.removeItem(`${STORAGE.chat}_${payload.tableId}`), null);
-      safe(() => localStorage.removeItem(`${STORAGE.chat}_${payload.tableId}_rolls`), null);
-      renderAll('messages-cleared');
-    });
-
-    return socket;
-  }
-
-  function joinRoom(requestList = false){
-    const id = tableId();
-    if (!id) return;
-    const socket = ensureSocket();
-    if (!socket) return;
-    const join = () => {
-      socket.emit('table:join', { tableId: id });
-      socket.emit('table:ping', { tableId: id });
-      if (requestList) socket.emit('presence:get', { tableId: id });
-    };
-    if (socket.connected) join();
-    else socket.once('connect', join);
-    if (currentUser?.id) {
-      window.od1905OnlineUsers[String(id)] = { ...(window.od1905OnlineUsers[String(id)] || {}), [String(currentUser.id)]: true };
-    }
-  }
-
-  function startLiveLoop(){
-    clearInterval(liveTimer);
-    liveTimer = setInterval(() => {
-      const id = tableId();
-      if (!id || document.hidden) return;
-      joinRoom(true);
-      if (!activeEditor()) loadLiveState('poll', false);
-    }, 1200);
-  }
-
-  function patchOnlineBadges(){
-    const id = tableId();
-    const map = window.od1905OnlineUsers[String(id)] || {};
-    document.querySelectorAll('.od1901-player-row, .od1902-player-row').forEach(row => {
-      const name = row.querySelector('strong')?.textContent?.trim();
-      const badge = row.querySelector('.online,.offline');
-      if (!badge) return;
-      const member = members(id).find(m => userName(m) === name);
-      const online = member ? !!map[String(member.userId)] || String(member.userId) === String(currentUser?.id) : false;
-      badge.classList.toggle('online', online);
-      badge.classList.toggle('offline', !online);
-      badge.textContent = online ? 'Online agora' : 'Offline';
-    });
-  }
-
-  function patchMasterButtons(){
-    if (!isManagerOpen() || !isMaster()) return;
-    document.querySelectorAll('.od1901-character-row, .od1902-character-row').forEach(row => {
-      const openBtn = row.querySelector('[data-od1902-open-sheet], [data-od1901-open-sheet]');
-      const actions = row.querySelector('.od1901-character-actions');
-      if (!openBtn || !actions) return;
-      const charId = openBtn.dataset.od1902OpenSheet || openBtn.dataset.od1901OpenSheet;
-      const member = members().find(m => String(m.characterId) === String(charId));
-      if (!member) return;
-
-      // Mestre não usa "Desvincular" antigo. Agora tem ações explícitas.
-      actions.querySelectorAll('[data-od1902-unlink-member], [data-od1901-unlink-member]').forEach(btn => btn.remove());
-
-      if (!actions.querySelector(`[data-od1905-remove-character="${CSS.escape(String(member.id))}"]`)) {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.textContent = 'Remover Ficha';
-        btn.dataset.od1905RemoveCharacter = member.id;
-        actions.appendChild(btn);
-      }
-
-      if (String(member.userId) !== String(currentUser?.id) && !actions.querySelector(`[data-od1905-remove-player="${CSS.escape(String(member.id))}"]`)) {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.textContent = 'Remover Jogador';
-        btn.className = 'danger';
-        btn.dataset.od1905RemovePlayer = member.id;
-        actions.appendChild(btn);
-      }
-
-      actions.querySelectorAll('[data-od1902-remove-member], [data-od1901-remove-member]').forEach(btn => {
-        btn.textContent = 'Remover Jogador';
-        btn.dataset.od1905RemovePlayer = btn.dataset.od1902RemoveMember || btn.dataset.od1901RemoveMember || member.id;
-        btn.removeAttribute('data-od1902-remove-member');
-        btn.removeAttribute('data-od1901-remove-member');
-      });
-    });
-  }
-
-  async function masterRemoveCharacter(memberId){
-    const id = tableId();
-    const member = memberById(memberId);
-    if (!id || !member || !isMaster()) return;
-    const char = characterById(member.characterId);
-    if (!confirm(`Remover a ficha${char?.name ? ` "${char.name}"` : ''} desta campanha? O jogador continuará na campanha.`)) return;
-    try {
-      if (typeof od42Api === 'function' && typeof od42Token === 'function' && od42Token()) {
-        await od42Api(`/api/tables/${encodeURIComponent(id)}/members/${encodeURIComponent(memberId)}/character`, { method: 'DELETE' });
-      } else {
-        const list = allMembers();
-        const item = list.find(m => String(m.id) === String(memberId));
-        if (item) {
-          item.characterId = null;
-          if (roleOf(item) === 'mestre_jogador') item.role = 'mestre';
-          if (typeof setMembers === 'function') setMembers(list);
-        }
-      }
-      await loadLiveState('remove-character', true);
-    } catch (error) {
-      alert(error.message || 'Erro ao remover ficha da campanha.');
-    }
-  }
-
-  async function masterRemovePlayer(memberId){
-    const id = tableId();
-    const member = memberById(memberId);
-    if (!id || !member || !isMaster()) return;
-    if (String(member.userId) === String(currentUser?.id)) return alert('O mestre não pode remover a própria entrada por aqui.');
-    if (!confirm(`Remover ${userName(member)} da campanha? Isso remove o jogador e a ficha vinculada dele da mesa.`)) return;
-    try {
-      if (typeof od42Api === 'function' && typeof od42Token === 'function' && od42Token()) {
-        await od42Api(`/api/tables/${encodeURIComponent(id)}/members/${encodeURIComponent(memberId)}`, { method: 'DELETE' });
-      } else if (typeof setMembers === 'function') {
-        setMembers(allMembers().filter(m => String(m.id) !== String(memberId)));
-      }
-      await loadLiveState('remove-player', true);
-    } catch (error) {
-      alert(error.message || 'Erro ao remover jogador da campanha.');
-    }
-  }
-
-  // Chat do gerenciador: API/socket, não localStorage isolado.
-  document.addEventListener('submit', event => {
-    const form = event.target.closest?.('#od1902-chat-form, #od1901-chat-form');
-    if (!form) return;
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    const input = form.querySelector('input, textarea') || $('od1902-chat-input') || $('od1901-chat-input');
-    const text = String(input?.value || '').trim();
-    if (!text) return;
-    joinRoom(true);
-    if (typeof addChat === 'function') addChat(text, 'msg');
-    if (input) input.value = '';
-    setTimeout(() => loadLiveState('chat-submit', true), 160);
-  }, true);
-
-  document.addEventListener('click', event => {
-    const removeChar = event.target.closest?.('[data-od1905-remove-character]');
-    if (removeChar) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      return masterRemoveCharacter(removeChar.dataset.od1905RemoveCharacter);
-    }
-
-    const removePlayer = event.target.closest?.('[data-od1905-remove-player]');
-    if (removePlayer) {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      return masterRemovePlayer(removePlayer.dataset.od1905RemovePlayer);
-    }
-
-    const tab = event.target.closest?.('[data-od1902-tab], [data-od1901-manager-tab], [data-enter-campaign]');
-    if (tab) {
-      setTimeout(() => { joinRoom(true); loadLiveState('tab', true); }, 120);
-    }
-  }, true);
-
-  // Regras finais de jogador: só própria ficha / própria iniciativa / uma ficha por campanha.
-  document.addEventListener('click', event => {
-    const open = event.target.closest?.('[data-od1902-open-sheet], [data-od1901-open-sheet]');
-    if (open && !isMaster()) {
-      const requested = open.dataset.od1902OpenSheet || open.dataset.od1901OpenSheet;
-      const own = ownMember()?.characterId;
-      if (String(requested) !== String(own)) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        return alert('Jogador só pode abrir a própria ficha nesta campanha.');
-      }
-    }
-
-    const roll = event.target.closest?.('[data-od1902-roll-init], [data-od1901-roll-init]');
-    if (roll && !isMaster()) {
-      const memberId = roll.dataset.od1902RollInit || roll.dataset.od1901RollInit;
-      const target = memberById(memberId);
-      if (String(target?.userId) !== String(currentUser?.id)) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        return alert('Jogador só pode rolar iniciativa da própria ficha.');
-      }
-    }
-  }, true);
-
-  if (typeof openChooseCharacterModal === 'function' && !openChooseCharacterModal.__od1905OneSheet) {
-    const base = openChooseCharacterModal;
-    openChooseCharacterModal = function od1905OpenChooseCharacterModal(campaignId = tableId()){
-      const member = ownMember(campaignId);
-      if (member?.characterId && !isMaster(member)) {
-        alert('Jogador só pode adicionar uma ficha por campanha. Para trocar, peça ao mestre para remover a ficha atual ou desvincule a sua ficha.');
-        return;
-      }
-      return base.apply(this, arguments);
-    };
-    openChooseCharacterModal.__od1905OneSheet = true;
-  }
-
-  // Enviar mudanças de ficha com menos espera quando estiver em campanha.
-  if (typeof saveCurrentCharacter === 'function' && !saveCurrentCharacter.__od1905LiveSave) {
-    const baseSave = saveCurrentCharacter;
-    saveCurrentCharacter = function od1905SaveCurrentCharacter(){
-      const result = baseSave.apply(this, arguments);
-      const char = typeof currentChar === 'function' ? currentChar() : null;
-      if (char?.id && currentCampaignId && typeof od44SaveCharacterOnline === 'function') {
-        setTimeout(() => od44SaveCharacterOnline(char).then(() => loadLiveState('own-save', false)).catch(() => {}), 120);
-      }
-      return result;
-    };
-    saveCurrentCharacter.__od1905LiveSave = true;
-  }
-
-  // Ao renderizar, ajeita botões e presença sem mexer na estrutura antiga.
-  const api1902 = window.od1902CampaignAndHubHotfix;
-  if (api1902?.renderManager && !api1902.renderManager.__od1905Patch) {
-    const baseRender = api1902.renderManager;
-    api1902.renderManager = function od1905RenderManager(){
-      const result = baseRender.apply(this, arguments);
-      patchMasterButtons();
-      patchOnlineBadges();
-      joinRoom(true);
-      return result;
-    };
-    api1902.renderManager.__od1905Patch = true;
-  }
-
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden) {
-      joinRoom(true);
-      loadLiveState('visible', true);
-    }
-  });
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => { ensureSocket(); joinRoom(true); startLiveLoop(); loadLiveState('boot', true); }, { once: true });
-  } else {
-    ensureSocket(); joinRoom(true); startLiveLoop(); loadLiveState('boot', true);
-  }
-
-  setTimeout(() => { ensureSocket(); joinRoom(true); loadLiveState('late-boot', true); }, 600);
-  setTimeout(() => { patchMasterButtons(); patchOnlineBadges(); }, 1100);
-
-  window.od1905LiveCampaignCore = { loadLiveState, joinRoom, masterRemoveCharacter, masterRemovePlayer, patchOnlineBadges, patchMasterButtons };
-})();
-
-
-/* =========================
-   V191 - Gerenciador de Campanha redesenhado
-   Novo layout interno da campanha: Visão Geral, Personagens, Combate,
-   Jogadores, Chat e Escudo do Mestre. Sem Atlas/Mundo.
-========================= */
-(function od191CampaignManagerRedesign(){
-  'use strict';
-  if (window.__od191CampaignManagerRedesignInstalled) return;
-  window.__od191CampaignManagerRedesignInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
-
-  const baseInitApp = typeof initApp === 'function' ? initApp : null;
-  const baseShowSessions = typeof showSessions === 'function' ? showSessions : null;
-  const previousApi1902 = window.od1902CampaignAndHubHotfix || {};
-  const previousApi1901 = window.od1901CampaignManager || {};
-  const TABS = ['visao', 'personagens', 'combate', 'jogadores', 'chat', 'escudo'];
-
-  function $(id){ return document.getElementById(id); }
-  function safe(fn, fallback = null){ try { return fn(); } catch (_) { return fallback; } }
-  function esc(value){ try { return escapeHtml(value ?? ''); } catch (_) { return String(value ?? ''); } }
-  function num(value, fallback = 0){
-    const n = Number(String(value ?? '').replace(',', '.').replace(/[^\d.-]/g, ''));
-    return Number.isFinite(n) ? n : fallback;
-  }
-  function uidLabel(value){ return String(value || '').trim(); }
-  function allCampaigns(){ return typeof getCampaigns === 'function' ? getCampaigns() : []; }
-  function allMembers(){ return typeof getMembers === 'function' ? getMembers() : []; }
-  function allUsers(){ return typeof get === 'function' ? get(STORAGE.users, []) : []; }
-  function allChars(){ return typeof get === 'function' ? get(STORAGE.characters, []) : []; }
-  function campaignById(id){ return allCampaigns().find(c => String(c.id) === String(id)); }
-  function currentCampaign(){ return campaignById(currentCampaignId); }
-  function campaignMembers(id = currentCampaignId){ return allMembers().filter(m => String(m.campaignId) === String(id)); }
-  function userById(id){ return allUsers().find(u => String(u.id) === String(id)); }
-  function charById(id){ return allChars().find(c => String(c.id) === String(id)); }
-  function memberChar(member){ return charById(member?.characterId); }
-  function ownMember(id = currentCampaignId){ return campaignMembers(id).find(m => String(m.userId) === String(currentUser?.id)); }
-  function roleOf(member){ return String(member?.role || '').toLowerCase(); }
-  function isMaster(member = ownMember()){ return ['mestre','master','mestre_jogador','master_player'].includes(roleOf(member)); }
-  function roleLabel(member){
-    const role = roleOf(member);
-    if (role.includes('mestre') || role.includes('master')) return role.includes('jogador') || role.includes('player') ? 'Mestre/Jogador' : 'Mestre';
-    return 'Jogador';
-  }
-  function userName(userOrMember){
-    const user = userOrMember?.userId ? userById(userOrMember.userId) : userOrMember;
-    return typeof userDisplayName === 'function' ? userDisplayName(user || { id: userOrMember?.userId }) : (user?.name || user?.nick || user?.login || 'Jogador');
-  }
-  function userImage(user, char){
-    return char?.portrait || user?.avatar || user?.avatarUrl || user?.photo || user?.image || user?.portrait || user?.profileImage || 'assets/logo.jpg';
-  }
-  function onlineMap(id = currentCampaignId){
-    return (window.od1905OnlineUsers || window.od1904OnlineUsers || {})[String(id)] || {};
-  }
-  function online(member){
-    if (!member) return false;
-    if (String(member.userId) === String(currentUser?.id)) return true;
-    return !!onlineMap()[String(member.userId)];
-  }
-  function dateLabel(member){
-    const raw = member?.joinedAt || member?.createdAt || member?.at || '';
-    if (!raw) return 'Entrada não registrada';
-    try { return new Date(raw).toLocaleDateString('pt-BR'); } catch (_) { return String(raw); }
-  }
-  function managerKey(id = currentCampaignId){ return `od191_manager_tab_${id || 'none'}`; }
-  function activeTab(){
-    const tab = localStorage.getItem(managerKey()) || 'visao';
-    const clean = TABS.includes(tab) ? tab : 'visao';
-    return clean === 'escudo' && !isMaster() ? 'visao' : clean;
-  }
-  function setTab(tab){
-    localStorage.setItem(managerKey(), TABS.includes(tab) ? tab : 'visao');
-    renderManager();
-  }
-  function setManagerMode(on){
-    document.body.classList.toggle('od1901-campaign-manager-mode', !!on);
-    document.body.classList.toggle('od1902-campaign-manager-mode', !!on);
-    document.body.classList.toggle('od191-campaign-manager-mode', !!on);
-    if (!on) $('od1901-campaign-manager')?.remove();
-  }
-  function ensureShell(){
-    const app = $('app-screen');
-    if (!app) return null;
-    let shell = $('od1901-campaign-manager');
-    if (!shell) {
-      shell = document.createElement('section');
-      shell.id = 'od1901-campaign-manager';
-      app.appendChild(shell);
-    }
-    shell.className = 'od191-manager';
-    return shell;
-  }
-  function hasMembership(id){
-    return campaignMembers(id).some(m => String(m.userId) === String(currentUser?.id));
-  }
-  function openManager(campaignId = currentCampaignId, tab = null){
-    const member = ownMember(campaignId);
-    if (!member) return alert('Você não faz parte desta campanha.');
-    currentCampaignId = campaignId;
-    accountSheetMode = false;
-    localStorage.setItem(STORAGE.activeCampaign, JSON.stringify(campaignId));
-    if (tab) localStorage.setItem(managerKey(campaignId), tab);
-    showApp();
-    setManagerMode(true);
-    renderManager();
-    safe(() => window.od1905LiveCampaignCore?.joinRoom?.(true), null);
-    safe(() => window.od1905LiveCampaignCore?.loadLiveState?.('od191-open', true), null);
-  }
-  function showHub(){
-    setManagerMode(false);
-    return baseShowSessions?.();
-  }
-  function openSheet(charId){
-    if (!charId) return;
-    if (previousApi1902?.openSheet) return previousApi1902.openSheet(charId);
-    if (previousApi1901?.openSheet) return previousApi1901.openSheet(charId);
-    setManagerMode(false);
-    currentCharacterId = charId;
-    safe(() => loadCharacter(charId), null);
-  }
-  function copyCode(code){
-    const clean = String(code || '');
-    navigator.clipboard?.writeText(clean).then(() => alert('Código copiado.')).catch(() => prompt('Copie o código:', clean));
-  }
-  function editCampaign(){
-    if (!isMaster()) return;
-    const fake = document.createElement('button');
-    fake.type = 'button';
-    fake.dataset.od86EditCampaign = String(currentCampaignId || '');
-    fake.hidden = true;
-    document.body.appendChild(fake);
-    fake.click();
-    fake.remove();
-  }
-  function addCharacters(){
-    return safe(() => openChooseCharacterModal(currentCampaignId), alert('Não foi possível abrir o vínculo de personagens.'));
-  }
-  function openObs(charId){
-    if (!charId) return;
-    const url = `${location.origin}/obs/personagem/${encodeURIComponent(charId)}?modo=card`;
-    window.open(url, '_blank', 'noopener,noreferrer');
-    navigator.clipboard?.writeText(url).catch(() => {});
-  }
-  function rollInitiative(memberId){
-    if (previousApi1902?.rollInitiative) return previousApi1902.rollInitiative(memberId);
-    if (previousApi1901?.rollInitiative) return previousApi1901.rollInitiative(memberId);
-    const btn = document.createElement('button');
-    btn.dataset.od1902RollInit = memberId;
-    btn.hidden = true;
-    document.body.appendChild(btn);
-    btn.click();
-    btn.remove();
-  }
-  function combatState(){
-    return safe(() => typeof getInitiativeState === 'function' ? getInitiativeState() : get(v35InitiativeKey(), { active: false, round: 1, entries: [] }), { active: false, round: 1, entries: [] });
-  }
-  function hpPct(cur, max){
-    const m = Math.max(0, num(max, 0));
-    return m ? Math.max(0, Math.min(100, (num(cur, 0) / m) * 100)) : 0;
-  }
-  function chatMessages(){
-    return safe(() => get(campaignChatKey(), []), []);
-  }
-  function tabButtons(tab, master){
-    const list = [
-      ['visao','Visão Geral','◈'],
-      ['personagens','Personagens','♟'],
-      ['combate','Combate','⚔'],
-      ['jogadores','Jogadores','●'],
-      ['chat','Chat','✦']
-    ];
-    if (master) list.push(['escudo','Escudo','⬟']);
-    return list.map(([key, label, icon]) => `<button type="button" class="${tab === key ? 'active' : ''}" data-od191-tab="${key}" data-od1902-tab="${key}"><span>${icon}</span>${label}</button>`).join('');
-  }
-  function cover(campaign){
-    return campaign?.cover || campaign?.coverUrl || campaign?.image || campaign?.logo || campaign?.banner || 'assets/logo.jpg';
-  }
-  function hero(campaign, member, tab){
-    const members = campaignMembers();
-    const linked = members.filter(m => m.characterId).length;
-    const onlineCount = members.filter(online).length;
-    const master = isMaster(member);
-    const desc = campaign.description || campaign.summary || campaign.lore || 'Mesa pronta para personagens, combate, chat e escudo do mestre.';
-    return `
-      <header class="od191-hero">
-        <div class="od191-hero-bg"><img src="${esc(cover(campaign))}" alt=""></div>
-        <div class="od191-hero-top">
-          <button type="button" class="od191-back" data-od191-back>← Voltar</button>
-          <div class="od191-hero-actions">
-            ${master ? `<button type="button" class="primary" data-od191-add>Adicionar Personagens</button><button type="button" data-od191-edit>Editar Campanha</button>` : ''}
-            <button type="button" data-od191-copy="${esc(campaign.code || '')}">Copiar Código</button>
-          </div>
-        </div>
-        <div class="od191-hero-main">
-          <div class="od191-campaign-cover"><img src="${esc(cover(campaign))}" alt=""></div>
-          <div class="od191-title-block">
-            <p class="od191-kicker">Gerenciador de Campanha</p>
-            <h1>${esc(campaign.name || 'Campanha')}</h1>
-            <p class="od191-description">${esc(desc)}</p>
-            <div class="od191-tags">
-              <span>${esc(roleLabel(member))}</span>
-              <span>${members.length} jogador${members.length === 1 ? '' : 'es'}</span>
-              <span>${linked} ficha${linked === 1 ? '' : 's'}</span>
-              <span>${onlineCount} online</span>
-              <span>Sistema ${esc(campaign.systemType || campaign.systemModel || campaign.model || 'D20')}</span>
-            </div>
-          </div>
-          <aside class="od191-code-card">
-            <small>Código da mesa</small>
-            <strong>${esc(campaign.code || '-----')}</strong>
-            <button type="button" data-od191-copy="${esc(campaign.code || '')}">copiar</button>
-          </aside>
-        </div>
-        <nav class="od191-tabs">${tabButtons(tab, master)}</nav>
-      </header>`;
-  }
-  function statusCards(campaign){
-    const members = campaignMembers();
-    const linked = members.filter(m => m.characterId);
-    const onlineCount = members.filter(online).length;
-    const state = combatState();
-    const messages = chatMessages();
-    return `
-      <section class="od191-status-grid">
-        <article><small>Jogadores</small><strong>${members.length}</strong><span>${onlineCount} online agora</span></article>
-        <article><small>Fichas vinculadas</small><strong>${linked.length}</strong><span>${linked.length ? 'prontas para mesa' : 'nenhuma ficha'}</span></article>
-        <article><small>Combate</small><strong>${state.active ? 'Ativo' : 'Livre'}</strong><span>${(state.entries || []).length} na iniciativa</span></article>
-        <article><small>Chat</small><strong>${messages.length}</strong><span>mensagens carregadas</span></article>
-      </section>`;
-  }
-  function renderOverview(campaign){
-    const members = campaignMembers();
-    const linked = members.map(m => ({ member: m, char: memberChar(m), user: userById(m.userId) })).filter(x => x.char).slice(0, 4);
-    const players = members.slice(0, 5);
-    const state = combatState();
-    return `
-      ${statusCards(campaign)}
-      <section class="od191-overview-grid">
-        <article class="od191-panel od191-feature">
-          <div class="od191-panel-head"><div><h2>Entrada da Mesa</h2><p>Resumo rápido para mestre e jogadores.</p></div></div>
-          <div class="od191-feature-body">
-            <h3>${esc(campaign.name || 'Campanha')}</h3>
-            <p>${esc(campaign.description || campaign.summary || 'Sem descrição da campanha. Use Editar Campanha para criar o tom da aventura.')}</p>
-            <div class="od191-feature-actions">
-              <button type="button" class="primary" data-od191-tab="personagens">Ver personagens</button>
-              <button type="button" data-od191-tab="combate">Preparar combate</button>
-              <button type="button" data-od191-tab="chat">Abrir chat</button>
-            </div>
-          </div>
-        </article>
-        <article class="od191-panel">
-          <div class="od191-panel-head"><div><h2>Personagens recentes</h2><p>Fichas prontas para entrar em cena.</p></div></div>
-          <div class="od191-mini-list">
-            ${linked.length ? linked.map(({member, char, user}) => `
-              <div class="od191-mini-character">
-                <img src="${esc(char.portrait || 'assets/logo.jpg')}" alt="">
-                <div><strong>${esc(char.name || 'Personagem')}</strong><small>${esc(userName(user))} • Nv. ${esc(char.level || 1)}</small></div>
-                <button type="button" data-od191-open-sheet="${esc(char.id)}" data-od1902-open-sheet="${esc(char.id)}">Ficha</button>
-              </div>`).join('') : '<div class="od191-empty">Nenhuma ficha vinculada à mesa.</div>'}
-          </div>
-        </article>
-        <article class="od191-panel">
-          <div class="od191-panel-head"><div><h2>Mesa ao vivo</h2><p>Estado do grupo conectado.</p></div></div>
-          <div class="od191-live-stack">
-            ${players.length ? players.map(member => {
-              const user = userById(member.userId);
-              const char = memberChar(member);
-              const isOn = online(member);
-              return `<div class="od191-live-row">
-                <img src="${esc(userImage(user, char))}" alt="">
-                <div><strong>${esc(userName(user))}</strong><small>${esc(roleLabel(member))}${char ? ' • ' + esc(char.name) : ' • sem ficha'}</small></div>
-                <span class="${isOn ? 'online' : 'offline'}">${isOn ? 'Online' : 'Offline'}</span>
-              </div>`;
-            }).join('') : '<div class="od191-empty">Nenhum jogador vinculado.</div>'}
-          </div>
-        </article>
-        <article class="od191-panel">
-          <div class="od191-panel-head"><div><h2>Combate</h2><p>Ordem atual da iniciativa.</p></div></div>
-          <div class="od191-turn-preview">
-            ${(state.entries || []).length ? state.entries.slice().sort((a,b)=>Number(b.value||0)-Number(a.value||0)).slice(0,5).map((e,i)=>`<div><b>#${i+1}</b><span>${esc(e.name)}</span><strong>${esc(e.value)}</strong></div>`).join('') : '<div class="od191-empty">Nenhuma iniciativa rolada.</div>'}
-          </div>
-        </article>
-      </section>`;
-  }
-  function renderCharacters(){
-    const master = isMaster();
-    const items = campaignMembers().map(member => ({ member, char: memberChar(member), user: userById(member.userId) })).filter(x => !!x.char);
-    if (!items.length) {
-      return `<section class="od191-panel od191-full"><div class="od191-panel-head"><div><h2>Personagens da Campanha</h2><p>Nenhuma ficha vinculada à mesa.</p></div>${master ? '<button type="button" class="primary" data-od191-add>Adicionar Personagens</button>' : ''}</div><div class="od191-empty large">Nenhuma ficha vinculada à mesa.</div></section>`;
-    }
-    return `<section class="od191-panel od191-full">
-      <div class="od191-panel-head"><div><h2>Personagens da Campanha</h2><p>Fichas, jogadores, entrada e ações da mesa.</p></div>${master ? '<button type="button" class="primary" data-od191-add>Adicionar Personagens</button>' : ''}</div>
-      <div class="od191-character-list">
-        ${items.map(({member, char, user}) => {
-          const mine = String(member.userId) === String(currentUser?.id);
-          const pvCur = num(char.pvCurrent, 0), pvMax = num(char.pvMax, 0);
-          const peCur = num(char.peCurrent, 0), peMax = num(char.peMax, 0);
-          return `<article class="od1901-character-row od1902-character-row od191-character-card">
-            <img src="${esc(char.portrait || 'assets/logo.jpg')}" alt="">
-            <div class="od191-character-main">
-              <div class="od191-card-kicker">${esc(userName(user))} • ${esc(dateLabel(member))}</div>
-              <h3>${esc(char.name || 'Personagem')}</h3>
-              <p>${esc(char.race || 'Raça')} • ${esc(char.className || 'Classe')} • Nv. ${esc(char.level || 1)}</p>
-              <div class="od191-bars">
-                <label>PV <span>${esc(pvCur)} / ${esc(pvMax)}</span><i><b style="width:${hpPct(pvCur,pvMax)}%"></b></i></label>
-                <label>PE <span>${esc(peCur)} / ${esc(peMax)}</span><i><b style="width:${hpPct(peCur,peMax)}%"></b></i></label>
-              </div>
-            </div>
-            <div class="od1901-character-actions od191-character-actions">
-              ${(master || mine) ? `<button type="button" class="primary" data-od191-open-sheet="${esc(char.id)}" data-od1902-open-sheet="${esc(char.id)}">Acessar Ficha</button>` : ''}
-              ${master ? `<button type="button" data-od191-open-obs="${esc(char.id)}">OBS</button><button type="button" data-od1905-remove-character="${esc(member.id)}">Remover Ficha</button>` : ''}
-              ${master && !mine ? `<button type="button" class="danger" data-od1905-remove-player="${esc(member.id)}">Remover Jogador</button>` : ''}
-            </div>
-          </article>`;
-        }).join('')}
-      </div>
-    </section>`;
-  }
-  function renderCombat(){
-    const master = isMaster();
-    const members = campaignMembers().filter(m => memberChar(m));
-    const state = combatState();
-    const entries = [...(state.entries || [])].sort((a,b) => Number(b.value || 0) - Number(a.value || 0));
-    return `<section class="od191-combat-layout">
-      <article class="od191-panel">
-        <div class="od191-panel-head"><div><h2>Preparação de Combate</h2><p>Jogadores rolam iniciativa e a ordem é atualizada ao vivo.</p></div><div class="od191-actions">${master ? `<button type="button" class="primary" data-od1902-toggle-combat>${state.active ? 'Encerrar Combate' : 'Iniciar Combate'}</button><button type="button" data-od1902-clear-init>Limpar Ordem</button>` : ''}</div></div>
-        <div class="od191-combat-participants">
-          ${members.length ? members.map(member => {
-            const char = memberChar(member);
-            const user = userById(member.userId);
-            const canRoll = master || String(member.userId) === String(currentUser?.id);
-            return `<div class="od191-combat-person">
-              <img src="${esc(char.portrait || 'assets/logo.jpg')}" alt="">
-              <div><strong>${esc(char.name || 'Personagem')}</strong><small>${esc(userName(user))} • AGI ${esc(char.attrs?.agilidade ?? 10)}</small></div>
-              <button type="button" ${canRoll ? '' : 'disabled'} data-od191-roll-init="${esc(member.id)}" data-od1902-roll-init="${esc(member.id)}">Iniciativa</button>
-            </div>`;
-          }).join('') : '<div class="od191-empty">Nenhuma ficha vinculada à mesa.</div>'}
-        </div>
-      </article>
-      <article class="od191-panel od191-turn-panel">
-        <div class="od191-panel-head"><div><h2>Ordem de Turno</h2><p>${state.active ? 'Combate ativo' : 'Combate ainda livre'}.</p></div></div>
-        <div class="od191-turn-list">
-          ${entries.length ? entries.map((entry, index) => `<div class="od191-turn-row"><b>#${index + 1}</b><div><strong>${esc(entry.name)}</strong><small>${esc(entry.playerName || '')}</small></div><span>${esc(entry.value)}</span></div>`).join('') : '<div class="od191-empty">Aguardando rolagens de iniciativa.</div>'}
-        </div>
-      </article>
-    </section>`;
-  }
-  function renderPlayers(){
-    const members = campaignMembers();
-    return `<section class="od191-panel od191-full">
-      <div class="od191-panel-head"><div><h2>Jogadores</h2><p>Contas vinculadas, função, ficha e presença ao vivo.</p></div></div>
-      <div class="od191-player-grid">
-        ${members.length ? members.map(member => {
-          const user = userById(member.userId);
-          const char = memberChar(member);
-          const isOn = online(member);
-          return `<article class="od1901-player-row od1902-player-row od191-player-card">
-            <img src="${esc(userImage(user, char))}" alt="">
-            <div>
-              <strong>${esc(userName(user))}</strong>
-              <small>${esc(roleLabel(member))} • ${esc(dateLabel(member))}</small>
-              <p>${char ? esc(char.name || 'Ficha vinculada') : 'Sem ficha vinculada'}</p>
-            </div>
-            <span class="${isOn ? 'online' : 'offline'}">${isOn ? 'Online agora' : 'Offline'}</span>
-          </article>`;
-        }).join('') : '<div class="od191-empty">Nenhum jogador vinculado.</div>'}
-      </div>
-    </section>`;
-  }
-  function renderChat(){
-    const msgs = chatMessages();
-    return `<section class="od191-chat-layout">
-      <article class="od191-panel od191-chat-main">
-        <div class="od191-panel-head"><div><h2>Chat ao Vivo</h2><p>Mensagens e rolagens da campanha em tempo real.</p></div></div>
-        <div id="od1902-chat-log" class="od1901-chat-log od191-chat-log">
-          ${msgs.length ? msgs.map(msg => `<div class="od1901-chat-msg od191-chat-msg ${msg.type === 'roll' ? 'roll' : ''}"><small>${esc(msg.user || msg.author || 'Mesa')} • ${esc(msg.at || msg.createdAt || '')}</small><p>${esc(msg.text || msg.content || '')}</p></div>`).join('') : '<div class="od191-empty">Nenhuma mensagem ainda.</div>'}
-        </div>
-        <form id="od1902-chat-form" class="od1901-chat-form od191-chat-form"><input id="od1902-chat-input" placeholder="Mensagem para a campanha..." autocomplete="off"><button type="submit">Enviar</button></form>
-      </article>
-      <aside class="od191-panel od191-chat-side">
-        <h2>Mesa conectada</h2>
-        <p>Use o chat para conversa, aviso de mestre e logs de rolagem.</p>
-        ${campaignMembers().map(member => `<div class="od191-chat-online"><span class="${online(member) ? 'online' : 'offline'}"></span>${esc(userName(userById(member.userId)))}</div>`).join('')}
-      </aside>
-    </section>`;
-  }
-  function renderShield(){
-    if (!isMaster()) return '<section class="od191-panel"><div class="od191-empty">Escudo disponível apenas para o mestre.</div></section>';
-    const items = campaignMembers().map(member => ({ member, char: memberChar(member), user: userById(member.userId) })).filter(x => x.char);
-    return `<section class="od191-panel od191-full">
-      <div class="od191-panel-head"><div><h2>Escudo do Mestre</h2><p>PV, PE e ações rápidas sem abrir todas as fichas.</p></div></div>
-      <div class="od191-shield-grid">
-        ${items.length ? items.map(({member, char, user}) => {
-          const pvCur = num(char.pvCurrent, 0), pvMax = num(char.pvMax, 0);
-          const peCur = num(char.peCurrent, 0), peMax = num(char.peMax, 0);
-          return `<article class="od191-shield-card">
-            <img src="${esc(char.portrait || 'assets/logo.jpg')}" alt="">
-            <div class="od191-shield-info">
-              <h3>${esc(char.name || 'Personagem')}</h3>
-              <small>${esc(userName(user))}</small>
-              <label>PV <span>${esc(pvCur)} / ${esc(pvMax)}</span><i><b style="width:${hpPct(pvCur,pvMax)}%"></b></i></label>
-              <label>PE <span>${esc(peCur)} / ${esc(peMax)}</span><i><b style="width:${hpPct(peCur,peMax)}%"></b></i></label>
-            </div>
-            <button type="button" data-od191-open-sheet="${esc(char.id)}" data-od1902-open-sheet="${esc(char.id)}">Ficha</button>
-          </article>`;
-        }).join('') : '<div class="od191-empty">Nenhuma ficha vinculada à mesa.</div>'}
-      </div>
-    </section>`;
-  }
-  function renderContent(tab, campaign){
-    if (tab === 'personagens') return renderCharacters();
-    if (tab === 'combate') return renderCombat();
-    if (tab === 'jogadores') return renderPlayers();
-    if (tab === 'chat') return renderChat();
-    if (tab === 'escudo') return renderShield();
-    return renderOverview(campaign);
-  }
-  function renderManager(){
-    const shell = ensureShell();
-    const campaign = currentCampaign();
-    const member = ownMember();
-    if (!shell || !campaign || !member) return;
-    setManagerMode(true);
-    const tab = activeTab();
-    shell.innerHTML = `${hero(campaign, member, tab)}<main class="od191-content">${renderContent(tab, campaign)}</main>`;
-    const chat = $('od1902-chat-log');
-    if (chat) chat.scrollTop = chat.scrollHeight;
-    safe(() => window.od1905LiveCampaignCore?.patchOnlineBadges?.(), null);
-    safe(() => window.od1905LiveCampaignCore?.patchMasterButtons?.(), null);
-  }
-
-  // Compatibilidade: o núcleo ao vivo v1.90.5 chama estas APIs para renderizar.
-  window.od191CampaignManager = { openManager, renderManager, setTab, openSheet, rollInitiative };
-  window.od1902CampaignAndHubHotfix = { ...previousApi1902, openManager, renderManager, openSheet, rollInitiative };
-  window.od1901CampaignManager = { ...previousApi1901, openManager, renderManager, openSheet, rollInitiative };
-
-  enterCampaign = function od191EnterCampaign(campaignId){
-    return openManager(campaignId || currentCampaignId);
-  };
-
-  initApp = function od191InitApp(campaignId = currentCampaignId){
-    if (window.__od1901OpeningLegacySheet || window.__od1902OpeningLegacySheet || accountSheetMode) return baseInitApp?.(campaignId);
-    if (campaignId && hasMembership(campaignId)) return openManager(campaignId);
-    return baseInitApp?.(campaignId);
-  };
-
-  showSessions = function od191ShowSessions(){
-    setManagerMode(false);
-    return baseShowSessions?.();
-  };
-
-  document.addEventListener('click', event => {
-    const tab = event.target.closest?.('[data-od191-tab]');
-    if (tab) { event.preventDefault(); event.stopImmediatePropagation(); return setTab(tab.dataset.od191Tab); }
-
-    const back = event.target.closest?.('[data-od191-back]');
-    if (back) { event.preventDefault(); event.stopImmediatePropagation(); return showHub(); }
-
-    const add = event.target.closest?.('[data-od191-add]');
-    if (add) { event.preventDefault(); event.stopImmediatePropagation(); return addCharacters(); }
-
-    const edit = event.target.closest?.('[data-od191-edit]');
-    if (edit) { event.preventDefault(); event.stopImmediatePropagation(); return editCampaign(); }
-
-    const copy = event.target.closest?.('[data-od191-copy]');
-    if (copy) { event.preventDefault(); event.stopImmediatePropagation(); return copyCode(copy.dataset.od191Copy); }
-
-    const open = event.target.closest?.('[data-od191-open-sheet]');
-    if (open) { event.preventDefault(); event.stopImmediatePropagation(); return openSheet(open.dataset.od191OpenSheet); }
-
-    const obs = event.target.closest?.('[data-od191-open-obs]');
-    if (obs) { event.preventDefault(); event.stopImmediatePropagation(); return openObs(obs.dataset.od191OpenObs); }
-
-    const init = event.target.closest?.('[data-od191-roll-init]');
-    if (init) { event.preventDefault(); event.stopImmediatePropagation(); return rollInitiative(init.dataset.od191RollInit); }
-  }, true);
-
-  document.addEventListener('visibilitychange', () => {
-    if (!document.hidden && document.body.classList.contains('od191-campaign-manager-mode')) {
-      safe(() => window.od1905LiveCampaignCore?.joinRoom?.(true), null);
-      safe(() => window.od1905LiveCampaignCore?.loadLiveState?.('od191-visible', true), null);
-      renderManager();
-    }
-  });
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      const active = safe(() => JSON.parse(localStorage.getItem(STORAGE.activeCampaign) || 'null'), null);
-      if (active && hasMembership(active)) setTimeout(() => openManager(active), 220);
-    }, { once: true });
-  } else {
-    const active = safe(() => JSON.parse(localStorage.getItem(STORAGE.activeCampaign) || 'null'), null);
-    if (active && hasMembership(active)) setTimeout(() => openManager(active), 220);
-  }
-})();
-
+/* V195: blocos funcionais antigos de campanha V190-V191 removidos da camada ativa.
+   O gerenciador moderno começa em V192 e os aliases de compatibilidade são recriados pelo núcleo V195. */
 
 /* =========================
    V192 - Combate completo
@@ -23557,7 +21289,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od192CompleteCombatManagerInstalled) return;
   window.__od192CompleteCombatManagerInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const previous191 = window.od191CampaignManager || {};
   const previous1902 = window.od1902CampaignAndHubHotfix || {};
@@ -23802,7 +21534,7 @@ function od66InventoryMutationUnlockSoon() {
     state.round = Math.max(1, n(state.round, 1) + delta);
     saveCombatState(state, `Rodada ajustada para ${state.round}.`);
   }
-  function applyResource(characterId, field, delta){
+  async function applyResource(characterId, field, delta){
     if (!isMaster()) return;
     const char = charById(characterId);
     if (!char) return;
@@ -23810,13 +21542,34 @@ function od66InventoryMutationUnlockSoon() {
     const maxKey = field === 'pe' ? 'peMax' : 'pvMax';
     const before = n(char[key], 0);
     const max = Math.max(0, n(char[maxKey], 0));
-    char[key] = Math.max(0, max ? Math.min(max, before + delta) : before + delta);
-    if (typeof updateChar === 'function') safe(() => updateChar(saved => { if (String(saved.id) === String(char.id)) saved[key] = char[key]; }), null);
-    safe(() => typeof set === 'function' && set(STORAGE.characters, allChars().map(c => String(c.id) === String(char.id) ? char : c)), null);
-    if (typeof od44SaveCharacterOnline === 'function') safe(() => od44SaveCharacterOnline(char), null);
-    safe(() => addChat(`[Mestre] ${char.name || 'Personagem'} ${field.toUpperCase()} ${delta > 0 ? '+' : ''}${delta}. Atual: ${char[key]}/${max || '?'}.`, 'roll'), null);
-    safe(() => window.od1905LiveCampaignCore?.loadLiveState?.('resource', true), null);
+    const nextValue = Math.max(0, max ? Math.min(max, before + delta) : before + delta);
+    const next = { ...char, [key]: nextValue, _od1942LocalEditedAt: Date.now(), _saveSourceVersion: '1.94.3-master-resource' };
+
+    // Atualiza local imediatamente para o mestre ver o resultado sem esperar rede.
+    safe(() => typeof set === 'function' && set(STORAGE.characters, allChars().map(c => String(c.id) === String(next.id) ? next : c)), null);
+    safe(() => addChat(`[Mestre] ${next.name || 'Personagem'} ${field.toUpperCase()} ${delta > 0 ? '+' : ''}${delta}. Atual: ${next[key]}/${max || '?'}.`, 'roll'), null);
     renderManager();
+
+    try {
+      if (typeof od42Api === 'function' && typeof od42Token === 'function' && od42Token() && currentCampaignId) {
+        const data = await od42Api(`/api/tables/${encodeURIComponent(currentCampaignId)}/characters/${encodeURIComponent(next.id)}`, {
+          method: 'PUT',
+          body: JSON.stringify({ name: next.name || 'Ficha', data: next })
+        });
+        const row = data?.character;
+        if (row && typeof od42CharacterFromRow === 'function') {
+          const fresh = od42CharacterFromRow(row);
+          safe(() => typeof od42MergeById === 'function' && od42MergeById(STORAGE.characters, [fresh]), null);
+        }
+        safe(() => window.od1905LiveCampaignCore?.loadLiveState?.('resource-master-save', true), null);
+        safe(() => window.od1942StrongStabilityCore?.syncNow?.('resource-master-save'), null);
+      } else if (typeof od44SaveCharacterOnline === 'function') {
+        await od44SaveCharacterOnline(next);
+      }
+    } catch (error) {
+      console.warn('[One Dice v1.94.3] Falha ao salvar PV/PE pelo mestre:', error);
+      alert(error.message || 'Não foi possível salvar PV/PE no banco. Tente de novo.');
+    }
   }
   function promptResource(characterId, field, direction){
     const amount = n(prompt(`${direction < 0 ? 'Remover' : 'Adicionar'} quanto de ${field.toUpperCase()}?`, '1'), 0);
@@ -24019,7 +21772,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od193CompleteCampaignEditorInstalled) return;
   window.__od193CompleteCampaignEditorInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   let pendingCoverData = '';
   let pendingBannerData = '';
@@ -24304,8 +22057,8 @@ function od66InventoryMutationUnlockSoon() {
       }
       $('od193-campaign-editor')?.close();
       safe(() => window.od1905LiveCampaignCore?.loadLiveState?.('od193-save', true), null);
-      safe(() => window.od191CampaignManagerRedesign?.renderManager?.(), null);
-      safe(() => window.od192CombatComplete?.renderManager?.(), null);
+      safe(() => window.od191CampaignManager?.renderManager?.(), null);
+      safe(() => window.od192CompleteCombatManager?.renderManager?.(), null);
       safe(() => window.od193CompleteCampaignEditor?.decorateCampaign?.(), null);
       alert('Campanha salva.');
     } catch (error) {
@@ -24457,7 +22210,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od194OwlbearBasicIntegrationInstalled) return;
   window.__od194OwlbearBasicIntegrationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.94.0';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
 
   const OWLBEAR_HOME = 'https://www.owlbear.rodeo/';
   let injectedEditor = false;
@@ -24682,7 +22435,11 @@ function od66InventoryMutationUnlockSoon() {
   }
   function scheduleRender(){
     clearTimeout(window.__od194RenderTimer);
-    window.__od194RenderTimer = setTimeout(() => renderOwlbearCard(true), 80);
+    window.__od194RenderTimer = setTimeout(() => {
+      // v1.94.1: não forçar replace do card em toda mutação do DOM.
+      // O replace forçado criava loop de MutationObserver e travava a campanha depois de alguns segundos.
+      renderOwlbearCard(false);
+    }, 160);
   }
 
   document.addEventListener('click', event => {
@@ -24735,8 +22492,11 @@ function od66InventoryMutationUnlockSoon() {
   }, true);
 
   const observer = new MutationObserver(() => {
-    if ($('od1901-campaign-manager')) scheduleRender();
-    if ($('od193-campaign-editor')) fillEditorPanel();
+    // v1.94.1: observar somente quando faltar o card/botão, não em toda troca interna.
+    const manager = $('od1901-campaign-manager');
+    if (manager && (!$('od194-owlbear-card') || !manager.querySelector('[data-od194-hero-map]'))) scheduleRender();
+    const editor = $('od193-campaign-editor');
+    if (editor && !injectedEditor) fillEditorPanel();
   });
   observer.observe(document.body, { childList: true, subtree: true });
 
@@ -24746,4 +22506,1617 @@ function od66InventoryMutationUnlockSoon() {
   setTimeout(scheduleRender, 1200);
 
   window.od194OwlbearBasicIntegration = { renderOwlbearCard, saveOwlbear, openUrl, owlbearUrl };
+})();
+
+
+/* =========================
+   V194.1 - Estabilidade ao vivo, presença HTTP e Owlbear visível
+   Corrige loop de re-render, melhora online/offline, sincroniza PV/PE do mestre
+   e fixa botão do Owlbear no resumo e no combate.
+========================= */
+(function od1941LiveStabilityAndOwlbearFix(){
+  'use strict';
+  if (window.__od1941LiveStabilityAndOwlbearFixInstalled) return;
+  window.__od1941LiveStabilityAndOwlbearFixInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
+
+  const LIVE_MIN_MS = 2200;
+  const MESSAGE_MIN_MS = 1400;
+  const INIT_MIN_MS = 1400;
+  const PRESENCE_MS = 5000;
+  const RENDER_MIN_MS = 650;
+  const OWLBEAR_HOME = 'https://www.owlbear.rodeo/';
+
+  let lastPresenceAt = 0;
+  let presenceTimer = null;
+  let renderBusy = false;
+  let lastRenderAt = 0;
+  const lastApiAt = new Map();
+  const apiPending = new Map();
+
+  function $(id){ return document.getElementById(id); }
+  function safe(fn, fallback = null){ try { return fn(); } catch (_) { return fallback; } }
+  function campaigns(){ return typeof getCampaigns === 'function' ? getCampaigns() : []; }
+  function members(id = currentCampaignId){ return typeof getMembers === 'function' ? getMembers().filter(m => String(m.campaignId) === String(id)) : []; }
+  function users(){ return typeof get === 'function' ? get(STORAGE.users, []) : []; }
+  function userById(id){ return users().find(u => String(u.id) === String(id)); }
+  function userName(member){
+    const user = member?.userId ? userById(member.userId) : member;
+    return typeof userDisplayName === 'function' ? userDisplayName(user || { id: member?.userId }) : (user?.name || user?.nick || 'Jogador');
+  }
+  function tableId(){
+    const raw = currentCampaignId || localStorage.getItem(STORAGE.activeCampaign) || '';
+    return String(raw || '').replace(/^"|"$/g, '');
+  }
+  function campaign(){
+    const id = tableId();
+    return campaigns().find(c => String(c.id) === String(id));
+  }
+  function settingsOf(c){ return c?.settings && typeof c.settings === 'object' ? c.settings : {}; }
+  function normalizeUrl(value){
+    const url = String(value || '').trim();
+    if (!url) return '';
+    if (/^https?:\/\//i.test(url)) return url;
+    return `https://${url}`;
+  }
+  function owlbearUrl(){
+    const c = campaign();
+    const s = settingsOf(c);
+    return normalizeUrl(s.owlbearSceneUrl || s.owlbearUrl || s.owlbearRoomUrl || c?.owlbearSceneUrl || c?.owlbearUrl || '');
+  }
+  function isManager(){
+    return !!$('od1901-campaign-manager') && (
+      document.body.classList.contains('od1901-campaign-manager-mode') ||
+      document.body.classList.contains('od191-campaign-manager-mode') ||
+      document.body.classList.contains('od192-campaign-manager-mode')
+    );
+  }
+
+  function sameArray(a, b){
+    const aa = (a || []).map(String).sort().join('|');
+    const bb = (b || []).map(String).sort().join('|');
+    return aa === bb;
+  }
+  function setPresence(table, onlineUserIds){
+    const id = String(table || tableId());
+    if (!id) return false;
+    window.od1905OnlineUsers = window.od1905OnlineUsers || window.od1904OnlineUsers || {};
+    const old = Object.keys(window.od1905OnlineUsers[id] || {});
+    const map = {};
+    (onlineUserIds || []).forEach(userId => map[String(userId)] = true);
+    if (currentUser?.id && String(id) === String(tableId())) map[String(currentUser.id)] = true;
+    const changed = !sameArray(old, Object.keys(map));
+    window.od1905OnlineUsers[id] = map;
+    window.od1904OnlineUsers = window.od1905OnlineUsers;
+    return changed;
+  }
+  function patchOnlineRows(){
+    const id = tableId();
+    const onlineMap = (window.od1905OnlineUsers || window.od1904OnlineUsers || {})[String(id)] || {};
+    const list = members(id);
+    document.querySelectorAll('.od191-player-card, .od1901-player-row, .od1902-player-row').forEach(row => {
+      const label = (row.querySelector('strong')?.textContent || '').trim();
+      const badge = row.querySelector('.online, .offline');
+      if (!badge) return;
+      const member = list.find(m => userName(m) === label || String(userById(m.userId)?.nick || '') === label || String(userById(m.userId)?.name || '') === label);
+      const on = member ? !!onlineMap[String(member.userId)] || String(member.userId) === String(currentUser?.id) : false;
+      badge.classList.toggle('online', on);
+      badge.classList.toggle('offline', !on);
+      badge.textContent = on ? 'Online agora' : 'Offline';
+    });
+  }
+  function scheduleRender(force = false){
+    if (!isManager()) return;
+    const now = Date.now();
+    if (!force && now - lastRenderAt < RENDER_MIN_MS) {
+      clearTimeout(window.__od1941RenderTimer);
+      window.__od1941RenderTimer = setTimeout(() => scheduleRender(true), RENDER_MIN_MS);
+      return;
+    }
+    if (renderBusy) return;
+    renderBusy = true;
+    lastRenderAt = now;
+    try {
+      if (window.od192CompleteCombatManager?.renderManager) window.od192CompleteCombatManager.renderManager();
+      else if (window.od191CampaignManager?.renderManager) window.od191CampaignManager.renderManager();
+      else if (window.od1902CampaignAndHubHotfix?.renderManager) window.od1902CampaignAndHubHotfix.renderManager();
+      patchOnlineRows();
+      injectOwlbearButtons();
+    } catch (error) {
+      console.warn('[One Dice v1.94.1] Falha ao renderizar gerenciador:', error);
+    } finally {
+      renderBusy = false;
+    }
+  }
+
+  function wrapRenderApi(obj, name){
+    if (!obj || typeof obj.renderManager !== 'function' || obj.renderManager.__od1941Guard) return;
+    const base = obj.renderManager;
+    obj.renderManager = function od1941GuardedRender(){
+      if (renderBusy) return;
+      const now = Date.now();
+      if (now - lastRenderAt < 260) {
+        clearTimeout(window.__od1941RenderTimer);
+        window.__od1941RenderTimer = setTimeout(() => scheduleRender(true), 320);
+        return;
+      }
+      renderBusy = true;
+      lastRenderAt = now;
+      try {
+        const result = base.apply(this, arguments);
+        setTimeout(() => { patchOnlineRows(); injectOwlbearButtons(); }, 0);
+        return result;
+      } finally {
+        renderBusy = false;
+      }
+    };
+    obj.renderManager.__od1941Guard = true;
+  }
+
+  function throttleAsync(name, fn, minMs){
+    if (typeof fn !== 'function' || fn.__od1941Throttle) return fn;
+    const wrapped = function od1941Throttled(){
+      const key = `${name}:${Array.from(arguments).map(v => String(v)).join(':')}`;
+      const now = Date.now();
+      if (apiPending.has(key)) return apiPending.get(key);
+      const last = lastApiAt.get(key) || 0;
+      if (now - last < minMs && wrapped.__lastResult) return Promise.resolve(wrapped.__lastResult);
+      const promise = Promise.resolve(fn.apply(this, arguments))
+        .then(result => {
+          wrapped.__lastResult = result;
+          lastApiAt.set(key, Date.now());
+          return result;
+        })
+        .finally(() => apiPending.delete(key));
+      apiPending.set(key, promise);
+      return promise;
+    };
+    wrapped.__od1941Throttle = true;
+    return wrapped;
+  }
+
+  if (typeof od42LoadTableState === 'function') od42LoadTableState = throttleAsync('state', od42LoadTableState, LIVE_MIN_MS);
+  if (typeof od44LoadMessages === 'function') od44LoadMessages = throttleAsync('messages', od44LoadMessages, MESSAGE_MIN_MS);
+  if (typeof od44LoadInitiative === 'function') od44LoadInitiative = throttleAsync('initiative', od44LoadInitiative, INIT_MIN_MS);
+
+  if (typeof od44EnsureSocket === 'function' && !od44EnsureSocket.__od1941Wrapped) {
+    const baseEnsure = od44EnsureSocket;
+    od44EnsureSocket = function od1941EnsureSocket(){
+      const socket = baseEnsure.apply(this, arguments);
+      if (!socket || socket.__od1941EmitThrottle) return socket;
+      socket.__od1941EmitThrottle = true;
+      const baseEmit = socket.emit.bind(socket);
+      const lastEmit = {};
+      socket.emit = function od1941SocketEmit(eventName, payload){
+        if (['table:join', 'table:ping', 'presence:get'].includes(eventName)) {
+          const id = String(payload?.tableId || tableId());
+          const key = `${eventName}:${id}`;
+          const now = Date.now();
+          const wait = eventName === 'table:join' ? 6000 : (eventName === 'table:ping' ? 8000 : 4500);
+          if (lastEmit[key] && now - lastEmit[key] < wait) return socket;
+          lastEmit[key] = now;
+        }
+        return baseEmit(eventName, payload);
+      };
+      socket.on?.('presence:updated', payload => {
+        if (!payload?.tableId) return;
+        const changed = setPresence(payload.tableId, payload.onlineUserIds || []);
+        patchOnlineRows();
+        if (changed) scheduleRender(false);
+      });
+      return socket;
+    };
+    od44EnsureSocket.__od1941Wrapped = true;
+  }
+
+  async function httpPresence(){
+    const id = tableId();
+    if (!id || typeof od42Api !== 'function' || typeof od42Token !== 'function' || !od42Token()) return;
+    if (Date.now() - lastPresenceAt < PRESENCE_MS - 500) return;
+    lastPresenceAt = Date.now();
+    try {
+      const data = await od42Api(`/api/tables/${encodeURIComponent(id)}/presence`, { method: 'POST' });
+      const changed = setPresence(data.tableId || id, data.onlineUserIds || []);
+      patchOnlineRows();
+      if (changed) scheduleRender(false);
+    } catch (error) {
+      console.warn('[One Dice v1.94.1] Presença HTTP indisponível:', error?.message || error);
+    }
+  }
+  function startPresence(){
+    clearInterval(presenceTimer);
+    httpPresence();
+    presenceTimer = setInterval(() => {
+      if (!document.hidden) httpPresence();
+    }, PRESENCE_MS);
+  }
+
+  function injectOwlbearButtons(){
+    const url = owlbearUrl() || OWLBEAR_HOME;
+    const configured = !!owlbearUrl();
+
+    // Botão sempre visível no hero/topo da campanha.
+    const heroActions = document.querySelector('#od1901-campaign-manager .od191-hero-actions, #od1901-campaign-manager .od1901-hero-actions');
+    if (heroActions && !heroActions.querySelector('[data-od1941-map-top]')) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'od1941-map-top';
+      btn.dataset.od1941MapTop = '1';
+      btn.dataset.od194OpenMap = url;
+      btn.textContent = configured ? 'Abrir Mapa Owlbear' : 'Criar Mapa Owlbear';
+      heroActions.appendChild(btn);
+    } else {
+      const btn = heroActions?.querySelector('[data-od1941-map-top]');
+      if (btn) {
+        btn.dataset.od194OpenMap = url;
+        btn.textContent = configured ? 'Abrir Mapa Owlbear' : 'Criar Mapa Owlbear';
+      }
+    }
+
+    // Resumo / Visão Geral.
+    const overviewActions = document.querySelector('.od191-feature-actions');
+    if (overviewActions && !overviewActions.querySelector('[data-od1941-map-overview]')) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'od1941-map-overview';
+      btn.dataset.od1941MapOverview = '1';
+      btn.dataset.od194OpenMap = url;
+      btn.textContent = configured ? 'Mapa Owlbear' : 'Configurar/Owlbear';
+      overviewActions.prepend(btn);
+    } else {
+      const btn = overviewActions?.querySelector('[data-od1941-map-overview]');
+      if (btn) btn.dataset.od194OpenMap = url;
+    }
+
+    // Combate.
+    const combatControls = document.querySelector('.od192-combat-controls');
+    if (combatControls && !combatControls.querySelector('[data-od1941-map-combat]')) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'od1941-map-combat';
+      btn.dataset.od1941MapCombat = '1';
+      btn.dataset.od194OpenMap = url;
+      btn.textContent = configured ? 'Abrir Mapa' : 'Owlbear';
+      combatControls.prepend(btn);
+    } else {
+      const btn = combatControls?.querySelector('[data-od1941-map-combat]');
+      if (btn) btn.dataset.od194OpenMap = url;
+    }
+  }
+
+  document.addEventListener('click', event => {
+    const btn = event.target.closest?.('[data-od1941-map-top], [data-od1941-map-overview], [data-od1941-map-combat]');
+    if (!btn) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const url = btn.dataset.od194OpenMap || owlbearUrl() || OWLBEAR_HOME;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }, true);
+
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      httpPresence();
+      scheduleRender(true);
+    }
+  });
+
+  document.addEventListener('click', event => {
+    if (event.target.closest?.('[data-enter-campaign], [data-od192-tab], [data-od191-tab], [data-od1902-tab], [data-od1901-manager-tab]')) {
+      setTimeout(() => { httpPresence(); scheduleRender(true); }, 180);
+      setTimeout(() => { injectOwlbearButtons(); patchOnlineRows(); }, 520);
+    }
+  }, true);
+
+  setTimeout(() => {
+    wrapRenderApi(window.od192CompleteCombatManager, 'od192');
+    wrapRenderApi(window.od191CampaignManager, 'od191');
+    wrapRenderApi(window.od1902CampaignAndHubHotfix, 'od1902');
+    wrapRenderApi(window.od1901CampaignManager, 'od1901');
+    startPresence();
+    injectOwlbearButtons();
+    patchOnlineRows();
+  }, 300);
+
+  setTimeout(() => {
+    scheduleRender(true);
+    httpPresence();
+  }, 1300);
+
+  window.od1941LiveStabilityAndOwlbearFix = { httpPresence, patchOnlineRows, injectOwlbearButtons, scheduleRender };
+})();
+
+
+/* =========================
+   V194.2 - Núcleo forte de estabilidade e banco fluido
+   - dedupe/timeout de API;
+   - merge por revisão para evitar resposta velha sobrescrever ficha nova;
+   - autosave coalescido;
+   - sincronização leve e visível;
+   - recuperação de erros de render sem travar a campanha.
+========================= */
+(function od1942StrongStabilityCore(){
+  'use strict';
+  if (window.__od1942StrongStabilityCoreInstalled) return;
+  window.__od1942StrongStabilityCoreInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
+
+  const STATE_TTL = 2600;
+  const MSG_TTL = 1800;
+  const INIT_TTL = 1800;
+  const API_TIMEOUT = 12000;
+  const SAVE_DEBOUNCE = 420;
+  const SYNC_INTERVAL = 4200;
+
+  const pendingApi = new Map();
+  const lastData = new Map();
+  const lastAt = new Map();
+  const saveTimers = new Map();
+  const saveQueue = new Map();
+  const tableSeq = new Map();
+  let syncTimer = null;
+  let lastRenderRecover = 0;
+
+  function safe(fn, fallback = null){ try { return fn(); } catch (_) { return fallback; } }
+  function id(){ return String(currentCampaignId || localStorage.getItem(STORAGE.activeCampaign) || '').replace(/^"|"$/g, ''); }
+  function activeInput(){ const el = document.activeElement; return !!(el && el.matches && el.matches('input, textarea, select, [contenteditable="true"]')); }
+  function current(){ return safe(() => typeof currentChar === 'function' ? currentChar() : null, null); }
+  function allChars(){ return safe(() => typeof get === 'function' ? get(STORAGE.characters, []) : [], []); }
+  function num(v){ const n = Number(v || 0); return Number.isFinite(n) ? n : 0; }
+  function serverTime(row){ return row?.updated_at || row?.updatedAt || row?.character_updated_at || row?.characterUpdatedAt || ''; }
+  function newer(a, b){
+    const ra = num(a?.revision || a?.character_revision || a?.characterRevision || 0);
+    const rb = num(b?.revision || b?.character_revision || b?.characterRevision || 0);
+    if (ra !== rb) return ra > rb;
+    const ta = Date.parse(serverTime(a)) || 0;
+    const tb = Date.parse(serverTime(b)) || 0;
+    return ta >= tb;
+  }
+  function endpointTtl(path, method){
+    if (method !== 'GET') return 0;
+    const p = String(path || '');
+    if (/\/api\/tables\/[^/]+\/state/.test(p)) return STATE_TTL;
+    if (/\/api\/tables\/[^/]+\/messages/.test(p)) return MSG_TTL;
+    if (/\/api\/tables\/[^/]+\/initiative/.test(p)) return INIT_TTL;
+    if (/\/api\/tables\/[^/]+\/presence/.test(p)) return 3200;
+    return 0;
+  }
+  function clone(value){ try { return structuredClone(value); } catch (_) { try { return JSON.parse(JSON.stringify(value)); } catch (__) { return value; } } }
+
+  if (typeof od42Api === 'function' && !od42Api.__od1942Strong) {
+    const baseApi = od42Api;
+    od42Api = async function od1942Api(path, options = {}){
+      const method = String(options?.method || 'GET').toUpperCase();
+      const ttl = endpointTtl(path, method);
+      const key = `${method}:${path}:${method === 'GET' ? '' : String(options.body || '').slice(0, 240)}`;
+      const now = Date.now();
+
+      if (ttl && pendingApi.has(key)) return pendingApi.get(key);
+      if (ttl && lastData.has(key) && now - (lastAt.get(key) || 0) < ttl) return clone(lastData.get(key));
+
+      const controller = typeof AbortController !== 'undefined' && !options.signal ? new AbortController() : null;
+      const timer = controller ? setTimeout(() => controller.abort(), API_TIMEOUT) : null;
+      const nextOptions = controller ? { ...options, signal: controller.signal } : options;
+      const promise = Promise.resolve(baseApi.call(this, path, nextOptions))
+        .then(data => {
+          if (ttl) { lastData.set(key, clone(data)); lastAt.set(key, Date.now()); }
+          return data;
+        })
+        .catch(error => {
+          if (error?.name === 'AbortError') throw new Error('Tempo de resposta esgotado. A conexão com o banco demorou demais.');
+          throw error;
+        })
+        .finally(() => { if (timer) clearTimeout(timer); pendingApi.delete(key); });
+      if (ttl) pendingApi.set(key, promise);
+      return promise;
+    };
+    od42Api.__od1942Strong = true;
+    try { window.od42Api = od42Api; } catch (_) {}
+  }
+
+  if (typeof od42CharacterFromRow === 'function' && !od42CharacterFromRow.__od1942Revision) {
+    const base = od42CharacterFromRow;
+    od42CharacterFromRow = function od1942CharacterFromRow(row){
+      const char = base.apply(this, arguments);
+      char.updatedAt = row?.updated_at || row?.updatedAt || row?.character_updated_at || row?.characterUpdatedAt || char.updatedAt || '';
+      char.revision = Number(row?.revision ?? row?.character_revision ?? row?.characterRevision ?? char.revision ?? 0) || 0;
+      char._serverUpdatedAt = char.updatedAt;
+      char._serverRevision = char.revision;
+      return char;
+    };
+    od42CharacterFromRow.__od1942Revision = true;
+  }
+
+  if (typeof od42TableFromRow === 'function' && !od42TableFromRow.__od1942Revision) {
+    const base = od42TableFromRow;
+    od42TableFromRow = function od1942TableFromRow(row){
+      const table = base.apply(this, arguments);
+      table.revision = Number(row?.revision ?? table.revision ?? 0) || 0;
+      table.updatedAt = row?.updated_at || row?.updatedAt || table.updatedAt || '';
+      table.description = row?.description || row?.settings?.description || table.description || '';
+      table.logoUrl = row?.logo_url || row?.logoUrl || row?.settings?.logoUrl || table.logoUrl || '';
+      return table;
+    };
+    od42TableFromRow.__od1942Revision = true;
+  }
+
+  function mergeCharactersStrong(incoming){
+    if (!Array.isArray(incoming) || !incoming.length || typeof set !== 'function') return;
+    const now = Date.now();
+    const currentId = String(currentCharacterId || '');
+    const byId = new Map(allChars().map(c => [String(c.id), c]));
+    for (const item of incoming) {
+      if (!item?.id) continue;
+      const key = String(item.id);
+      const prev = byId.get(key);
+      const editingCurrent = key === currentId && activeInput() && prev?._od1942LocalEditedAt && now - prev._od1942LocalEditedAt < 3500;
+      if (editingCurrent && !newer(item, prev)) continue;
+      if (!prev || newer(item, prev)) byId.set(key, { ...(prev || {}), ...item, _od1942LocalEditedAt: prev?._od1942LocalEditedAt || 0 });
+    }
+    set(STORAGE.characters, [...byId.values()]);
+  }
+
+  if (typeof od42LoadTableState === 'function' && !od42LoadTableState.__od1942Strong) {
+    od42LoadTableState = async function od1942LoadTableState(tableId = id()){
+      if (!tableId) return { table: null, members: [], users: [], chars: [] };
+      const seq = (tableSeq.get(String(tableId)) || 0) + 1;
+      tableSeq.set(String(tableId), seq);
+      const data = await od42Api(`/api/tables/${encodeURIComponent(tableId)}/state`);
+      if (seq < (tableSeq.get(String(tableId)) || 0)) return { stale: true, table: null, members: [], users: [], chars: [] };
+
+      const table = od42TableFromRow(data.table);
+      const members = (data.members || []).map(od42MemberFromRow);
+      const users = (data.members || []).map(row => od42User({ id: row.user_id, nick: row.nick, real_name: row.real_name, avatar_url: row.avatar_url })).filter(Boolean);
+      const chars = (data.members || [])
+        .filter(row => row.character_id && row.character_data)
+        .map(row => od42CharacterFromRow({
+          id: row.character_id,
+          owner_id: row.user_id,
+          name: row.character_name,
+          data: row.character_data,
+          updated_at: row.character_updated_at,
+          revision: row.character_revision
+        }));
+
+      const oldTables = getCampaigns().filter(c => String(c.id) !== String(table.id));
+      setCampaigns([table, ...oldTables]);
+      const oldMembers = getMembers().filter(m => String(m.campaignId) !== String(table.id));
+      setMembers([...oldMembers, ...members]);
+      od42MergeById(STORAGE.users, users);
+      mergeCharactersStrong(chars);
+
+      if (Array.isArray(data.onlineUserIds) && window.od1941LiveStabilityAndOwlbearFix?.patchOnlineRows) {
+        window.od1905OnlineUsers = window.od1905OnlineUsers || {};
+        const map = {};
+        data.onlineUserIds.forEach(userId => { map[String(userId)] = true; });
+        if (currentUser?.id) map[String(currentUser.id)] = true;
+        window.od1905OnlineUsers[String(table.id)] = map;
+        window.od1904OnlineUsers = window.od1905OnlineUsers;
+        window.od1941LiveStabilityAndOwlbearFix.patchOnlineRows();
+      }
+      return { table, members, users, chars, revision: data.revision, counts: data.counts, serverNow: data.serverNow };
+    };
+    od42LoadTableState.__od1942Strong = true;
+  }
+
+  function markLocalEdit(){
+    const char = current();
+    if (!char?.id) return;
+    const now = Date.now();
+    char._od1942LocalEditedAt = now;
+    safe(() => typeof set === 'function' && set(STORAGE.characters, allChars().map(c => String(c.id) === String(char.id) ? { ...c, _od1942LocalEditedAt: now } : c)), null);
+  }
+  document.addEventListener('input', event => {
+    if (event.target?.closest?.('#app-screen input, #app-screen textarea, #app-screen select')) markLocalEdit();
+  }, true);
+  document.addEventListener('change', event => {
+    if (event.target?.closest?.('#app-screen input, #app-screen textarea, #app-screen select')) markLocalEdit();
+  }, true);
+
+  function scheduleCharacterSave(char){
+    if (!char?.id || !currentCampaignId || typeof od42Api !== 'function' || typeof od42Token !== 'function' || !od42Token()) return;
+    const idKey = String(char.id);
+    saveQueue.set(idKey, clone({ ...char, _saveSourceVersion: '1.94.3-coalesced' }));
+    clearTimeout(saveTimers.get(idKey));
+    saveTimers.set(idKey, setTimeout(async () => {
+      const payload = saveQueue.get(idKey);
+      saveQueue.delete(idKey);
+      try {
+        await od42Api(`/api/characters/${encodeURIComponent(idKey)}`, {
+          method: 'PUT',
+          body: JSON.stringify({ name: payload.name || 'Ficha', data: payload })
+        });
+        setTimeout(() => syncNow('character-save'), 260);
+      } catch (error) {
+        console.warn('[One Dice v1.94.3] Falha ao salvar ficha coalescida:', error);
+      }
+    }, SAVE_DEBOUNCE));
+  }
+
+  if (typeof saveCurrentCharacter === 'function' && !saveCurrentCharacter.__od1942Coalesced) {
+    const baseSave = saveCurrentCharacter;
+    saveCurrentCharacter = function od1942SaveCurrentCharacter(){
+      markLocalEdit();
+      const result = baseSave.apply(this, arguments);
+      const char = current();
+      if (char?.id && currentCampaignId) scheduleCharacterSave(char);
+      return result;
+    };
+    saveCurrentCharacter.__od1942Coalesced = true;
+    try { window.saveCurrentCharacter = saveCurrentCharacter; } catch (_) {}
+  }
+
+  async function syncNow(reason = 'manual'){
+    const table = id();
+    if (!table || typeof od42Token !== 'function' || !od42Token()) return;
+    try {
+      await od42LoadTableState(table);
+      if (!activeInput()) {
+        safe(() => window.od192CompleteCombatManager?.renderManager?.(), null);
+        safe(() => window.od1941LiveStabilityAndOwlbearFix?.injectOwlbearButtons?.(), null);
+        safe(() => window.od1941LiveStabilityAndOwlbearFix?.patchOnlineRows?.(), null);
+      }
+    } catch (error) {
+      console.warn(`[One Dice v1.94.3] sync falhou (${reason}):`, error?.message || error);
+    }
+  }
+
+  function startSync(){
+    clearInterval(syncTimer);
+    syncTimer = setInterval(() => {
+      if (!document.hidden && currentCampaignId && !activeInput()) syncNow('interval');
+    }, SYNC_INTERVAL);
+  }
+
+  window.addEventListener('error', event => {
+    const msg = String(event?.message || '');
+    if (!msg || Date.now() - lastRenderRecover < 2000) return;
+    if (msg.includes('render') || msg.includes('undefined') || msg.includes('Cannot read')) {
+      lastRenderRecover = Date.now();
+      setTimeout(() => syncNow('recover-error'), 450);
+    }
+  });
+  window.addEventListener('unhandledrejection', event => {
+    const msg = String(event?.reason?.message || event?.reason || '');
+    if (msg.includes('fetch') || msg.includes('HTTP') || msg.includes('banco') || msg.includes('Tempo de resposta')) {
+      console.warn('[One Dice v1.94.3] promessa tratada pelo estabilizador:', msg);
+    }
+  });
+
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) syncNow('visible'); });
+  document.addEventListener('click', event => {
+    if (event.target.closest?.('[data-enter-campaign], [data-od192-tab], [data-od191-tab], [data-od1902-tab], [data-od1901-manager-tab], [data-od192-resource]')) {
+      setTimeout(() => syncNow('click'), 500);
+    }
+  }, true);
+
+  startSync();
+  setTimeout(() => syncNow('boot'), 900);
+
+  window.od1942StrongStabilityCore = { syncNow, scheduleCharacterSave, mergeCharactersStrong };
+})();
+
+
+/* =========================
+   V194.3 - Orquestrador host-first de tempo real
+   Usa Socket.IO + replay de eventos do banco + presença persistida para evitar falhas
+   quando o navegador perde evento, fica em segundo plano ou reconecta.
+========================= */
+(function od1943HostRealtimeOrchestrator(){
+  'use strict';
+  if (window.__od1943HostRealtimeOrchestratorInstalled) return;
+  window.__od1943HostRealtimeOrchestratorInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
+
+  const EVENT_POLL_MS = 1650;
+  const HOT_POLL_MS = 850;
+  const HEARTBEAT_MS = 3200;
+  const IDLE_POLL_MS = 5200;
+  const RENDER_COOLDOWN_MS = 520;
+  const MAX_BACKOFF_MS = 9000;
+  const TAB_ID = `tab_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+
+  let eventTimer = null;
+  let heartbeatTimer = null;
+  let renderTimer = null;
+  let eventBusy = false;
+  let heartbeatBusy = false;
+  let stateBusy = false;
+  let pollBackoff = 0;
+  let hotUntil = 0;
+  let lastRender = 0;
+  let channel = null;
+
+  function safe(fn, fallback = null){ try { return fn(); } catch (_) { return fallback; } }
+  function token(){ return typeof od42Token === 'function' ? od42Token() : ''; }
+  function tableId(){ return String(currentCampaignId || localStorage.getItem(STORAGE.activeCampaign) || '').replace(/^"|"$/g, ''); }
+  function key(id = tableId()){ return `od1943_last_event_${id || 'none'}`; }
+  function getLast(id = tableId()){ return Number(localStorage.getItem(key(id)) || 0) || 0; }
+  function setLast(value, id = tableId()){
+    const next = Math.max(getLast(id), Number(value || 0) || 0);
+    localStorage.setItem(key(id), String(next));
+    return next;
+  }
+  function activeInput(){ const el = document.activeElement; return !!(el && el.matches && el.matches('input, textarea, select, [contenteditable="true"]')); }
+  function isManager(){ return !!document.getElementById('od1901-campaign-manager'); }
+  function isVisible(){ return !document.hidden; }
+  function presenceMap(id, ids){
+    if (!id) return;
+    window.od1905OnlineUsers = window.od1905OnlineUsers || window.od1904OnlineUsers || {};
+    const map = {};
+    (ids || []).forEach(userId => { map[String(userId)] = true; });
+    if (currentUser?.id) map[String(currentUser.id)] = true;
+    window.od1905OnlineUsers[String(id)] = map;
+    window.od1904OnlineUsers = window.od1905OnlineUsers;
+  }
+  function currentLastKnownSeq(){
+    const id = tableId();
+    return getLast(id);
+  }
+  function renderSoft(reason = 'render'){
+    if (!isManager()) return;
+    const now = Date.now();
+    if (now - lastRender < RENDER_COOLDOWN_MS) {
+      clearTimeout(renderTimer);
+      renderTimer = setTimeout(() => renderSoft(reason), RENDER_COOLDOWN_MS);
+      return;
+    }
+    lastRender = now;
+    requestAnimationFrame(() => {
+      safe(() => window.od1941LiveStabilityAndOwlbearFix?.patchOnlineRows?.(), null);
+      safe(() => window.od1941LiveStabilityAndOwlbearFix?.injectOwlbearButtons?.(), null);
+      if (!activeInput()) {
+        safe(() => window.od192CompleteCombatManager?.renderManager?.(), null);
+        safe(() => window.od1941LiveStabilityAndOwlbearFix?.patchOnlineRows?.(), null);
+        safe(() => window.od1941LiveStabilityAndOwlbearFix?.injectOwlbearButtons?.(), null);
+      }
+    });
+  }
+  function broadcast(type, payload){
+    if (!channel) return;
+    safe(() => channel.postMessage({ ...payload, type, tableId: tableId(), from: TAB_ID, at: Date.now() }), null);
+  }
+  function touchHot(ms = 6500){ hotUntil = Math.max(hotUntil, Date.now() + ms); }
+  function nextPollDelay(){
+    if (!isVisible()) return IDLE_POLL_MS + pollBackoff;
+    if (Date.now() < hotUntil) return HOT_POLL_MS + pollBackoff;
+    return EVENT_POLL_MS + pollBackoff;
+  }
+  function rescheduleEvents(){
+    clearTimeout(eventTimer);
+    eventTimer = setTimeout(fetchEvents, nextPollDelay());
+  }
+  async function heartbeat(reason = 'heartbeat'){
+    const id = tableId();
+    if (!id || !token() || heartbeatBusy) return;
+    heartbeatBusy = true;
+    try {
+      const data = await od42Api(`/api/tables/${encodeURIComponent(id)}/presence`, { method: 'POST' });
+      if (data?.onlineUserIds) presenceMap(data.tableId || id, data.onlineUserIds);
+      safe(() => window.od1941LiveStabilityAndOwlbearFix?.patchOnlineRows?.(), null);
+      if (data?.lastEventId) setLast(data.lastEventId, id);
+    } catch (error) {
+      console.warn('[One Dice v1.94.3] heartbeat falhou:', error?.message || error);
+    } finally {
+      heartbeatBusy = false;
+    }
+  }
+  function startHeartbeat(){
+    clearInterval(heartbeatTimer);
+    heartbeat('start');
+    heartbeatTimer = setInterval(() => { if (tableId() && token()) heartbeat('interval'); }, HEARTBEAT_MS);
+  }
+  function eventTypes(events){
+    const out = new Set();
+    (events || []).forEach(ev => out.add(String(ev.eventName || ev.event_name || ev.type || '').toLowerCase()));
+    return out;
+  }
+  async function syncFromEvents(events, reason = 'events'){
+    if (!events?.length) return;
+    const types = eventTypes(events);
+    const wantsState = [...types].some(type => type.includes('table') || type.includes('member') || type.includes('character') || type.includes('inventory'));
+    const wantsMessages = [...types].some(type => type.includes('message') || type.includes('chat'));
+    const wantsInitiative = [...types].some(type => type.includes('initiative'));
+
+    if (wantsMessages && typeof od44LoadMessages === 'function') safe(() => od44LoadMessages(tableId()), null);
+    if (wantsInitiative && typeof od44LoadInitiative === 'function') safe(() => od44LoadInitiative(tableId()), null);
+    if (wantsState) await syncState(reason);
+    else renderSoft(reason);
+  }
+  async function syncState(reason = 'sync'){
+    const id = tableId();
+    if (!id || !token() || stateBusy) return;
+    stateBusy = true;
+    try {
+      if (window.od1942StrongStabilityCore?.syncNow) await window.od1942StrongStabilityCore.syncNow(`v1943-${reason}`);
+      else if (typeof od42LoadTableState === 'function') await od42LoadTableState(id);
+      renderSoft(reason);
+    } catch (error) {
+      console.warn('[One Dice v1.94.3] sync de estado falhou:', error?.message || error);
+    } finally {
+      stateBusy = false;
+    }
+  }
+  async function fetchEvents(){
+    const id = tableId();
+    if (!id || !token() || eventBusy) { rescheduleEvents(); return; }
+    eventBusy = true;
+    try {
+      const after = getLast(id);
+      const data = await od42Api(`/api/tables/${encodeURIComponent(id)}/events?after=${encodeURIComponent(after)}&limit=160`);
+      if (data?.onlineUserIds) presenceMap(data.tableId || id, data.onlineUserIds);
+      const events = Array.isArray(data?.events) ? data.events : [];
+      if (events.length) {
+        const last = events.reduce((max, ev) => Math.max(max, Number(ev.id || ev.eventId || 0) || 0), after);
+        setLast(last, id);
+        pollBackoff = 0;
+        touchHot(4200);
+        broadcast('events', { lastEventId: last, events });
+        await syncFromEvents(events, 'poll-events');
+      } else {
+        if (data?.lastEventId) setLast(data.lastEventId, id);
+        safe(() => window.od1941LiveStabilityAndOwlbearFix?.patchOnlineRows?.(), null);
+      }
+    } catch (error) {
+      pollBackoff = Math.min(MAX_BACKOFF_MS, pollBackoff ? pollBackoff * 1.45 : 900);
+      console.warn('[One Dice v1.94.3] replay de eventos falhou:', error?.message || error);
+    } finally {
+      eventBusy = false;
+      rescheduleEvents();
+    }
+  }
+  function patchSocket(){
+    if (typeof od44EnsureSocket !== 'function') return;
+    const socket = safe(() => od44EnsureSocket(), null);
+    if (!socket || socket.__od1943EventReplay) return;
+    socket.__od1943EventReplay = true;
+    socket.on?.('table:event', payload => {
+      if (payload?.tableId && String(payload.tableId) !== String(tableId())) return;
+      if (payload?.eventId) setLast(payload.eventId, payload.tableId || tableId());
+      touchHot(5500);
+      syncFromEvents([{ ...payload, id: payload.eventId, eventName: payload.eventName }], 'socket-table-event');
+    });
+    socket.on?.('connect', () => {
+      touchHot(7000);
+      heartbeat('socket-connect');
+      fetchEvents();
+    });
+  }
+  function initBroadcast(){
+    if (typeof BroadcastChannel === 'undefined') return;
+    channel = new BroadcastChannel('one-dice-live-v1943');
+    channel.onmessage = event => {
+      const msg = event.data || {};
+      if (msg.from === TAB_ID || String(msg.tableId || '') !== String(tableId())) return;
+      if (msg.lastEventId) setLast(msg.lastEventId, msg.tableId);
+      if (msg.type === 'events' && Array.isArray(msg.events)) syncFromEvents(msg.events, 'broadcast-events');
+    };
+  }
+  function onLocalAction(){
+    touchHot(8000);
+    setTimeout(() => { heartbeat('local-action'); fetchEvents(); }, 220);
+    setTimeout(() => syncState('local-action-followup'), 850);
+  }
+
+  document.addEventListener('click', event => {
+    if (event.target.closest?.('[data-od192-resource], [data-od192-next], [data-od192-prev], [data-od192-start], [data-od192-end], [data-od192-clear], [data-od192-roll-init], [data-od191-roll-init], [data-od1902-roll-init], #od1902-chat-form button, #od1901-chat-form button, [data-od194-save-map], #od193-editor-save')) onLocalAction();
+    if (event.target.closest?.('[data-enter-campaign], [data-od192-tab], [data-od191-tab], [data-od1902-tab], [data-od1901-manager-tab]')) {
+      touchHot(9000);
+      setTimeout(() => { heartbeat('tab-enter'); fetchEvents(); syncState('tab-enter'); }, 180);
+    }
+  }, true);
+  document.addEventListener('submit', event => {
+    if (event.target.closest?.('#od1902-chat-form, #od1901-chat-form, [data-od194-map-form]')) onLocalAction();
+  }, true);
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      touchHot(8500);
+      heartbeat('visible');
+      fetchEvents();
+      syncState('visible');
+    }
+  });
+  window.addEventListener('online', () => { touchHot(10000); heartbeat('online'); fetchEvents(); syncState('online'); });
+  window.addEventListener('beforeunload', () => {
+    const id = tableId();
+    if (!id || !token()) return;
+    safe(() => fetch(`/api/tables/${encodeURIComponent(id)}/presence`, {
+      method: 'POST',
+      keepalive: true,
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token()}` },
+      body: JSON.stringify({ leaving: true })
+    }), null);
+  });
+
+  initBroadcast();
+  patchSocket();
+  startHeartbeat();
+  fetchEvents();
+  setInterval(patchSocket, 5000);
+  setTimeout(() => syncState('boot'), 1000);
+
+  window.od1943HostRealtimeOrchestrator = { fetchEvents, heartbeat, syncState, renderSoft, currentLastKnownSeq };
+})();
+
+
+/* =========================
+   V194.4 - Revisão HTML/CSS/JavaScript
+   Guardas de front-end, aliases corretos, auditoria de DOM e proteção de render.
+========================= */
+(function od1944FrontendReviewGuard(){
+  'use strict';
+  if (window.__od1944FrontendReviewGuardInstalled) return;
+  window.__od1944FrontendReviewGuardInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
+
+  // Compatibilidade para chamadas antigas que apontavam para nomes não exportados.
+  if (!window.od191CampaignManagerRedesign && window.od191CampaignManager) {
+    window.od191CampaignManagerRedesign = window.od191CampaignManager;
+  }
+  if (!window.od192CombatComplete && window.od192CompleteCombatManager) {
+    window.od192CombatComplete = window.od192CompleteCombatManager;
+  }
+
+  if (typeof window.requestAnimationFrame !== 'function') {
+    window.requestAnimationFrame = function(callback){ return setTimeout(() => callback(Date.now()), 16); };
+  }
+  if (typeof window.cancelAnimationFrame !== 'function') {
+    window.cancelAnimationFrame = clearTimeout;
+  }
+
+  const MAX_LOG = 35;
+  let lastDomAudit = 0;
+  let lastErrorToast = 0;
+
+  function safe(fn, fallback = null){ try { return fn(); } catch (_) { return fallback; } }
+  function storeLog(entry){
+    try {
+      const key = 'od1944_frontend_errors';
+      const list = JSON.parse(localStorage.getItem(key) || '[]');
+      list.push({ ...entry, at: new Date().toISOString(), version: '1.94.4' });
+      localStorage.setItem(key, JSON.stringify(list.slice(-MAX_LOG)));
+    } catch (_) {}
+  }
+  function softNotice(text){
+    const now = Date.now();
+    if (now - lastErrorToast < 3500) return;
+    lastErrorToast = now;
+    let el = document.getElementById('od1944-soft-notice');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'od1944-soft-notice';
+      el.setAttribute('role', 'status');
+      document.body.appendChild(el);
+    }
+    el.textContent = text;
+    el.classList.add('show');
+    clearTimeout(el.__timer);
+    el.__timer = setTimeout(() => el.classList.remove('show'), 2600);
+  }
+  function logError(source, error){
+    const message = String(error?.message || error || 'Erro desconhecido');
+    storeLog({
+      source,
+      message,
+      stack: String(error?.stack || '').slice(0, 2400),
+      url: location.href
+    });
+    console.warn(`[One Dice v1.94.4] ${source}:`, error);
+    if (/render|script|undefined|null|sync|socket/i.test(message)) {
+      softNotice('O One Dice recuperou uma falha visual automaticamente.');
+    }
+  }
+
+  window.addEventListener('error', event => {
+    logError('window.error', {
+      message: event.message,
+      stack: `${event.filename || ''}:${event.lineno || 0}:${event.colno || 0}`
+    });
+  });
+  window.addEventListener('unhandledrejection', event => {
+    logError('unhandledrejection', event.reason || 'Promise rejeitada');
+  });
+
+  function removeDuplicateIds(id, keep = 'last'){
+    const nodes = Array.from(document.querySelectorAll(`[id="${CSS.escape(id)}"]`));
+    if (nodes.length <= 1) return 0;
+    const keeper = keep === 'first' ? nodes[0] : nodes[nodes.length - 1];
+    nodes.forEach(node => {
+      if (node !== keeper && node.parentNode) node.parentNode.removeChild(node);
+    });
+    return nodes.length - 1;
+  }
+
+  function normalizeButtons(){
+    document.querySelectorAll('button:not([type])').forEach(btn => {
+      const form = btn.closest('form');
+      const shouldSubmit = form && (
+        form.id === 'chat-form' ||
+        form.id === 'od1902-chat-form' ||
+        form.id === 'od1901-chat-form' ||
+        btn.matches('[data-submit], .submit, .primary-btn[type="submit"]')
+      );
+      if (!shouldSubmit) btn.type = 'button';
+    });
+  }
+
+  function ensureManagerState(){
+    const manager = document.getElementById('od1901-campaign-manager');
+    if (!manager) return;
+    manager.classList.add('od1944-reviewed');
+    safe(() => window.od1941LiveStabilityAndOwlbearFix?.injectOwlbearButtons?.(), null);
+    safe(() => window.od1941LiveStabilityAndOwlbearFix?.patchOnlineRows?.(), null);
+    safe(() => window.od1943HostRealtimeOrchestrator?.heartbeat?.('od1944-audit'), null);
+  }
+
+  function auditDom(force = false){
+    const now = Date.now();
+    if (!force && now - lastDomAudit < 1800) return;
+    lastDomAudit = now;
+    try {
+      const removed =
+        removeDuplicateIds('od1901-campaign-manager') +
+        removeDuplicateIds('od194-owlbear-card', 'first') +
+        removeDuplicateIds('od193-campaign-info-card', 'first') +
+        removeDuplicateIds('od1944-soft-notice', 'first');
+      normalizeButtons();
+      ensureManagerState();
+      if (removed) storeLog({ source: 'dom-audit', message: `IDs duplicados removidos: ${removed}` });
+    } catch (error) {
+      logError('dom-audit', error);
+    }
+  }
+
+  function wrapRender(obj, label){
+    if (!obj || typeof obj.renderManager !== 'function' || obj.renderManager.__od1944Reviewed) return;
+    const base = obj.renderManager;
+    obj.renderManager = function od1944ReviewedRender(){
+      try {
+        const result = base.apply(this, arguments);
+        setTimeout(() => auditDom(true), 0);
+        return result;
+      } catch (error) {
+        logError(`render-${label}`, error);
+        setTimeout(() => auditDom(true), 0);
+        return null;
+      }
+    };
+    obj.renderManager.__od1944Reviewed = true;
+  }
+
+  function install(){
+    wrapRender(window.od192CompleteCombatManager, 'od192');
+    wrapRender(window.od192CombatComplete, 'od192-alias');
+    wrapRender(window.od191CampaignManager, 'od191');
+    wrapRender(window.od191CampaignManagerRedesign, 'od191-alias');
+    wrapRender(window.od1902CampaignAndHubHotfix, 'od1902');
+    wrapRender(window.od1901CampaignManager, 'od1901');
+    auditDom(true);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => setTimeout(install, 120), { once: true });
+  if (document.readyState !== 'loading') setTimeout(install, 120);
+
+  document.addEventListener('click', () => setTimeout(auditDom, 120), true);
+  document.addEventListener('submit', () => setTimeout(auditDom, 120), true);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) setTimeout(() => auditDom(true), 120); });
+  setInterval(() => auditDom(false), 6500);
+
+  window.od1944FrontendReviewGuard = { auditDom, normalizeButtons, removeDuplicateIds, logError };
+})();
+
+
+/* =========================
+   V194.5 - Revisão completa de camadas, URLs e campanha sem legado
+   - Remove a camada antiga de campanha da interface ativa;
+   - Força o design moderno depois do login, inclusive em aba anônima;
+   - Organiza URLs canônicas por camada;
+   - Evita flicker/re-render antigo dentro de campanha;
+   - Mantém ficha/editor como camada separada, sem reativar painel antigo.
+========================= */
+(function od1945LayeredCampaignCleanup(){
+  'use strict';
+  if (window.__od1945LayeredCampaignCleanupInstalled) return;
+  window.__od1945LayeredCampaignCleanupInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
+
+  const VERSION = '1.94.5';
+  const SESSION_TABS = { home: '/inicio', characters: '/personagens', campaigns: '/campanhas' };
+  const MANAGER_TABS = ['visao','personagens','combate','jogadores','chat','escudo'];
+  const LEGACY_CAMPAIGN_IDS = [
+    'players-sidebar',
+    'master-dashboard',
+    'player-dashboard',
+    'campaign-mini-card',
+    'campaign-info',
+    'character-list',
+    'initiative-panel',
+    'master-dashboard-dock-btn',
+    'sidebar-dock-btn'
+  ];
+
+  let routing = false;
+  let lastLayer = '';
+  let lastCampaignRender = 0;
+  let oldRenderTableExperience = typeof renderTableExperience === 'function' ? renderTableExperience : null;
+
+  function $(id){ return document.getElementById(id); }
+  function safe(fn, fallback = null){ try { return fn(); } catch (_) { return fallback; } }
+  function token(){ return typeof od42Token === 'function' ? od42Token() : ''; }
+  function sessionUser(){ return currentUser || safe(() => JSON.parse(localStorage.getItem('od_session_user') || 'null'), null); }
+  function cleanId(value){ return String(value || '').replace(/^"|"$/g, '').trim(); }
+  function campaigns(){ return typeof getCampaigns === 'function' ? getCampaigns() : []; }
+  function members(){ return typeof getMembers === 'function' ? getMembers() : []; }
+  function hasMembership(id){ return members().some(m => String(m.campaignId) === String(id) && String(m.userId) === String(currentUser?.id)); }
+  function routeTab(tab){ return MANAGER_TABS.includes(tab) ? tab : 'visao'; }
+  function pathParts(){ return location.pathname.replace(/^\/|\/$/g, '').split('/').filter(Boolean); }
+  function canonicalCampaignPath(id, tab = null){
+    const clean = encodeURIComponent(cleanId(id));
+    const t = routeTab(tab || 'visao');
+    return t === 'visao' ? `/campanha/${clean}` : `/campanha/${clean}/${t}`;
+  }
+  function replaceUrl(path){
+    if (!path || location.pathname === path) return;
+    history.replaceState({ od1945: true, path }, '', path);
+  }
+  function pushUrl(path){
+    if (!path || location.pathname === path) return;
+    history.pushState({ od1945: true, path }, '', path);
+  }
+  function setActiveScreen(screenId){
+    ['auth-screen','sessions-screen','app-screen','overlay-screen'].forEach(id => {
+      const el = $(id);
+      if (el) el.classList.toggle('active', id === screenId);
+    });
+  }
+  function setLayer(layer){
+    lastLayer = layer;
+    document.documentElement.classList.add('od1945-layered-shell');
+    if (document.body) {
+      document.body.dataset.od1945Layer = layer;
+      document.body.classList.toggle('od1945-auth-layer', layer === 'auth');
+      document.body.classList.toggle('od1945-hub-layer', layer === 'hub');
+      document.body.classList.toggle('od1945-campaign-layer', layer === 'campaign');
+      document.body.classList.toggle('od1945-sheet-layer', layer === 'sheet');
+      document.body.classList.toggle('od1945-modern-layer', true);
+    }
+  }
+
+  function removeLegacyCampaignDom(){
+    // A ficha permanece. O que sai da camada ativa é o painel antigo de mesa/campanha.
+    const app = $('app-screen');
+    if (!app) return;
+    LEGACY_CAMPAIGN_IDS.forEach(id => {
+      const el = $(id);
+      if (!el) return;
+      el.dataset.od1945Legacy = 'removed';
+      el.remove();
+    });
+    document.body?.classList.remove('master-dashboard-mode','master-sheet-open','player-dashboard-mode','sidebar-collapsed');
+  }
+
+  function quarantineLegacyCampaignDom(){
+    LEGACY_CAMPAIGN_IDS.forEach(id => {
+      const el = $(id);
+      if (el) {
+        el.dataset.od1945Legacy = 'hidden';
+        el.setAttribute('aria-hidden', 'true');
+      }
+    });
+    document.querySelectorAll('.table-dashboard, .players-sidebar, .player-dashboard, .campaign-info-box, .character-list').forEach(el => {
+      if (!el.closest('#od1901-campaign-manager')) {
+        el.dataset.od1945Legacy = 'hidden';
+        el.setAttribute('aria-hidden', 'true');
+      }
+    });
+  }
+
+  function managerApi(){
+    return window.od192CompleteCombatManager || window.od192CombatComplete || window.od191CampaignManager || window.od1902CampaignAndHubHotfix || window.od1901CampaignManager || null;
+  }
+  function renderCampaignManager(force = false){
+    const now = Date.now();
+    if (!force && now - lastCampaignRender < 450) return;
+    lastCampaignRender = now;
+    const api = managerApi();
+    if (api?.renderManager) safe(() => api.renderManager(), null);
+    safe(() => window.od1941LiveStabilityAndOwlbearFix?.injectOwlbearButtons?.(), null);
+    safe(() => window.od1941LiveStabilityAndOwlbearFix?.patchOnlineRows?.(), null);
+    safe(() => window.od1943HostRealtimeOrchestrator?.heartbeat?.('od1945-render'), null);
+    quarantineLegacyCampaignDom();
+  }
+  function openCampaignLayer(id, tab = null, options = {}){
+    const clean = cleanId(id || currentCampaignId || localStorage.getItem(STORAGE.activeCampaign));
+    if (!clean) return openHubLayer('campaigns', { replace: true });
+    currentCampaignId = clean;
+    accountSheetMode = false;
+    localStorage.setItem(STORAGE.activeCampaign, JSON.stringify(clean));
+    const t = routeTab(tab || 'visao');
+    localStorage.setItem(`od192_manager_tab_${clean}`, t);
+    localStorage.setItem(`od191_manager_tab_${clean}`, t);
+    localStorage.setItem(`od1902_campaign_tab_${clean}`, t);
+    setLayer('campaign');
+    setActiveScreen('app-screen');
+    removeLegacyCampaignDom();
+    const api = managerApi();
+    if (api?.openManager) safe(() => api.openManager(clean, t), null);
+    else renderCampaignManager(true);
+    renderCampaignManager(true);
+    safe(() => window.od1905LiveCampaignCore?.joinRoom?.(true), null);
+    safe(() => window.od1943HostRealtimeOrchestrator?.syncState?.('route-open'), null);
+    const path = canonicalCampaignPath(clean, t);
+    if (!options.silentUrl) (options.replace ? replaceUrl(path) : pushUrl(path));
+  }
+  function openHubLayer(tab = 'campaigns', options = {}){
+    const cleanTab = ['home','characters','campaigns'].includes(tab) ? tab : 'campaigns';
+    currentCampaignId = null;
+    accountSheetMode = false;
+    localStorage.removeItem(STORAGE.activeCampaign);
+    localStorage.setItem('od71_tab', cleanTab);
+    setLayer('hub');
+    setActiveScreen('sessions-screen');
+    safe(() => renderAccountCharacterMenu?.(), null);
+    safe(() => renderCampaignMenu?.(), null);
+    quarantineLegacyCampaignDom();
+    const path = SESSION_TABS[cleanTab] || '/campanhas';
+    if (!options.silentUrl) (options.replace ? replaceUrl(path) : pushUrl(path));
+  }
+  function openAuthLayer(options = {}){
+    currentCampaignId = null;
+    accountSheetMode = false;
+    localStorage.removeItem(STORAGE.activeCampaign);
+    setLayer('auth');
+    setActiveScreen('auth-screen');
+    if (!options.silentUrl) replaceUrl('/login');
+  }
+  function openSheetLayer(id, options = {}){
+    if (!id) return;
+    setLayer('sheet');
+    setActiveScreen('app-screen');
+    document.body?.classList.add('od1945-sheet-layer');
+    currentCharacterId = id;
+    safe(() => loadCharacter?.(id), null);
+    if (!options.silentUrl) pushUrl(`/ficha/${encodeURIComponent(id)}`);
+  }
+
+  function routeFromLocation(options = {}){
+    if (routing) return;
+    routing = true;
+    try {
+      const parts = pathParts();
+      if (!sessionUser() && !token()) return openAuthLayer({ silentUrl: true });
+      if (!parts.length || parts[0] === 'inicio') return openHubLayer('home', { replace: true, silentUrl: options.silentUrl });
+      if (parts[0] === 'personagens' || parts[0] === 'fichas') return openHubLayer('characters', { replace: true, silentUrl: options.silentUrl });
+      if (parts[0] === 'campanhas' || parts[0] === 'mesas') return openHubLayer('campaigns', { replace: true, silentUrl: options.silentUrl });
+      if (parts[0] === 'campanha' && parts[1]) return openCampaignLayer(decodeURIComponent(parts[1]), parts[2] || 'visao', { replace: true, silentUrl: options.silentUrl });
+      if (parts[0] === 'mesa' && parts[1]) {
+        const id = decodeURIComponent(parts[1]);
+        replaceUrl(canonicalCampaignPath(id, parts[2] || 'visao'));
+        return openCampaignLayer(id, parts[2] || 'visao', { replace: true, silentUrl: true });
+      }
+      if ((parts[0] === 'ficha' || parts[0] === 'personagem') && parts[1]) return openSheetLayer(decodeURIComponent(parts[1]), { silentUrl: options.silentUrl });
+      return openHubLayer('campaigns', { replace: true, silentUrl: options.silentUrl });
+    } finally {
+      routing = false;
+    }
+  }
+
+  function afterLoginModern(){
+    setTimeout(() => {
+      document.documentElement.classList.remove('od180-booting','od1805-booting');
+      document.body?.classList.remove('od180-booting-body','od1805-booting-body');
+      const path = location.pathname;
+      if (path === '/login' || path === '/' || !path || path.includes('mesa-online')) {
+        openHubLayer('campaigns', { replace: true });
+      } else {
+        routeFromLocation({ silentUrl: false });
+      }
+      removeLegacyCampaignDom();
+    }, 80);
+    setTimeout(() => {
+      if (lastLayer === 'auth' || $('auth-screen')?.classList.contains('active')) openHubLayer('campaigns', { replace: true });
+      removeLegacyCampaignDom();
+      safe(() => window.od1944FrontendReviewGuard?.auditDom?.(true), null);
+    }, 520);
+  }
+
+  // Login online e local sempre caem no hub moderno, sem primeira renderização no modelo antigo.
+  if (typeof od42Login === 'function' && !od42Login.__od1945Layered) {
+    const base = od42Login;
+    od42Login = async function od1945Login(){
+      const result = await base.apply(this, arguments);
+      afterLoginModern();
+      return result;
+    };
+    od42Login.__od1945Layered = true;
+  }
+  if (typeof od42Register === 'function' && !od42Register.__od1945Layered) {
+    const base = od42Register;
+    od42Register = async function od1945Register(){
+      const result = await base.apply(this, arguments);
+      afterLoginModern();
+      return result;
+    };
+    od42Register.__od1945Layered = true;
+  }
+  if (typeof login === 'function' && !login.__od1945Layered) {
+    const base = login;
+    login = function od1945LocalLogin(){
+      const result = base.apply(this, arguments);
+      afterLoginModern();
+      return result;
+    };
+    login.__od1945Layered = true;
+  }
+
+  // Camadas públicas da aplicação.
+  if (typeof showSessions === 'function' && !showSessions.__od1945Layered) {
+    const base = showSessions;
+    showSessions = function od1945ShowSessions(){
+      const result = safe(() => base.apply(this, arguments), null);
+      setLayer('hub');
+      setActiveScreen('sessions-screen');
+      quarantineLegacyCampaignDom();
+      const parts = pathParts();
+      if (!['inicio','personagens','campanhas','fichas','mesas'].includes(parts[0] || '')) {
+        const tab = localStorage.getItem('od71_tab') || 'campaigns';
+        replaceUrl(SESSION_TABS[tab] || '/campanhas');
+      }
+      return result;
+    };
+    showSessions.__od1945Layered = true;
+  }
+  if (typeof showAuth === 'function' && !showAuth.__od1945Layered) {
+    const base = showAuth;
+    showAuth = function od1945ShowAuth(){
+      const result = safe(() => base.apply(this, arguments), null);
+      openAuthLayer({ silentUrl: location.pathname !== '/login' });
+      return result;
+    };
+    showAuth.__od1945Layered = true;
+  }
+
+  // Bloqueia entrada no modelo antigo de mesa. O gerenciador moderno passa a ser a única camada de campanha.
+  if (typeof initApp === 'function' && !initApp.__od1945Layered) {
+    const base = initApp;
+    initApp = function od1945InitApp(campaignId = currentCampaignId){
+      if (window.__od1901OpeningLegacySheet || window.__od1902OpeningLegacySheet || window.__od1945AllowSheetLegacy || accountSheetMode) {
+        setLayer('sheet');
+        return base.apply(this, arguments);
+      }
+      const id = cleanId(campaignId || currentCampaignId || localStorage.getItem(STORAGE.activeCampaign));
+      if (id) return openCampaignLayer(id, null, { replace: true });
+      return openHubLayer('campaigns', { replace: true });
+    };
+    initApp.__od1945Layered = true;
+  }
+  if (typeof enterCampaign === 'function' && !enterCampaign.__od1945Layered) {
+    enterCampaign = function od1945EnterCampaign(campaignId){ return openCampaignLayer(campaignId || currentCampaignId, 'visao'); };
+    enterCampaign.__od1945Layered = true;
+  }
+  if (typeof renderTableExperience === 'function' && !renderTableExperience.__od1945NoLegacy) {
+    const base = renderTableExperience;
+    renderTableExperience = function od1945RenderTableExperience(){
+      if (document.body?.classList.contains('od1945-campaign-layer') || $('od1901-campaign-manager')) {
+        quarantineLegacyCampaignDom();
+        return;
+      }
+      return base.apply(this, arguments);
+    };
+    renderTableExperience.__od1945NoLegacy = true;
+  }
+
+  // Atualiza URLs ao trocar abas no gerenciador e no hub.
+  document.addEventListener('click', event => {
+    const campaignTab = event.target.closest?.('[data-od192-tab], [data-od191-tab], [data-od1902-tab], [data-od1901-manager-tab]');
+    if (campaignTab && currentCampaignId) {
+      const tab = campaignTab.dataset.od192Tab || campaignTab.dataset.od191Tab || campaignTab.dataset.od1902Tab || campaignTab.dataset.od1901ManagerTab || 'visao';
+      setTimeout(() => {
+        pushUrl(canonicalCampaignPath(currentCampaignId, tab));
+        setLayer('campaign');
+        removeLegacyCampaignDom();
+        renderCampaignManager(false);
+      }, 0);
+      return;
+    }
+
+    const hubTab = event.target.closest?.('[data-od71-tab], [data-od75-tab]');
+    if (hubTab) {
+      const tab = hubTab.dataset.od71Tab || hubTab.dataset.od75Tab || 'home';
+      setTimeout(() => {
+        const mapped = tab === 'characters' ? 'characters' : tab === 'campaigns' ? 'campaigns' : 'home';
+        setLayer('hub');
+        replaceUrl(SESSION_TABS[mapped] || '/inicio');
+      }, 0);
+      return;
+    }
+
+    const enter = event.target.closest?.('[data-enter-campaign], [data-od190-card-open], [data-open-campaign]');
+    if (enter) {
+      const id = enter.dataset.enterCampaign || enter.dataset.od190CardOpen || enter.dataset.openCampaign || enter.dataset.campaignId || currentCampaignId;
+      if (id) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        return openCampaignLayer(id, 'visao');
+      }
+    }
+  }, true);
+
+  window.addEventListener('popstate', () => routeFromLocation({ silentUrl: true }));
+  window.addEventListener('online', () => {
+    safe(() => window.od1943HostRealtimeOrchestrator?.syncState?.('online'), null);
+    if (lastLayer === 'campaign') renderCampaignManager(true);
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && lastLayer === 'campaign') {
+      removeLegacyCampaignDom();
+      renderCampaignManager(false);
+    }
+  });
+
+  // Auto cura de DOM: se algum patch antigo recriar painel antigo, ele sai da camada ativa.
+  const observer = new MutationObserver(() => {
+    if (lastLayer === 'campaign' || $('od1901-campaign-manager')) {
+      quarantineLegacyCampaignDom();
+      if (!$('od1901-campaign-manager') && currentCampaignId) renderCampaignManager(true);
+    }
+  });
+  if (document.body) observer.observe(document.body, { childList: true, subtree: true });
+
+  function boot(){
+    const user = sessionUser();
+    if (!user && !token()) openAuthLayer({ silentUrl: location.pathname === '/login' });
+    else routeFromLocation({ silentUrl: false });
+    setTimeout(removeLegacyCampaignDom, 400);
+    setTimeout(() => routeFromLocation({ silentUrl: true }), 900);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
+  else boot();
+
+  window.od1945LayeredCampaignCleanup = {
+    routeFromLocation,
+    openHubLayer,
+    openCampaignLayer,
+    openSheetLayer,
+    removeLegacyCampaignDom,
+    quarantineLegacyCampaignDom,
+    renderCampaignManager
+  };
+})();
+
+
+/* =========================
+   V195 - Validação camada por camada e núcleo moderno sem gerenciador antigo
+   - Substitui aliases antigos por uma ponte única para V192+;
+   - valida auth/hub/campaign/sheet/realtime em runtime;
+   - bloqueia flicker de render duplicado;
+   - higieniza URLs e estado local;
+   - mantém API compatível para blocos novos que ainda chamam nomes antigos.
+========================= */
+(function od195LayerByLayerValidation(){
+  'use strict';
+  if (window.__od195LayerByLayerValidationInstalled) return;
+  window.__od195LayerByLayerValidationInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.95.0';
+
+  const VERSION = '1.95.0';
+  const CAMPAIGN_TABS = ['visao','personagens','combate','jogadores','chat','escudo'];
+  const HUB_TABS = { home: '/inicio', characters: '/personagens', campaigns: '/campanhas' };
+  const LEGACY_SELECTORS = [
+    '#players-sidebar', '#master-dashboard', '#player-dashboard', '#campaign-mini-card', '#campaign-info',
+    '#character-list', '#initiative-panel', '#master-dashboard-dock-btn', '#sidebar-dock-btn',
+    '.table-dashboard', '.players-sidebar', '.player-dashboard', '.campaign-info-box', '.character-list'
+  ];
+
+  let lastAuditAt = 0;
+  let lastRenderAt = 0;
+  let renderLock = false;
+  let lastJoinAt = 0;
+  let lastStateAt = 0;
+  let lastPresenceAt = 0;
+  let lastRoute = '';
+  let lastAudit = null;
+
+  function $(id){ return document.getElementById(id); }
+  function safe(fn, fallback = null){ try { return fn(); } catch (error) { logIssue('exception', error?.message || String(error)); return fallback; } }
+  function token(){ return typeof od42Token === 'function' ? od42Token() : ''; }
+  function cleanId(value){ return String(value || '').replace(/^"|"$/g, '').trim(); }
+  function tableId(){ return cleanId(currentCampaignId || localStorage.getItem(STORAGE.activeCampaign) || ''); }
+  function campaigns(){ return typeof getCampaigns === 'function' ? getCampaigns() : []; }
+  function members(id = tableId()){ return typeof getMembers === 'function' ? getMembers().filter(m => String(m.campaignId) === String(id)) : []; }
+  function currentMember(id = tableId()){ return members(id).find(m => String(m.userId) === String(currentUser?.id)); }
+  function hasMembership(id = tableId()){ return !!currentMember(id); }
+  function manager(){ return window.od192CompleteCombatManager || window.od191CampaignManager || window.od1902CampaignAndHubHotfix || window.od1901CampaignManager || null; }
+  function activeLayer(){ return document.body?.dataset?.od1945Layer || document.body?.dataset?.od195Layer || ''; }
+  function isInputActive(){ const el = document.activeElement; return !!(el && el.matches && el.matches('input,textarea,select,[contenteditable="true"]')); }
+  function normalizeTab(tab){ return CAMPAIGN_TABS.includes(tab) ? tab : 'visao'; }
+  function campaignPath(id = tableId(), tab = 'visao'){
+    const t = normalizeTab(tab);
+    return t === 'visao' ? `/campanha/${encodeURIComponent(cleanId(id))}` : `/campanha/${encodeURIComponent(cleanId(id))}/${t}`;
+  }
+  function logIssue(type, message, extra = {}){
+    const list = safe(() => JSON.parse(localStorage.getItem('od195_layer_issues') || '[]'), []);
+    list.push({ type, message: String(message || ''), extra, at: new Date().toISOString(), path: location.pathname });
+    localStorage.setItem('od195_layer_issues', JSON.stringify(list.slice(-80)));
+  }
+  function setLayer(layer){
+    document.body.dataset.od195Layer = layer;
+    document.body.dataset.od1945Layer = layer;
+    document.body.classList.toggle('od195-auth-layer', layer === 'auth');
+    document.body.classList.toggle('od195-hub-layer', layer === 'hub');
+    document.body.classList.toggle('od195-campaign-layer', layer === 'campaign');
+    document.body.classList.toggle('od195-sheet-layer', layer === 'sheet');
+  }
+  function setOnlyScreen(screenId){
+    ['auth-screen','sessions-screen','app-screen','overlay-screen'].forEach(id => {
+      const el = $(id);
+      if (el) el.classList.toggle('active', id === screenId);
+    });
+  }
+  function hideLegacy(){
+    LEGACY_SELECTORS.forEach(selector => {
+      document.querySelectorAll(selector).forEach(el => {
+        if (el.closest('#od1901-campaign-manager') || el.closest('.sheet') || el.closest('#od193-campaign-editor')) return;
+        el.dataset.od195Legacy = 'disabled';
+        el.setAttribute('aria-hidden', 'true');
+        el.classList.add('od195-disabled-legacy');
+      });
+    });
+    document.body?.classList.remove('master-dashboard-mode','player-dashboard-mode','master-sheet-open','sidebar-collapsed');
+  }
+  function sanitizeLocalState(){
+    const id = tableId();
+    if (id && currentUser?.id && campaigns().length && !hasMembership(id)) {
+      localStorage.removeItem(STORAGE.activeCampaign);
+      currentCampaignId = null;
+      logIssue('state-cleanup', 'activeCampaign removida porque o usuário não participa mais dela', { id });
+    }
+    ['od1901_campaign_tab_', 'od1902_campaign_tab_', 'od191_manager_tab_', 'od192_manager_tab_'].forEach(prefix => {
+      Object.keys(localStorage).forEach(key => {
+        if (!key.startsWith(prefix)) return;
+        const value = localStorage.getItem(key);
+        if (!CAMPAIGN_TABS.includes(value)) localStorage.setItem(key, 'visao');
+      });
+    });
+  }
+  function renderModern(reason = 'render', force = false){
+    if (!tableId() || renderLock) return;
+    if (isInputActive() && !force) return;
+    const now = Date.now();
+    if (!force && now - lastRenderAt < 520) return;
+    lastRenderAt = now;
+    renderLock = true;
+    try {
+      setLayer('campaign');
+      setOnlyScreen('app-screen');
+      hideLegacy();
+      const api = manager();
+      if (api?.renderManager) api.renderManager();
+      safe(() => window.od1941LiveStabilityAndOwlbearFix?.patchOnlineRows?.(), null);
+      safe(() => window.od1941LiveStabilityAndOwlbearFix?.injectOwlbearButtons?.(), null);
+      hideLegacy();
+    } catch (error) {
+      logIssue('render', error?.message || error, { reason });
+    } finally {
+      renderLock = false;
+    }
+  }
+  function normalizeUrl(){
+    if (lastRoute === location.pathname) return;
+    lastRoute = location.pathname;
+    const parts = location.pathname.replace(/^\/|\/$/g, '').split('/').filter(Boolean);
+    if (!parts.length && token()) history.replaceState({ od195: true }, '', '/inicio');
+    if (parts[0] === 'mesa' && parts[1]) history.replaceState({ od195: true }, '', campaignPath(decodeURIComponent(parts[1]), parts[2] || 'visao'));
+    if (parts[0] === 'campanha' && parts[1]) {
+      const tab = normalizeTab(parts[2] || 'visao');
+      const path = campaignPath(decodeURIComponent(parts[1]), tab);
+      if (location.pathname !== path) history.replaceState({ od195: true }, '', path);
+    }
+  }
+  async function loadState(reason = 'state', force = false){
+    const id = tableId();
+    if (!id || !token() || typeof od42LoadTableState !== 'function') return;
+    const now = Date.now();
+    if (!force && now - lastStateAt < 1300) return;
+    lastStateAt = now;
+    try {
+      await od42LoadTableState(id);
+      if (typeof od44LoadMessages === 'function') await od44LoadMessages(id);
+      if (typeof od44LoadInitiative === 'function') await od44LoadInitiative(id);
+      renderModern(reason, force);
+    } catch (error) {
+      logIssue('sync', error?.message || error, { reason });
+    }
+  }
+  async function joinRoom(requestList = false){
+    const id = tableId();
+    if (!id || !token()) return;
+    const now = Date.now();
+    if (now - lastJoinAt < (requestList ? 2400 : 5200)) return;
+    lastJoinAt = now;
+    const socket = safe(() => typeof od44EnsureSocket === 'function' ? od44EnsureSocket() : null, null);
+    if (socket?.connected) {
+      safe(() => socket.emit('table:join', { tableId: id }), null);
+      if (requestList) safe(() => socket.emit('presence:get', { tableId: id }), null);
+    }
+    if (Date.now() - lastPresenceAt > 3600 && typeof od42Api === 'function') {
+      lastPresenceAt = Date.now();
+      safe(() => od42Api(`/api/tables/${encodeURIComponent(id)}/presence`, { method: 'POST' }).then(data => {
+        if (data?.onlineUserIds) {
+          window.od1905OnlineUsers = window.od1905OnlineUsers || window.od1904OnlineUsers || {};
+          const map = {};
+          data.onlineUserIds.forEach(userId => { map[String(userId)] = true; });
+          if (currentUser?.id) map[String(currentUser.id)] = true;
+          window.od1905OnlineUsers[String(id)] = map;
+          window.od1904OnlineUsers = window.od1905OnlineUsers;
+          safe(() => window.od1941LiveStabilityAndOwlbearFix?.patchOnlineRows?.(), null);
+        }
+      }), null);
+    }
+  }
+  function patchOnlineBadges(){ safe(() => window.od1941LiveStabilityAndOwlbearFix?.patchOnlineRows?.(), null); }
+  function patchMasterButtons(){
+    // V195: os botões antigos de mestre não devem existir; o gerenciador V192 controla ações.
+    document.querySelectorAll('[data-od1901-remove-member],[data-od1902-remove-member],[data-od1901-unlink-member],[data-od1902-unlink-member]').forEach(btn => {
+      if (!btn.closest('#od1901-campaign-manager')) btn.remove();
+    });
+  }
+  function auditLayer(force = false){
+    const now = Date.now();
+    if (!force && now - lastAuditAt < 3000) return lastAudit;
+    lastAuditAt = now;
+    sanitizeLocalState();
+    normalizeUrl();
+    const screens = ['auth-screen','sessions-screen','app-screen','overlay-screen'].filter(id => $(id)?.classList.contains('active'));
+    const issues = [];
+    if (screens.length > 1) issues.push({ type: 'screen', message: `mais de uma tela ativa: ${screens.join(', ')}` });
+    const layer = activeLayer();
+    if (layer === 'campaign' && !$('od1901-campaign-manager') && tableId()) issues.push({ type: 'campaign', message: 'camada campanha sem gerenciador moderno' });
+    if (layer === 'campaign') {
+      const legacy = [];
+      LEGACY_SELECTORS.forEach(selector => document.querySelectorAll(selector).forEach(el => {
+        if (!el.closest('#od1901-campaign-manager') && !el.closest('.sheet') && !el.closest('#od193-campaign-editor')) legacy.push(selector);
+      }));
+      if (legacy.length) issues.push({ type: 'legacy', message: `${legacy.length} seletor(es) legado(s) visíveis`, legacy: [...new Set(legacy)] });
+    }
+    const ids = [...document.querySelectorAll('[id]')].map(el => el.id);
+    const dup = ids.filter((id, index) => ids.indexOf(id) !== index);
+    if (dup.length) issues.push({ type: 'dom', message: `IDs duplicados no DOM: ${[...new Set(dup)].join(', ')}` });
+    if (issues.length) {
+      issues.forEach(issue => logIssue(issue.type, issue.message, issue));
+      hideLegacy();
+      if (layer === 'campaign') renderModern('audit-fix', true);
+    }
+    lastAudit = { ok: !issues.length, version: VERSION, layer, path: location.pathname, tableId: tableId() || null, screens, issues, at: new Date().toISOString() };
+    localStorage.setItem('od195_last_layer_audit', JSON.stringify(lastAudit));
+    return lastAudit;
+  }
+
+  // Ponte única compatível com nomes antigos, sem reativar o gerenciador antigo.
+  window.od1905LiveCampaignCore = {
+    loadLiveState: loadState,
+    joinRoom,
+    masterRemoveCharacter: window.od1905LiveCampaignCore?.masterRemoveCharacter || function(){},
+    masterRemovePlayer: window.od1905LiveCampaignCore?.masterRemovePlayer || function(){},
+    patchOnlineBadges,
+    patchMasterButtons
+  };
+
+  window.od195LayerValidator = { auditLayer, renderModern, loadState, joinRoom, hideLegacy, sanitizeLocalState, normalizeUrl };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => { auditLayer(true); joinRoom(true); loadState('v195-dom', true); }, 350);
+  }, { once: true });
+  if (document.readyState !== 'loading') setTimeout(() => { auditLayer(true); joinRoom(true); loadState('v195-ready', true); }, 350);
+
+  document.addEventListener('click', event => {
+    if (event.target.closest?.('[data-enter-campaign], [data-od192-tab], [data-od191-tab], [data-od1902-tab], [data-od1901-manager-tab], [data-od192-resource]')) {
+      setTimeout(() => { auditLayer(true); joinRoom(true); loadState('v195-click', false); }, 240);
+    }
+  }, true);
+  window.addEventListener('popstate', () => setTimeout(() => auditLayer(true), 80));
+  window.addEventListener('online', () => { joinRoom(true); loadState('v195-online', true); });
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) { auditLayer(true); joinRoom(true); loadState('v195-visible', false); }
+  });
+  setInterval(() => auditLayer(false), 7000);
 })();

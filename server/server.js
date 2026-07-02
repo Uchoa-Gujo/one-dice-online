@@ -16,12 +16,27 @@ const { query } = require('./database');
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: '*', methods: ['GET', 'POST'] }
+  cors: { origin: '*', methods: ['GET', 'POST'] },
+  serveClient: false,
+  transports: ['websocket', 'polling'],
+  pingInterval: Number(process.env.SOCKET_PING_INTERVAL_MS || 10000),
+  pingTimeout: Number(process.env.SOCKET_PING_TIMEOUT_MS || 28000),
+  upgradeTimeout: Number(process.env.SOCKET_UPGRADE_TIMEOUT_MS || 10000),
+  maxHttpBufferSize: Number(process.env.SOCKET_MAX_BUFFER_SIZE || 1e6),
+  perMessageDeflate: false,
+  connectionStateRecovery: {
+    maxDisconnectionDuration: Number(process.env.SOCKET_RECOVERY_MS || 120000),
+    skipMiddlewares: true
+  }
 });
 app.set('io', io);
 app.disable('x-powered-by');
+app.set('trust proxy', 1);
 
 const PORT = Number(process.env.PORT || 3000);
+server.keepAliveTimeout = Number(process.env.HTTP_KEEP_ALIVE_TIMEOUT_MS || 65000);
+server.headersTimeout = Number(process.env.HTTP_HEADERS_TIMEOUT_MS || 66000);
+server.requestTimeout = Number(process.env.HTTP_REQUEST_TIMEOUT_MS || 30000);
 const rootDir = path.resolve(__dirname, '..');
 const clientDir = path.join(rootDir, 'client');
 const uploadDir = process.env.UPLOAD_DIR || path.join(rootDir, 'uploads');
@@ -59,8 +74,38 @@ app.use('/uploads', express.static(uploadDir, {
   lastModified: true
 }));
 
-app.get('/api/health', (_req, res) => {
-  res.json({ ok: true, app: 'One Dice Online', version: packageInfo.version });
+app.get('/api/health', async (_req, res) => {
+  try {
+    const db = await query('select now() as now');
+    res.json({ ok: true, app: 'One Dice Online', version: packageInfo.version, db: 'ok', serverTime: db.rows[0]?.now });
+  } catch (error) {
+    res.status(503).json({ ok: false, app: 'One Dice Online', version: packageInfo.version, db: 'erro', error: error.message || 'Banco indisponível' });
+  }
+});
+
+app.get('/api/health/layers', async (_req, res) => {
+  try {
+    const checks = await Promise.all([
+      query("select to_regclass('public.users') as name"),
+      query("select to_regclass('public.characters') as name"),
+      query("select to_regclass('public.tables') as name"),
+      query("select to_regclass('public.table_members') as name"),
+      query("select to_regclass('public.chat_messages') as name"),
+      query("select to_regclass('public.table_events') as name"),
+      query("select to_regclass('public.table_presence') as name")
+    ]);
+    const layers = {
+      auth: true,
+      hub: true,
+      campaign: true,
+      sheet: true,
+      realtime: true,
+      database: checks.every(result => !!result.rows[0]?.name)
+    };
+    res.json({ ok: Object.values(layers).every(Boolean), app: 'One Dice Online', version: packageInfo.version, layers, serverTime: new Date().toISOString() });
+  } catch (error) {
+    res.status(503).json({ ok: false, app: 'One Dice Online', version: packageInfo.version, error: error.message || 'Falha na validação de camadas' });
+  }
 });
 
 app.use('/api/auth', authRoutes);
@@ -123,6 +168,9 @@ app.get([
   '/mesas',
   '/fichas',
   '/ficha/:id',
+  '/personagem/:id',
+  '/campanha/:id',
+  '/campanha/:id/:tab',
   '/mesa/:id',
   '/mesa/:id/*'
 ], sendIndex);
@@ -140,12 +188,34 @@ app.use((error, _req, res, _next) => {
 registerSockets(io);
 
 async function ensureServerSchema() {
-  await query("alter table users add column if not exists avatar_url text");
-  await query("alter table tables add column if not exists description varchar(200) default ''");
-  await query("alter table tables add column if not exists logo_url text default ''");
-  await query("create index if not exists idx_characters_owner_updated on characters(owner_id, updated_at desc)");
-  await query("create index if not exists idx_table_members_user on table_members(user_id, table_id)");
-  await query("create index if not exists idx_chat_messages_table_created on chat_messages(table_id, created_at)");
+  const statements = [
+    "alter table users add column if not exists avatar_url text",
+    "alter table users add column if not exists revision bigint not null default 0",
+    "alter table characters add column if not exists revision bigint not null default 0",
+    "alter table tables add column if not exists description varchar(200) default ''",
+    "alter table tables add column if not exists logo_url text default ''",
+    "alter table tables add column if not exists revision bigint not null default 0",
+    "alter table table_members add column if not exists revision bigint not null default 0",
+    "create index if not exists idx_characters_owner_updated on characters(owner_id, updated_at desc)",
+    "create index if not exists idx_characters_owner_name on characters(owner_id, lower(name))",
+    "create index if not exists idx_characters_updated on characters(updated_at desc)",
+    "create index if not exists idx_table_members_user on table_members(user_id, table_id)",
+    "create index if not exists idx_table_members_table_user on table_members(table_id, user_id)",
+    "create index if not exists idx_table_members_table_character on table_members(table_id, character_id)",
+    "create index if not exists idx_table_members_character on table_members(character_id)",
+    "create index if not exists idx_chat_messages_table_created on chat_messages(table_id, created_at)",
+    "create index if not exists idx_chat_messages_table_id_created on chat_messages(table_id, id, created_at)",
+    "create index if not exists idx_tables_owner_updated on tables(owner_id, updated_at desc)",
+    "create index if not exists idx_tables_settings_gin on tables using gin(settings)",
+    "create table if not exists table_events (id bigserial primary key, table_id uuid not null references tables(id) on delete cascade, event_name text not null, payload jsonb not null default '{}'::jsonb, created_at timestamptz not null default now())",
+    "create table if not exists table_presence (table_id uuid not null references tables(id) on delete cascade, user_id uuid not null references users(id) on delete cascade, last_seen timestamptz not null default now(), client_id text default '', primary key (table_id, user_id))",
+    "create index if not exists idx_table_events_table_id on table_events(table_id, id)",
+    "create index if not exists idx_table_events_table_created on table_events(table_id, created_at desc)",
+    "create index if not exists idx_table_presence_table_seen on table_presence(table_id, last_seen desc)",
+    "create index if not exists idx_table_presence_user_seen on table_presence(user_id, last_seen desc)",
+    "create index if not exists idx_characters_data_gin on characters using gin(data)"
+  ];
+  for (const sql of statements) await query(sql);
 }
 
 process.on('unhandledRejection', error => {

@@ -366,7 +366,7 @@ router.use(authRequired);
 
 router.get('/', async (req, res) => {
   const result = await query(
-    'select id, owner_id, name, data, created_at, updated_at from characters where owner_id = $1 order by lower(name) asc, updated_at desc',
+    'select id, owner_id, name, data, created_at, updated_at, coalesce(revision, 0) as revision from characters where owner_id = $1 order by lower(name) asc, updated_at desc',
     [req.user.id]
   );
   res.json({ characters: result.rows });
@@ -391,7 +391,7 @@ router.put('/:id', async (req, res) => {
   if (!previous.rowCount) return res.status(404).json({ error: 'Ficha não encontrada.' });
   const data = mergeCharacterDataSafely(previous.rows[0]?.data || {}, req.body.data || {});
   const result = await query(
-    'update characters set name = $1, data = $2, updated_at = now() where id = $3 and owner_id = $4 returning *',
+    'update characters set name = $1, data = $2, revision = coalesce(revision, 0) + 1, updated_at = now() where id = $3 and owner_id = $4 returning *',
     [name, data, id, req.user.id]
   );
   if (!result.rowCount) return res.status(404).json({ error: 'Ficha não encontrada.' });
@@ -399,7 +399,10 @@ router.put('/:id', async (req, res) => {
   const io = req.app.get('io');
   if (io) {
     const links = await query('select table_id from table_members where character_id = $1', [id]);
-    links.rows.forEach(row => io.to(`table:${row.table_id}`).emit('character:updated', { tableId: row.table_id, character }));
+    for (const row of links.rows) {
+      await query('update tables set revision = coalesce(revision, 0) + 1, updated_at = now() where id = $1', [row.table_id]);
+      io.to(`table:${row.table_id}`).emit('character:updated', { tableId: row.table_id, character });
+    }
   }
   res.json({ character });
 });
@@ -410,15 +413,16 @@ router.delete('/:id', async (req, res) => {
   if (!owned.rowCount) return res.status(404).json({ error: 'Ficha não encontrada.' });
 
   const links = await query('select table_id, user_id from table_members where character_id = $1', [id]);
-  await query('update table_members set character_id = null, updated_at = now() where character_id = $1', [id]);
+  await query('update table_members set character_id = null, revision = coalesce(revision, 0) + 1, updated_at = now() where character_id = $1', [id]);
   await query('delete from characters where id = $1 and owner_id = $2', [id, req.user.id]);
 
   const io = req.app.get('io');
   if (io) {
-    links.rows.forEach(row => {
+    for (const row of links.rows) {
+      await query('update tables set revision = coalesce(revision, 0) + 1, updated_at = now() where id = $1', [row.table_id]);
       io.to(`table:${row.table_id}`).emit('character:deleted', { tableId: row.table_id, characterId: id, userId: row.user_id });
       io.to(`table:${row.table_id}`).emit('member:updated', { tableId: row.table_id, reason: 'character-deleted', userId: row.user_id, characterId: null });
-    });
+    }
   }
   res.json({ ok: true, id, tables: links.rows.map(row => row.table_id) });
 });

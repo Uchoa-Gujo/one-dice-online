@@ -16,7 +16,8 @@ create table if not exists characters (
   name text not null default 'Ficha',
   data jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+  updated_at timestamptz not null default now(),
+  revision bigint not null default 0
 );
 
 create table if not exists tables (
@@ -93,3 +94,50 @@ create index if not exists idx_characters_owner on characters(owner_id);
 create index if not exists idx_table_members_user on table_members(user_id);
 create index if not exists idx_table_members_table on table_members(table_id);
 create index if not exists idx_chat_messages_table on chat_messages(table_id, created_at);
+
+
+-- V194.2 - ajustes de fluidez e sincronização
+alter table users add column if not exists avatar_url text;
+alter table users add column if not exists revision bigint not null default 0;
+alter table characters add column if not exists revision bigint not null default 0;
+alter table tables add column if not exists description varchar(200) default '';
+alter table tables add column if not exists logo_url text default '';
+alter table tables add column if not exists revision bigint not null default 0;
+alter table table_members add column if not exists revision bigint not null default 0;
+
+create index if not exists idx_tables_owner_updated on tables(owner_id, updated_at desc);
+create index if not exists idx_tables_invite_code on tables(invite_code);
+create index if not exists idx_characters_owner_name on characters(owner_id, lower(name));
+create index if not exists idx_characters_updated on characters(updated_at desc);
+create index if not exists idx_table_members_table_user on table_members(table_id, user_id);
+create index if not exists idx_table_members_table_character on table_members(table_id, character_id);
+create index if not exists idx_table_members_character on table_members(character_id);
+create index if not exists idx_chat_messages_table_id_created on chat_messages(table_id, id, created_at);
+create index if not exists idx_initiative_entries_table on initiative_entries(table_id, updated_at desc);
+create index if not exists idx_inventory_items_character on inventory_items(character_id, updated_at desc);
+create index if not exists idx_inventory_items_table on inventory_items(table_id, updated_at desc);
+create index if not exists idx_tables_settings_gin on tables using gin(settings);
+create index if not exists idx_characters_data_gin on characters using gin(data);
+
+
+-- V194.3 - replay de eventos e presença persistida
+create table if not exists table_events (
+  id bigserial primary key,
+  table_id uuid not null references tables(id) on delete cascade,
+  event_name text not null,
+  payload jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists table_presence (
+  table_id uuid not null references tables(id) on delete cascade,
+  user_id uuid not null references users(id) on delete cascade,
+  last_seen timestamptz not null default now(),
+  client_id text default '',
+  primary key (table_id, user_id)
+);
+
+create index if not exists idx_table_events_table_id on table_events(table_id, id);
+create index if not exists idx_table_events_table_created on table_events(table_id, created_at desc);
+create index if not exists idx_table_presence_table_seen on table_presence(table_id, last_seen desc);
+create index if not exists idx_table_presence_user_seen on table_presence(user_id, last_seen desc);
