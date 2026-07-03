@@ -1,42 +1,20 @@
-# One Dice Site v1.95.3
+# One Dice Site v1.95.6
 
 ## Foco
 
-Hotfix de campanha, combate, chat, Owlbear, boot pós-login e polimento visual.
+Hotfix para eliminar alternância de camadas visuais dentro da campanha.
 
-## Correções principais
+## Corrigido
 
-- Reduzidas travas e vai-e-volta do scroll dentro de campanhas;
-- removido o quadrado/retângulo antigo do canto superior direito em campanha;
-- corrigido flicker de botões dentro da campanha;
-- link Owlbear reforçado dentro do editor de campanha;
-- botões Owlbear passam a abrir o link configurado da mesa;
-- botão “Criar mapa Owlbear” continua abrindo https://www.owlbear.rodeo/;
-- chat da campanha ganha avatar/foto em estilo Discord;
-- chat passa a ter cache local para não sumir ao trocar de aba/atualizar;
-- corrigida aba/visual antigo piscando ao voltar para a campanha ou configurar Owlbear;
-- combat screen ajustada para participantes e ordem de turno não quebrarem;
-- mestre pode adicionar nome/NPC manual na ordem;
-- iniciar/encerrar combate reforçados;
-- jogadores só conseguem rolar iniciativa com combate iniciado;
-- menu dos três tracinhos na ficha vira apenas botão, sem retângulo grande atrás;
-- boot pós-login reforçado para não precisar de F5;
-- removido/ocultado Histórico Curto das fichas;
-- arredondamentos corrigidos para evitar fundo quadrado vazando nas quinas.
-
-## Validação
-
-- `npm run check`;
-- `client/script.js`;
-- `client/obs.js`;
-- `server/server.js`;
-- `server/database.js`;
-- `server/middleware.js`;
-- `server/routes/auth.js`;
-- `server/routes/characters.js`;
-- `server/routes/tables.js`;
-- `server/sockets/index.js`.
+- Chat da campanha não alterna mais entre visual antigo e visual novo;
+- mensagens do chat são normalizadas sempre no mesmo estilo com avatar;
+- camada antiga `app-grid` fica totalmente isolada quando a campanha está aberta;
+- ficha/chat/rolagem antigos não competem mais com o gerenciador moderno;
+- renderizações por socket, troca de aba ou clique passam por normalização final;
+- combate recebe normalização final para não quebrar texto em vertical;
+- botões e painéis da campanha ficam em uma camada única;
+- redução de flicker quando a campanha atualiza em tempo real.
 
 ## Versão
 
-1.95.3
+1.95.6

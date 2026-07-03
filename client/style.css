@@ -20114,3 +20114,616 @@ body.od1945-campaign-layer #app-screen {
     grid-column: 1 / -1 !important;
   }
 }
+
+
+/* =========================
+   V195.4 - Botão de três traços restaurado na ficha
+========================= */
+
+/* O botão flutuante aparece somente na camada da ficha. */
+#od1954-sheet-menu-toggle,
+.od1954-sheet-menu-toggle {
+  position: fixed !important;
+  top: 18px !important;
+  right: 18px !important;
+  z-index: 10050 !important;
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  min-height: 48px !important;
+  padding: 0 !important;
+  display: none;
+  place-items: center !important;
+  border-radius: 14px !important;
+  border: 2px solid rgba(255,255,255,.24) !important;
+  background: linear-gradient(180deg, #cb2e36, #8d111a) !important;
+  color: #fff !important;
+  box-shadow: 0 10px 26px rgba(0,0,0,.38), inset 0 0 0 1px rgba(255,255,255,.10) !important;
+  font-size: 28px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+}
+
+#od1954-sheet-menu-toggle span,
+.od1954-sheet-menu-toggle span {
+  line-height: 1 !important;
+  transform: translateY(-1px);
+}
+
+body.od195-sheet-layer #od1954-sheet-menu-toggle,
+body.od1945-sheet-layer #od1954-sheet-menu-toggle,
+body.od1952-sheet-open #od1954-sheet-menu-toggle {
+  display: grid !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+body.od195-campaign-layer #od1954-sheet-menu-toggle,
+body.od1945-campaign-layer #od1954-sheet-menu-toggle,
+body[data-od195-layer="campaign"] #od1954-sheet-menu-toggle,
+body[data-od1945-layer="campaign"] #od1954-sheet-menu-toggle {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Na ficha o topbar pode estar colapsado, mas não pode desaparecer. */
+body.od195-sheet-layer #main-topbar,
+body.od1945-sheet-layer #main-topbar,
+body.od1952-sheet-open #main-topbar {
+  display: grid !important;
+  visibility: visible !important;
+}
+
+body.od195-sheet-layer #main-topbar.topbar.collapsed,
+body.od1945-sheet-layer #main-topbar.topbar.collapsed,
+body.od1952-sheet-open #main-topbar.topbar.collapsed {
+  pointer-events: none !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+body.od195-sheet-layer #main-topbar.topbar.collapsed #topbar-menu-toggle,
+body.od1945-sheet-layer #main-topbar.topbar.collapsed #topbar-menu-toggle,
+body.od1952-sheet-open #main-topbar.topbar.collapsed #topbar-menu-toggle {
+  display: none !important;
+}
+
+/* Se algum patch marcou o menu como oculto na campanha, isso não vale na ficha. */
+body.od195-sheet-layer [data-od1953-campaign-hidden="true"],
+body.od1945-sheet-layer [data-od1953-campaign-hidden="true"],
+body.od1952-sheet-open [data-od1953-campaign-hidden="true"],
+body.od195-sheet-layer [data-od1951-hidden-in-campaign="true"],
+body.od1945-sheet-layer [data-od1951-hidden-in-campaign="true"],
+body.od1952-sheet-open [data-od1951-hidden-in-campaign="true"] {
+  display: revert !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+
+/* =========================
+   V195.5 - Campanha compacta, scroll estável e combate redesenhado
+========================= */
+
+/* Scroll da campanha: nada de contain/overflow prendendo a roda do mouse. */
+html.od1955-campaign-scroll-root,
+html.od1955-campaign-scroll-root body,
+body.od1955-campaign-compact {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  height: auto !important;
+  min-height: 100% !important;
+  scroll-behavior: auto !important;
+}
+
+body.od1955-campaign-compact #app-screen,
+body.od1955-campaign-compact #app-screen.active {
+  display: block !important;
+  overflow-y: visible !important;
+  overflow-x: hidden !important;
+  height: auto !important;
+  min-height: 100vh !important;
+  overscroll-behavior-y: auto !important;
+  touch-action: pan-y !important;
+}
+
+body.od1955-campaign-compact #od1901-campaign-manager,
+body.od1955-campaign-compact #od1901-campaign-manager *,
+body.od1955-campaign-compact .od191-content,
+body.od1955-campaign-compact .od192-content,
+body.od1955-campaign-compact .od191-panel,
+body.od1955-campaign-compact .od192-combat-grid {
+  content-visibility: visible !important;
+  contain: none !important;
+  contain-intrinsic-size: auto !important;
+  scroll-behavior: auto !important;
+}
+
+body.od1955-campaign-compact #od1901-campaign-manager {
+  width: min(100% - 32px, 1500px) !important;
+  max-width: 1500px !important;
+  margin: 18px auto 56px !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+/* Some o retângulo/menu da ficha dentro da campanha. */
+body.od1955-campaign-compact #main-topbar,
+body.od1955-campaign-compact #topbar-menu-toggle,
+body.od1955-campaign-compact .topbar-menu-toggle,
+body.od1955-campaign-compact #od1954-sheet-menu-toggle,
+body.od1955-campaign-compact #sidebar-dock-btn,
+body.od1955-campaign-compact #master-dashboard-dock-btn,
+body.od1955-campaign-compact [data-od1955-hidden-in-campaign="true"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Topo compacto: código e abas ocupam menos altura. */
+body.od1955-campaign-compact #od1901-campaign-manager .od191-hero,
+body.od1955-campaign-compact #od1901-campaign-manager .od192-hero {
+  border-radius: 22px !important;
+  overflow: hidden !important;
+  min-height: 0 !important;
+  margin-bottom: 14px !important;
+  border-color: rgba(239,47,59,.72) !important;
+}
+
+body.od1955-campaign-compact #od1901-campaign-manager .od191-hero-top {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  padding: 10px 16px !important;
+  min-height: 56px !important;
+}
+
+body.od1955-campaign-compact #od1901-campaign-manager .od191-hero-actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  justify-content: flex-end !important;
+  min-height: 38px !important;
+}
+
+body.od1955-campaign-compact #od1901-campaign-manager .od191-hero-actions button,
+body.od1955-campaign-compact #od1901-campaign-manager .od191-back {
+  min-height: 36px !important;
+  padding: 8px 12px !important;
+  border-radius: 11px !important;
+  font-size: .9rem !important;
+}
+
+body.od1955-campaign-compact #od1901-campaign-manager .od191-hero-main {
+  display: grid !important;
+  grid-template-columns: minmax(220px, 1fr) minmax(220px, 360px) !important;
+  gap: 18px !important;
+  align-items: center !important;
+  padding: 14px 18px 16px !important;
+  min-height: 92px !important;
+}
+
+body.od1955-campaign-compact #od1901-campaign-manager .od191-kicker {
+  margin-bottom: 5px !important;
+  font-size: .75rem !important;
+  letter-spacing: .22em !important;
+  line-height: 1.05 !important;
+}
+
+body.od1955-campaign-compact #od1901-campaign-manager .od191-hero-main h1 {
+  font-size: clamp(1.85rem, 2.5vw, 3rem) !important;
+  line-height: 1 !important;
+  margin: 0 !important;
+}
+
+body.od1955-campaign-compact #od1901-campaign-manager .od191-hero-main p {
+  margin: 7px 0 0 !important;
+  font-size: .95rem !important;
+  line-height: 1.35 !important;
+  max-width: 60ch !important;
+}
+
+body.od1955-campaign-compact #od1901-campaign-manager .od191-code-card {
+  width: 100% !important;
+  max-width: 360px !important;
+  min-height: 76px !important;
+  padding: 12px 16px !important;
+  border-radius: 16px !important;
+  display: grid !important;
+  align-content: center !important;
+  justify-items: center !important;
+  gap: 3px !important;
+}
+
+body.od1955-campaign-compact #od1901-campaign-manager .od191-code-card small {
+  font-size: .7rem !important;
+  letter-spacing: .18em !important;
+}
+
+body.od1955-campaign-compact #od1901-campaign-manager .od191-code-card strong {
+  font-size: clamp(1.45rem, 2vw, 2.15rem) !important;
+  line-height: 1 !important;
+}
+
+body.od1955-campaign-compact #od1901-campaign-manager .od191-code-card span {
+  font-size: .82rem !important;
+  line-height: 1.05 !important;
+}
+
+body.od1955-campaign-compact #od1901-campaign-manager .od191-tabs {
+  min-height: 50px !important;
+  padding: 0 14px !important;
+  gap: 8px !important;
+  overflow-x: auto !important;
+  scrollbar-width: thin !important;
+}
+
+body.od1955-campaign-compact #od1901-campaign-manager .od191-tabs button {
+  min-height: 48px !important;
+  padding: 0 12px !important;
+  white-space: nowrap !important;
+  border-radius: 10px 10px 0 0 !important;
+  font-size: .92rem !important;
+}
+
+/* Conteúdo da campanha mais próximo do topo. */
+body.od1955-campaign-compact #od1901-campaign-manager .od191-content,
+body.od1955-campaign-compact #od1901-campaign-manager .od192-content {
+  padding-top: 10px !important;
+  padding-bottom: 52px !important;
+}
+
+/* Combate: em telas médias empilha os painéis para impedir nomes quebrados em letras. */
+body.od1955-campaign-compact .od192-combat-head {
+  display: grid !important;
+  grid-template-columns: minmax(220px, 1fr) auto !important;
+  gap: 16px !important;
+  align-items: center !important;
+  padding: 18px 22px !important;
+  border-radius: 22px !important;
+}
+
+body.od1955-campaign-compact .od192-combat-head h2 {
+  font-size: clamp(1.7rem, 2.3vw, 2.5rem) !important;
+  line-height: 1 !important;
+}
+
+body.od1955-campaign-compact .od192-combat-controls,
+body.od1955-campaign-compact .od1955-combat-controls {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 9px !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+}
+
+body.od1955-campaign-compact .od192-combat-controls button {
+  min-height: 36px !important;
+  padding: 7px 11px !important;
+  border-radius: 10px !important;
+  white-space: nowrap !important;
+  font-size: .9rem !important;
+}
+
+body.od1955-campaign-compact .od192-combat-grid {
+  display: grid !important;
+  grid-template-columns: minmax(390px, .82fr) minmax(560px, 1.18fr) !important;
+  gap: 18px !important;
+  align-items: start !important;
+}
+
+body.od1955-campaign-compact .od192-participant,
+body.od1955-campaign-compact .od192-turn-row,
+body.od1955-campaign-compact .od1955-combat-row {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  word-break: normal !important;
+  hyphens: none !important;
+}
+
+body.od1955-campaign-compact .od192-participant {
+  grid-template-columns: 64px minmax(0, 1fr) !important;
+  align-items: center !important;
+  padding: 14px !important;
+  gap: 12px !important;
+  border-radius: 18px !important;
+}
+
+body.od1955-campaign-compact .od192-participant-actions,
+body.od1955-campaign-compact .od1955-combat-actions {
+  grid-column: 1 / -1 !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+}
+
+body.od1955-campaign-compact .od192-participant-actions button {
+  min-width: 136px !important;
+  min-height: 36px !important;
+  writing-mode: horizontal-tb !important;
+  white-space: nowrap !important;
+}
+
+body.od1955-campaign-compact .od192-participant strong,
+body.od1955-campaign-compact .od192-turn-info strong,
+body.od1955-campaign-compact .od192-turn-row strong {
+  display: block !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  hyphens: none !important;
+  line-height: 1.14 !important;
+  min-width: 10ch !important;
+  max-width: 100% !important;
+}
+
+body.od1955-campaign-compact .od192-participant small,
+body.od1955-campaign-compact .od192-turn-info small,
+body.od1955-campaign-compact .od192-turn-info span {
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  hyphens: none !important;
+}
+
+body.od1955-campaign-compact .od192-turn-row {
+  grid-template-columns: 46px 58px minmax(180px, 1fr) !important;
+  gap: 12px !important;
+  align-items: center !important;
+  padding: 13px !important;
+  border-radius: 18px !important;
+}
+
+body.od1955-campaign-compact .od192-init-edit,
+body.od1955-campaign-compact .od192-status-edit,
+body.od1955-campaign-compact .od192-turn-actions {
+  grid-column: 3 / -1 !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  justify-content: flex-start !important;
+}
+
+body.od1955-campaign-compact .od192-init-edit input {
+  width: 82px !important;
+}
+
+body.od1955-campaign-compact .od192-status-edit select {
+  min-width: 138px !important;
+}
+
+body.od1955-campaign-compact .od192-turn-actions button {
+  min-width: 86px !important;
+  white-space: nowrap !important;
+}
+
+/* Em resoluções comuns de notebook/zoom, o combate fica em uma coluna confortável. */
+@media (max-width: 1500px) {
+  body.od1955-campaign-compact .od192-combat-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.od1955-campaign-compact .od192-participant {
+    grid-template-columns: 66px minmax(0, 1fr) auto !important;
+  }
+
+  body.od1955-campaign-compact .od192-participant-actions {
+    grid-column: auto !important;
+    justify-content: flex-end !important;
+  }
+}
+
+@media (max-width: 980px) {
+  body.od1955-campaign-compact #od1901-campaign-manager {
+    width: min(100% - 18px, 1500px) !important;
+    margin-top: 10px !important;
+  }
+
+  body.od1955-campaign-compact #od1901-campaign-manager .od191-hero-main,
+  body.od1955-campaign-compact .od192-combat-head {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.od1955-campaign-compact #od1901-campaign-manager .od191-code-card {
+    max-width: none !important;
+  }
+
+  body.od1955-campaign-compact .od192-participant,
+  body.od1955-campaign-compact .od192-turn-row {
+    grid-template-columns: 56px minmax(0,1fr) !important;
+  }
+
+  body.od1955-campaign-compact .od192-participant-actions,
+  body.od1955-campaign-compact .od192-init-edit,
+  body.od1955-campaign-compact .od192-status-edit,
+  body.od1955-campaign-compact .od192-turn-actions {
+    grid-column: 1 / -1 !important;
+    justify-content: flex-start !important;
+  }
+}
+
+
+/* =========================
+   V195.6 - Camada única da campanha / visual canônico
+========================= */
+
+body.od1956-campaign-single-layer #app-screen.active {
+  display: block !important;
+  background: #050608 !important;
+  overflow-x: hidden !important;
+}
+
+/* Remove a camada antiga inteira da campanha para não concorrer com o gerenciador moderno. */
+body.od1956-campaign-single-layer #app-screen > .app-grid,
+body.od1956-campaign-single-layer [data-od1956-quarantined="true"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  inset: auto !important;
+  width: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+body.od1956-campaign-single-layer #od1901-campaign-manager,
+#od1901-campaign-manager[data-od1956-single-layer="true"] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  content-visibility: visible !important;
+  contain: none !important;
+  contain-intrinsic-size: auto !important;
+  isolation: isolate !important;
+  overflow: visible !important;
+}
+
+/* Evita flicker entre estilos antigos e novos dentro da campanha. */
+#od1901-campaign-manager[data-od1956-single-layer="true"] *,
+body.od1956-campaign-single-layer #od1901-campaign-manager * {
+  transition-property: color, background-color, border-color, opacity, box-shadow !important;
+  animation-duration: .001s !important;
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+}
+
+#od1901-campaign-manager .od1956-stable-button {
+  opacity: 1 !important;
+  visibility: visible !important;
+  backface-visibility: hidden !important;
+}
+
+/* Chat canônico: vale tanto para mensagem antiga quanto nova. */
+#od1901-campaign-manager .od1956-chat-log,
+#od1901-campaign-manager #od1902-chat-log,
+#od1901-campaign-manager .od191-chat-log,
+#od1901-campaign-manager .od1901-chat-log {
+  display: grid !important;
+  align-content: start !important;
+  gap: 10px !important;
+  min-height: 420px !important;
+  max-height: 62vh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: 16px !important;
+  border-radius: 18px !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+  background: rgba(0,0,0,.30) !important;
+}
+
+#od1901-campaign-manager .od1956-chat-msg,
+#od1901-campaign-manager .od191-chat-msg,
+#od1901-campaign-manager .od1901-chat-msg {
+  display: grid !important;
+  grid-template-columns: 42px minmax(0,1fr) !important;
+  gap: 10px !important;
+  align-items: start !important;
+  width: min(620px, 100%) !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 10px 12px !important;
+  border-radius: 14px !important;
+  border: 1px solid rgba(255,255,255,.09) !important;
+  background: rgba(255,255,255,.035) !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+
+#od1901-campaign-manager .od1956-chat-msg.roll,
+#od1901-campaign-manager .od191-chat-msg.roll,
+#od1901-campaign-manager .od1901-chat-msg.roll {
+  border-color: color-mix(in srgb, var(--od-theme-main, var(--accent, #ef2f3b)), transparent 45%) !important;
+  background: color-mix(in srgb, var(--od-theme-main, var(--accent, #ef2f3b)), transparent 89%) !important;
+}
+
+#od1901-campaign-manager .od1956-chat-avatar,
+#od1901-campaign-manager .od1956-chat-msg > img,
+#od1901-campaign-manager .od1953-chat-msg > img {
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
+  object-fit: cover !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(255,255,255,.16) !important;
+  background: rgba(255,255,255,.08) !important;
+}
+
+#od1901-campaign-manager .od1956-chat-body,
+#od1901-campaign-manager .od1953-chat-body {
+  min-width: 0 !important;
+}
+
+#od1901-campaign-manager .od1956-chat-meta,
+#od1901-campaign-manager .od1956-chat-msg small,
+#od1901-campaign-manager .od191-chat-msg small,
+#od1901-campaign-manager .od1901-chat-msg small {
+  display: block !important;
+  margin: 0 0 4px !important;
+  color: color-mix(in srgb, var(--od-theme-main, var(--accent, #ef2f3b)), white 36%) !important;
+  font-size: .78rem !important;
+  line-height: 1.2 !important;
+}
+
+#od1901-campaign-manager .od1956-chat-msg p,
+#od1901-campaign-manager .od191-chat-msg p,
+#od1901-campaign-manager .od1901-chat-msg p {
+  margin: 0 !important;
+  color: rgba(255,255,255,.92) !important;
+  line-height: 1.45 !important;
+  overflow-wrap: anywhere !important;
+}
+
+#od1901-campaign-manager .od191-chat-form,
+#od1901-campaign-manager .od1901-chat-form,
+#od1901-campaign-manager #od1902-chat-form {
+  display: grid !important;
+  grid-template-columns: minmax(0,1fr) auto !important;
+  gap: 10px !important;
+  margin-top: 14px !important;
+}
+
+/* Combate canônico: impede textos verticais e painéis sobrepostos. */
+#od1901-campaign-manager .od1956-combat-grid,
+body.od1956-campaign-single-layer #od1901-campaign-manager .od192-combat-grid {
+  display: grid !important;
+  grid-template-columns: minmax(360px,.9fr) minmax(520px,1.25fr) !important;
+  gap: 18px !important;
+  align-items: start !important;
+  overflow: visible !important;
+}
+
+#od1901-campaign-manager .od1956-combat-row,
+body.od1956-campaign-single-layer #od1901-campaign-manager .od192-participant,
+body.od1956-campaign-single-layer #od1901-campaign-manager .od192-turn-row {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  hyphens: none !important;
+  writing-mode: horizontal-tb !important;
+}
+
+#od1901-campaign-manager .od1956-combat-row strong,
+#od1901-campaign-manager .od1956-combat-row small,
+#od1901-campaign-manager .od1956-combat-row span,
+#od1901-campaign-manager .od1956-combat-row b {
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  white-space: normal !important;
+}
+
+@media (max-width: 1500px) {
+  #od1901-campaign-manager .od1956-combat-grid,
+  body.od1956-campaign-single-layer #od1901-campaign-manager .od192-combat-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
