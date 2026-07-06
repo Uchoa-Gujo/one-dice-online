@@ -1,25 +1,22 @@
-# One Dice Online — Correções da versão 1.95.17
+# One Dice Online — Correções da versão 1.95.18
 
 ## Resumo
 
-Esta versão corrige o problema de **carregamento infinito que continuou aparecendo depois da v1.95.10**.  
-A correção foi feita voltando a base do código para a **v1.95.9**, que era a última base estável antes do problema, e reaplicando somente as correções necessárias de forma limpa.
+Esta versão corta pela raiz o problema do site ficar **girando/carregando infinitamente** mesmo quando a tela de login já aparece.
 
-O foco desta versão foi remover a causa do travamento fora do login: scripts globais, carregamento bloqueante e correções visuais que continuavam rodando durante a abertura do site.
+A correção não ficou focada no formulário de login. Foi feita uma limpeza geral nos pontos que ainda podiam manter o navegador preso em carregamento: loaders antigos, boot visual, Socket.IO, script do inventário carregado fora da área correta e carregamentos secundários bloqueando a entrada.
 
 ---
 
 ## Bugs corrigidos
 
-- O site podia ficar carregando infinitamente mesmo com a tela de login visível.
-- O carregamento bloqueante do Socket.IO podia prender a abertura da página antes do `script.js` principal terminar de assumir a interface.
-- A correção da v1.95.10 tinha introduzido uma camada global de exclusão de personagem com observação da página inteira.
-- As versões posteriores adicionaram guardiões de boot/login, `fetch` global, observadores e timers que continuavam tentando corrigir a tela mesmo quando o problema estava em outra área.
-- O botão **EXCLUIR** continua funcionando, mas agora sem rodar nada durante a abertura do site.
-- A aba **Seus Personagens** mantém o design moderno ao criar personagem novo.
-- O menu de três traços da ficha mantém o visual novo, sem o **X** desnecessário.
-- A ficha mantém o fundo limpo, sem vazamento de textura/imagem antiga.
-- Os atributos resumidos continuam organizados como: nome, valor e bônus centralizados.
+- O navegador podia continuar carregando infinitamente mesmo com o login visível.
+- Loaders antigos `od180`, `od1805` e `od1776` ainda podiam ser criados por camadas antigas do site.
+- O boot visual podia esconder telas ou manter classes de carregamento no HTML/body.
+- O Socket.IO podia abrir requisição pendente e manter o navegador girando.
+- O script do inventário em módulo estava sendo carregado na tela principal mesmo sem a página do inventário estar aberta.
+- Login/restauração de sessão podia esperar fichas e mesas antes de liberar a interface.
+- Fichas e mesas agora carregam em segundo plano, sem prender a entrada no site.
 
 ---
 
@@ -35,107 +32,121 @@ O foco desta versão foi remover a causa do travamento fora do login: scripts gl
 
 ## Limpezas realizadas e motivo
 
-### 1. Remoção da base problemática pós-v1.95.10
+### 1. Remoção dos loaders antigos do HTML inicial
 
 **O que foi removido:**  
-A versão foi reconstruída a partir da base **v1.95.9**, sem manter os blocos adicionados depois da v1.95.10 que mexiam em boot, login, loader, `fetch` global e observação contínua da interface.
+Foram removidos do `client/index.html` os blocos iniciais de loader/boot:
+
+- `#od180-boot-screen`
+- `#od1805-boot-screen`
+- `od180-critical-style`
+- `od1805-preboot-script`
+- `od1805-preboot-style`
+- `od1805-boot-failsafe`
 
 **Por que foi removido:**  
-O bug começou depois da v1.95.10 e continuou mesmo depois das tentativas de corrigir o login. Isso indicou que o problema não estava somente no formulário de login, mas em camadas do site que rodavam durante a abertura.
+Esses loaders eram criados antes do `script.js` principal assumir a interface. Mesmo quando a tela de login aparecia, classes como `od180-booting` e `od1805-booting` ainda podiam manter o navegador ou a página em estado de carregamento.
 
 **Como foi substituído:**  
-As correções úteis foram reaplicadas em um bloco novo da **v1.95.17**, sem `MutationObserver` permanente, sem `setInterval` visual contínuo e sem alterar `window.fetch` globalmente.
+A página agora abre direto no HTML real do site. Foi adicionado um guardião simples que apenas remove qualquer loader antigo caso alguma camada tente recriá-lo.
 
 ---
 
-### 2. Socket.IO deixou de bloquear a abertura do site
+### 2. Socket.IO desligado no carregamento inicial
 
 **O que foi removido:**  
-O carregamento direto e bloqueante deste script foi removido do fluxo inicial:
+O carregamento automático do Socket.IO foi removido do `index.html` e neutralizado no `script.js`.
+
+**Por que foi removido:**  
+O Socket.IO pode manter requisições pendentes, principalmente com polling ou proxy de produção. Isso pode deixar a aba do navegador girando infinitamente mesmo com a interface visível.
+
+**Como foi substituído:**  
+Nesta versão, o tempo real fica desligado no boot para garantir estabilidade. O site, login, fichas, personagens e mesas não dependem mais do socket para abrir.
+
+---
+
+### 3. Remoção do script do inventário da tela principal
+
+**O que foi removido:**  
+Foi removido do `client/index.html` este carregamento global:
 
 ```html
-<script src="/socket.io/socket.io.js"></script>
+<script type="module" src="/block-inventory/script.js"></script>
 ```
 
 **Por que foi removido:**  
-Esse script era carregado antes do `script.js` principal. Se `/socket.io/socket.io.js` demorasse, travasse ou ficasse pendente no servidor/proxy, o navegador podia continuar carregando infinitamente e o restante da interface ficava dependente dele.
+Esse script pertence à página própria do inventário em bloco. Ele não precisa rodar na tela principal/login e podia adicionar erro ou trabalho extra durante a abertura do site.
 
 **Como foi substituído:**  
-O Socket.IO agora é carregado de forma assíncrona depois que a página já abriu. Se ele falhar, o site continua funcionando sem travar a tela inicial; apenas o tempo real fica desativado até o socket carregar corretamente.
+O inventário em bloco continua com seus arquivos na pasta `client/block-inventory/`, mas não é mais carregado junto da página principal.
 
 ---
 
-### 3. Exclusão de personagens refeita sem camada global
+### 4. Login e boot sem carregamentos secundários bloqueantes
 
-**O que foi removido:**  
-Foi descartado o modelo da v1.95.10 que dependia de observação global da página para decorar botões de exclusão.
+**O que foi alterado:**  
+O fluxo final da v1.95.18 agora faz:
 
-**Por que foi removido:**  
-Esse tipo de correção roda durante a montagem inteira do site e pode reagir a qualquer renderização, mesmo quando o usuário ainda está apenas abrindo o site.
+1. autentica o usuário;
+2. abre a tela inicial imediatamente;
+3. carrega fichas e mesas depois, em segundo plano;
+4. usa timeout nas chamadas principais;
+5. remove loaders presos em vários pontos do ciclo.
+
+**Por que foi alterado:**  
+Antes, mesmo com login correto, o site podia aguardar `/api/characters`, `/api/tables`, restauração de rota profunda ou outras camadas antes de liberar a interface. Se uma dessas partes demorasse, parecia que o site inteiro estava travado.
 
 **Como foi substituído:**  
-A exclusão agora funciona por um fluxo único e direto:
-
-1. O clique no botão **EXCLUIR** é capturado.
-2. A exclusão é confirmada.
-3. A ficha é apagada no servidor quando há sessão online.
-4. O vínculo local com mesa/campanha é limpo.
-5. Backups e caches locais da ficha são removidos.
-6. A lista de personagens é atualizada.
-
-Nada disso roda durante a abertura do site; só roda ao clicar em **EXCLUIR**.
+A entrada no site não depende mais desses carregamentos secundários. Se ficha/mesa demorar, o usuário entra mesmo assim e os dados atualizam depois.
 
 ---
 
-### 4. Correção da aba Seus Personagens sem observação infinita
+### 5. CSS final contra loader preso
 
-**O que foi removido:**  
-Não foi mantido o observador permanente da v1.95.11.
+**O que foi adicionado:**  
+Uma trava no fim do `client/style.css` para impedir que loaders antigos voltem visualmente:
 
-**Por que foi removido:**  
-O observador verificava mudanças no documento inteiro e podia continuar reagindo a renders que não tinham relação com a aba de personagens.
+- `#od180-boot-screen`
+- `#od1805-boot-screen`
+- `#od1776-solid-loader`
+- `.od1776-solid-loader`
+- `.od180-loader-stuck`
+- `[data-od-loader]`
 
-**Como foi substituído:**  
-A normalização do design moderno agora roda apenas em momentos controlados:
-
-- ao renderizar a lista de personagens;
-- ao clicar na aba de personagens;
-- ao criar personagem novo;
-- em poucos `setTimeouts` finitos de segurança.
+**Por que foi adicionado:**  
+O projeto tem muitas camadas antigas. Mesmo removendo os blocos principais, uma função antiga ainda poderia tentar recriar loading. A trava visual garante que isso não bloqueie o uso do site.
 
 ---
 
-### 5. Correção do menu da ficha sem intervalo contínuo
+## Mantido das versões anteriores
 
-**O que foi removido:**  
-Foi removida a lógica que ficava sincronizando menu/atributos continuamente.
-
-**Por que foi removido:**  
-Um intervalo visual permanente não deve existir para corrigir layout, porque ele continua rodando mesmo fora da área afetada.
-
-**Como foi substituído:**  
-O menu da ficha agora é ajustado somente quando a ficha abre, quando o botão de três traços é clicado ou quando a tela termina de carregar.
+- Botão **EXCLUIR** de personagem continua funcionando.
+- Aba **Seus Personagens** não deve voltar para o modelo antigo após criar personagem.
+- Menu de três traços da ficha permanece sem o **X**.
+- Design novo do botão de três traços mantido.
+- Fundo antigo da ficha continua bloqueado.
+- Atributos resumidos continuam na ordem:
+  - nome centralizado;
+  - valor centralizado;
+  - bônus centralizado.
 
 ---
 
 ## Como testar
 
-1. Abrir o site em aba anônima ou navegador limpo.
-2. Confirmar que o site não fica carregando infinitamente.
-3. Entrar com a conta normalmente.
-4. Abrir **Seus Personagens**.
-5. Criar um novo personagem e conferir se o design moderno não volta para o modelo antigo.
-6. Excluir uma ficha e conferir se ela não volta depois de recarregar.
-7. Abrir uma ficha e conferir:
-   - botão de três traços no modelo novo;
-   - sem botão **X** no menu;
-   - fundo antigo removido;
-   - atributos resumidos em ordem: nome, valor, bônus.
-8. Abrir uma campanha e conferir se o site continua carregando normalmente.
+1. Subir a versão nova no servidor.
+2. Abrir em aba anônima ou navegador limpo.
+3. Conferir se a tela de login aparece sem loader por cima.
+4. Observar se a aba do navegador para de girar depois de poucos segundos.
+5. Fazer login.
+6. Conferir se entra na tela inicial mesmo que fichas/mesas demorem.
+7. Abrir **Seus Personagens**.
+8. Criar personagem novo e confirmar que o design moderno não volta para o modelo antigo.
+9. Excluir personagem e confirmar que ele não volta por cache.
+10. Abrir ficha e conferir menu/atributos/background.
 
 ---
 
 ## Observação importante
 
-Esta versão é uma correção de estabilidade.  
-Ela evita continuar empilhando patch por cima de patch e volta para a última base estável antes do bug, reaplicando somente o que precisava continuar existindo.
+Nesta versão, o Socket.IO foi desligado no carregamento inicial para eliminar o giro infinito. Depois que o site estiver estável, o tempo real pode ser reativado com carregamento sob demanda apenas dentro da mesa, usando WebSocket direto e sem polling.

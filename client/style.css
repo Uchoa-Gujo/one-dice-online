@@ -21583,3 +21583,29 @@ body.od1952-sheet-open #main-topbar .od19517-legacy-close-removed {
     grid-template-columns: 1fr 1fr !important;
   }
 }
+
+/* =========================
+   V195.18 - corte definitivo de loaders presos
+   Mantém o site utilizável mesmo se alguma camada antiga tentar recriar loading.
+========================= */
+#od180-boot-screen,
+#od1805-boot-screen,
+#od1776-solid-loader,
+.od1776-solid-loader,
+.od180-loader-stuck,
+[data-od-loader] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+html.od180-booting,
+html.od1805-booting,
+html.od1775-restoring-route,
+html.od180-booting body,
+html.od1805-booting body,
+body.od180-booting-body,
+body.od1805-booting-body,
+body.od1775-restoring-route {
+  overflow: auto !important;
+}
