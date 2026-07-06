@@ -1,8 +1,10 @@
-# One Dice Site v1.95.13
+# One Dice Site v1.95.14
 
 ## Foco
 
-Patch direto no código-fonte para corrigir o problema em que o site ficava **carregando/rodando infinitamente** e não iniciava. O problema mais provável estava na área de boot/login, mas a revisão também limpou a camada final criada na v1.95.12 para impedir loop visual em ficha, menu e atributos.
+Patch direto no código-fonte para resolver o problema em que o site continuava **carregando/rodando infinitamente** mesmo após a correção anterior.
+
+Desta vez a busca foi feita de forma geral, sem focar apenas no login. Foram revisadas as camadas de abertura, login, restauração de sessão, telas ativas, loaders antigos, CSS de boot, scripts inline do `index.html`, funções finais do `script.js`, observadores e regras visuais que podiam esconder a interface.
 
 Esta versão mantém as correções anteriores:
 
@@ -16,106 +18,117 @@ Esta versão mantém as correções anteriores:
 
 ## Corrigido
 
-- removido o carregamento infinito causado por conflito entre loaders antigos `od180`, `od1805` e camadas finais de shell;
-- o login limpo não fica mais coberto por tela de carregamento antes do formulário aparecer;
-- a tela de boot inicial agora só aparece automaticamente quando existe sessão para restaurar;
-- o fechamento de loaders agora remove também `#od1805-boot-screen`, que antes podia ficar preso mesmo quando `#od180-boot-screen` era fechado;
-- adicionada limpeza forte de classes antigas de boot:
+- removi fisicamente as telas de boot do `index.html`:
+  - `#od180-boot-screen`;
+  - `#od1805-boot-screen`;
+- removi o script inline que adicionava `od180-booting` na abertura do site;
+- removi o preboot antigo `od1805`, que escondia `#auth-screen`, `#sessions-screen`, `#app-screen` e `#overlay-screen`;
+- neutralizei a função antiga `ensureBoot()`, que ainda podia recriar o loader `od180`;
+- neutralizei a função antiga `showBoot()`, que ainda podia recriar o loader `od1805`;
+- adicionei uma proteção inicial `od19514EarlyNoInfiniteBoot` no começo do `script.js`;
+- adicionei uma proteção inline no `index.html` para remover qualquer loader antes mesmo do script principal terminar de carregar;
+- adicionei CSS final que impede qualquer loader antigo de aparecer por cima do site;
+- forcei a remoção das classes antigas de boot:
   - `od180-booting`;
   - `od1805-booting`;
   - `od1775-restoring-route`;
   - `od180-booting-body`;
   - `od1805-booting-body`;
-- adicionados failsafes para garantir que nenhuma tela de loading fique infinita após erro de login, erro de API ou falha de restauração;
-- removido o `MutationObserver` global da v1.95.12 que observava atributos/classes/estilos e podia reagir às próprias alterações;
-- removido o intervalo contínuo que ficava sincronizando menu/atributos a cada poucos milissegundos;
-- mantido o design do botão de três traços no modelo vermelho com três linhas brancas;
-- mantido o fechamento do menu no próprio botão de três traços;
-- mantida a remoção do **X** desnecessário;
-- mantido o layout de atributos resumidos em ordem:
-  - nome centralizado;
-  - valor centralizado;
-  - bônus centralizado abaixo.
+- garanti que as telas reais não fiquem invisíveis se alguma classe antiga de boot voltar;
+- atualizei todas as referências de versão para **1.95.14**.
 
 ## Arquivos alterados
 
-- `client/script.js`
 - `client/index.html`
+- `client/script.js`
+- `client/style.css`
 - `package.json`
 - `README.md`
 
 ## Limpezas realizadas e motivo
 
-### 1. Loop de carregamento do boot/login
+### 1. Remoção dos loaders do HTML
 
-**O que foi limpo:**  
-Foi removida a dependência do fluxo antigo que fechava apenas parte dos loaders. A função de limpeza agora remove tanto `#od180-boot-screen` quanto `#od1805-boot-screen`.
+**O que foi removido:**  
+Foram removidos do `index.html` os blocos visuais dos loaders `od180` e `od1805`, além do preboot que criava a tela “Carregando One Dice”.
 
-**Por que foi limpo:**  
-Existiam duas telas de carregamento de versões diferentes. Em alguns fluxos, uma era removida e a outra ficava ativa, deixando o site aparentemente rodando para sempre e impedindo o login/início de aparecer.
-
-**Como foi substituído:**  
-A v1.95.13 usa uma limpeza única de boot, removendo os dois loaders e as classes antigas no `html` e no `body`.
-
-### 2. Boot automático em login limpo
-
-**O que foi limpo:**  
-Foi alterado o trecho que chamava `showBoot()` automaticamente ao abrir o site.
-
-**Por que foi limpo:**  
-Esse boot era chamado mesmo quando não havia sessão para restaurar. Em navegador limpo ou conta nova, isso podia cobrir a tela de login sem necessidade.
+**Por que foi removido:**  
+A versão anterior tentava fechar os loaders por JavaScript, mas eles ainda existiam fisicamente no HTML. Se alguma função antiga falhasse, fosse interrompida ou recriasse uma classe de boot, a tela de loading podia continuar cobrindo tudo.
 
 **Como foi substituído:**  
-Agora o boot inicial só aparece se existir sessão salva para restaurar. Se não houver sessão, o sistema fecha o loader e mostra o login.
+O HTML agora abre direto com a tela real. O script inicial apenas aplica tema escuro/acento e não cria mais tela de carregamento.
 
-### 3. Observador global da v1.95.12
+### 2. Remoção do preboot `od1805`
 
-**O que foi limpo:**  
-Foi removido o `MutationObserver` que observava `class`, `style`, `data-od1957-menu-open`, `data-od195-layer` e `data-od1945-layer` no corpo inteiro da página.
+**O que foi removido:**  
+Foi removida a camada `od1805-preboot`, que adicionava `od1805-booting` no `<html>` e escondia as telas principais.
 
-**Por que foi limpo:**  
-Esse observador reagia às próprias mudanças feitas pela correção do menu. Isso podia gerar um ciclo permanente de sincronização, deixando a página pesada e com comportamento de carregamento infinito.
-
-**Como foi substituído:**  
-A v1.95.13 mantém apenas um observador leve de criação/remoção de elementos (`childList`), sem observar atributos, classes ou estilos.
-
-### 4. Intervalo contínuo do menu/atributos
-
-**O que foi limpo:**  
-Foi removido o `setInterval` que chamava sincronização de menu e atributos continuamente.
-
-**Por que foi limpo:**  
-Esse intervalo não era necessário e mantinha a página trabalhando o tempo todo, mesmo sem interação do usuário.
+**Por que foi removido:**  
+Essa camada era perigosa porque escondia login, início e ficha com CSS. Mesmo que o site estivesse funcionando, a interface podia continuar invisível.
 
 **Como foi substituído:**  
-Agora a sincronização acontece apenas em momentos necessários: abertura da página, mudança real no DOM, clique no menu, abertura de ficha e failsafes espaçados.
+A versão 1.95.14 não usa mais preboot visual. Se o sistema precisar restaurar sessão, ele faz isso sem cobrir o site inteiro.
 
-### 5. Proteção de tela ativa
+### 3. Neutralização de `ensureBoot()`
 
 **O que foi limpo:**  
-Foi adicionada uma proteção para quando nenhuma tela fica marcada como ativa após erro de boot.
+A função antiga `ensureBoot()` não cria mais `#od180-boot-screen`.
 
 **Por que foi limpo:**  
-Se uma camada antiga removesse a classe `active` ou travasse durante a restauração, o usuário podia ficar em tela preta/carregando sem login nem início.
+Ela ainda podia ser chamada por camadas antigas e recriar a tela de carregamento depois que outra correção já tinha removido o loader.
 
 **Como foi substituído:**  
-Se nenhuma tela estiver ativa, o sistema mostra o login em navegador limpo ou a tela inicial quando houver sessão salva.
+Agora essa função apenas remove loaders/classes antigas e retorna `null`.
+
+### 4. Neutralização de `showBoot()`
+
+**O que foi limpo:**  
+A função antiga `showBoot()` não cria mais `#od1805-boot-screen` e não adiciona mais `od1805-booting`.
+
+**Por que foi limpo:**  
+Várias partes antigas chamavam `showBoot()` em login, logout, restauração e troca de tela. Isso podia fazer o site voltar a carregar infinitamente mesmo depois de uma limpeza anterior.
+
+**Como foi substituído:**  
+As chamadas antigas ainda podem acontecer, mas agora só executam uma limpeza segura em vez de abrir um overlay.
+
+### 5. Proteção dupla contra regressão
+
+**O que foi adicionado:**  
+Foram adicionadas duas proteções:
+
+- uma inline no `index.html`;
+- uma no começo do `client/script.js`.
+
+**Por que foi adicionado:**  
+Se qualquer camada antiga tentar recriar o loader, adicionar classes de boot ou esconder as telas, a proteção remove isso imediatamente durante os primeiros segundos de carregamento.
+
+**Como foi substituído:**  
+Não depende mais de um único failsafe no final. A limpeza roda antes, durante e depois da inicialização.
+
+### 6. CSS de segurança final
+
+**O que foi adicionado:**  
+Foi adicionado CSS no fim do `style.css` para esconder permanentemente loaders antigos.
+
+**Por que foi adicionado:**  
+Mesmo se algum JavaScript antigo recriar o elemento visual, ele não aparece e não bloqueia clique.
+
+**Como foi substituído:**  
+O CSS força `display:none`, `visibility:hidden`, `opacity:0` e `pointer-events:none` em todos os loaders antigos conhecidos.
 
 ## Como testar
 
 1. Rodar `npm run check`.
 2. Abrir o site em navegador com cache limpo.
-3. Confirmar que o login aparece sem carregar infinitamente.
-4. Fazer login e confirmar que a tela inicial aparece.
-5. Recarregar o site logado e confirmar que a restauração não fica presa no loading.
-6. Testar login com senha errada e confirmar que o loader fecha após o erro.
-7. Abrir **Seus Personagens** e confirmar que o design moderno continua fixo.
-8. Criar novo personagem e confirmar que o layout não volta ao modelo antigo.
-9. Abrir uma ficha e confirmar que o menu de três traços continua funcionando sem **X**.
-10. Conferir a área **Atributos** no resumo:
-    - nome centralizado;
-    - valor centralizado;
-    - bônus centralizado abaixo.
+3. Confirmar que o login aparece sem tela “Carregando One Dice”.
+4. Recarregar a página algumas vezes.
+5. Testar em aba anônima.
+6. Testar com sessão antiga salva no navegador.
+7. Fazer login e confirmar que a tela inicial aparece.
+8. Testar senha errada e confirmar que o site não fica preso em loading.
+9. Abrir **Seus Personagens**.
+10. Criar personagem novo e confirmar que o design moderno continua fixo.
+11. Abrir uma ficha e confirmar que o menu de três traços e os atributos continuam como na versão anterior.
 
 ## Validação feita
 
@@ -132,4 +145,4 @@ Se nenhuma tela estiver ativa, o sistema mostra o login em navegador limpo ou a 
 
 ## Versão
 
-1.95.13
+1.95.14

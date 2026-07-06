@@ -21601,3 +21601,43 @@ body.od1952-sheet-open #main-topbar .od19512-legacy-close-removed {
     grid-template-columns: 1fr 1fr !important;
   }
 }
+
+/* =========================
+   v1.95.14 — Remoção definitiva de loading infinito
+   Motivo: camadas legadas od180/od1805/od1776 podiam voltar e cobrir login/início/ficha.
+========================= */
+#od180-boot-screen,
+#od1805-boot-screen,
+#od1776-solid-loader,
+.od1776-solid-loader,
+.od180-loader-stuck {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  animation: none !important;
+}
+html.od180-booting,
+html.od1805-booting,
+html.od1775-restoring-route,
+body.od180-booting-body,
+body.od1805-booting-body,
+body.od1775-restoring-route {
+  overflow: auto !important;
+}
+html.od180-booting #auth-screen,
+html.od180-booting #sessions-screen,
+html.od180-booting #app-screen,
+html.od1805-booting #auth-screen,
+html.od1805-booting #sessions-screen,
+html.od1805-booting #app-screen,
+html.od1805-booting #overlay-screen {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+html.od19514-no-boot #auth-screen.screen.active,
+html.od19514-no-boot #sessions-screen.screen.active,
+html.od19514-no-boot #app-screen.screen.active {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
