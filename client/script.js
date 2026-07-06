@@ -1,27 +1,3 @@
-
-/* =========================
-   V195.18 - Guarda raiz contra carregamento infinito
-   Remove dependência de boot visual, Socket.IO e carregamentos secundários bloqueantes.
-========================= */
-(function od19518RootNoInfiniteLoad(){
-  'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
-  window.__OD_SOCKET_DISABLED = true;
-  window.__OD_DISABLE_BOOT_SCREENS = true;
-  function killLoaders(){
-    try { document.documentElement.classList.remove('od180-booting','od1805-booting','od1775-restoring-route'); } catch (_) {}
-    try { document.body && document.body.classList.remove('od180-booting-body','od1805-booting-body','od1775-restoring-route'); } catch (_) {}
-    try {
-      document.querySelectorAll('#od180-boot-screen,#od1805-boot-screen,#od1776-solid-loader,.od1776-solid-loader,.od180-loader-stuck,[data-od-loader]').forEach(el => el.remove());
-    } catch (_) {}
-  }
-  killLoaders();
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', killLoaders, { once: true });
-  [50, 150, 350, 800, 1500, 3000, 6000].forEach(ms => setTimeout(killLoaders, ms));
-  setTimeout(() => { try { if (document.readyState !== 'complete') window.stop(); } catch (_) {} killLoaders(); }, 7000);
-  window.od19518KillLoaders = killLoaders;
-})();
-
 /* =========================
    V139 - Guardas globais antes das camadas antigas
    - Polyfills para evitar quebra em navegadores/embeds sem CSS.escape ou structuredClone.
@@ -29,7 +5,7 @@
 ========================= */
 (function od139EarlyGuards(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
   if (!window.CSS) window.CSS = {};
   if (typeof window.CSS.escape !== 'function') {
     window.CSS.escape = function(value) {
@@ -216,7 +192,7 @@ function skillTotal(char, skillName, attrKey) {
     + agilityOverweightPenalty(char, attrKey);
 }
 function applySettings() {
-  const st = get(STORAGE.settings, { theme: "light", accent: "black", skillsCompact: true, font: "medieval" });
+  const st = get(STORAGE.settings, { theme: "light", accent: "black", skillsCompact: true, font: "impact" });
   document.body.dataset.accent = st.accent || "black";
   document.body.dataset.font = st.font || "impact";
   document.body.classList.toggle("dark-sheet", st.theme === "dark");
@@ -233,7 +209,7 @@ function applySettings() {
   syncBlockInventoryFrame(st);
 }
 
-function syncBlockInventoryFrame(settings = get(STORAGE.settings, { theme: "light", accent: "black", skillsCompact: true, font: "medieval" })) {
+function syncBlockInventoryFrame(settings = get(STORAGE.settings, { theme: "light", accent: "black", skillsCompact: true, font: "impact" })) {
   const frame = byId("block-inventory-frame");
   if (!frame) return;
   try {
@@ -247,7 +223,7 @@ function syncBlockInventoryFrame(settings = get(STORAGE.settings, { theme: "ligh
   } catch (_) {}
 }
 function updateSettings(mutator) {
-  const st = get(STORAGE.settings, { theme: "light", accent: "black", skillsCompact: true, font: "medieval" });
+  const st = get(STORAGE.settings, { theme: "light", accent: "black", skillsCompact: true, font: "impact" });
   mutator(st); set(STORAGE.settings, st); applySettings();
 }
 function rollDie(sides) { return Math.floor(Math.random() * sides) + 1; }
@@ -532,7 +508,7 @@ function renderResistances(char) {
 }
 function renderSkills(char) {
   const table = byId("skills-table");
-  const settings = get(STORAGE.settings, { theme: "light", accent: "black", skillsCompact: true, font: "medieval" });
+  const settings = get(STORAGE.settings, { theme: "light", accent: "black", skillsCompact: true, font: "impact" });
   const onlyTrained = !!settings.skillsCompact;
   table.innerHTML = `<thead><tr>
     <th>Treinado</th>
@@ -2982,8 +2958,7 @@ let od44ApplyingInitiative = false;
 let od44PersistInitiativeTimer = null;
 
 function od44OnlineReady() {
-  if (window.__OD_SOCKET_DISABLED) return false;
-  return !!(typeof od42Token === 'function' && od42Token() && window.io && currentCampaignId);
+  return !!(typeof od42Token === 'function' && od42Token() && window.io);
 }
 
 function od44ApiMessageToLocal(row) {
@@ -3030,7 +3005,6 @@ async function od44LoadMessages(tableId = currentCampaignId) {
 }
 
 function od44EnsureSocket() {
-  if (window.__OD_SOCKET_DISABLED) return null;
   if (!od44OnlineReady()) return null;
   if (od44Socket && od44Socket.connected) return od44Socket;
   if (od44Socket) {
@@ -3913,13 +3887,13 @@ setTimeout(od46SyncSidebarDockButton, 120);
   const od52ApplySettingsBase = applySettings;
   applySettings = function() {
     od52ApplySettingsBase();
-    const st = get(STORAGE.settings, { theme: 'light', accent: 'black', skillsCompact: true, font: 'medieval', sound: true });
+    const st = get(STORAGE.settings, { theme: 'light', accent: 'black', skillsCompact: true, font: 'impact', sound: true });
     const sTheme = document.getElementById('sessions-theme-toggle');
     const sAccent = document.getElementById('sessions-accent-select');
     const sFont = document.getElementById('sessions-font-select');
     if (sTheme) sTheme.textContent = st.theme === 'dark' ? 'Tema Claro' : 'Tema Escuro';
     if (sAccent) sAccent.value = st.accent || 'black';
-    if (sFont) sFont.value = (st.font === 'impact' ? 'medieval' : (st.font || 'medieval'));
+    if (sFont) sFont.value = st.font || 'impact';
   };
 
   function od52ApplyDiceLabels() {
@@ -6470,7 +6444,7 @@ function od66InventoryMutationUnlockSoon() {
   function getSettingsSafe() {
     try {
       if (typeof get === 'function' && typeof STORAGE !== 'undefined') {
-        return get(STORAGE.settings, { theme: 'light', accent: 'black', skillsCompact: true, font: 'medieval', sound: true });
+        return get(STORAGE.settings, { theme: 'light', accent: 'black', skillsCompact: true, font: 'impact', sound: true });
       }
     } catch (_) {}
     try { return JSON.parse(localStorage.getItem('od_settings') || '{}'); } catch (_) { return {}; }
@@ -6483,7 +6457,7 @@ function od66InventoryMutationUnlockSoon() {
         return;
       }
     } catch (_) {}
-    const st = Object.assign({ theme: 'light', accent: 'black', skillsCompact: true, font: 'medieval', sound: true }, getSettingsSafe());
+    const st = Object.assign({ theme: 'light', accent: 'black', skillsCompact: true, font: 'impact', sound: true }, getSettingsSafe());
     mutator(st);
     try { localStorage.setItem('od_settings', JSON.stringify(st)); } catch (_) {}
     try { if (typeof applySettings === 'function') applySettings(); } catch (_) {}
@@ -13454,7 +13428,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od136AttributesClean(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const ATTRS = [
     ['forca', 'Força'], ['agilidade', 'Agilidade'], ['vigor', 'Vigor'], ['intelecto', 'Intelecto'], ['presenca', 'Presença']
@@ -13622,7 +13596,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od137SheetStabilityAndManualDefenseDodge(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const $ = id => document.getElementById(id);
   const EDITABLE = 'input, textarea, select, [contenteditable="true"]';
@@ -13984,7 +13958,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od138AuditAndDuplicateSheetInstalled) return;
   window.__od138AuditAndDuplicateSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const DUP_SELECTOR = '[data-od138-duplicate-character], [data-od71-copy-character], [data-copy-account-character]';
 
@@ -14177,7 +14151,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od139ExtraErrorFixesInstalled) return;
   window.__od139ExtraErrorFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const IMAGE_KEYS = [
     'portrait','portraitUrl','image','imageUrl','photo','photoUrl','avatar','avatarUrl','retrato','foto',
@@ -14332,7 +14306,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od140GeneralImprovementsInstalled) return;
   window.__od140GeneralImprovementsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const VERSION = '1.80.5';
   const BACKUP_KEY = 'od_sheet_backups_v140';
@@ -14813,7 +14787,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od141AuditHardeningInstalled) return;
   window.__od141AuditHardeningInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   function pruneBackups(){
     try {
@@ -14864,7 +14838,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od142FinalCleanupInstalled) return;
   window.__od142FinalCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   function keepFirst(selector){
     const nodes = Array.from(document.querySelectorAll(selector));
@@ -14950,7 +14924,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od148SafeRollbackPatchInstalled) return;
   window.__od148SafeRollbackPatchInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   function hideManualNotes(){
     ['defense-effective-note','dodge-formula-note'].forEach(id => {
@@ -15003,7 +14977,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od152StableLayoutFixesInstalled) return;
   window.__od152StableLayoutFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const $ = id => document.getElementById(id);
   const n = (value, fallback = 0) => {
@@ -15195,7 +15169,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od155SessionDashboardStability(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const STORE_PREFIX = 'od155_dashboard_collapsed_';
   const lastSig = { player: '', master: '' };
@@ -15351,7 +15325,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od156ProtectOtherPlayersSheetsInstalled) return;
   window.__od156ProtectOtherPlayersSheetsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const PROTECTED_ARRAYS = ['inventoryItems','blockInventory','abilities','spells','attacks','conditions','transformations','dropItems'];
   const PROTECTED_OBJECTS = ['skills','resistances','attrs','caster','obsIcons','portraitCrop','settings'];
@@ -15456,7 +15430,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od157ProtectOwnSheetPartialAutosaveInstalled) return;
   window.__od157ProtectOwnSheetPartialAutosaveInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   function clone(value){
     try { return structuredClone(value); } catch (_) {
@@ -15612,7 +15586,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od159StableSessionRenderInstalled) return;
   window.__od159StableSessionRenderInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const $ = id => document.getElementById(id);
   const last = { tableSig: '', tableAt: 0, playerSig: '', masterSig: '' };
@@ -15745,7 +15719,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od160AccountSheetIsolationInstalled) return;
   window.__od160AccountSheetIsolationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const $ = id => document.getElementById(id);
 
@@ -15896,7 +15870,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od161EquipmentProficienciesInstalled) return;
   window.__od161EquipmentProficienciesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const GROUPS = {
     weapons: [
@@ -16063,7 +16037,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od164StableCleanRoutesInstalled) return;
   window.__od164StableCleanRoutesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const VERSION = '1.80.5';
   let applyingRoute = false;
@@ -16271,7 +16245,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od165ExactPortraitCrop(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
   if (window.__od165ExactPortraitCropInstalled) return;
   window.__od165ExactPortraitCropInstalled = true;
 
@@ -16393,7 +16367,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1685AreaSeparationInstalled) return;
   window.__od1685AreaSeparationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const AREA = {
     AUTH: 'login',
@@ -16582,7 +16556,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1699StableSkillUntrainInstalled) return;
   window.__od1699StableSkillUntrainInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const pending = new Map();
   let flushTimer = null;
@@ -16810,7 +16784,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16910SkillSaveMergeInstalled) return;
   window.__od16910SkillSaveMergeInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   let lastExplicit = {};
   let lastExplicitAt = 0;
@@ -17026,7 +17000,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16911StablePortraitDuringResourcesInstalled) return;
   window.__od16911StablePortraitDuringResourcesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const RESOURCE_SELECTOR = '#pv-current, #pv-max, #pe-current, #pe-max';
   const MAIN_SELECTOR = '#char-portrait-preview';
@@ -17198,7 +17172,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od170ModularSheetInstalled) return;
   window.__od170ModularSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const STORE_KEY = 'od170_modules_state_v1';
   const DENSE_KEY = 'od170_dense_sheet_v1';
@@ -17442,7 +17416,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od171HubNavigationAndScrollInstalled) return;
   window.__od171HubNavigationAndScrollInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   let pending = false;
 
@@ -17566,7 +17540,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1715ScrollAndSmartCollapseInstalled) return;
   window.__od1715ScrollAndSmartCollapseInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   let scheduled = false;
 
@@ -17808,7 +17782,7 @@ function od66InventoryMutationUnlockSoon() {
    A correção principal está no index.html e no server/server.js.
 ========================= */
 (function od1762ReloadPathFixMarker(){
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 })();
 
 
@@ -17831,7 +17805,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1775ReloadRouteRestoreInstalled) return;
   window.__od1775ReloadRouteRestoreInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const INITIAL_PATH = location.pathname + location.search;
   const INITIAL_PARTS = location.pathname.split('/').filter(Boolean).map(part => {
@@ -18036,7 +18010,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od178SkillsDesignPolishInstalled) return;
   window.__od178SkillsDesignPolishInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   let timer = null;
 
@@ -18109,7 +18083,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1781AttributeTextFixInstalled) return;
   window.__od1781AttributeTextFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   let timer = null;
 
@@ -18296,7 +18270,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1787AttributeNameNoEllipsisInstalled) return;
   window.__od1787AttributeNameNoEllipsisInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const DISPLAY = {
     'força': 'FORÇA',
@@ -18392,7 +18366,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1788AttributeFullNamesInstalled) return;
   window.__od1788AttributeFullNamesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const FULL = {
     forca: 'FORÇA',
@@ -18492,7 +18466,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od17814AttributesStableFinalInstalled) return;
   window.__od17814AttributesStableFinalInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const ATTRS = [
     ['forca', 'FORÇA'],
@@ -18663,10 +18637,10 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1801SafeShellInstalled) return;
   window.__od1801SafeShellInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const SETTINGS_KEY = 'od_settings';
-  const DEFAULTS = { theme: 'dark', accent: 'red', skillsCompact: true, font: 'medieval', sound: true };
+  const DEFAULTS = { theme: 'dark', accent: 'red', skillsCompact: true, font: 'impact', sound: true };
   const ICONS = {
     menu: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg>',
     sheets: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 4h9a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="M6 8H4a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2M10 9h6M10 13h6M10 17h4"/></svg>',
@@ -18738,7 +18712,6 @@ function od66InventoryMutationUnlockSoon() {
   }
 
   function ensureBoot(){
-    if (window.__OD_DISABLE_BOOT_SCREENS) return null;
     let overlay = document.getElementById('od180-boot-screen');
     if (!overlay && document.body && !hidden) {
       overlay = document.createElement('div');
@@ -18864,7 +18837,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1802RobustLoginInstalled) return;
   window.__od1802RobustLoginInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   function $(id){ return document.getElementById(id); }
   function cleanNick(value){
@@ -19005,7 +18978,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1803AreaCleanupInstalled) return;
   window.__od1803AreaCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const AREA = {
     AUTH: 'login',
@@ -19245,7 +19218,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1804LoginAndAudioFixInstalled) return;
   window.__od1804LoginAndAudioFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   let loginBusy = false;
   let loginTicket = 0;
@@ -19444,7 +19417,7 @@ function od66InventoryMutationUnlockSoon() {
   function disableLegacyPointerSound(){
     try {
       if (typeof get === 'function' && typeof set === 'function' && typeof STORAGE !== 'undefined') {
-        const st = get(STORAGE.settings, { theme: 'dark', accent: 'black', skillsCompact: true, font: 'medieval', sound: false });
+        const st = get(STORAGE.settings, { theme: 'dark', accent: 'black', skillsCompact: true, font: 'impact', sound: false });
         st.sound = false;
         st.theme = 'dark';
         set(STORAGE.settings, st);
@@ -19503,7 +19476,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1805FinalShellInstalled) return;
   window.__od1805FinalShellInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   let hideTimer = null;
   let shellTimer = null;
@@ -19512,7 +19485,6 @@ function od66InventoryMutationUnlockSoon() {
   function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
 
   function bootScreen(){
-    if (window.__OD_DISABLE_BOOT_SCREENS) return null;
     let boot = $('od1805-boot-screen');
     if (boot) return boot;
 
@@ -19531,7 +19503,6 @@ function od66InventoryMutationUnlockSoon() {
   }
 
   function showBoot(){
-    if (window.__OD_DISABLE_BOOT_SCREENS) { hideBoot(0); return; }
     document.documentElement.classList.add('od1805-booting');
     document.body?.classList.add('od1805-booting-body');
     bootScreen();
@@ -19815,7 +19786,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1809CleanEditorsModesInstalled) return;
   window.__od1809CleanEditorsModesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   let saveTimer = null;
   let renderTimer = null;
@@ -20408,7 +20379,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1810FinalFixesInstalled) return;
   window.__od1810FinalFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   function $(id){ return document.getElementById(id); }
   function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
@@ -20516,7 +20487,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1811HubRefreshInstalled) return;
   window.__od1811HubRefreshInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   function cleanSessionProfile(){
     document.querySelectorAll('.od108-info-card,.od90-profile-card,[data-od90-profile-card],.session-profile-card,.account-profile-card,.menu-profile-card,#session-profile-card,#account-menu-profile,.od108-panel-user-info').forEach(el => el.remove());
@@ -20560,7 +20531,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1812CompactHubInstalled) return;
   window.__od1812CompactHubInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   function removeProfileCards(){
     document.querySelectorAll('#sessions-menu-panel .od90-user-menu-card, #sessions-menu-panel .od75-account-menu-card, .od90-user-menu-card, .od75-account-menu-card, .od108-panel-user-info, .od108-info-card, .od171-back-home').forEach(el => el.remove());
@@ -20598,7 +20569,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1813ThemeLinkedHubInstalled) return;
   window.__od1813ThemeLinkedHubInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const THEMES = {
     red:     { main: '#ef2f3b', dark: '#9d1018', soft: 'rgba(239,47,59,.16)', line: 'rgba(239,47,59,.72)' },
@@ -20696,7 +20667,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1815StableSheetTabsRouteInstalled) return;
   window.__od1815StableSheetTabsRouteInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const HUB_ROUTES = new Set(['/inicio', '/personagens', '/campanhas', '/mesas']);
 
@@ -20778,7 +20749,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1816ClickableAttributesInstalled) return;
   window.__od1816ClickableAttributesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const ATTRS = [
     ['forca', 'Força'],
@@ -20938,7 +20909,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1817ClickableAttackDamageInstalled) return;
   window.__od1817ClickableAttackDamageInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   function $(id){ return document.getElementById(id); }
   function esc(value){
@@ -21123,7 +21094,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1818ClickableAbilityCostInstalled) return;
   window.__od1818ClickableAbilityCostInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   function $(id){ return document.getElementById(id); }
   function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
@@ -21268,7 +21239,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1819RemoveFichaAvulsaMenuCardInstalled) return;
   window.__od1819RemoveFichaAvulsaMenuCardInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   function run(){
     const topbar = document.getElementById('main-topbar');
@@ -21316,7 +21287,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od192CompleteCombatManagerInstalled) return;
   window.__od192CompleteCombatManagerInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const previous191 = window.od191CampaignManager || {};
   const previous1902 = window.od1902CampaignAndHubHotfix || {};
@@ -21799,7 +21770,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od193CompleteCampaignEditorInstalled) return;
   window.__od193CompleteCampaignEditorInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   let pendingCoverData = '';
   let pendingBannerData = '';
@@ -22237,7 +22208,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od194OwlbearBasicIntegrationInstalled) return;
   window.__od194OwlbearBasicIntegrationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const OWLBEAR_HOME = 'https://www.owlbear.rodeo/';
   let injectedEditor = false;
@@ -22545,7 +22516,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1941LiveStabilityAndOwlbearFixInstalled) return;
   window.__od1941LiveStabilityAndOwlbearFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const LIVE_MIN_MS = 2200;
   const MESSAGE_MIN_MS = 1400;
@@ -22865,7 +22836,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1942StrongStabilityCoreInstalled) return;
   window.__od1942StrongStabilityCoreInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const STATE_TTL = 2600;
   const MSG_TTL = 1800;
@@ -23132,7 +23103,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1943HostRealtimeOrchestratorInstalled) return;
   window.__od1943HostRealtimeOrchestratorInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const EVENT_POLL_MS = 1650;
   const HOT_POLL_MS = 850;
@@ -23373,7 +23344,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1944FrontendReviewGuardInstalled) return;
   window.__od1944FrontendReviewGuardInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   // Compatibilidade para chamadas antigas que apontavam para nomes não exportados.
   if (!window.od191CampaignManagerRedesign && window.od191CampaignManager) {
@@ -23544,7 +23515,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1945LayeredCampaignCleanupInstalled) return;
   window.__od1945LayeredCampaignCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const VERSION = '1.94.5';
   const SESSION_TABS = { home: '/inicio', characters: '/personagens', campaigns: '/campanhas' };
@@ -23923,7 +23894,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od195LayerByLayerValidationInstalled) return;
   window.__od195LayerByLayerValidationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const VERSION = '1.95.0';
   const CAMPAIGN_TABS = ['visao','personagens','combate','jogadores','chat','escudo'];
@@ -24158,7 +24129,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1951CampaignUsabilityHotfixInstalled) return;
   window.__od1951CampaignUsabilityHotfixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const CAMPAIGN_MODE_CLASSES = [
     'od1901-campaign-manager-mode','od1902-campaign-manager-mode','od191-campaign-manager-mode','od192-campaign-manager-mode',
@@ -24423,7 +24394,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1952CampaignSheetRollbackInstalled) return;
   window.__od1952CampaignSheetRollbackInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const TABS = ['visao','personagens','combate','jogadores','chat','escudo'];
 
@@ -24731,7 +24702,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1953CampaignBattleChatStabilityInstalled) return;
   window.__od1953CampaignBattleChatStabilityInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const OWLBEAR_HOME = 'https://www.owlbear.rodeo/';
   const TABS = ['visao','personagens','combate','jogadores','chat','escudo'];
@@ -25257,7 +25228,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1954SheetMenuButtonRestoreInstalled) return;
   window.__od1954SheetMenuButtonRestoreInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   function $(id){ return document.getElementById(id); }
   function isCampaign(){
@@ -25392,7 +25363,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1955CampaignScrollCombatCompactInstalled) return;
   window.__od1955CampaignScrollCombatCompactInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const nativeScrollTo = window.scrollTo.bind(window);
   const nativeScrollBy = window.scrollBy.bind(window);
@@ -25589,7 +25560,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1956CampaignSingleLayerFixInstalled) return;
   window.__od1956CampaignSingleLayerFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   let tickTimer = null;
   let renderLock = false;
@@ -25781,7 +25752,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1957SheetMenuAndHistoryInstalled) return;
   window.__od1957SheetMenuAndHistoryInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const HUB_PATHS = { home: '/inicio', characters: '/personagens', campaigns: '/campanhas' };
   const CAMPAIGN_TABS = ['visao','personagens','combate','jogadores','chat','escudo'];
@@ -26031,7 +26002,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1958CampaignFlickerCombatHardeningInstalled) return;
   window.__od1958CampaignFlickerCombatHardeningInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.19';
 
   const OWLBEAR_HOME = 'https://www.owlbear.rodeo/';
   const STATUS_LABEL = {
@@ -26051,7 +26022,7 @@ function od66InventoryMutationUnlockSoon() {
   let chatWasNearBottom = true;
 
   function $(id){ return document.getElementById(id); }
-  function safe(fn, fallback = null){ try { return fn(); } catch (error) { console.warn('[One Dice v1.95.8]', error?.message || error); return fallback; } }
+  function safe(fn, fallback = null){ try { return fn(); } catch (error) { console.warn('[One Dice v1.95.19]', error?.message || error); return fallback; } }
   function cleanId(value){ return String(value || '').replace(/^"|"$/g, '').trim(); }
   function tableId(){ return cleanId(currentCampaignId || localStorage.getItem(STORAGE.activeCampaign) || ''); }
   function getStore(key, fallback){ return typeof get === 'function' ? get(key, fallback) : fallback; }
@@ -26132,7 +26103,7 @@ function od66InventoryMutationUnlockSoon() {
       od42Api(`/api/tables/${encodeURIComponent(tableId())}/initiative`, {
         method: 'PUT',
         body: JSON.stringify({ initiative: clean })
-      }).catch(error => console.warn('[One Dice v1.95.8] Falha ao salvar iniciativa:', error));
+      }).catch(error => console.warn('[One Dice v1.95.19] Falha ao salvar iniciativa:', error));
     }
     if (reason && typeof addChat === 'function') safe(() => addChat(`[Combate] ${reason}`, 'roll'), null);
     scheduleRender('combat-save', true);
@@ -26509,684 +26480,4 @@ function od66InventoryMutationUnlockSoon() {
     clearCombat,
     addManualNpc
   };
-})();
-
-
-/* =========================
-   V195.9 - Login centralizado e remoção da Fonte Manga
-   Centraliza a tela de login em qualquer navegador e migra a fonte antiga
-   "impact/Fonte Manga" para "medieval".
-========================= */
-(function od1959LoginAndFontCleanup(){
-  'use strict';
-  if (window.__od1959LoginAndFontCleanupInstalled) return;
-  window.__od1959LoginAndFontCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
-
-  function $(id){ return document.getElementById(id); }
-  function safe(fn, fallback = null){ try { return fn(); } catch (_) { return fallback; } }
-
-  function cleanupFontSelects(){
-    document.querySelectorAll('select#font-select, select#sessions-font-select').forEach(select => {
-      [...select.options].forEach(option => {
-        if (String(option.value || '').toLowerCase() === 'impact' || /manga/i.test(option.textContent || '')) option.remove();
-      });
-      if (!select.value || select.value === 'impact') select.value = 'medieval';
-    });
-  }
-
-  function migrateFontSetting(){
-    const st = safe(() => get(STORAGE.settings, null), null);
-    if (st && st.font === 'impact') {
-      st.font = 'medieval';
-      safe(() => set(STORAGE.settings, st), null);
-    }
-    if (document.body?.dataset?.font === 'impact') document.body.dataset.font = 'medieval';
-  }
-
-  function forceLoginCentered(){
-    const auth = $('auth-screen');
-    if (!auth) return;
-    auth.classList.add('od1959-auth-centered');
-    if (auth.classList.contains('active')) {
-      auth.style.display = 'grid';
-      auth.style.placeItems = 'center';
-      auth.style.alignContent = 'center';
-      auth.style.justifyContent = 'center';
-    } else {
-      auth.style.removeProperty('display');
-      auth.style.removeProperty('place-items');
-      auth.style.removeProperty('align-content');
-      auth.style.removeProperty('justify-content');
-    }
-    const card = auth.querySelector('.auth-card');
-    if (card) {
-      card.style.margin = '0 auto';
-      card.style.justifySelf = 'center';
-      card.style.alignSelf = 'center';
-    }
-  }
-
-  // Protege updateSettings/applySettings contra a fonte removida.
-  if (typeof updateSettings === 'function' && !updateSettings.__od1959FontGuard) {
-    const base = updateSettings;
-    updateSettings = function od1959UpdateSettings(mutator){
-      return base(function(st){
-        if (typeof mutator === 'function') mutator(st);
-        if (st.font === 'impact') st.font = 'medieval';
-      });
-    };
-    updateSettings.__od1959FontGuard = true;
-  }
-
-  if (typeof applySettings === 'function' && !applySettings.__od1959FontGuard) {
-    const base = applySettings;
-    applySettings = function od1959ApplySettings(){
-      migrateFontSetting();
-      const result = base.apply(this, arguments);
-      cleanupFontSelects();
-      migrateFontSetting();
-      forceLoginCentered();
-      return result;
-    };
-    applySettings.__od1959FontGuard = true;
-  }
-
-  document.addEventListener('change', event => {
-    const select = event.target.closest?.('#font-select, #sessions-font-select');
-    if (!select) return;
-    if (select.value === 'impact') {
-      select.value = 'medieval';
-      if (typeof updateSettings === 'function') updateSettings(st => { st.font = 'medieval'; });
-    }
-  }, true);
-
-  const observer = new MutationObserver(() => {
-    cleanupFontSelects();
-    forceLoginCentered();
-  });
-  if (document.body) observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
-
-  function boot(){
-    migrateFontSetting();
-    cleanupFontSelects();
-    forceLoginCentered();
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
-  else boot();
-  [80, 240, 700, 1500, 3000].forEach(ms => setTimeout(boot, ms));
-  window.addEventListener('resize', () => setTimeout(forceLoginCentered, 60));
-  window.od1959LoginAndFontCleanup = { boot, cleanupFontSelects, forceLoginCentered };
-})();
-
-/* =========================
-   V195.17 - Correção raiz do carregamento infinito fora do login
-   Origem do bug: as versões 1.95.10+ adicionaram camadas globais que continuavam rodando durante a abertura do site.
-   Esta versão volta para a base estável 1.95.9 e reaplica apenas correções pontuais, sem loaders globais,
-   sem fetch global, sem MutationObserver permanente e sem setInterval de sincronização visual.
-========================= */
-(function od19517SiteStabilitySourceFix(){
-  'use strict';
-  if (window.__od19517SiteStabilitySourceFixInstalled) return;
-  window.__od19517SiteStabilitySourceFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
-
-  const DELETE_SELECTOR = '[data-od19517-delete-character], [data-od71-delete-character], [data-delete-account-character]';
-  const BACKUP_KEY = 'od_sheet_backups_v140';
-  const DELETED_KEY = 'od_deleted_characters_v70';
-  const deleting = new Set();
-  let characterRepairTimer = null;
-  let menuSyncTimer = null;
-
-  function $(id){ return document.getElementById(id); }
-  function safe(fn, fallback = null){ try { return fn(); } catch (_) { return fallback; } }
-  function esc(value){
-    try { return escapeHtml(value ?? ''); }
-    catch (_) { return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
-  }
-  function readJson(key, fallback){ try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); } catch (_) { return fallback; } }
-  function writeJson(key, value){ safe(() => localStorage.setItem(key, JSON.stringify(value))); }
-  function chars(){ return safe(() => typeof get === 'function' ? get(STORAGE.characters, []) : readJson('oneDice.characters', []), []); }
-  function saveChars(list){ safe(() => typeof set === 'function' ? set(STORAGE.characters, list) : writeJson('oneDice.characters', list)); }
-  function members(){ return safe(() => typeof getMembers === 'function' ? getMembers() : [], []); }
-  function saveMembersSafe(list){ safe(() => typeof setMembers === 'function' && setMembers(list)); }
-  function token(){ return safe(() => typeof od42Token === 'function' ? od42Token() : '', ''); }
-  function charName(char){ return String(char?.name || char?.characterName || 'Novo Personagem').trim() || 'Novo Personagem'; }
-
-  function apiDeleteCharacter(id){
-    const auth = token();
-    if (!auth || typeof fetch !== 'function') return Promise.resolve({ ok: true, offline: true });
-    const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-    const timer = controller ? setTimeout(() => controller.abort(), 12000) : null;
-    return fetch(`/api/characters/${encodeURIComponent(id)}`, {
-      method: 'DELETE',
-      headers: { 'Authorization': `Bearer ${auth}` },
-      signal: controller?.signal
-    }).then(async response => {
-      if (timer) clearTimeout(timer);
-      let data = {};
-      try { data = await response.json(); } catch (_) {}
-      if (!response.ok && response.status !== 404) throw new Error(data?.error || `Erro HTTP ${response.status}`);
-      return data;
-    }).catch(error => {
-      if (timer) clearTimeout(timer);
-      if (String(error?.name || '') === 'AbortError') throw new Error('Tempo esgotado ao excluir ficha. O servidor demorou demais.');
-      throw error;
-    });
-  }
-
-  function rememberDeleted(id){
-    const cleanId = String(id || '');
-    if (!cleanId) return;
-    const list = Array.isArray(readJson(DELETED_KEY, [])) ? readJson(DELETED_KEY, []) : [];
-    if (!list.map(String).includes(cleanId)) list.push(cleanId);
-    writeJson(DELETED_KEY, list);
-  }
-
-  function clearBackups(id){
-    const store = readJson(BACKUP_KEY, {});
-    if (store && typeof store === 'object' && Object.prototype.hasOwnProperty.call(store, String(id))) {
-      delete store[String(id)];
-      writeJson(BACKUP_KEY, store);
-    }
-  }
-
-  function unlinkLocalCharacter(id){
-    const cleanId = String(id || '');
-    if (!cleanId) return;
-    saveChars(chars().filter(char => String(char?.id || '') !== cleanId));
-    saveMembersSafe(members().map(member => String(member?.characterId || member?.character_id || '') === cleanId ? { ...member, characterId: null, character_id: null } : member));
-    clearBackups(cleanId);
-    safe(() => localStorage.removeItem(`od_sheet_autosave_${cleanId}`));
-    safe(() => localStorage.removeItem(`od_character_cache_${cleanId}`));
-    if (String(safe(() => currentCharacterId, '')) === cleanId) currentCharacterId = null;
-  }
-
-  function refreshCharacterViews(){
-    safe(() => renderAccountCharacterMenu());
-    safe(() => renderAccountCharacterSidebar());
-    safe(() => renderCampaignMenu());
-    safe(() => renderCharacterList());
-    safe(() => od71RenderContent());
-    scheduleCharactersModernFix();
-  }
-
-  function setDeleteButtonState(id, busy){
-    document.querySelectorAll(DELETE_SELECTOR).forEach(button => {
-      const buttonId = button.dataset.od19517DeleteCharacter || button.dataset.od71DeleteCharacter || button.dataset.deleteAccountCharacter;
-      if (String(buttonId || '') !== String(id || '')) return;
-      button.disabled = !!busy;
-      button.classList.toggle('od19517-delete-pending', !!busy);
-      if (busy) {
-        button.dataset.od19517OldText = button.textContent || 'Excluir';
-        button.textContent = 'Excluindo...';
-      } else if (button.dataset.od19517OldText) {
-        button.textContent = button.dataset.od19517OldText;
-        delete button.dataset.od19517OldText;
-      }
-    });
-  }
-
-  async function deleteCharacterClean(id, options = {}){
-    const cleanId = String(id || '').trim();
-    if (!cleanId || deleting.has(cleanId)) return false;
-    const char = chars().find(item => String(item?.id || '') === cleanId);
-    const linked = members().filter(member => String(member?.characterId || member?.character_id || '') === cleanId).length;
-    const message = linked
-      ? `Excluir a ficha "${charName(char)}"? Ela está vinculada a ${linked} mesa(s), e o vínculo será limpo.`
-      : `Excluir a ficha "${charName(char)}"?`;
-    if (!options.skipConfirm && char && !confirm(message)) return false;
-
-    deleting.add(cleanId);
-    setDeleteButtonState(cleanId, true);
-    try {
-      await apiDeleteCharacter(cleanId);
-      rememberDeleted(cleanId);
-      unlinkLocalCharacter(cleanId);
-      refreshCharacterViews();
-      return true;
-    } catch (error) {
-      alert(error?.message || 'Erro ao excluir ficha.');
-      return false;
-    } finally {
-      deleting.delete(cleanId);
-      setDeleteButtonState(cleanId, false);
-    }
-  }
-
-  function decorateDeleteButtons(){
-    document.querySelectorAll('[data-od71-delete-character], [data-delete-account-character]').forEach(button => {
-      const id = button.dataset.od71DeleteCharacter || button.dataset.deleteAccountCharacter;
-      if (!id) return;
-      button.dataset.od19517DeleteCharacter = id;
-      button.classList.add('od19517-delete-character');
-      if (!button.getAttribute('aria-label')) button.setAttribute('aria-label', 'Excluir personagem');
-    });
-  }
-
-  // Substitui a exclusão antiga apenas no clique do botão, sem observar a página inteira.
-  deleteAccountCharacter = function od19517DeleteAccountCharacter(id){ return deleteCharacterClean(id); };
-  safe(() => { window.deleteAccountCharacter = deleteAccountCharacter; window.od19517DeleteCharacter = deleteCharacterClean; });
-
-  document.addEventListener('click', event => {
-    const button = event.target.closest?.(DELETE_SELECTOR);
-    if (!button) return;
-    const id = button.dataset.od19517DeleteCharacter || button.dataset.od71DeleteCharacter || button.dataset.deleteAccountCharacter;
-    if (!id) return;
-    event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-    deleteCharacterClean(id);
-  }, true);
-
-  function isCharactersHub(){
-    const path = String(location.pathname || '').toLowerCase();
-    return !!$('od71-character-list') || path.includes('personagens') || path.includes('fichas') || safe(() => localStorage.getItem('od71_tab') === 'characters', false);
-  }
-
-  function normalizeCharacterCards(){
-    decorateDeleteButtons();
-    const sessions = $('sessions-screen');
-    const list = $('od71-character-list');
-    if (!sessions?.classList.contains('active') || !list || !isCharactersHub()) return;
-    safe(() => localStorage.setItem('od71_tab', 'characters'));
-    document.documentElement.classList.add('od19517-characters-modern');
-    document.body.classList.add('od19517-characters-modern');
-    list.classList.add('od19517-character-list','od1811-character-list','od71-list','od85-character-list');
-    list.querySelectorAll('article').forEach(card => {
-      card.classList.add('od19517-character-card','od1811-character-card','od71-character-card','od85-character-card');
-      card.querySelector('.od1811-character-art, .od1715-character-img')?.classList.add('od19517-character-art');
-      card.querySelector('.od1811-character-main, .od71-card-body, .od1715-character-body')?.classList.add('od19517-character-main');
-      card.querySelector('.od1811-character-actions, .od85-card-actions, .od71-card-actions')?.classList.add('od19517-character-actions');
-      const title = card.querySelector('h3, strong');
-      if (title) {
-        title.classList.add('od19517-character-title');
-        title.textContent = String(title.textContent || '').replace(/\s+/g, ' ').trim();
-      }
-    });
-  }
-
-  function scheduleCharactersModernFix(){
-    clearTimeout(characterRepairTimer);
-    [0, 80, 220, 600, 1200].forEach(ms => setTimeout(normalizeCharacterCards, ms));
-    characterRepairTimer = setTimeout(normalizeCharacterCards, 1800);
-  }
-
-  if (typeof createAccountCharacter === 'function' && !createAccountCharacter.__od19517ModernSafe) {
-    const baseCreate = createAccountCharacter;
-    createAccountCharacter = function od19517CreateAccountCharacter(openAfterCreate = true){
-      const keepHub = isCharactersHub();
-      const result = baseCreate.call(this, keepHub ? false : openAfterCreate);
-      scheduleCharactersModernFix();
-      return result;
-    };
-    createAccountCharacter.__od19517ModernSafe = true;
-    safe(() => { window.createAccountCharacter = createAccountCharacter; });
-  }
-
-  if (typeof renderAccountCharacterMenu === 'function' && !renderAccountCharacterMenu.__od19517ModernSafe) {
-    const baseRenderMenu = renderAccountCharacterMenu;
-    renderAccountCharacterMenu = function od19517RenderAccountCharacterMenu(){
-      const result = baseRenderMenu.apply(this, arguments);
-      scheduleCharactersModernFix();
-      return result;
-    };
-    renderAccountCharacterMenu.__od19517ModernSafe = true;
-    safe(() => { window.renderAccountCharacterMenu = renderAccountCharacterMenu; });
-  }
-
-  document.addEventListener('click', event => {
-    if (event.target.closest?.('#od71-new-character,#od71-create-character,[data-od71-tab="characters"]')) scheduleCharactersModernFix();
-  }, true);
-
-  function isSheetLayer(){
-    return document.body?.dataset?.od195Layer === 'sheet' ||
-      document.body?.dataset?.od1945Layer === 'sheet' ||
-      document.body?.classList.contains('od1952-sheet-open') ||
-      document.body?.classList.contains('od1951-sheet-open') ||
-      location.pathname.startsWith('/ficha/') ||
-      location.pathname.startsWith('/personagem/');
-  }
-
-  function lineIcon(){ return '<span class="od19517-menu-lines" aria-hidden="true"><i></i><i></i><i></i></span>'; }
-  function decorateMenuButton(btn){
-    if (!btn) return;
-    btn.classList.add('od19517-hamburger-menu');
-    if (!btn.querySelector('.od19517-menu-lines')) btn.innerHTML = lineIcon();
-    btn.title = 'Abrir/fechar menu da ficha';
-    btn.setAttribute('aria-label', 'Abrir/fechar menu da ficha');
-  }
-
-  function removeCloseX(topbar){
-    if (!topbar) return;
-    topbar.querySelectorAll('button').forEach(button => {
-      if (button.id === 'topbar-menu-toggle' || button.id === 'od1954-sheet-menu-toggle' || button.classList.contains('topbar-menu-toggle')) return;
-      const text = String(button.textContent || '').trim();
-      const label = String(button.getAttribute('aria-label') || button.title || '').toLowerCase();
-      if (/^(×|✕|x)$/i.test(text) || (label.includes('fechar') && !button.id)) {
-        button.classList.add('od19517-legacy-close-removed');
-        button.setAttribute('aria-hidden','true');
-        button.style.setProperty('display','none','important');
-        button.style.setProperty('visibility','hidden','important');
-        button.style.setProperty('pointer-events','none','important');
-      }
-    });
-  }
-
-  function normalizeSheetMenu(){
-    const topbar = $('main-topbar');
-    const original = $('topbar-menu-toggle') || topbar?.querySelector?.('.topbar-menu-toggle');
-    const floating = $('od1954-sheet-menu-toggle') || document.querySelector('.od1954-sheet-menu-toggle');
-    decorateMenuButton(original);
-    decorateMenuButton(floating);
-    if (floating) floating.dataset.od19517FloatingMenu = 'true';
-    removeCloseX(topbar);
-
-    if (!isSheetLayer() || !topbar) {
-      document.body?.classList.remove('od19517-sheet-menu-open','od19517-sheet-menu-closed');
-      return;
-    }
-    const open = !topbar.classList.contains('collapsed');
-    document.body.classList.toggle('od19517-sheet-menu-open', open);
-    document.body.classList.toggle('od19517-sheet-menu-closed', !open);
-    if (original) original.setAttribute('aria-expanded', String(open));
-    if (floating) floating.setAttribute('aria-expanded', String(open));
-  }
-
-  function scheduleMenuSync(delay = 30){
-    clearTimeout(menuSyncTimer);
-    menuSyncTimer = setTimeout(() => { normalizeSheetMenu(); normalizeAttributesOrder(); }, delay);
-  }
-
-  document.addEventListener('click', event => {
-    const btn = event.target.closest?.('#topbar-menu-toggle,.topbar-menu-toggle,#od1954-sheet-menu-toggle,.od1954-sheet-menu-toggle');
-    if (btn) setTimeout(() => scheduleMenuSync(0), 0);
-  }, true);
-
-  function normalizeAttributesOrder(){
-    const grid = $('attributes-grid');
-    if (!grid) return;
-    grid.classList.add('od19517-attributes-summary');
-    grid.querySelectorAll('.od1952-attr-card,.od17814-attr-card,.od1786-attr-card,.attr-card-v2,.attr-card').forEach(card => {
-      card.classList.add('od19517-attr-summary-card');
-      card.querySelector('.od1952-attr-name,.od17814-attr-name,.od1786-attr-name,.attr-name,.od103-attr-name,.od102-attr-name')?.classList.add('od19517-attr-name');
-      card.querySelector('input[data-attr],input[data-od17814-input],.od1952-attr-value,.od17814-value-input,.od103-attr-value')?.classList.add('od19517-attr-value');
-      card.querySelector('.od1952-attr-mod,.od17814-attr-mod,.od1786-attr-mod,.attr-mod,.mod-badge')?.classList.add('od19517-attr-bonus');
-    });
-  }
-
-  document.addEventListener('input', event => { if (event.target.closest?.('#attributes-grid')) setTimeout(normalizeAttributesOrder, 20); }, true);
-  document.addEventListener('change', event => { if (event.target.closest?.('#attributes-grid')) setTimeout(normalizeAttributesOrder, 20); }, true);
-
-  // Socket.IO deixa de bloquear a abertura do site. O HTML carrega o socket de forma assíncrona depois da interface.
-  window.od19517TrySocketAfterLoad = function(){
-    window.__OD_SOCKET_DISABLED = true;
-    return null;
-  };
-
-  function boot(){
-    decorateDeleteButtons();
-    scheduleCharactersModernFix();
-    scheduleMenuSync(0);
-    setTimeout(normalizeAttributesOrder, 80);
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
-  else boot();
-  window.addEventListener('load', () => setTimeout(() => safe(() => window.od19517TrySocketAfterLoad()), 700), { once: true });
-  [120, 500, 1200, 2600].forEach(ms => setTimeout(boot, ms));
-
-  window.od19517SiteStability = {
-    deleteCharacterClean,
-    normalizeCharacterCards,
-    normalizeSheetMenu,
-    normalizeAttributesOrder
-  };
-})();
-
-
-/* =========================
-   V195.18 - Correção definitiva contra giro infinito
-   - Login/boot não aguardam fichas, mesas, socket ou rota profunda.
-   - Fichas/mesas carregam depois, com timeout.
-   - Socket.IO fica desligado nesta versão para remover a requisição pendurada.
-========================= */
-(function od19518FinalNoSpinnerPatch(){
-  'use strict';
-  if (window.__od19518FinalNoSpinnerPatchInstalled) return;
-  window.__od19518FinalNoSpinnerPatchInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.18';
-  window.__OD_SOCKET_DISABLED = true;
-
-  const API_TIMEOUT_MS = 6500;
-  const SECONDARY_TIMEOUT_MS = 4500;
-
-  function $(id){ return document.getElementById(id); }
-  function safe(fn, fallback = null){ try { return fn(); } catch (_) { return fallback; } }
-  function cleanNick(value){
-    try { if (typeof normalizeNick === 'function') return normalizeNick(value); } catch (_) {}
-    return String(value || '').trim().toLowerCase().replace(/\s+/g, '');
-  }
-  function cleanPass(value){ return String(value || '').trim(); }
-
-  function killLoaders(){
-    safe(() => window.od1801SafeShell?.hideBoot?.(), null);
-    safe(() => window.od1803AreaCleanup?.removeStuckLoaders?.(), null);
-    document.querySelectorAll('#od180-boot-screen,#od1805-boot-screen,#od1776-solid-loader,.od1776-solid-loader,.od180-loader-stuck,[data-od-loader]').forEach(el => el.remove());
-    document.documentElement.classList.remove('od180-booting','od1805-booting','od1775-restoring-route');
-    document.body?.classList.remove('od180-booting-body','od1805-booting-body','od1775-restoring-route');
-  }
-
-  function fetchTimeout(path, options = {}, ms = API_TIMEOUT_MS){
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), ms);
-    return fetch(path, { ...options, signal: controller.signal }).finally(() => clearTimeout(timer));
-  }
-
-  async function api(path, options = {}, ms = API_TIMEOUT_MS){
-    const headers = { 'Content-Type': 'application/json', ...(options.headers || {}) };
-    try { if (typeof od42Token === 'function' && od42Token()) headers.Authorization = `Bearer ${od42Token()}`; } catch (_) {}
-    const response = await fetchTimeout(path, { ...options, headers }, ms);
-    let data = {};
-    try { data = await response.json(); } catch (_) {}
-    if (!response.ok) throw new Error(data?.error || `Erro HTTP ${response.status}`);
-    return data;
-  }
-
-  if (typeof od42Api === 'function' && !od42Api.__od19518Timeout) {
-    od42Api = function od19518Api(path, options = {}){ return api(path, options, API_TIMEOUT_MS); };
-    od42Api.__od19518Timeout = true;
-    safe(() => { window.od42Api = od42Api; }, null);
-  }
-
-  function mapUser(apiUser){
-    if (typeof od42User === 'function') return od42User(apiUser);
-    return {
-      id: apiUser?.id,
-      nick: apiUser?.nick,
-      realName: apiUser?.real_name || apiUser?.realName || apiUser?.name || apiUser?.nick,
-      name: apiUser?.real_name || apiUser?.realName || apiUser?.name || apiUser?.nick
-    };
-  }
-
-  function saveSession(tokenValue, user){
-    safe(() => od42SetSession({ token: tokenValue, user }), null);
-    safe(() => setSessionValue(user.id), null);
-    try { localStorage.setItem('od_online_session_v42', JSON.stringify({ token: tokenValue, user })); } catch (_) {}
-  }
-
-  function mergeUser(user){
-    safe(() => od42MergeById(STORAGE.users, [user]), null);
-    safe(() => {
-      const users = get(STORAGE.users, []);
-      const index = users.findIndex(u => String(u.id) === String(user.id));
-      if (index >= 0) users[index] = { ...users[index], ...user };
-      else users.push(user);
-      set(STORAGE.users, users);
-    }, null);
-  }
-
-  function openHome(){
-    killLoaders();
-    const auth = $('auth-screen');
-    const sessions = $('sessions-screen');
-    const app = $('app-screen');
-    const overlay = $('overlay-screen');
-    auth?.classList.remove('active');
-    sessions?.classList.add('active');
-    app?.classList.remove('active');
-    overlay?.classList.remove('active');
-    try { currentCampaignId = null; } catch (_) {}
-    try { accountSheetMode = false; } catch (_) {}
-    try { localStorage.removeItem(STORAGE.activeCampaign); } catch (_) {}
-    try { localStorage.setItem('od71_tab', 'home'); } catch (_) {}
-    try { localStorage.setItem('od75_tab', 'home'); } catch (_) {}
-    safe(() => renderAccountCharacterMenu(), null);
-    safe(() => renderCampaignMenu(), null);
-    safe(() => setHubTab('home'), null);
-    document.documentElement.dataset.odArea = 'inicio';
-    if (document.body) {
-      document.body.dataset.odArea = 'inicio';
-      document.body.classList.remove('od1803-login-area');
-      document.body.classList.add('od1803-home-area');
-    }
-    killLoaders();
-  }
-
-  function showLoginUnlocked(){
-    killLoaders();
-    safe(() => showAuth(), null);
-    $('auth-screen')?.classList.add('active');
-    $('sessions-screen')?.classList.remove('active');
-    $('app-screen')?.classList.remove('active');
-  }
-
-  async function backgroundRefresh(){
-    const tasks = [];
-    if (typeof od42RefreshOwnCharacters === 'function') tasks.push(Promise.race([
-      od42RefreshOwnCharacters(),
-      new Promise(resolve => setTimeout(resolve, SECONDARY_TIMEOUT_MS))
-    ]));
-    if (typeof od42RefreshTables === 'function') tasks.push(Promise.race([
-      od42RefreshTables(),
-      new Promise(resolve => setTimeout(resolve, SECONDARY_TIMEOUT_MS))
-    ]));
-    const result = await Promise.allSettled(tasks);
-    safe(() => renderAccountCharacterMenu(), null);
-    safe(() => renderCampaignMenu(), null);
-    killLoaders();
-    return result;
-  }
-
-  async function finalLogin(nickValue, passwordValue){
-    const nick = cleanNick(nickValue);
-    const password = cleanPass(passwordValue);
-    if (!nick) return alert('Digite o nick/login.');
-    if (!password) return alert('Digite a senha.');
-    killLoaders();
-    try {
-      const data = await api('/api/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({ nick, password })
-      }, API_TIMEOUT_MS);
-      const user = mapUser(data.user);
-      if (!user?.id || !data.token) throw new Error('Login aceito, mas a sessão veio incompleta.');
-      currentUser = user;
-      safe(() => { window.currentUser = currentUser; }, null);
-      saveSession(data.token, user);
-      mergeUser(user);
-      openHome();
-      setTimeout(() => backgroundRefresh(), 50);
-    } catch (error) {
-      killLoaders();
-      alert(error?.name === 'AbortError' ? 'Servidor demorou demais para responder. Tente novamente.' : (error?.message || 'Erro ao entrar.'));
-    }
-  }
-
-  async function finalBoot(){
-    killLoaders();
-    safe(() => od42WireForms(), null);
-    let session = null;
-    try { session = typeof od42GetSession === 'function' ? od42GetSession() : JSON.parse(localStorage.getItem('od_online_session_v42') || 'null'); } catch (_) {}
-    if (!session?.token) {
-      showLoginUnlocked();
-      return;
-    }
-    try {
-      const data = await api('/api/auth/me', {}, API_TIMEOUT_MS);
-      currentUser = mapUser(data.user || session.user);
-      safe(() => { window.currentUser = currentUser; }, null);
-      saveSession(session.token, currentUser);
-      mergeUser(currentUser);
-      openHome();
-      setTimeout(() => backgroundRefresh(), 50);
-    } catch (error) {
-      console.warn('Sessão online inválida ou servidor lento:', error);
-      safe(() => od42ClearSession(), null);
-      showLoginUnlocked();
-    }
-  }
-
-  od42Login = finalLogin;
-  login = function od19518Login(nick, password){ finalLogin(nick, password); };
-  od42Boot = finalBoot;
-  od44OnlineReady = function(){ return false; };
-  od44EnsureSocket = function(){ return null; };
-  safe(() => {
-    window.od42Login = od42Login;
-    window.login = login;
-    window.od42Boot = od42Boot;
-    window.od44OnlineReady = od44OnlineReady;
-    window.od44EnsureSocket = od44EnsureSocket;
-  }, null);
-
-  function wireLogin(){
-    const form = $('login-form');
-    if (!form) return;
-    form.onsubmit = event => {
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopImmediatePropagation();
-      finalLogin($('login-nick')?.value, $('login-password')?.value);
-      return false;
-    };
-    const submit = form.querySelector('[type="submit"], button:not([type]), button[type="button"]');
-    if (submit) {
-      submit.onclick = event => {
-        event.preventDefault();
-        event.stopPropagation();
-        event.stopImmediatePropagation();
-        finalLogin($('login-nick')?.value, $('login-password')?.value);
-        return false;
-      };
-    }
-  }
-
-  document.addEventListener('submit', event => {
-    if (!event.target.closest?.('#login-form')) return;
-    event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-    finalLogin($('login-nick')?.value, $('login-password')?.value);
-  }, true);
-
-  document.addEventListener('click', event => {
-    const btn = event.target.closest?.('#login-form [type="submit"], #login-form button:not([type]), #login-form button[type="button"]');
-    if (!btn) return;
-    event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-    finalLogin($('login-nick')?.value, $('login-password')?.value);
-  }, true);
-
-  wireLogin();
-  killLoaders();
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => { wireLogin(); finalBoot(); }, { once: true });
-  } else {
-    finalBoot();
-  }
-  [80, 250, 700, 1500, 3000, 6000].forEach(ms => setTimeout(() => { wireLogin(); killLoaders(); }, ms));
-  setTimeout(() => { safe(() => window.stop(), null); killLoaders(); }, 7500);
-
-  window.od19518NoSpinner = { finalLogin, finalBoot, killLoaders, backgroundRefresh };
 })();

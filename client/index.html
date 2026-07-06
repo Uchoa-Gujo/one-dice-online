@@ -5,35 +5,125 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>One Dice Mesa Online</title>
-<link rel="stylesheet" href="/block-inventory/style.css" />
-  <link rel="icon" type="image/png" href="/assets/favicon.png" />
-  <link rel="shortcut icon" href="/assets/favicon.png" />
-  <link rel="stylesheet" href="/style.css?v=1.95.18" />
-
-  <style id="od19518-no-boot-style">
-    #od180-boot-screen,#od1805-boot-screen,#od1776-solid-loader,.od1776-solid-loader,.od180-loader-stuck,[data-od-loader]{display:none!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important;}
-    html.od180-booting,html.od1805-booting,html.od1775-restoring-route{overflow:auto!important;}
-    html.od180-booting body,html.od1805-booting body{overflow:auto!important;}
-  </style>
-  <script id="od19518-no-stuck-loader-prevent">
-    window.__OD_SOCKET_DISABLED = true;
-    window.__OD_DISABLE_BOOT_SCREENS = true;
+  <script>
     (function(){
-      function kill(){
-        try{document.documentElement.classList.remove('od180-booting','od1805-booting','od1775-restoring-route');}catch(_){}
-        try{document.body&&document.body.classList.remove('od180-booting-body','od1805-booting-body','od1775-restoring-route');}catch(_){}
-        try{document.querySelectorAll('#od180-boot-screen,#od1805-boot-screen,#od1776-solid-loader,.od1776-solid-loader,.od180-loader-stuck,[data-od-loader]').forEach(function(el){el.remove();});}catch(_){}
+      try {
+        document.documentElement.classList.add('od180-booting');
+        document.documentElement.classList.add('od1945-layered-shell');
+        var st = JSON.parse(localStorage.getItem('od_settings') || '{}');
+        st.theme = 'dark';
+        st.accent = st.accent || 'red';
+        localStorage.setItem('od_settings', JSON.stringify(st));
+        document.documentElement.setAttribute('data-accent', st.accent || 'red');
+      } catch (_) {
+        document.documentElement.classList.add('od180-booting');
+        document.documentElement.classList.add('od1945-layered-shell');
+        document.documentElement.setAttribute('data-accent', 'red');
       }
-      kill();
-      document.addEventListener('DOMContentLoaded', kill, {once:true});
-      [80,250,700,1500,3000,6000].forEach(function(ms){setTimeout(kill,ms);});
-      setTimeout(function(){try{if(document.readyState!=='complete') window.stop();}catch(_){} kill();},7000);
+      try {
+        window.__odBootFailsafe = setTimeout(function(){
+          document.documentElement.classList.remove('od180-booting');
+          document.body && document.body.classList.remove('od180-booting-body');
+          var boot = document.getElementById('od180-boot-screen');
+          if (boot) boot.classList.add('od180-hide');
+          setTimeout(function(){ if (boot && boot.parentNode) boot.parentNode.removeChild(boot); }, 450);
+        }, 3800);
+      } catch (_) {}
     })();
   </script>
+  <style id="od180-critical-style">
+    html.od180-booting, html.od180-booting body { background:#050607 !important; overflow:hidden !important; }
+    #od180-boot-screen { position:fixed; inset:0; z-index:2147483000; display:grid; place-items:center; background: radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--accent, #c5222c) 24%, transparent), transparent 34%), linear-gradient(145deg,#050607 0%,#0b0d10 42%,#020303 100%); color:#fff; opacity:1; visibility:visible; transition:opacity .28s ease, visibility .28s ease; }
+    #od180-boot-screen.od180-hide { opacity:0; visibility:hidden; pointer-events:none; }
+    html:not(.od180-booting) #od180-boot-screen { opacity:0; visibility:hidden; pointer-events:none; }
+    .od180-loader-card { width:min(420px,86vw); min-height:220px; border-radius:28px; border:1px solid color-mix(in srgb, var(--accent,#c5222c) 76%, #fff 10%); background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(0,0,0,.32)); box-shadow:0 30px 90px rgba(0,0,0,.58), inset 0 0 0 1px rgba(255,255,255,.05); display:grid; place-items:center; gap:18px; padding:34px; text-align:center; }
+    .od180-loader-mark { width:54px; height:54px; border-radius:18px; border:3px solid rgba(255,255,255,.16); border-top-color:var(--accent,#c5222c); animation:od180spin .82s linear infinite; }
+    .od180-loader-title { font:900 1.1rem/1.1 Impact, system-ui, sans-serif; letter-spacing:.08em; text-transform:uppercase; }
+    .od180-loader-sub { margin-top:8px; font:700 .78rem/1.4 Arial, system-ui, sans-serif; color:rgba(255,255,255,.66); text-transform:uppercase; letter-spacing:.05em; }
+    @keyframes od180spin { to { transform:rotate(360deg); } }
+  </style>
+  <link rel="stylesheet" href="/block-inventory/style.css" />
+  <link rel="icon" type="image/png" href="/assets/favicon.png" />
+  <link rel="shortcut icon" href="/assets/favicon.png" />
+  <link rel="stylesheet" href="/style.css?v=1.95.19" />
+
+  <script id="od1805-preboot-script">
+    document.documentElement.classList.add('od1805-booting');
+    window.__od1805BootStart = Date.now();
+  </script>
+  <style id="od1805-preboot-style">
+    html.od1805-booting body { background:#050608 !important; }
+    html.od1805-booting #auth-screen,
+    html.od1805-booting #sessions-screen,
+    html.od1805-booting #app-screen,
+    html.od1805-booting #overlay-screen { visibility:hidden !important; opacity:0 !important; }
+    #od1805-boot-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483647;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at 50% 40%, rgba(190, 30, 38, .20), transparent 32%),
+        linear-gradient(135deg, #050608 0%, #111315 48%, #050608 100%);
+      color: #fff;
+      font-family: Impact, Georgia, serif;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    #od1805-boot-screen .od1805-loader-box {
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:18px;
+      text-align:center;
+      padding:28px 34px;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:24px;
+      background:rgba(0,0,0,.28);
+      box-shadow:0 24px 80px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.04);
+    }
+    #od1805-boot-screen .od1805-ring {
+      width:58px;
+      height:58px;
+      border-radius:50%;
+      border:4px solid rgba(255,255,255,.16);
+      border-top-color:#c9303a;
+      animation:od1805spin .8s linear infinite;
+    }
+    #od1805-boot-screen .od1805-load-title { font-size:1.05rem; }
+    #od1805-boot-screen .od1805-load-sub { font-family:Arial,sans-serif; font-size:.74rem; opacity:.75; letter-spacing:.04em; }
+    @keyframes od1805spin { to { transform:rotate(360deg); } }
+    html:not(.od1805-booting) #od1805-boot-screen { display:none !important; }
+  </style>
 
 </head>
 <body>
-<div class="paper-bg"></div>
+  <div id="od1805-boot-screen" aria-live="polite" aria-busy="true">
+    <div class="od1805-loader-box">
+      <div class="od1805-ring" aria-hidden="true"></div>
+      <div class="od1805-load-title">Carregando One Dice</div>
+      <div class="od1805-load-sub">Preparando interface escura</div>
+    </div>
+  </div>
+  <script id="od1805-boot-failsafe">
+    setTimeout(function(){
+      document.documentElement.classList.remove('od1805-booting');
+      var el = document.getElementById('od1805-boot-screen');
+      if (el) el.remove();
+    }, 9000);
+  </script>
+
+  <div id="od180-boot-screen" role="status" aria-live="polite" aria-label="Carregando One Dice">
+    <div class="od180-loader-card">
+      <div class="od180-loader-mark" aria-hidden="true"></div>
+      <div>
+        <div class="od180-loader-title">Carregando One Dice</div>
+        <div class="od180-loader-sub">Preparando mesa, fichas e tema escuro</div>
+      </div>
+    </div>
+  </div>
+  <div class="paper-bg"></div>
 
   <section id="auth-screen" class="screen active">
     <div class="auth-card manga-panel reveal">
@@ -100,6 +190,7 @@
             </label>
             <label class="menu-setting-label">Fonte
               <select id="sessions-font-select" class="accent-select">
+                <option value="impact">Fonte Manga</option>
                 <option value="medieval">Fonte Medieval</option>
                 <option value="clean">Fonte Limpa</option>
                 <option value="mono">Fonte Técnica</option>
@@ -227,6 +318,7 @@
             <option value="purple">Roxo</option>
           </select>
           <select id="font-select" class="accent-select" title="Fonte do site">
+            <option value="impact">Fonte Manga</option>
             <option value="medieval">Fonte Medieval</option>
             <option value="clean">Fonte Limpa</option>
             <option value="mono">Fonte Técnica</option>
@@ -880,6 +972,8 @@
       </div>
     </article>
   </template>
-  <script src="/script.js?v=1.95.18"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/script.js?v=1.95.19"></script>
+  <script type="module" src="/block-inventory/script.js"></script>
 </body>
 </html>
