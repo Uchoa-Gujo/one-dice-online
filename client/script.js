@@ -26481,3 +26481,286 @@ function od66InventoryMutationUnlockSoon() {
     addManualNpc
   };
 })();
+
+/* =========================
+   V1.95.20 - Correção limpa pós-rollback: menu da ficha, Firefox e cards de personagens
+   Motivo:
+   - A base voltou para a v1.95.8 estável, mas os bugs visuais ainda precisam ser corrigidos sem mexer em boot/login/socket.
+   - O menu antigo da ficha tinha botão que sumia, fallback com X e estilos conflitantes.
+   - O Firefox ainda podia exibir fundo antigo e renderizar cards novos com medidas antigas.
+========================= */
+(function od19520SheetMenuFirefoxAndCharacterCards(){
+  'use strict';
+  if (window.__od19520SheetMenuFirefoxAndCharacterCardsInstalled) return;
+  window.__od19520SheetMenuFirefoxAndCharacterCardsInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.95.20';
+
+  const CHARACTER_ROUTE = 'characters';
+  let repairTimer = null;
+  let menuOpen = false;
+
+  function $(id){ return document.getElementById(id); }
+  function safe(fn, fallback = null){ try { return fn(); } catch (error) { console.warn('[One Dice v1.95.20]', error?.message || error); return fallback; } }
+  function appActive(){ return $('app-screen')?.classList.contains('active'); }
+  function sessionsActive(){ return $('sessions-screen')?.classList.contains('active'); }
+  function authActive(){ return $('auth-screen')?.classList.contains('active'); }
+  function isCampaign(){
+    return !!$('od1901-campaign-manager') ||
+      document.body?.dataset?.od195Layer === 'campaign' ||
+      document.body?.dataset?.od1945Layer === 'campaign' ||
+      document.body?.classList.contains('od1901-campaign-manager-mode') ||
+      location.pathname.startsWith('/campanha/') ||
+      location.pathname.startsWith('/mesa/');
+  }
+  function isSheet(){
+    if (authActive() || sessionsActive() || isCampaign()) return false;
+    if (location.pathname.startsWith('/ficha/') || location.pathname.startsWith('/personagem/')) return true;
+    if (!appActive()) return false;
+    return !!(safe(() => accountSheetMode, false) || safe(() => currentCharacterId, null) || document.querySelector('.sheet, .sheet-area'));
+  }
+  function isCharactersHub(){
+    const path = String(location.pathname || '').toLowerCase();
+    return !!$('od71-character-list') ||
+      (sessionsActive() && localStorage.getItem('od71_tab') === CHARACTER_ROUTE) ||
+      path.includes('personagens') || path.includes('fichas');
+  }
+
+  function ensureMenuButton(){
+    let btn = $('od19520-sheet-menu-toggle');
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.id = 'od19520-sheet-menu-toggle';
+      btn.type = 'button';
+      btn.title = 'Abrir menu da ficha';
+      btn.setAttribute('aria-label', 'Abrir menu da ficha');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.innerHTML = '<span aria-hidden="true"></span>';
+      btn.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        toggleSheetMenu();
+      }, true);
+      document.body?.appendChild(btn);
+    }
+    return btn;
+  }
+
+  function hideOldCloseButtons(){
+    const topbar = $('main-topbar');
+    if (!topbar) return;
+    // Remove apenas botões visuais de fechar/dock dentro do menu da ficha. O botão oficial fica fora do painel.
+    ['topbar-menu-toggle','od1954-sheet-menu-toggle','sidebar-dock-btn','master-dashboard-dock-btn'].forEach(id => {
+      const el = $(id);
+      if (!el) return;
+      if (id === 'topbar-menu-toggle' || id === 'od1954-sheet-menu-toggle') {
+        el.setAttribute('aria-hidden', 'true');
+      }
+      el.style.setProperty('display', 'none', 'important');
+      el.style.setProperty('visibility', 'hidden', 'important');
+      el.style.setProperty('pointer-events', 'none', 'important');
+    });
+    topbar.querySelectorAll('button').forEach(button => {
+      const text = (button.textContent || '').trim();
+      const label = `${button.getAttribute('aria-label') || ''} ${button.title || ''}`.toLowerCase();
+      if (text === '×' || text === '✕' || (label.includes('fechar') && button.id !== 'od19520-sheet-menu-toggle')) {
+        button.style.setProperty('display', 'none', 'important');
+        button.style.setProperty('visibility', 'hidden', 'important');
+        button.style.setProperty('pointer-events', 'none', 'important');
+        button.setAttribute('aria-hidden', 'true');
+      }
+    });
+  }
+
+  function applySheetMenuState(open = menuOpen){
+    const btn = ensureMenuButton();
+    const topbar = $('main-topbar');
+
+    if (!isSheet()) {
+      document.body?.classList.remove('od19520-sheet-ui');
+      if (btn) {
+        btn.style.setProperty('display', 'none', 'important');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+      return;
+    }
+
+    document.body?.classList.add('od19520-sheet-ui');
+    document.body?.classList.remove('sidebar-collapsed');
+    if (document.body) {
+      document.body.dataset.od195Layer = 'sheet';
+      document.body.dataset.od1945Layer = 'sheet';
+    }
+
+    btn.style.removeProperty('display');
+    btn.setAttribute('aria-expanded', String(!!open));
+    btn.title = open ? 'Fechar menu da ficha' : 'Abrir menu da ficha';
+    btn.setAttribute('aria-label', btn.title);
+
+    if (topbar) {
+      topbar.style.removeProperty('display');
+      topbar.style.setProperty('visibility', 'visible', 'important');
+      topbar.style.setProperty('pointer-events', open ? 'auto' : 'none', 'important');
+      topbar.classList.toggle('collapsed', !open);
+      topbar.dataset.od1957MenuOpen = open ? 'true' : 'false';
+    }
+
+    hideOldCloseButtons();
+  }
+
+  function toggleSheetMenu(){
+    menuOpen = !menuOpen;
+    applySheetMenuState(menuOpen);
+  }
+
+  function closeSheetMenu(){
+    if (!menuOpen) return;
+    menuOpen = false;
+    applySheetMenuState(false);
+  }
+
+  function removeOldBackground(){
+    document.documentElement.style.setProperty('background-color', '#050607', 'important');
+    document.body?.style.setProperty('background-color', '#050607', 'important');
+    document.querySelectorAll('.paper-bg').forEach(el => {
+      el.style.setProperty('display', 'none', 'important');
+      el.style.setProperty('background', 'none', 'important');
+      el.style.setProperty('background-image', 'none', 'important');
+    });
+  }
+
+  function markCharactersRoute(){
+    if (!isCharactersHub() || !sessionsActive()) return;
+    safe(() => localStorage.setItem('od71_tab', CHARACTER_ROUTE));
+    document.documentElement.classList.add('od19520-characters-modern', 'od19511-characters-modern');
+    document.body?.classList.add('od19520-characters-modern', 'od19511-characters-modern');
+    document.documentElement.dataset.od171Route = CHARACTER_ROUTE;
+    if (document.body) document.body.dataset.od171Route = CHARACTER_ROUTE;
+    $('od71-shell')?.setAttribute('data-od171-route', CHARACTER_ROUTE);
+  }
+
+  function normalizeCharacterCards(){
+    if (!isCharactersHub() || !sessionsActive()) return;
+    markCharactersRoute();
+    const list = $('od71-character-list');
+    if (!list) return;
+    list.classList.add('od19520-character-list', 'od19511-character-list', 'od1811-character-list', 'od1715-character-list');
+    list.style.setProperty('display', 'grid', 'important');
+    list.style.setProperty('grid-template-columns', '1fr', 'important');
+    list.style.setProperty('gap', '18px', 'important');
+    list.style.setProperty('max-width', '1320px', 'important');
+    list.style.setProperty('margin', '0 auto', 'important');
+
+    const desktop = safe(() => window.matchMedia('(min-width: 981px)').matches, true);
+    list.querySelectorAll('article, .account-character-card').forEach(card => {
+      card.classList.add('od19520-character-card', 'od19511-character-card', 'od1811-character-card', 'od71-character-card', 'od85-character-card');
+      card.style.setProperty('display', 'grid', 'important');
+      card.style.setProperty('width', '100%', 'important');
+      card.style.setProperty('max-height', 'none', 'important');
+      card.style.setProperty('overflow', 'hidden', 'important');
+      if (desktop) {
+        card.style.setProperty('grid-template-columns', '160px minmax(0, 1fr) minmax(300px, 380px)', 'important');
+        card.style.setProperty('gap', '22px', 'important');
+        card.style.setProperty('min-height', '210px', 'important');
+      } else {
+        card.style.setProperty('grid-template-columns', '1fr', 'important');
+        card.style.setProperty('min-height', '0', 'important');
+      }
+
+      const art = card.querySelector('.od1811-character-art, .od1715-character-img, img');
+      if (art && art.tagName !== 'IMG') art.classList.add('od19520-character-art', 'od19511-character-art');
+      const body = card.querySelector('.od1811-character-main, .od71-card-body, .od1715-character-body, .account-character-info');
+      if (body) body.classList.add('od19520-character-main', 'od19511-character-main');
+      const title = card.querySelector('h3, strong');
+      if (title) {
+        title.classList.add('od19520-character-title', 'od19511-character-title');
+        title.style.setProperty('word-break', 'normal', 'important');
+        title.style.setProperty('overflow-wrap', 'break-word', 'important');
+        title.style.setProperty('hyphens', 'none', 'important');
+        title.setAttribute('title', (title.textContent || '').trim());
+      }
+      const actions = card.querySelector('.od1811-character-actions, .od85-card-actions, .od71-card-actions, .account-character-actions');
+      if (actions) {
+        actions.classList.add('od19520-character-actions', 'od19511-character-actions');
+        actions.style.setProperty('display', 'grid', 'important');
+        actions.style.setProperty('grid-template-columns', desktop ? 'repeat(3, minmax(0, 1fr))' : '1fr', 'important');
+        actions.style.setProperty('gap', '10px', 'important');
+      }
+    });
+  }
+
+  function scheduleCharacterRepair(reason = 'render'){
+    clearTimeout(repairTimer);
+    [0, 60, 160, 380, 800, 1500].forEach(ms => setTimeout(normalizeCharacterCards, ms));
+    repairTimer = setTimeout(normalizeCharacterCards, 2200);
+  }
+
+  function installCharacterCreateGuard(){
+    if (typeof createAccountCharacter === 'function' && !createAccountCharacter.__od19520DesignLock) {
+      const previousCreateAccountCharacter = createAccountCharacter;
+      createAccountCharacter = function od19520CreateAccountCharacter(openAfterCreate = true){
+        const keepOnModernHub = isCharactersHub();
+        if (keepOnModernHub) markCharactersRoute();
+        const result = previousCreateAccountCharacter.call(this, keepOnModernHub ? false : openAfterCreate);
+        if (keepOnModernHub) scheduleCharacterRepair('create-character');
+        return result;
+      };
+      createAccountCharacter.__od19520DesignLock = true;
+      safe(() => { window.createAccountCharacter = createAccountCharacter; });
+    }
+
+    if (typeof renderAccountCharacterMenu === 'function' && !renderAccountCharacterMenu.__od19520DesignLock) {
+      const previousRenderAccountCharacterMenu = renderAccountCharacterMenu;
+      renderAccountCharacterMenu = function od19520RenderAccountCharacterMenu(){
+        const result = previousRenderAccountCharacterMenu.apply(this, arguments);
+        if (isCharactersHub()) scheduleCharacterRepair('render-account-character-menu');
+        return result;
+      };
+      renderAccountCharacterMenu.__od19520DesignLock = true;
+      safe(() => { window.renderAccountCharacterMenu = renderAccountCharacterMenu; });
+    }
+  }
+
+  function tick(){
+    removeOldBackground();
+    installCharacterCreateGuard();
+    applySheetMenuState(menuOpen);
+    if (isCharactersHub()) scheduleCharacterRepair('tick');
+  }
+
+  document.addEventListener('click', event => {
+    if (event.target.closest?.('#od71-new-character, #od71-create-character, [data-od71-tab="characters"]')) {
+      markCharactersRoute();
+      scheduleCharacterRepair('click-character');
+    }
+    if (event.target.closest?.('#back-to-sessions-btn, .sheet-tab, [data-od71-tab], [data-od75-tab], [data-edit-account-character], [data-od71-open-character]')) {
+      setTimeout(tick, 80);
+      setTimeout(tick, 350);
+    }
+  }, true);
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && isSheet()) closeSheetMenu();
+  }, true);
+
+  window.addEventListener('resize', () => { setTimeout(tick, 80); scheduleCharacterRepair('resize'); });
+  window.addEventListener('popstate', () => setTimeout(tick, 100));
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) setTimeout(tick, 120); });
+
+  const observer = new MutationObserver(() => {
+    clearTimeout(window.__od19520MutationTick);
+    window.__od19520MutationTick = setTimeout(tick, 120);
+  });
+  if (document.body) observer.observe(document.body, { childList: true, subtree: true });
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tick, { once: true });
+  else tick();
+  [80, 260, 700, 1400, 2600].forEach(ms => setTimeout(tick, ms));
+
+  window.od19520SheetMenuFirefoxAndCharacterCards = {
+    tick,
+    applySheetMenuState,
+    normalizeCharacterCards,
+    scheduleCharacterRepair,
+    removeOldBackground
+  };
+})();
