@@ -1,109 +1,121 @@
-# One Dice Site v1.95.12
+# One Dice Site v1.95.13
 
 ## Foco
 
-Patch direto no código-fonte para corrigir problemas dentro da ficha, principalmente o menu de três traços fechando sozinho, o botão **X** desnecessário, o fundo antigo aparecendo e o visual dos atributos resumidos.
+Patch direto no código-fonte para corrigir o problema em que o site ficava **carregando/rodando infinitamente** e não iniciava. O problema mais provável estava na área de boot/login, mas a revisão também limpou a camada final criada na v1.95.12 para impedir loop visual em ficha, menu e atributos.
 
-Esta versão mantém as correções anteriores da v1.95.11: aba **Seus Personagens** travada no design moderno após criar ficha, exclusão real de personagem, login centralizado e remoção da Fonte Manga.
+Esta versão mantém as correções anteriores:
+
+- login centralizado;
+- remoção da Fonte Manga;
+- botão **EXCLUIR** funcionando em personagens;
+- aba **Seus Personagens** travada no design moderno após criar personagem;
+- menu de três traços da ficha sem botão **X**;
+- background antigo removido;
+- atributos resumidos em coluna.
 
 ## Corrigido
 
-- o menu de três traços da ficha não fecha mais automaticamente depois de alguns segundos;
-- removido o **X** visual/desnecessário do menu aberto;
-- o fechamento do menu continua sendo feito pelo próprio botão de três traços;
-- o botão de três traços foi redesenhado no modelo mais recente: botão vermelho arredondado com três linhas brancas;
-- o botão flutuante só aparece quando o menu está fechado;
-- quando o menu está aberto, o botão interno de três traços fica visível e funciona como fechar;
-- removido o fundo antigo com textura/imagem que ainda vazava atrás da ficha;
-- removida a textura antiga dos painéis `manga-panel::before`, que ainda podia mostrar pedaços do background antigo;
-- a área de atributos resumidos foi reorganizada em coluna:
-  - nome do atributo centralizado;
-  - valor cheio do atributo centralizado;
-  - bônus do atributo centralizado dentro do badge;
-- os botões de rolagem/controles antigos dentro dos atributos resumidos foram escondidos nessa visualização;
-- mantidas as correções anteriores de personagens e exclusão.
+- removido o carregamento infinito causado por conflito entre loaders antigos `od180`, `od1805` e camadas finais de shell;
+- o login limpo não fica mais coberto por tela de carregamento antes do formulário aparecer;
+- a tela de boot inicial agora só aparece automaticamente quando existe sessão para restaurar;
+- o fechamento de loaders agora remove também `#od1805-boot-screen`, que antes podia ficar preso mesmo quando `#od180-boot-screen` era fechado;
+- adicionada limpeza forte de classes antigas de boot:
+  - `od180-booting`;
+  - `od1805-booting`;
+  - `od1775-restoring-route`;
+  - `od180-booting-body`;
+  - `od1805-booting-body`;
+- adicionados failsafes para garantir que nenhuma tela de loading fique infinita após erro de login, erro de API ou falha de restauração;
+- removido o `MutationObserver` global da v1.95.12 que observava atributos/classes/estilos e podia reagir às próprias alterações;
+- removido o intervalo contínuo que ficava sincronizando menu/atributos a cada poucos milissegundos;
+- mantido o design do botão de três traços no modelo vermelho com três linhas brancas;
+- mantido o fechamento do menu no próprio botão de três traços;
+- mantida a remoção do **X** desnecessário;
+- mantido o layout de atributos resumidos em ordem:
+  - nome centralizado;
+  - valor centralizado;
+  - bônus centralizado abaixo.
 
 ## Arquivos alterados
 
 - `client/script.js`
-- `client/style.css`
 - `client/index.html`
 - `package.json`
 - `README.md`
 
 ## Limpezas realizadas e motivo
 
-### 1. Fechamento automático do menu da ficha
+### 1. Loop de carregamento do boot/login
 
 **O que foi limpo:**  
-Foi adicionada uma camada final de sincronização para impedir que timers antigos do menu voltem a aplicar `collapsed` quando o usuário deixou o menu aberto.
+Foi removida a dependência do fluxo antigo que fechava apenas parte dos loaders. A função de limpeza agora remove tanto `#od180-boot-screen` quanto `#od1805-boot-screen`.
 
 **Por que foi limpo:**  
-Existiam rotinas antigas que rodavam por intervalo e restauravam o estado do menu. Em alguns casos, elas interpretavam o menu como fechado e recolhiam a topbar depois de alguns segundos, mesmo sem o usuário clicar.
+Existiam duas telas de carregamento de versões diferentes. Em alguns fluxos, uma era removida e a outra ficava ativa, deixando o site aparentemente rodando para sempre e impedindo o login/início de aparecer.
 
 **Como foi substituído:**  
-A versão v1.95.12 grava o estado manual do menu e reabre automaticamente se um timer antigo tentar fechar o painel sozinho. Se o usuário clicar no botão de três traços para fechar, o fechamento é respeitado.
+A v1.95.13 usa uma limpeza única de boot, removendo os dois loaders e as classes antigas no `html` e no `body`.
 
-### 2. Botão X desnecessário
+### 2. Boot automático em login limpo
 
 **O que foi limpo:**  
-Foram neutralizados botões visuais antigos de fechamento dentro do menu da ficha e o botão flutuante antigo deixa de aparecer quando o painel está aberto.
+Foi alterado o trecho que chamava `showBoot()` automaticamente ao abrir o site.
 
 **Por que foi limpo:**  
-O menu já tinha o botão de três traços para abrir e fechar. O **X** criava poluição visual e deixava a interface com dois fechamentos diferentes para a mesma ação.
+Esse boot era chamado mesmo quando não havia sessão para restaurar. Em navegador limpo ou conta nova, isso podia cobrir a tela de login sem necessidade.
 
 **Como foi substituído:**  
-Agora o próprio botão de três traços abre e fecha o menu. Quando o painel está aberto, o botão flutuante é ocultado e o botão interno permanece ativo.
+Agora o boot inicial só aparece se existir sessão salva para restaurar. Se não houver sessão, o sistema fecha o loader e mostra o login.
 
-### 3. Design antigo do botão de menu
+### 3. Observador global da v1.95.12
 
 **O que foi limpo:**  
-Foi removida a dependência visual do caractere `☰` simples como desenho final do botão.
+Foi removido o `MutationObserver` que observava `class`, `style`, `data-od1957-menu-open`, `data-od195-layer` e `data-od1945-layer` no corpo inteiro da página.
 
 **Por que foi limpo:**  
-O caractere podia variar por fonte/navegador e não seguia o modelo visual mais recente aprovado.
+Esse observador reagia às próprias mudanças feitas pela correção do menu. Isso podia gerar um ciclo permanente de sincronização, deixando a página pesada e com comportamento de carregamento infinito.
 
 **Como foi substituído:**  
-O botão agora recebe três linhas reais em HTML/CSS, com fundo vermelho em degradê, borda arredondada, sombra e alinhamento fixo.
+A v1.95.13 mantém apenas um observador leve de criação/remoção de elementos (`childList`), sem observar atributos, classes ou estilos.
 
-### 4. Background antigo vazando
+### 4. Intervalo contínuo do menu/atributos
 
 **O que foi limpo:**  
-Foram sobrescritas as regras que usavam `assets/folha.jpg` como fundo geral e como textura interna dos painéis.
+Foi removido o `setInterval` que chamava sincronização de menu e atributos continuamente.
 
 **Por que foi limpo:**  
-A imagem antiga ainda aparecia em partes do background, principalmente em áreas laterais e painéis, mesmo com o tema escuro ativo.
+Esse intervalo não era necessário e mantinha a página trabalhando o tempo todo, mesmo sem interação do usuário.
 
 **Como foi substituído:**  
-O fundo agora é escuro limpo com gradiente discreto, sem textura antiga. Os pseudo-elementos dos painéis foram removidos para impedir vazamento visual.
+Agora a sincronização acontece apenas em momentos necessários: abertura da página, mudança real no DOM, clique no menu, abertura de ficha e failsafes espaçados.
 
-### 5. Atributos resumidos com layout horizontal antigo
+### 5. Proteção de tela ativa
 
 **O que foi limpo:**  
-Foram sobrescritas as regras antigas que deixavam nome, valor e bônus disputando a mesma linha dentro do card.
+Foi adicionada uma proteção para quando nenhuma tela fica marcada como ativa após erro de boot.
 
 **Por que foi limpo:**  
-Esse modelo deixava os textos apertados e não seguia a ordem desejada para a visualização resumida.
+Se uma camada antiga removesse a classe `active` ou travasse durante a restauração, o usuário podia ficar em tela preta/carregando sem login nem início.
 
 **Como foi substituído:**  
-Cada card de atributo agora organiza o conteúdo em três níveis centralizados: nome, valor cheio e bônus.
+Se nenhuma tela estiver ativa, o sistema mostra o login em navegador limpo ou a tela inicial quando houver sessão salva.
 
 ## Como testar
 
 1. Rodar `npm run check`.
-2. Abrir uma ficha pelo menu **Personagens > Acessar Ficha**.
-3. Clicar no botão de três traços.
-4. Esperar alguns segundos e confirmar que o menu não fecha sozinho.
-5. Clicar novamente no botão de três traços e confirmar que ele fecha o menu.
-6. Conferir que não existe mais botão **X** no painel aberto.
-7. Conferir que o botão de três traços está no modelo vermelho com três linhas brancas.
-8. Verificar a ficha em tela cheia e confirmar que o background antigo não aparece nas laterais.
-9. Conferir a área **Atributos** no resumo:
-   - nome centralizado;
-   - valor centralizado;
-   - bônus centralizado abaixo.
-10. Voltar para **Seus Personagens**, criar um novo personagem e confirmar que a correção da v1.95.11 continua funcionando.
-11. Excluir um personagem de teste e confirmar que a correção da v1.95.10 continua funcionando.
+2. Abrir o site em navegador com cache limpo.
+3. Confirmar que o login aparece sem carregar infinitamente.
+4. Fazer login e confirmar que a tela inicial aparece.
+5. Recarregar o site logado e confirmar que a restauração não fica presa no loading.
+6. Testar login com senha errada e confirmar que o loader fecha após o erro.
+7. Abrir **Seus Personagens** e confirmar que o design moderno continua fixo.
+8. Criar novo personagem e confirmar que o layout não volta ao modelo antigo.
+9. Abrir uma ficha e confirmar que o menu de três traços continua funcionando sem **X**.
+10. Conferir a área **Atributos** no resumo:
+    - nome centralizado;
+    - valor centralizado;
+    - bônus centralizado abaixo.
 
 ## Validação feita
 
@@ -120,4 +132,4 @@ Cada card de atributo agora organiza o conteúdo em três níveis centralizados:
 
 ## Versão
 
-1.95.12
+1.95.13

@@ -5,7 +5,7 @@
 ========================= */
 (function od139EarlyGuards(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
   if (!window.CSS) window.CSS = {};
   if (typeof window.CSS.escape !== 'function') {
     window.CSS.escape = function(value) {
@@ -13428,7 +13428,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od136AttributesClean(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const ATTRS = [
     ['forca', 'Força'], ['agilidade', 'Agilidade'], ['vigor', 'Vigor'], ['intelecto', 'Intelecto'], ['presenca', 'Presença']
@@ -13596,7 +13596,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od137SheetStabilityAndManualDefenseDodge(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const $ = id => document.getElementById(id);
   const EDITABLE = 'input, textarea, select, [contenteditable="true"]';
@@ -13958,7 +13958,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od138AuditAndDuplicateSheetInstalled) return;
   window.__od138AuditAndDuplicateSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const DUP_SELECTOR = '[data-od138-duplicate-character], [data-od71-copy-character], [data-copy-account-character]';
 
@@ -14151,7 +14151,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od139ExtraErrorFixesInstalled) return;
   window.__od139ExtraErrorFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const IMAGE_KEYS = [
     'portrait','portraitUrl','image','imageUrl','photo','photoUrl','avatar','avatarUrl','retrato','foto',
@@ -14306,7 +14306,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od140GeneralImprovementsInstalled) return;
   window.__od140GeneralImprovementsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const VERSION = '1.80.5';
   const BACKUP_KEY = 'od_sheet_backups_v140';
@@ -14787,7 +14787,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od141AuditHardeningInstalled) return;
   window.__od141AuditHardeningInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   function pruneBackups(){
     try {
@@ -14838,7 +14838,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od142FinalCleanupInstalled) return;
   window.__od142FinalCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   function keepFirst(selector){
     const nodes = Array.from(document.querySelectorAll(selector));
@@ -14924,7 +14924,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od148SafeRollbackPatchInstalled) return;
   window.__od148SafeRollbackPatchInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   function hideManualNotes(){
     ['defense-effective-note','dodge-formula-note'].forEach(id => {
@@ -14977,7 +14977,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od152StableLayoutFixesInstalled) return;
   window.__od152StableLayoutFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const $ = id => document.getElementById(id);
   const n = (value, fallback = 0) => {
@@ -15169,7 +15169,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od155SessionDashboardStability(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const STORE_PREFIX = 'od155_dashboard_collapsed_';
   const lastSig = { player: '', master: '' };
@@ -15325,7 +15325,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od156ProtectOtherPlayersSheetsInstalled) return;
   window.__od156ProtectOtherPlayersSheetsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const PROTECTED_ARRAYS = ['inventoryItems','blockInventory','abilities','spells','attacks','conditions','transformations','dropItems'];
   const PROTECTED_OBJECTS = ['skills','resistances','attrs','caster','obsIcons','portraitCrop','settings'];
@@ -15430,7 +15430,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od157ProtectOwnSheetPartialAutosaveInstalled) return;
   window.__od157ProtectOwnSheetPartialAutosaveInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   function clone(value){
     try { return structuredClone(value); } catch (_) {
@@ -15586,7 +15586,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od159StableSessionRenderInstalled) return;
   window.__od159StableSessionRenderInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const $ = id => document.getElementById(id);
   const last = { tableSig: '', tableAt: 0, playerSig: '', masterSig: '' };
@@ -15719,7 +15719,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od160AccountSheetIsolationInstalled) return;
   window.__od160AccountSheetIsolationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const $ = id => document.getElementById(id);
 
@@ -15870,7 +15870,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od161EquipmentProficienciesInstalled) return;
   window.__od161EquipmentProficienciesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const GROUPS = {
     weapons: [
@@ -16037,7 +16037,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od164StableCleanRoutesInstalled) return;
   window.__od164StableCleanRoutesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const VERSION = '1.80.5';
   let applyingRoute = false;
@@ -16245,7 +16245,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od165ExactPortraitCrop(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
   if (window.__od165ExactPortraitCropInstalled) return;
   window.__od165ExactPortraitCropInstalled = true;
 
@@ -16367,7 +16367,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1685AreaSeparationInstalled) return;
   window.__od1685AreaSeparationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const AREA = {
     AUTH: 'login',
@@ -16556,7 +16556,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1699StableSkillUntrainInstalled) return;
   window.__od1699StableSkillUntrainInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const pending = new Map();
   let flushTimer = null;
@@ -16784,7 +16784,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16910SkillSaveMergeInstalled) return;
   window.__od16910SkillSaveMergeInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   let lastExplicit = {};
   let lastExplicitAt = 0;
@@ -17000,7 +17000,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16911StablePortraitDuringResourcesInstalled) return;
   window.__od16911StablePortraitDuringResourcesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const RESOURCE_SELECTOR = '#pv-current, #pv-max, #pe-current, #pe-max';
   const MAIN_SELECTOR = '#char-portrait-preview';
@@ -17172,7 +17172,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od170ModularSheetInstalled) return;
   window.__od170ModularSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const STORE_KEY = 'od170_modules_state_v1';
   const DENSE_KEY = 'od170_dense_sheet_v1';
@@ -17416,7 +17416,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od171HubNavigationAndScrollInstalled) return;
   window.__od171HubNavigationAndScrollInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   let pending = false;
 
@@ -17540,7 +17540,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1715ScrollAndSmartCollapseInstalled) return;
   window.__od1715ScrollAndSmartCollapseInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   let scheduled = false;
 
@@ -17782,7 +17782,7 @@ function od66InventoryMutationUnlockSoon() {
    A correção principal está no index.html e no server/server.js.
 ========================= */
 (function od1762ReloadPathFixMarker(){
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 })();
 
 
@@ -17805,7 +17805,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1775ReloadRouteRestoreInstalled) return;
   window.__od1775ReloadRouteRestoreInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const INITIAL_PATH = location.pathname + location.search;
   const INITIAL_PARTS = location.pathname.split('/').filter(Boolean).map(part => {
@@ -18010,7 +18010,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od178SkillsDesignPolishInstalled) return;
   window.__od178SkillsDesignPolishInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   let timer = null;
 
@@ -18083,7 +18083,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1781AttributeTextFixInstalled) return;
   window.__od1781AttributeTextFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   let timer = null;
 
@@ -18270,7 +18270,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1787AttributeNameNoEllipsisInstalled) return;
   window.__od1787AttributeNameNoEllipsisInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const DISPLAY = {
     'força': 'FORÇA',
@@ -18366,7 +18366,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1788AttributeFullNamesInstalled) return;
   window.__od1788AttributeFullNamesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const FULL = {
     forca: 'FORÇA',
@@ -18466,7 +18466,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od17814AttributesStableFinalInstalled) return;
   window.__od17814AttributesStableFinalInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const ATTRS = [
     ['forca', 'FORÇA'],
@@ -18637,7 +18637,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1801SafeShellInstalled) return;
   window.__od1801SafeShellInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const SETTINGS_KEY = 'od_settings';
   const DEFAULTS = { theme: 'dark', accent: 'red', skillsCompact: true, font: 'medieval', sound: true };
@@ -18819,9 +18819,9 @@ function od66InventoryMutationUnlockSoon() {
   setTimeout(hideBoot, 1800);
   setTimeout(hideBoot, 3200);
   setTimeout(() => {
-    document.querySelectorAll('#od180-boot-screen,#od1776-solid-loader').forEach(el => el.remove());
-    document.documentElement.classList.remove('od180-booting','od1775-restoring-route');
-    document.body?.classList.remove('od180-booting-body','od1775-restoring-route');
+    document.querySelectorAll('#od180-boot-screen,#od1805-boot-screen,#od1776-solid-loader').forEach(el => el.remove());
+    document.documentElement.classList.remove('od180-booting','od1805-booting','od1775-restoring-route');
+    document.body?.classList.remove('od180-booting-body','od1805-booting-body','od1775-restoring-route');
   }, 4200);
 
   window.od1801SafeShell = { forceDarkOnce, decorateIconsOnce, hideBoot, boot };
@@ -18837,7 +18837,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1802RobustLoginInstalled) return;
   window.__od1802RobustLoginInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   function $(id){ return document.getElementById(id); }
   function cleanNick(value){
@@ -18978,7 +18978,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1803AreaCleanupInstalled) return;
   window.__od1803AreaCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const AREA = {
     AUTH: 'login',
@@ -19218,7 +19218,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1804LoginAndAudioFixInstalled) return;
   window.__od1804LoginAndAudioFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   let loginBusy = false;
   let loginTicket = 0;
@@ -19476,7 +19476,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1805FinalShellInstalled) return;
   window.__od1805FinalShellInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   let hideTimer = null;
   let shellTimer = null;
@@ -19731,8 +19731,10 @@ function od66InventoryMutationUnlockSoon() {
     }
   }, true);
 
-  // Se a sessão já está ativa na abertura, cobre o visual antigo até aplicar o shell.
-  showBoot();
+  // v1.95.13: só mostra boot inicial quando existe sessão para restaurar.
+  // Em login limpo, o loader não fica cobrindo a tela antes do formulário aparecer.
+  if (safe(() => typeof getSessionValue === 'function' && !!getSessionValue(), false)) showBoot();
+  else hideBoot(0);
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
@@ -19786,7 +19788,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1809CleanEditorsModesInstalled) return;
   window.__od1809CleanEditorsModesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   let saveTimer = null;
   let renderTimer = null;
@@ -20379,7 +20381,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1810FinalFixesInstalled) return;
   window.__od1810FinalFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   function $(id){ return document.getElementById(id); }
   function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
@@ -20487,7 +20489,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1811HubRefreshInstalled) return;
   window.__od1811HubRefreshInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   function cleanSessionProfile(){
     document.querySelectorAll('.od108-info-card,.od90-profile-card,[data-od90-profile-card],.session-profile-card,.account-profile-card,.menu-profile-card,#session-profile-card,#account-menu-profile,.od108-panel-user-info').forEach(el => el.remove());
@@ -20531,7 +20533,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1812CompactHubInstalled) return;
   window.__od1812CompactHubInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   function removeProfileCards(){
     document.querySelectorAll('#sessions-menu-panel .od90-user-menu-card, #sessions-menu-panel .od75-account-menu-card, .od90-user-menu-card, .od75-account-menu-card, .od108-panel-user-info, .od108-info-card, .od171-back-home').forEach(el => el.remove());
@@ -20569,7 +20571,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1813ThemeLinkedHubInstalled) return;
   window.__od1813ThemeLinkedHubInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const THEMES = {
     red:     { main: '#ef2f3b', dark: '#9d1018', soft: 'rgba(239,47,59,.16)', line: 'rgba(239,47,59,.72)' },
@@ -20667,7 +20669,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1815StableSheetTabsRouteInstalled) return;
   window.__od1815StableSheetTabsRouteInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const HUB_ROUTES = new Set(['/inicio', '/personagens', '/campanhas', '/mesas']);
 
@@ -20749,7 +20751,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1816ClickableAttributesInstalled) return;
   window.__od1816ClickableAttributesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const ATTRS = [
     ['forca', 'Força'],
@@ -20909,7 +20911,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1817ClickableAttackDamageInstalled) return;
   window.__od1817ClickableAttackDamageInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   function $(id){ return document.getElementById(id); }
   function esc(value){
@@ -21094,7 +21096,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1818ClickableAbilityCostInstalled) return;
   window.__od1818ClickableAbilityCostInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   function $(id){ return document.getElementById(id); }
   function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
@@ -21239,7 +21241,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1819RemoveFichaAvulsaMenuCardInstalled) return;
   window.__od1819RemoveFichaAvulsaMenuCardInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   function run(){
     const topbar = document.getElementById('main-topbar');
@@ -21287,7 +21289,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od192CompleteCombatManagerInstalled) return;
   window.__od192CompleteCombatManagerInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const previous191 = window.od191CampaignManager || {};
   const previous1902 = window.od1902CampaignAndHubHotfix || {};
@@ -21770,7 +21772,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od193CompleteCampaignEditorInstalled) return;
   window.__od193CompleteCampaignEditorInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   let pendingCoverData = '';
   let pendingBannerData = '';
@@ -22208,7 +22210,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od194OwlbearBasicIntegrationInstalled) return;
   window.__od194OwlbearBasicIntegrationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const OWLBEAR_HOME = 'https://www.owlbear.rodeo/';
   let injectedEditor = false;
@@ -22516,7 +22518,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1941LiveStabilityAndOwlbearFixInstalled) return;
   window.__od1941LiveStabilityAndOwlbearFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const LIVE_MIN_MS = 2200;
   const MESSAGE_MIN_MS = 1400;
@@ -22836,7 +22838,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1942StrongStabilityCoreInstalled) return;
   window.__od1942StrongStabilityCoreInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const STATE_TTL = 2600;
   const MSG_TTL = 1800;
@@ -23103,7 +23105,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1943HostRealtimeOrchestratorInstalled) return;
   window.__od1943HostRealtimeOrchestratorInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const EVENT_POLL_MS = 1650;
   const HOT_POLL_MS = 850;
@@ -23344,7 +23346,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1944FrontendReviewGuardInstalled) return;
   window.__od1944FrontendReviewGuardInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   // Compatibilidade para chamadas antigas que apontavam para nomes não exportados.
   if (!window.od191CampaignManagerRedesign && window.od191CampaignManager) {
@@ -23515,7 +23517,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1945LayeredCampaignCleanupInstalled) return;
   window.__od1945LayeredCampaignCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const VERSION = '1.94.5';
   const SESSION_TABS = { home: '/inicio', characters: '/personagens', campaigns: '/campanhas' };
@@ -23894,7 +23896,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od195LayerByLayerValidationInstalled) return;
   window.__od195LayerByLayerValidationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const VERSION = '1.95.0';
   const CAMPAIGN_TABS = ['visao','personagens','combate','jogadores','chat','escudo'];
@@ -24129,7 +24131,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1951CampaignUsabilityHotfixInstalled) return;
   window.__od1951CampaignUsabilityHotfixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const CAMPAIGN_MODE_CLASSES = [
     'od1901-campaign-manager-mode','od1902-campaign-manager-mode','od191-campaign-manager-mode','od192-campaign-manager-mode',
@@ -24394,7 +24396,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1952CampaignSheetRollbackInstalled) return;
   window.__od1952CampaignSheetRollbackInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const TABS = ['visao','personagens','combate','jogadores','chat','escudo'];
 
@@ -24702,7 +24704,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1953CampaignBattleChatStabilityInstalled) return;
   window.__od1953CampaignBattleChatStabilityInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const OWLBEAR_HOME = 'https://www.owlbear.rodeo/';
   const TABS = ['visao','personagens','combate','jogadores','chat','escudo'];
@@ -25228,7 +25230,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1954SheetMenuButtonRestoreInstalled) return;
   window.__od1954SheetMenuButtonRestoreInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   function $(id){ return document.getElementById(id); }
   function isCampaign(){
@@ -25363,7 +25365,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1955CampaignScrollCombatCompactInstalled) return;
   window.__od1955CampaignScrollCombatCompactInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const nativeScrollTo = window.scrollTo.bind(window);
   const nativeScrollBy = window.scrollBy.bind(window);
@@ -25560,7 +25562,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1956CampaignSingleLayerFixInstalled) return;
   window.__od1956CampaignSingleLayerFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   let tickTimer = null;
   let renderLock = false;
@@ -25752,7 +25754,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1957SheetMenuAndHistoryInstalled) return;
   window.__od1957SheetMenuAndHistoryInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const HUB_PATHS = { home: '/inicio', characters: '/personagens', campaigns: '/campanhas' };
   const CAMPAIGN_TABS = ['visao','personagens','combate','jogadores','chat','escudo'];
@@ -26002,7 +26004,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1958CampaignFlickerCombatHardeningInstalled) return;
   window.__od1958CampaignFlickerCombatHardeningInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const OWLBEAR_HOME = 'https://www.owlbear.rodeo/';
   const STATUS_LABEL = {
@@ -26492,7 +26494,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1959LoginAndFontCleanupInstalled) return;
   window.__od1959LoginAndFontCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   function $(id){ return document.getElementById(id); }
   function safe(fn, fallback = null){ try { return fn(); } catch (_) { return fallback; } }
@@ -26601,7 +26603,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od19510CharacterDeleteSourceFixInstalled) return;
   window.__od19510CharacterDeleteSourceFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const DELETE_SELECTOR = '[data-od19510-delete-character], [data-od71-delete-character], [data-delete-account-character]';
   const DELETED_KEY = 'od_deleted_characters_v70';
@@ -26779,7 +26781,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od19511CharactersHubDesignLockInstalled) return;
   window.__od19511CharactersHubDesignLockInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
   const CHARACTER_ROUTE = 'characters';
   let repairTimer = null;
@@ -26907,22 +26909,24 @@ function od66InventoryMutationUnlockSoon() {
 
 
 /* =========================
-   V195.12 - Correção final do menu da ficha e normalização dos atributos resumidos
-   - O menu não fecha mais sozinho por timers antigos.
-   - O X visual é removido; o próprio botão de três traços abre e fecha.
-   - O botão recebe o desenho novo de três linhas.
-   - A área de atributos resumidos fica em coluna: nome, valor e bônus.
+   V195.13 - Correção de carregamento infinito + menu/atributos sem loop
+   Objetivo:
+   - remover o loop visual criado pelo observador global da v1.95.12;
+   - garantir que loaders antigos não bloqueiem login/início;
+   - manter o menu de três traços, sem X, com fechamento pelo próprio botão;
+   - manter atributos resumidos em coluna: nome, valor e bônus.
 ========================= */
-(function od19512SheetMenuBackgroundAttributesFix(){
+(function od19513BootMenuAttributesFix(){
   'use strict';
-  if (window.__od19512SheetMenuBackgroundAttributesFixInstalled) return;
-  window.__od19512SheetMenuBackgroundAttributesFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.12';
+  if (window.__od19513BootMenuAttributesFixInstalled) return;
+  window.__od19513BootMenuAttributesFixInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.95.13';
 
-  let lastMenuPointerAt = 0;
   let syncTimer = null;
+  let bootTimer = null;
 
   function $(id){ return document.getElementById(id); }
+  function safe(fn, fallback = null){ try { return fn(); } catch (error) { console.warn('[One Dice v1.95.13]', error?.message || error); return fallback; } }
   function isSheetLayer(){
     return document.body?.dataset?.od195Layer === 'sheet' ||
       document.body?.dataset?.od1945Layer === 'sheet' ||
@@ -26934,29 +26938,46 @@ function od66InventoryMutationUnlockSoon() {
   function lineIcon(){ return '<span class="od19512-menu-lines" aria-hidden="true"><i></i><i></i><i></i></span>'; }
   function decorateButton(btn){
     if (!btn) return;
-    btn.classList.add('od19512-hamburger-menu');
+    btn.classList.add('od19512-hamburger-menu', 'od19513-safe-menu-button');
     if (!btn.querySelector('.od19512-menu-lines')) btn.innerHTML = lineIcon();
     btn.title = 'Abrir/fechar menu da ficha';
     btn.setAttribute('aria-label', 'Abrir/fechar menu da ficha');
   }
+
+  function clearStuckLoaders(reason = 'failsafe'){
+    // Remove todas as telas de boot antigas. A v1.95.12 podia deixar od1805 ativo
+    // enquanto outro fluxo já havia fechado apenas od180, bloqueando o login.
+    document.querySelectorAll('#od180-boot-screen,#od1805-boot-screen,#od1776-solid-loader,.od1776-solid-loader,.od180-loader-stuck').forEach(el => el.remove());
+    document.documentElement.classList.remove('od180-booting', 'od1805-booting', 'od1775-restoring-route');
+    document.body?.classList.remove('od180-booting-body', 'od1805-booting-body', 'od1775-restoring-route');
+    document.documentElement.dataset.od19513BootClear = reason;
+  }
+
+  function ensureVisibleScreen(){
+    const auth = $('auth-screen');
+    const sessions = $('sessions-screen');
+    const app = $('app-screen');
+    if (!auth && !sessions && !app) return;
+    const hasActive = [auth, sessions, app].some(el => el?.classList.contains('active'));
+    if (hasActive) return;
+    const hasSession = safe(() => typeof getSessionValue === 'function' && !!getSessionValue(), false);
+    if (hasSession && sessions) sessions.classList.add('active');
+    else auth?.classList.add('active');
+  }
+
   function currentCharSafe(){
-    try { if (typeof currentChar === 'function') return currentChar(); } catch (_) {}
-    try {
+    return safe(() => typeof currentChar === 'function' ? currentChar() : null, null) || safe(() => {
       const chars = typeof get === 'function' ? get(STORAGE.characters, []) : [];
       return chars.find(c => String(c?.id) === String(currentCharacterId));
-    } catch (_) { return null; }
+    }, null);
   }
-  function attrModSafe(value){
-    try { if (typeof attrMod === 'function') return attrMod(value); } catch (_) {}
-    return Math.floor((Number(value || 10) - 10) / 2);
-  }
-  function formatModSafe(mod){
-    try { if (typeof formatMod === 'function') return formatMod(mod); } catch (_) {}
-    return `${mod >= 0 ? '+' : ''}${mod}`;
-  }
+  function attrModSafe(value){ return safe(() => typeof attrMod === 'function' ? attrMod(value) : Math.floor((Number(value || 10) - 10) / 2), Math.floor((Number(value || 10) - 10) / 2)); }
+  function formatModSafe(mod){ return safe(() => typeof formatMod === 'function' ? formatMod(mod) : `${mod >= 0 ? '+' : ''}${mod}`, `${mod >= 0 ? '+' : ''}${mod}`); }
+  function esc(value){ return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+
   function normalizeAttrCard(card){
     if (!card) return;
-    card.classList.add('od19512-attr-summary-card');
+    card.classList.add('od19512-attr-summary-card', 'od19513-attr-summary-card');
     const input = card.querySelector('input[data-attr], input[data-od17814-input], .od1952-attr-value, .od17814-value-input');
     if (input) {
       input.classList.add('od19512-attr-value');
@@ -26971,12 +26992,14 @@ function od66InventoryMutationUnlockSoon() {
     const mod = card.querySelector('.od1952-attr-mod, .od17814-attr-mod, .od1786-attr-mod, .attr-mod, .mod-badge');
     if (mod) mod.classList.add('od19512-attr-bonus');
   }
+
   function normalizeAttributes(){
     const grid = $('attributes-grid');
     if (!grid) return;
-    grid.classList.add('od19512-attributes-summary');
+    grid.classList.add('od19512-attributes-summary', 'od19513-attributes-summary');
     grid.querySelectorAll('.od1952-attr-card, .od17814-attr-card, .od1786-attr-card, .attr-card-v2, .attr-card').forEach(normalizeAttrCard);
   }
+
   function rebuildAttributeSummaryIfBroken(){
     const grid = $('attributes-grid');
     if (!grid) return;
@@ -26986,14 +27009,11 @@ function od66InventoryMutationUnlockSoon() {
     const char = currentCharSafe();
     if (!char) return;
     const labels = (typeof ATTRIBUTE_KEYS !== 'undefined' ? ATTRIBUTE_KEYS : [['forca','Força'],['agilidade','Agilidade'],['vigor','Vigor'],['intelecto','Intelecto'],['presenca','Presença']]);
-    function esc(value){
-      try { return escapeHtml(value ?? ''); } catch (_) { return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch])); }
-    }
-    grid.className = 'attributes-grid od1952-classic-attributes od19512-attributes-summary';
+    grid.className = 'attributes-grid od1952-classic-attributes od19512-attributes-summary od19513-attributes-summary';
     grid.innerHTML = labels.map(([key, label]) => {
       const value = Number(char.attrs?.[key] ?? 10);
       const bonus = formatModSafe(attrModSafe(value));
-      return `<article class="attr-card od1952-attr-card od19512-attr-summary-card" data-od19512-attr="${esc(key)}">
+      return `<article class="attr-card od1952-attr-card od19512-attr-summary-card od19513-attr-summary-card" data-od19512-attr="${esc(key)}">
         <div class="od1952-attr-name od19512-attr-name">${esc(label)}</div>
         <input data-attr="${esc(key)}" class="od1952-attr-value od19512-attr-value" type="number" min="1" value="${esc(value)}" aria-label="${esc(label)}">
         <div class="mod-badge od1952-attr-mod od19512-attr-bonus">${esc(bonus)}</div>
@@ -27001,8 +27021,25 @@ function od66InventoryMutationUnlockSoon() {
     }).join('');
   }
 
+  function removeLegacyCloseButtons(topbar, original){
+    if (!topbar) return;
+    topbar.querySelectorAll('button').forEach(button => {
+      if (button === original) return;
+      const text = String(button.textContent || '').trim();
+      const label = String(button.getAttribute('aria-label') || button.title || '').toLowerCase();
+      const looksLikeCloseOnly = /^(×|✕|x)$/i.test(text) || (label.includes('fechar menu') && !button.id);
+      if (!looksLikeCloseOnly) return;
+      button.classList.add('od19512-legacy-close-removed');
+      button.style.setProperty('display', 'none', 'important');
+      button.style.setProperty('visibility', 'hidden', 'important');
+      button.style.setProperty('pointer-events', 'none', 'important');
+      button.setAttribute('aria-hidden', 'true');
+    });
+  }
+
   function syncMenu(){
-    if (!document.body) return;
+    const body = document.body;
+    if (!body) return;
     const topbar = $('main-topbar');
     const original = $('topbar-menu-toggle') || topbar?.querySelector?.('.topbar-menu-toggle');
     const floating = $('od1954-sheet-menu-toggle') || document.querySelector('.od1954-sheet-menu-toggle');
@@ -27011,26 +27048,10 @@ function od66InventoryMutationUnlockSoon() {
     decorateButton(original);
     decorateButton(floating);
     if (floating) floating.dataset.od19512FloatingMenu = 'true';
-
-    // Remove qualquer X antigo dentro do menu da ficha. O fechamento fica no hambúrguer.
-    if (topbar) {
-      topbar.querySelectorAll('button').forEach(button => {
-        if (button === original) return;
-        const text = String(button.textContent || '').trim();
-        const label = String(button.getAttribute('aria-label') || button.title || '').toLowerCase();
-        const looksLikeCloseOnly = /^(×|✕|x)$/i.test(text) || (label.includes('fechar menu') && !button.id);
-        if (looksLikeCloseOnly) {
-          button.classList.add('od19512-legacy-close-removed');
-          button.style.setProperty('display', 'none', 'important');
-          button.style.setProperty('visibility', 'hidden', 'important');
-          button.style.setProperty('pointer-events', 'none', 'important');
-          button.setAttribute('aria-hidden', 'true');
-        }
-      });
-    }
+    removeLegacyCloseButtons(topbar, original);
 
     if (!sheet || !topbar) {
-      document.body.classList.remove('od19512-sheet-menu-open', 'od19512-sheet-menu-closed');
+      body.classList.remove('od19512-sheet-menu-open', 'od19512-sheet-menu-closed');
       if (floating) {
         floating.style.removeProperty('display');
         floating.style.removeProperty('visibility');
@@ -27043,22 +27064,10 @@ function od66InventoryMutationUnlockSoon() {
     topbar.style.setProperty('visibility', 'visible', 'important');
     topbar.style.setProperty('pointer-events', 'auto', 'important');
 
-    const isOpen = !topbar.classList.contains('collapsed');
-    const recentUserPress = Date.now() - lastMenuPointerAt < 900;
-
-    // Se o menu estava aberto e um timer antigo tentou fechar, reabre.
-    if (!isOpen && topbar.dataset.od19512UserState === 'open' && !recentUserPress) {
-      topbar.classList.remove('collapsed');
-      topbar.dataset.od1957MenuOpen = 'true';
-    }
-
     const openNow = !topbar.classList.contains('collapsed');
-    if (recentUserPress && !openNow) topbar.dataset.od19512UserState = 'closed';
-    else if (openNow) topbar.dataset.od19512UserState = 'open';
-
     topbar.dataset.od1957MenuOpen = openNow ? 'true' : 'false';
-    document.body.classList.toggle('od19512-sheet-menu-open', openNow);
-    document.body.classList.toggle('od19512-sheet-menu-closed', !openNow);
+    body.classList.toggle('od19512-sheet-menu-open', openNow);
+    body.classList.toggle('od19512-sheet-menu-closed', !openNow);
 
     if (original) {
       original.style.setProperty('display', openNow ? 'grid' : 'none', 'important');
@@ -27075,49 +27084,73 @@ function od66InventoryMutationUnlockSoon() {
     }
   }
 
-  function scheduleSync(delay = 20){
-    clearTimeout(syncTimer);
-    syncTimer = setTimeout(() => { syncMenu(); rebuildAttributeSummaryIfBroken(); }, delay);
+  function runAll(reason = 'sync'){
+    clearStuckLoaders(reason);
+    ensureVisibleScreen();
+    syncMenu();
+    rebuildAttributeSummaryIfBroken();
   }
 
-  // Pointerdown não é bloqueado pelos handlers antigos de click; usamos para distinguir fechamento manual de fechamento automático.
-  document.addEventListener('pointerdown', event => {
-    if (event.target.closest?.('#topbar-menu-toggle,.topbar-menu-toggle,#od1954-sheet-menu-toggle,.od1954-sheet-menu-toggle')) {
-      lastMenuPointerAt = Date.now();
-      setTimeout(scheduleSync, 0);
-      setTimeout(scheduleSync, 80);
-    }
+  function scheduleSync(delay = 30, reason = 'scheduled'){
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(() => runAll(reason), delay);
+  }
+
+  document.addEventListener('click', event => {
+    const menuBtn = event.target.closest?.('#topbar-menu-toggle,.topbar-menu-toggle,#od1954-sheet-menu-toggle,.od1954-sheet-menu-toggle');
+    if (menuBtn) setTimeout(() => scheduleSync(0, 'menu-click'), 0);
   }, true);
 
   document.addEventListener('keydown', event => {
-    if (event.key === 'Escape') {
-      const topbar = $('main-topbar');
-      if (topbar) topbar.dataset.od19512UserState = 'closed';
-      scheduleSync(30);
-    }
+    if (event.key === 'Escape') setTimeout(() => scheduleSync(0, 'escape'), 0);
   }, true);
 
   document.addEventListener('input', event => {
-    if (!event.target.closest?.('#attributes-grid')) return;
-    setTimeout(normalizeAttributes, 30);
+    if (event.target.closest?.('#attributes-grid')) setTimeout(normalizeAttributes, 30);
   }, true);
 
   document.addEventListener('change', event => {
-    if (!event.target.closest?.('#attributes-grid')) return;
-    setTimeout(normalizeAttributes, 30);
+    if (event.target.closest?.('#attributes-grid')) setTimeout(normalizeAttributes, 30);
   }, true);
 
-  const observer = new MutationObserver(() => scheduleSync(35));
-  if (document.body) observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style', 'data-od1957-menu-open', 'data-od195-layer', 'data-od1945-layer'] });
+  // Observador sem loop: só reage à criação/remoção de blocos, não a atributos/classes/estilos.
+  function startObserver(){
+    if (!document.body || window.__od19513ObserverStarted) return;
+    window.__od19513ObserverStarted = true;
+    const observer = new MutationObserver(() => scheduleSync(80, 'dom-change'));
+    observer.observe(document.body, { childList: true, subtree: true });
+    window.__od19513Observer = observer;
+  }
 
-  function boot(){ scheduleSync(0); }
+  function installShowWrappers(){
+    ['showAuth','showSessions','initApp','initAccountCharacterEditor','enterCampaign'].forEach(name => {
+      const fn = safe(() => window[name] || eval(name), null);
+      if (typeof fn !== 'function' || fn.__od19513Wrapped) return;
+      const wrapped = function od19513WrappedShow(...args){
+        const result = fn.apply(this, args);
+        setTimeout(() => runAll(`after-${name}`), 0);
+        setTimeout(() => runAll(`after-${name}-late`), 260);
+        return result;
+      };
+      wrapped.__od19513Wrapped = true;
+      safe(() => { window[name] = wrapped; }, null);
+      safe(() => { eval(`${name} = wrapped`); }, null);
+    });
+  }
+
+  function boot(){
+    clearTimeout(bootTimer);
+    bootTimer = setTimeout(() => runAll('boot'), 0);
+    startObserver();
+    installShowWrappers();
+  }
+
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
   else boot();
-  [80, 240, 700, 1400, 2600].forEach(ms => setTimeout(boot, ms));
-  setInterval(() => {
-    syncMenu();
-    normalizeAttributes();
-  }, 700);
+  window.addEventListener('load', () => scheduleSync(60, 'window-load'), { once: true });
 
-  window.od19512SheetMenuBackgroundAttributesFix = { syncMenu, normalizeAttributes, rebuildAttributeSummaryIfBroken };
+  // Failsafes fortes: loader nenhum pode ficar infinito, inclusive após erro de login/API.
+  [250, 900, 1800, 3200, 5200, 8500].forEach(ms => setTimeout(() => runAll(`failsafe-${ms}`), ms));
+
+  window.od19513BootMenuAttributesFix = { clearStuckLoaders, ensureVisibleScreen, syncMenu, normalizeAttributes, rebuildAttributeSummaryIfBroken, runAll };
 })();
