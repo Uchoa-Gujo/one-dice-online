@@ -21603,7 +21603,7 @@ body.od1952-sheet-open #main-topbar .od19512-legacy-close-removed {
 }
 
 /* =========================
-   v1.95.15 — Remoção definitiva de loading infinito
+   v1.95.16 — Remoção definitiva de loading infinito
    Motivo: camadas legadas od180/od1805/od1776 podiam voltar e cobrir login/início/ficha.
 ========================= */
 #od180-boot-screen,
@@ -21644,7 +21644,7 @@ html.od19514-no-boot #app-screen.screen.active {
 
 
 /* =========================
-   v1.95.15 — Failsafe definitivo contra tela de carregamento/restauração presa
+   v1.95.16 — Failsafe definitivo contra tela de carregamento/restauração presa
    Remove também o pseudo-loader de rota da v177.5, que podia permanecer visível se qualquer camada posterior quebrasse.
 ========================= */
 html.od1775-restoring-route body::before,
@@ -21665,4 +21665,63 @@ body.od1775-restoring-route::before {
   opacity: 0 !important;
   pointer-events: none !important;
   animation: none !important;
+}
+
+
+/* =========================
+   V195.16 - Desbloqueio visual definitivo do login
+   Remove qualquer resto de loader/camada antiga e garante contraste no login.
+========================= */
+#od180-boot-screen,
+#od1805-boot-screen,
+#od1776-solid-loader,
+.od1776-solid-loader,
+.od180-loader-stuck {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+html.od180-booting #auth-screen,
+html.od1805-booting #auth-screen,
+body.od180-booting-body #auth-screen,
+body.od1805-booting-body #auth-screen,
+body.od19516-login-unlocked #auth-screen.active {
+  display: grid !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+body.od19516-login-unlocked #login-form,
+body.od19516-login-unlocked #login-form input,
+body.od19516-login-unlocked #login-form button {
+  pointer-events: auto !important;
+  opacity: 1 !important;
+}
+
+#login-form.od19516-login-working button[type="submit"],
+#login-form button.od19516-login-busy {
+  cursor: wait !important;
+  opacity: .82 !important;
+}
+
+body.od19516-login-unlocked .auth-card {
+  background:
+    radial-gradient(circle at top, rgba(197, 34, 44, .18), transparent 56%),
+    linear-gradient(145deg, rgba(20, 22, 25, .96), rgba(5, 6, 8, .98)) !important;
+  color: #fff !important;
+  border-color: rgba(197, 34, 44, .42) !important;
+}
+
+body.od19516-login-unlocked #auth-screen input {
+  background: rgba(255,255,255,.10) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  border-color: rgba(255,255,255,.24) !important;
+}
+
+body.od19516-login-unlocked #auth-screen input::placeholder {
+  color: rgba(255,255,255,.58) !important;
 }

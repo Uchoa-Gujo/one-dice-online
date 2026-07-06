@@ -5,10 +5,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>One Dice Mesa Online</title>
-  <script id="od19514-theme-preload">
+  <script id="od19516-theme-preload">
     (function(){
       try {
-        document.documentElement.classList.add('od19514-no-boot');
+        document.documentElement.classList.add('od19516-no-boot');
         document.documentElement.classList.add('od1945-layered-shell');
         var st = JSON.parse(localStorage.getItem('od_settings') || '{}');
         st.theme = 'dark';
@@ -16,13 +16,13 @@
         localStorage.setItem('od_settings', JSON.stringify(st));
         document.documentElement.setAttribute('data-accent', st.accent || 'red');
       } catch (_) {
-        document.documentElement.classList.add('od19514-no-boot');
+        document.documentElement.classList.add('od19516-no-boot');
         document.documentElement.classList.add('od1945-layered-shell');
         document.documentElement.setAttribute('data-accent', 'red');
       }
     })();
   </script>
-  <style id="od19514-no-boot-critical-style">
+  <style id="od19516-no-boot-critical-style">
     #od180-boot-screen,#od1805-boot-screen,#od1776-solid-loader,.od1776-solid-loader,.od180-loader-stuck{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;}
     html.od1775-restoring-route body::before,body.od1775-restoring-route::before{display:none!important;content:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;}
     html.od180-booting body,html.od1805-booting body{overflow:auto!important;}
@@ -32,10 +32,10 @@
   <link rel="stylesheet" href="/block-inventory/style.css" />
   <link rel="icon" type="image/png" href="/assets/favicon.png" />
   <link rel="shortcut icon" href="/assets/favicon.png" />
-  <link rel="stylesheet" href="/style.css?v=1.95.15" />
+  <link rel="stylesheet" href="/style.css?v=1.95.16" />
 </head>
 <body>
-  <script id="od19514-no-boot-runtime">
+  <script id="od19516-no-boot-runtime">
     (function(){
       window.__OD_BOOT_DISABLED = true;
       function kill(){
@@ -54,8 +54,9 @@
       document.addEventListener('DOMContentLoaded', kill, { once:true });
       window.addEventListener('load', kill, { once:true });
       var runs = 0;
-      var timer = setInterval(function(){ kill(); if (++runs >= 30) clearInterval(timer); }, 250);
+      var timer = setInterval(function(){ kill(); if (++runs >= 8) clearInterval(timer); }, 250);
       window.od19514KillBoot = kill;
+      window.od19516KillBoot = kill;
     })();
   </script>
   <div class="paper-bg"></div>
@@ -906,7 +907,7 @@
     </article>
   </template>
   <script src="/socket.io/socket.io.js"></script>
-  <script src="/script.js?v=1.95.15"></script>
+  <script src="/script.js?v=1.95.16"></script>
   <script type="module" src="/block-inventory/script.js"></script>
 </body>
 </html>
