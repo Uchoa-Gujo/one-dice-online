@@ -21155,10 +21155,9 @@ body {
   display: none !important;
 }
 
-
 /* =========================
-   V195.10 - Botão Excluir com clique garantido
-   Mantém a área de ações acima de divisores/camadas visuais antigas.
+   V195.17 - Estabilidade sem loading infinito + correções preservadas
+   Base estável 1.95.9, sem os guardiões globais das versões 1.95.13-1.95.16.
 ========================= */
 #sessions-screen.active .od1811-character-actions,
 #sessions-screen.active .od85-card-actions,
@@ -21170,25 +21169,21 @@ body {
 
 #sessions-screen.active .od1811-character-actions .od71-card-btn,
 #sessions-screen.active .od85-card-actions .od71-card-btn,
-#sessions-screen.active .od19510-delete-character {
+#sessions-screen.active .od19517-delete-character {
   position: relative !important;
   z-index: 9 !important;
   pointer-events: auto !important;
 }
 
-.od19510-delete-pending {
+.od19517-delete-pending {
   opacity: .72 !important;
   cursor: wait !important;
   filter: grayscale(.15) !important;
 }
 
-/* =========================
-   V195.11 - Seus Personagens não volta ao modelo antigo após criar ficha
-   Trava visualmente a lista moderna horizontal do hub de personagens.
-========================= */
-html.od19511-characters-modern body #sessions-screen.active #od71-character-list.od19511-character-list,
-body.od19511-characters-modern #sessions-screen.active #od71-character-list.od19511-character-list,
-#sessions-screen.active #od71-character-list.od19511-character-list {
+html.od19517-characters-modern body #sessions-screen.active #od71-character-list.od19517-character-list,
+body.od19517-characters-modern #sessions-screen.active #od71-character-list.od19517-character-list,
+#sessions-screen.active #od71-character-list.od19517-character-list {
   display: grid !important;
   grid-template-columns: 1fr !important;
   gap: 18px !important;
@@ -21200,9 +21195,9 @@ body.od19511-characters-modern #sessions-screen.active #od71-character-list.od19
   align-content: start !important;
 }
 
-html.od19511-characters-modern body #sessions-screen.active #od71-character-list.od19511-character-list > article.od19511-character-card,
-body.od19511-characters-modern #sessions-screen.active #od71-character-list.od19511-character-list > article.od19511-character-card,
-#sessions-screen.active #od71-character-list.od19511-character-list > article.od19511-character-card {
+html.od19517-characters-modern body #sessions-screen.active #od71-character-list.od19517-character-list > article.od19517-character-card,
+body.od19517-characters-modern #sessions-screen.active #od71-character-list.od19517-character-list > article.od19517-character-card,
+#sessions-screen.active #od71-character-list.od19517-character-list > article.od19517-character-card {
   display: grid !important;
   grid-template-columns: 160px minmax(0, 1fr) minmax(300px, 380px) !important;
   gap: 22px !important;
@@ -21213,22 +21208,20 @@ body.od19511-characters-modern #sessions-screen.active #od71-character-list.od19
   padding: 22px !important;
   border-radius: 26px !important;
   overflow: hidden !important;
-  background:
-    radial-gradient(circle at 18% 12%, var(--od-theme-soft, rgba(205,33,40,.14)), transparent 28%),
-    linear-gradient(180deg, rgba(8,10,12,.92), rgba(4,6,8,.92)) !important;
+  background: radial-gradient(circle at 18% 12%, var(--od-theme-soft, rgba(205,33,40,.14)), transparent 28%), linear-gradient(180deg, rgba(8,10,12,.92), rgba(4,6,8,.92)) !important;
   border: 1px solid color-mix(in srgb, var(--od-theme-main, var(--accent, #ef2f3b)), transparent 30%) !important;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.035), 0 18px 42px rgba(0,0,0,.24) !important;
 }
 
-#sessions-screen.active #od71-character-list.od19511-character-list .od19511-character-card .od1811-character-art,
-#sessions-screen.active #od71-character-list.od19511-character-list .od19511-character-card .od19511-character-art {
+#sessions-screen.active #od71-character-list.od19517-character-list .od19517-character-card .od1811-character-art,
+#sessions-screen.active #od71-character-list.od19517-character-list .od19517-character-card .od19517-character-art {
   width: 100% !important;
   display: grid !important;
   place-items: center !important;
 }
 
-#sessions-screen.active #od71-character-list.od19511-character-list .od19511-character-card .od1811-character-art img,
-#sessions-screen.active #od71-character-list.od19511-character-list .od19511-character-card > img {
+#sessions-screen.active #od71-character-list.od19517-character-list .od19517-character-card .od1811-character-art img,
+#sessions-screen.active #od71-character-list.od19517-character-list .od19517-character-card > img {
   width: 128px !important;
   max-width: 128px !important;
   height: 128px !important;
@@ -21237,9 +21230,9 @@ body.od19511-characters-modern #sessions-screen.active #od71-character-list.od19
   align-self: center !important;
 }
 
-#sessions-screen.active #od71-character-list.od19511-character-list .od19511-character-main,
-#sessions-screen.active #od71-character-list.od19511-character-list .od1811-character-main.od19511-character-main,
-#sessions-screen.active #od71-character-list.od19511-character-list .od71-card-body.od19511-character-main {
+#sessions-screen.active #od71-character-list.od19517-character-list .od19517-character-main,
+#sessions-screen.active #od71-character-list.od19517-character-list .od1811-character-main.od19517-character-main,
+#sessions-screen.active #od71-character-list.od19517-character-list .od71-card-body.od19517-character-main {
   min-width: 0 !important;
   max-width: none !important;
   padding: 8px 20px 8px 0 !important;
@@ -21250,8 +21243,8 @@ body.od19511-characters-modern #sessions-screen.active #od71-character-list.od19
   gap: 9px !important;
 }
 
-#sessions-screen.active #od71-character-list.od19511-character-list .od19511-character-title,
-#sessions-screen.active #od71-character-list.od19511-character-list .od19511-character-card h3 {
+#sessions-screen.active #od71-character-list.od19517-character-list .od19517-character-title,
+#sessions-screen.active #od71-character-list.od19517-character-list .od19517-character-card h3 {
   max-width: none !important;
   width: 100% !important;
   margin: 0 !important;
@@ -21264,9 +21257,9 @@ body.od19511-characters-modern #sessions-screen.active #od71-character-list.od19
   letter-spacing: .055em !important;
 }
 
-#sessions-screen.active #od71-character-list.od19511-character-list .od19511-character-actions,
-#sessions-screen.active #od71-character-list.od19511-character-list .od1811-character-actions.od19511-character-actions,
-#sessions-screen.active #od71-character-list.od19511-character-list .od85-card-actions.od19511-character-actions {
+#sessions-screen.active #od71-character-list.od19517-character-list .od19517-character-actions,
+#sessions-screen.active #od71-character-list.od19517-character-list .od1811-character-actions.od19517-character-actions,
+#sessions-screen.active #od71-character-list.od19517-character-list .od85-card-actions.od19517-character-actions {
   display: grid !important;
   grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   gap: 10px !important;
@@ -21278,8 +21271,8 @@ body.od19511-characters-modern #sessions-screen.active #od71-character-list.od19
   z-index: 9 !important;
 }
 
-#sessions-screen.active #od71-character-list.od19511-character-list .od19511-character-actions .od71-card-btn,
-#sessions-screen.active #od71-character-list.od19511-character-list .od19511-character-actions button {
+#sessions-screen.active #od71-character-list.od19517-character-list .od19517-character-actions .od71-card-btn,
+#sessions-screen.active #od71-character-list.od19517-character-list .od19517-character-actions button {
   width: 100% !important;
   min-width: 0 !important;
   min-height: 48px !important;
@@ -21289,44 +21282,38 @@ body.od19511-characters-modern #sessions-screen.active #od71-character-list.od19
 }
 
 @media (max-width: 980px) {
-  html.od19511-characters-modern body #sessions-screen.active #od71-character-list.od19511-character-list,
-  body.od19511-characters-modern #sessions-screen.active #od71-character-list.od19511-character-list,
-  #sessions-screen.active #od71-character-list.od19511-character-list {
+  html.od19517-characters-modern body #sessions-screen.active #od71-character-list.od19517-character-list,
+  body.od19517-characters-modern #sessions-screen.active #od71-character-list.od19517-character-list,
+  #sessions-screen.active #od71-character-list.od19517-character-list {
     width: min(100%, calc(100vw - 24px)) !important;
     max-width: min(100%, calc(100vw - 24px)) !important;
     padding-right: 0 !important;
   }
 
-  #sessions-screen.active #od71-character-list.od19511-character-list > article.od19511-character-card {
+  #sessions-screen.active #od71-character-list.od19517-character-list > article.od19517-character-card {
     grid-template-columns: 1fr !important;
     min-height: 0 !important;
   }
 
-  #sessions-screen.active #od71-character-list.od19511-character-list .od19511-character-main,
-  #sessions-screen.active #od71-character-list.od19511-character-list .od1811-character-main.od19511-character-main,
-  #sessions-screen.active #od71-character-list.od19511-character-list .od71-card-body.od19511-character-main {
+  #sessions-screen.active #od71-character-list.od19517-character-list .od19517-character-main,
+  #sessions-screen.active #od71-character-list.od19517-character-list .od1811-character-main.od19517-character-main,
+  #sessions-screen.active #od71-character-list.od19517-character-list .od71-card-body.od19517-character-main {
     border-right: 0 !important;
     padding-right: 0 !important;
   }
 
-  #sessions-screen.active #od71-character-list.od19511-character-list .od19511-character-actions,
-  #sessions-screen.active #od71-character-list.od19511-character-list .od1811-character-actions.od19511-character-actions,
-  #sessions-screen.active #od71-character-list.od19511-character-list .od85-card-actions.od19511-character-actions {
+  #sessions-screen.active #od71-character-list.od19517-character-list .od19517-character-actions,
+  #sessions-screen.active #od71-character-list.od19517-character-list .od1811-character-actions.od19517-character-actions,
+  #sessions-screen.active #od71-character-list.od19517-character-list .od85-card-actions.od19517-character-actions {
     grid-template-columns: 1fr !important;
   }
 }
 
-
-
-/* =========================
-   V195.12 - Ficha: menu fixo, fundo limpo e atributos resumidos
-========================= */
 :root {
-  --od19512-menu-red-a: #d43a43;
-  --od19512-menu-red-b: #94151e;
+  --od19517-menu-red-a: #d43a43;
+  --od19517-menu-red-b: #94151e;
 }
 
-/* Remove a textura/imagem antiga do fundo. A ficha passa a usar fundo escuro limpo. */
 .paper-bg,
 body.dark-sheet .paper-bg,
 body.od180-dark-only .paper-bg,
@@ -21334,14 +21321,13 @@ body.od1803-dark-only .paper-bg,
 body.od195-sheet-layer .paper-bg,
 body.od1945-sheet-layer .paper-bg,
 body.od1952-sheet-open .paper-bg {
-  background: radial-gradient(circle at 45% 8%, rgba(205, 47, 58, .10), transparent 28%), #050607 !important;
-  background-image: radial-gradient(circle at 45% 8%, rgba(205, 47, 58, .10), transparent 28%), linear-gradient(180deg, #050607 0%, #07090b 100%) !important;
+  background: radial-gradient(circle at 45% 8%, rgba(205,47,58,.10), transparent 28%), linear-gradient(180deg, #050607 0%, #07090b 100%) !important;
+  background-image: radial-gradient(circle at 45% 8%, rgba(205,47,58,.10), transparent 28%), linear-gradient(180deg, #050607 0%, #07090b 100%) !important;
   opacity: 1 !important;
   filter: none !important;
   transform: none !important;
 }
 
-/* Remove a folha/textura antiga dos painéis para não vazar pedaço de background velho. */
 .manga-panel::before,
 body.dark-sheet .manga-panel::before,
 body.od195-sheet-layer .manga-panel::before,
@@ -21356,12 +21342,11 @@ body.od1952-sheet-open .manga-panel::before,
   opacity: 0 !important;
 }
 
-/* Botão novo de três traços: mesmo desenho para o botão do painel e o flutuante. */
 #topbar-menu-toggle,
 .topbar-menu-toggle,
 #od1954-sheet-menu-toggle,
 .od1954-sheet-menu-toggle,
-.od19512-hamburger-menu {
+.od19517-hamburger-menu {
   width: 54px !important;
   height: 54px !important;
   min-width: 54px !important;
@@ -21369,7 +21354,7 @@ body.od1952-sheet-open .manga-panel::before,
   padding: 0 !important;
   border-radius: 15px !important;
   border: 2px solid rgba(255,255,255,.22) !important;
-  background: linear-gradient(180deg, var(--od19512-menu-red-a), var(--od19512-menu-red-b)) !important;
+  background: linear-gradient(180deg, var(--od19517-menu-red-a), var(--od19517-menu-red-b)) !important;
   color: #fff !important;
   box-shadow: 0 14px 30px rgba(0,0,0,.42), inset 0 0 0 1px rgba(255,255,255,.10) !important;
   display: grid !important;
@@ -21380,11 +21365,11 @@ body.od1952-sheet-open .manga-panel::before,
   overflow: hidden !important;
 }
 
-#topbar-menu-toggle .od19512-menu-lines,
-.topbar-menu-toggle .od19512-menu-lines,
-#od1954-sheet-menu-toggle .od19512-menu-lines,
-.od1954-sheet-menu-toggle .od19512-menu-lines,
-.od19512-hamburger-menu .od19512-menu-lines {
+#topbar-menu-toggle .od19517-menu-lines,
+.topbar-menu-toggle .od19517-menu-lines,
+#od1954-sheet-menu-toggle .od19517-menu-lines,
+.od1954-sheet-menu-toggle .od19517-menu-lines,
+.od19517-hamburger-menu .od19517-menu-lines {
   width: 24px !important;
   height: 18px !important;
   display: grid !important;
@@ -21394,11 +21379,11 @@ body.od1952-sheet-open .manga-panel::before,
   pointer-events: none !important;
 }
 
-#topbar-menu-toggle .od19512-menu-lines i,
-.topbar-menu-toggle .od19512-menu-lines i,
-#od1954-sheet-menu-toggle .od19512-menu-lines i,
-.od1954-sheet-menu-toggle .od19512-menu-lines i,
-.od19512-hamburger-menu .od19512-menu-lines i {
+#topbar-menu-toggle .od19517-menu-lines i,
+.topbar-menu-toggle .od19517-menu-lines i,
+#od1954-sheet-menu-toggle .od19517-menu-lines i,
+.od1954-sheet-menu-toggle .od19517-menu-lines i,
+.od19517-hamburger-menu .od19517-menu-lines i {
   display: block !important;
   width: 100% !important;
   height: 3px !important;
@@ -21407,52 +21392,46 @@ body.od1952-sheet-open .manga-panel::before,
   box-shadow: 0 1px 0 rgba(0,0,0,.24) !important;
 }
 
-/* Quando o painel da ficha está aberto, não existe X: o próprio botão de três traços fecha. */
-body.od19512-sheet-menu-open #od1954-sheet-menu-toggle,
-body.od19512-sheet-menu-open .od1954-sheet-menu-toggle,
-body.od19512-sheet-menu-open [data-od19512-floating-menu="true"] {
+body.od19517-sheet-menu-open #od1954-sheet-menu-toggle,
+body.od19517-sheet-menu-open .od1954-sheet-menu-toggle,
+body.od19517-sheet-menu-open [data-od19517-floating-menu="true"] {
   display: none !important;
   visibility: hidden !important;
   pointer-events: none !important;
 }
 
-body.od19512-sheet-menu-open #topbar-menu-toggle,
-body.od19512-sheet-menu-open .topbar-menu-toggle {
+body.od19517-sheet-menu-open #topbar-menu-toggle,
+body.od19517-sheet-menu-open .topbar-menu-toggle {
   display: grid !important;
   visibility: visible !important;
   pointer-events: auto !important;
 }
 
-body.od19512-sheet-menu-open #main-topbar:not(.collapsed) {
-  overflow: visible !important;
-}
-
-body.od19512-sheet-menu-closed #main-topbar.collapsed #topbar-menu-toggle,
-body.od19512-sheet-menu-closed #main-topbar.collapsed .topbar-menu-toggle {
+body.od19517-sheet-menu-closed #main-topbar.collapsed #topbar-menu-toggle,
+body.od19517-sheet-menu-closed #main-topbar.collapsed .topbar-menu-toggle {
   display: none !important;
 }
 
-body.od19512-sheet-menu-closed #od1954-sheet-menu-toggle,
-body.od19512-sheet-menu-closed .od1954-sheet-menu-toggle {
+body.od19517-sheet-menu-closed #od1954-sheet-menu-toggle,
+body.od19517-sheet-menu-closed .od1954-sheet-menu-toggle {
   display: grid !important;
   visibility: visible !important;
   pointer-events: auto !important;
 }
 
-/* Remove qualquer botão visual antigo de fechar dentro do topbar da ficha. */
-body.od195-sheet-layer #main-topbar .od19512-legacy-close-removed,
-body.od1945-sheet-layer #main-topbar .od19512-legacy-close-removed,
-body.od1952-sheet-open #main-topbar .od19512-legacy-close-removed {
+body.od195-sheet-layer #main-topbar .od19517-legacy-close-removed,
+body.od1945-sheet-layer #main-topbar .od19517-legacy-close-removed,
+body.od1952-sheet-open #main-topbar .od19517-legacy-close-removed {
   display: none !important;
   visibility: hidden !important;
   pointer-events: none !important;
 }
 
-/* Atributos resumidos: nome, valor e bônus sempre centralizados em coluna. */
 #attributes-grid,
 #attributes-grid.od1952-classic-attributes,
 #attributes-grid.od17814-attributes-grid,
-#attributes-grid.od1786-attributes-grid {
+#attributes-grid.od1786-attributes-grid,
+#attributes-grid.od19517-attributes-summary {
   display: grid !important;
   grid-template-columns: repeat(5, minmax(128px, 1fr)) !important;
   gap: 12px !important;
@@ -21463,7 +21442,8 @@ body.od1952-sheet-open #main-topbar .od19512-legacy-close-removed {
 #attributes-grid .od17814-attr-card,
 #attributes-grid .od1786-attr-card,
 #attributes-grid .attr-card-v2,
-#attributes-grid .attr-card {
+#attributes-grid .attr-card,
+#attributes-grid .od19517-attr-summary-card {
   min-height: 126px !important;
   display: grid !important;
   grid-template-rows: auto auto auto !important;
@@ -21484,7 +21464,8 @@ body.od1952-sheet-open #main-topbar .od19512-legacy-close-removed {
 #attributes-grid .od1786-attr-name,
 #attributes-grid .attr-name,
 #attributes-grid .od103-attr-name,
-#attributes-grid .od102-attr-name {
+#attributes-grid .od102-attr-name,
+#attributes-grid .od19517-attr-name {
   order: 1 !important;
   width: 100% !important;
   text-align: center !important;
@@ -21505,6 +21486,7 @@ body.od1952-sheet-open #main-topbar .od19512-legacy-close-removed {
 #attributes-grid .od1952-attr-value,
 #attributes-grid .od17814-value-input,
 #attributes-grid .od103-attr-value,
+#attributes-grid .od19517-attr-value,
 #attributes-grid input[data-attr] {
   order: 2 !important;
   width: 100% !important;
@@ -21541,7 +21523,8 @@ body.od1952-sheet-open #main-topbar .od19512-legacy-close-removed {
 #attributes-grid .od17814-attr-mod,
 #attributes-grid .od1786-attr-mod,
 #attributes-grid .attr-mod,
-#attributes-grid .mod-badge {
+#attributes-grid .mod-badge,
+#attributes-grid .od19517-attr-bonus {
   order: 3 !important;
   min-width: 52px !important;
   min-height: 28px !important;
@@ -21561,10 +21544,7 @@ body.od1952-sheet-open #main-topbar .od19512-legacy-close-removed {
 }
 
 #attributes-grid .od17814-attr-top,
-#attributes-grid .od1786-attr-title-row {
-  display: contents !important;
-}
-
+#attributes-grid .od1786-attr-title-row,
 #attributes-grid .od17814-attr-controls,
 #attributes-grid .od1786-attr-control-row {
   display: contents !important;
@@ -21588,7 +21568,8 @@ body.od1952-sheet-open #main-topbar .od19512-legacy-close-removed {
   #attributes-grid,
   #attributes-grid.od1952-classic-attributes,
   #attributes-grid.od17814-attributes-grid,
-  #attributes-grid.od1786-attributes-grid {
+  #attributes-grid.od1786-attributes-grid,
+  #attributes-grid.od19517-attributes-summary {
     grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)) !important;
   }
 }
@@ -21597,131 +21578,8 @@ body.od1952-sheet-open #main-topbar .od19512-legacy-close-removed {
   #attributes-grid,
   #attributes-grid.od1952-classic-attributes,
   #attributes-grid.od17814-attributes-grid,
-  #attributes-grid.od1786-attributes-grid {
+  #attributes-grid.od1786-attributes-grid,
+  #attributes-grid.od19517-attributes-summary {
     grid-template-columns: 1fr 1fr !important;
   }
-}
-
-/* =========================
-   v1.95.16 — Remoção definitiva de loading infinito
-   Motivo: camadas legadas od180/od1805/od1776 podiam voltar e cobrir login/início/ficha.
-========================= */
-#od180-boot-screen,
-#od1805-boot-screen,
-#od1776-solid-loader,
-.od1776-solid-loader,
-.od180-loader-stuck {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-  animation: none !important;
-}
-html.od180-booting,
-html.od1805-booting,
-html.od1775-restoring-route,
-body.od180-booting-body,
-body.od1805-booting-body,
-body.od1775-restoring-route {
-  overflow: auto !important;
-}
-html.od180-booting #auth-screen,
-html.od180-booting #sessions-screen,
-html.od180-booting #app-screen,
-html.od1805-booting #auth-screen,
-html.od1805-booting #sessions-screen,
-html.od1805-booting #app-screen,
-html.od1805-booting #overlay-screen {
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-html.od19514-no-boot #auth-screen.screen.active,
-html.od19514-no-boot #sessions-screen.screen.active,
-html.od19514-no-boot #app-screen.screen.active {
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
-
-/* =========================
-   v1.95.16 — Failsafe definitivo contra tela de carregamento/restauração presa
-   Remove também o pseudo-loader de rota da v177.5, que podia permanecer visível se qualquer camada posterior quebrasse.
-========================= */
-html.od1775-restoring-route body::before,
-body.od1775-restoring-route::before {
-  content: none !important;
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
-#od180-boot-screen,
-#od1805-boot-screen,
-#od1776-solid-loader,
-.od1776-solid-loader,
-.od180-loader-stuck {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-  animation: none !important;
-}
-
-
-/* =========================
-   V195.16 - Desbloqueio visual definitivo do login
-   Remove qualquer resto de loader/camada antiga e garante contraste no login.
-========================= */
-#od180-boot-screen,
-#od1805-boot-screen,
-#od1776-solid-loader,
-.od1776-solid-loader,
-.od180-loader-stuck {
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
-}
-
-html.od180-booting #auth-screen,
-html.od1805-booting #auth-screen,
-body.od180-booting-body #auth-screen,
-body.od1805-booting-body #auth-screen,
-body.od19516-login-unlocked #auth-screen.active {
-  display: grid !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  pointer-events: auto !important;
-}
-
-body.od19516-login-unlocked #login-form,
-body.od19516-login-unlocked #login-form input,
-body.od19516-login-unlocked #login-form button {
-  pointer-events: auto !important;
-  opacity: 1 !important;
-}
-
-#login-form.od19516-login-working button[type="submit"],
-#login-form button.od19516-login-busy {
-  cursor: wait !important;
-  opacity: .82 !important;
-}
-
-body.od19516-login-unlocked .auth-card {
-  background:
-    radial-gradient(circle at top, rgba(197, 34, 44, .18), transparent 56%),
-    linear-gradient(145deg, rgba(20, 22, 25, .96), rgba(5, 6, 8, .98)) !important;
-  color: #fff !important;
-  border-color: rgba(197, 34, 44, .42) !important;
-}
-
-body.od19516-login-unlocked #auth-screen input {
-  background: rgba(255,255,255,.10) !important;
-  color: #fff !important;
-  -webkit-text-fill-color: #fff !important;
-  border-color: rgba(255,255,255,.24) !important;
-}
-
-body.od19516-login-unlocked #auth-screen input::placeholder {
-  color: rgba(255,255,255,.58) !important;
 }

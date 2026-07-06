@@ -1,161 +1,141 @@
-# One Dice Site v1.95.16
+# One Dice Online — Correções da versão 1.95.17
 
-## Foco
+## Resumo
 
-Correção direta no código-fonte para resolver o login/carregamento infinito que continuava acontecendo mesmo após as versões 1.95.13, 1.95.14 e 1.95.15.
+Esta versão corrige o problema de **carregamento infinito que continuou aparecendo depois da v1.95.10**.  
+A correção foi feita voltando a base do código para a **v1.95.9**, que era a última base estável antes do problema, e reaplicando somente as correções necessárias de forma limpa.
 
-Desta vez a correção não ficou limitada a esconder telas de loading. A busca foi feita nas camadas de boot, login, restauração de sessão, chamadas de API, handlers antigos de formulário e CSS que podia manter o login visualmente preso.
+O foco desta versão foi remover a causa do travamento fora do login: scripts globais, carregamento bloqueante e correções visuais que continuavam rodando durante a abertura do site.
 
-O problema estava em uma combinação perigosa:
+---
 
-- loaders antigos `od180`, `od1805` e `od1776` ainda existiam no projeto;
-- listeners antigos de login rodavam antes dos patches novos;
-- a restauração de sessão podia chamar `/api/auth/me` sem timeout real;
-- o login podia ficar esperando `/api/auth/login`, `/api/characters` ou `/api/tables` responderem;
-- o usuário via a tela de login ou uma tela de carregamento presa, sem retorno claro.
+## Bugs corrigidos
 
-A v1.95.16 adiciona uma proteção no início do `client/script.js` e um controlador final de login no fim do arquivo. O login agora não depende mais dos loaders antigos e não fica preso esperando carregamentos secundários de fichas/mesas.
+- O site podia ficar carregando infinitamente mesmo com a tela de login visível.
+- O carregamento bloqueante do Socket.IO podia prender a abertura da página antes do `script.js` principal terminar de assumir a interface.
+- A correção da v1.95.10 tinha introduzido uma camada global de exclusão de personagem com observação da página inteira.
+- As versões posteriores adicionaram guardiões de boot/login, `fetch` global, observadores e timers que continuavam tentando corrigir a tela mesmo quando o problema estava em outra área.
+- O botão **EXCLUIR** continua funcionando, mas agora sem rodar nada durante a abertura do site.
+- A aba **Seus Personagens** mantém o design moderno ao criar personagem novo.
+- O menu de três traços da ficha mantém o visual novo, sem o **X** desnecessário.
+- A ficha mantém o fundo limpo, sem vazamento de textura/imagem antiga.
+- Os atributos resumidos continuam organizados como: nome, valor e bônus centralizados.
 
-Esta versão mantém as correções anteriores:
-
-- login centralizado;
-- remoção da Fonte Manga;
-- botão **EXCLUIR** funcionando em personagens;
-- aba **Seus Personagens** travada no design moderno após criar personagem;
-- menu de três traços da ficha sem botão **X**;
-- background antigo removido;
-- atributos resumidos em coluna.
-
-## Corrigido
-
-- adicionei o bloco **V195.16 - Guardião raiz contra login/carregamento infinito** no início do `client/script.js`;
-- adicionei timeout real nas chamadas `fetch` para `/api/auth`, `/api/characters` e `/api/tables`;
-- adicionei o bloco **V195.16 - Login final sem travar** no fim do `client/script.js`;
-- o submit/click do login agora é capturado no `window`, antes dos listeners antigos do `document`;
-- o login entra na tela inicial imediatamente após autenticar;
-- fichas e mesas carregam em segundo plano e não bloqueiam mais a entrada;
-- se o servidor ou banco demorar demais, o login mostra erro em vez de parecer carregamento infinito;
-- a restauração de sessão salva também tem timeout e não prende mais a tela;
-- loaders antigos são removidos no início, no DOMContentLoaded, no load e por failsafes;
-- o visual do login foi destravado por CSS final para impedir opacidade/pointer-events herdados de loaders antigos;
-- atualizei a versão para **1.95.16**.
+---
 
 ## Arquivos alterados
 
+- `package.json`
 - `client/index.html`
 - `client/script.js`
 - `client/style.css`
-- `package.json`
 - `README.md`
+
+---
 
 ## Limpezas realizadas e motivo
 
-### 1. Corte do carregamento infinito na raiz
+### 1. Remoção da base problemática pós-v1.95.10
 
-**O que foi feito:**  
-Foi criado um guardião inicial no começo do `client/script.js` para remover imediatamente:
+**O que foi removido:**  
+A versão foi reconstruída a partir da base **v1.95.9**, sem manter os blocos adicionados depois da v1.95.10 que mexiam em boot, login, loader, `fetch` global e observação contínua da interface.
 
-- `#od180-boot-screen`;
-- `#od1805-boot-screen`;
-- `#od1776-solid-loader`;
-- `.od1776-solid-loader`;
-- `.od180-loader-stuck`;
-- classes `od180-booting`, `od1805-booting` e `od1775-restoring-route`.
-
-**Por que foi feito:**  
-As versões anteriores tentavam fechar o loading depois que ele já tinha sido criado. Isso ainda permitia que alguma camada antiga prendesse a tela antes do login terminar de montar.
+**Por que foi removido:**  
+O bug começou depois da v1.95.10 e continuou mesmo depois das tentativas de corrigir o login. Isso indicou que o problema não estava somente no formulário de login, mas em camadas do site que rodavam durante a abertura.
 
 **Como foi substituído:**  
-A v1.95.16 limpa essas camadas antes das rotinas antigas de login/boot rodarem e repete a limpeza em failsafes curtos.
+As correções úteis foram reaplicadas em um bloco novo da **v1.95.17**, sem `MutationObserver` permanente, sem `setInterval` visual contínuo e sem alterar `window.fetch` globalmente.
 
-### 2. Timeout real nas chamadas da API
+---
 
-**O que foi feito:**  
-Foi adicionada uma proteção global sobre `fetch` para as rotas principais:
+### 2. Socket.IO deixou de bloquear a abertura do site
 
-- `/api/auth/login`;
-- `/api/auth/me`;
-- `/api/characters`;
-- `/api/tables`.
+**O que foi removido:**  
+O carregamento direto e bloqueante deste script foi removido do fluxo inicial:
 
-**Por que foi feito:**  
-Se o servidor ou o banco demorasse, o login/restauração ficava esperando sem resposta visual clara. Para o usuário isso parecia “rodando infinitamente”.
+```html
+<script src="/socket.io/socket.io.js"></script>
+```
 
-**Como foi substituído:**  
-Agora essas chamadas têm tempo máximo. Se passar do limite, a requisição é cancelada e a tela de login fica utilizável com mensagem de erro.
-
-### 3. Login final capturado antes dos handlers antigos
-
-**O que foi feito:**  
-Foi criado um controlador final de login que captura `submit` e clique no botão de entrar pelo `window` em modo captura.
-
-**Por que foi feito:**  
-O projeto tem vários listeners antigos de login no `document`. Alguns deles chamavam loaders ou aguardavam carregamentos secundários. Como listeners antigos podiam rodar antes do patch, o login continuava preso.
+**Por que foi removido:**  
+Esse script era carregado antes do `script.js` principal. Se `/socket.io/socket.io.js` demorasse, travasse ou ficasse pendente no servidor/proxy, o navegador podia continuar carregando infinitamente e o restante da interface ficava dependente dele.
 
 **Como foi substituído:**  
-O novo controlador pega o evento antes dos listeners antigos, cancela a propagação e executa o fluxo novo de login.
+O Socket.IO agora é carregado de forma assíncrona depois que a página já abriu. Se ele falhar, o site continua funcionando sem travar a tela inicial; apenas o tempo real fica desativado até o socket carregar corretamente.
 
-### 4. Fichas e mesas não bloqueiam mais o login
+---
 
-**O que foi feito:**  
-Depois que `/api/auth/login` confirma o usuário, o site entra imediatamente na tela inicial.
+### 3. Exclusão de personagens refeita sem camada global
 
-**Por que foi feito:**  
-Antes, o login podia depender do carregamento completo de fichas e mesas. Se uma dessas chamadas falhasse ou demorasse, o usuário ficava travado.
+**O que foi removido:**  
+Foi descartado o modelo da v1.95.10 que dependia de observação global da página para decorar botões de exclusão.
 
-**Como foi substituído:**  
-Fichas e mesas agora carregam em segundo plano. Se falharem, o login continua concluído e o erro fica apenas no console.
-
-### 5. Restauração de sessão antiga não prende mais a tela
-
-**O que foi feito:**  
-Foi adicionado um restaurador rápido com timeout para sessão salva.
-
-**Por que foi feito:**  
-Se existisse token antigo em `localStorage`/`sessionStorage`, o site podia tentar restaurar sessão indefinidamente.
+**Por que foi removido:**  
+Esse tipo de correção roda durante a montagem inteira do site e pode reagir a qualquer renderização, mesmo quando o usuário ainda está apenas abrindo o site.
 
 **Como foi substituído:**  
-Se `/api/auth/me` não responder em tempo aceitável, a sessão online é limpa e o login aparece normalmente.
+A exclusão agora funciona por um fluxo único e direto:
 
-### 6. Desbloqueio visual final do login
+1. O clique no botão **EXCLUIR** é capturado.
+2. A exclusão é confirmada.
+3. A ficha é apagada no servidor quando há sessão online.
+4. O vínculo local com mesa/campanha é limpo.
+5. Backups e caches locais da ficha são removidos.
+6. A lista de personagens é atualizada.
 
-**O que foi feito:**  
-Foi adicionado CSS final para garantir que o login fique visível, clicável e com contraste correto.
+Nada disso roda durante a abertura do site; só roda ao clicar em **EXCLUIR**.
 
-**Por que foi feito:**  
-Algumas classes antigas de boot deixavam `opacity`, `visibility` ou `pointer-events` herdados. Isso fazia o login parecer carregado, mas o usuário não conseguia prosseguir corretamente.
+---
+
+### 4. Correção da aba Seus Personagens sem observação infinita
+
+**O que foi removido:**  
+Não foi mantido o observador permanente da v1.95.11.
+
+**Por que foi removido:**  
+O observador verificava mudanças no documento inteiro e podia continuar reagindo a renders que não tinham relação com a aba de personagens.
 
 **Como foi substituído:**  
-A classe `od19516-login-unlocked` força o login ativo a ficar visível, com botões e inputs clicáveis.
+A normalização do design moderno agora roda apenas em momentos controlados:
+
+- ao renderizar a lista de personagens;
+- ao clicar na aba de personagens;
+- ao criar personagem novo;
+- em poucos `setTimeouts` finitos de segurança.
+
+---
+
+### 5. Correção do menu da ficha sem intervalo contínuo
+
+**O que foi removido:**  
+Foi removida a lógica que ficava sincronizando menu/atributos continuamente.
+
+**Por que foi removido:**  
+Um intervalo visual permanente não deve existir para corrigir layout, porque ele continua rodando mesmo fora da área afetada.
+
+**Como foi substituído:**  
+O menu da ficha agora é ajustado somente quando a ficha abre, quando o botão de três traços é clicado ou quando a tela termina de carregar.
+
+---
 
 ## Como testar
 
-1. Rodar `npm run check`.
-2. Subir a versão nova no servidor.
-3. Abrir em aba anônima.
-4. Abrir em navegador com cache limpo.
-5. Abrir em navegador com sessão antiga salva.
-6. Confirmar que o login aparece sem loading infinito.
-7. Fazer login.
-8. Confirmar que a tela inicial aparece mesmo que fichas/mesas demorem.
-9. Entrar em **Seus Personagens**.
-10. Criar personagem e confirmar que o design moderno não volta ao antigo.
-11. Excluir personagem e confirmar que ele não retorna por cache.
-12. Abrir ficha e conferir menu de três traços, background e atributos resumidos.
+1. Abrir o site em aba anônima ou navegador limpo.
+2. Confirmar que o site não fica carregando infinitamente.
+3. Entrar com a conta normalmente.
+4. Abrir **Seus Personagens**.
+5. Criar um novo personagem e conferir se o design moderno não volta para o modelo antigo.
+6. Excluir uma ficha e conferir se ela não volta depois de recarregar.
+7. Abrir uma ficha e conferir:
+   - botão de três traços no modelo novo;
+   - sem botão **X** no menu;
+   - fundo antigo removido;
+   - atributos resumidos em ordem: nome, valor, bônus.
+8. Abrir uma campanha e conferir se o site continua carregando normalmente.
 
-## Validação feita
+---
 
-- `npm run check` executado com sucesso.
-- `client/script.js` validado por `node --check`.
-- `client/obs.js` validado por `node --check`.
-- `server/server.js` validado por `node --check`.
-- `server/database.js` validado por `node --check`.
-- `server/middleware.js` validado por `node --check`.
-- `server/routes/auth.js` validado por `node --check`.
-- `server/routes/characters.js` validado por `node --check`.
-- `server/routes/tables.js` validado por `node --check`.
-- `server/sockets/index.js` validado por `node --check`.
+## Observação importante
 
-## Versão
-
-1.95.16
+Esta versão é uma correção de estabilidade.  
+Ela evita continuar empilhando patch por cima de patch e volta para a última base estável antes do bug, reaplicando somente o que precisava continuar existindo.
