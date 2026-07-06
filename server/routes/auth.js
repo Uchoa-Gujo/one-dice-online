@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const { query } = require('../database');
-const { signToken, authRequired } = require('../middleware');
+const { signToken, authRequired, attachAuthCookie, clearAuthCookie } = require('../middleware');
 
 const router = express.Router();
 
@@ -38,6 +38,7 @@ router.post('/register', async (req, res) => {
   );
   const user = created.rows[0];
   const token = signToken(user);
+  attachAuthCookie(req, res, token);
   res.json({ user, token });
 });
 
@@ -54,13 +55,22 @@ router.post('/login', async (req, res) => {
 
   delete user.password_hash;
   const token = signToken(user);
+  attachAuthCookie(req, res, token);
   res.json({ user, token });
 });
 
 router.get('/me', authRequired, async (req, res) => {
   const found = await query('select id, nick, real_name, avatar_url, created_at from users where id = $1', [req.user.id]);
   if (!found.rowCount) return res.status(404).json({ error: 'Usuário não encontrado.' });
-  res.json({ user: found.rows[0] });
+  const token = req.authToken || signToken(found.rows[0]);
+  attachAuthCookie(req, res, token);
+  res.json({ user: found.rows[0], token });
+});
+
+
+router.post('/logout', (_req, res) => {
+  clearAuthCookie(_req, res);
+  res.json({ ok: true });
 });
 
 router.put('/me', authRequired, async (req, res) => {
@@ -91,7 +101,9 @@ router.put('/me', authRequired, async (req, res) => {
   }
 
   if (!result.rowCount) return res.status(404).json({ error: 'Usuário não encontrado.' });
-  res.json({ user: result.rows[0] });
+  const token = signToken(result.rows[0]);
+  attachAuthCookie(req, res, token);
+  res.json({ user: result.rows[0], token });
 });
 
 

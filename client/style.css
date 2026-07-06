@@ -21457,3 +21457,338 @@ body.od19520-characters-modern #sessions-screen.active #od71-character-list,
     grid-template-columns: 1fr !important;
   }
 }
+
+/* =========================
+   V1.95.21 - Personagens compactos, menu da ficha fixo e fundo sem folha antiga
+   - A v1.95.20 deixava cards com largura 1320px e botões cortados atrás do scroll.
+   - A imagem antiga ainda vinha do ::before dos painéis .manga-panel.
+   - O botão de três traços precisava ficar menor, fixo e sem retângulo exagerado.
+========================= */
+:root {
+  --od19521-bg: #050607;
+  --od19521-panel: rgba(7, 9, 10, .97);
+  --od19521-border: color-mix(in srgb, var(--accent, #ef2f3b) 76%, transparent 24%);
+}
+
+html,
+body,
+body.dark-sheet,
+#app-screen,
+#sessions-screen,
+.screen,
+.app-grid,
+.sheet-area,
+.right-panel,
+.sidebar {
+  background-color: var(--od19521-bg) !important;
+  background-image: none !important;
+}
+
+.paper-bg,
+.paper-bg::before,
+.paper-bg::after,
+body.dark-sheet .paper-bg,
+body.dark-sheet .paper-bg::before,
+body.dark-sheet .paper-bg::after {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  background: none !important;
+  background-image: none !important;
+}
+
+/* A textura antiga da folha estava presa no ::before de .manga-panel. */
+.manga-panel::before,
+body.dark-sheet .manga-panel::before,
+#app-screen .manga-panel::before,
+#app-screen .right-panel .manga-panel::before,
+#app-screen .dice-box::before,
+#app-screen .chat-box::before,
+#app-screen .session-history-box::before {
+  display: none !important;
+  content: none !important;
+  opacity: 0 !important;
+  background: none !important;
+  background-image: none !important;
+}
+
+body.dark-sheet .manga-panel,
+body.dark-sheet .dice-box,
+body.dark-sheet .chat-box,
+body.dark-sheet .session-history-box,
+body.dark-sheet .right-panel,
+body.dark-sheet .sheet-area,
+body.dark-sheet .sheet,
+body.dark-sheet .panel,
+body.dark-sheet .summary-card,
+body.dark-sheet .stat-card,
+body.dark-sheet .attr-card,
+body.dark-sheet .sidebar {
+  background-image: none !important;
+}
+
+/* Botão oficial da ficha: menor, sem retângulo exagerado e acima de qualquer painel. */
+#od19520-sheet-menu-toggle {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+#od19521-sheet-menu-toggle {
+  position: fixed !important;
+  top: 14px !important;
+  right: 14px !important;
+  z-index: 2147483000 !important;
+  width: 46px !important;
+  height: 46px !important;
+  min-width: 46px !important;
+  min-height: 46px !important;
+  max-width: 46px !important;
+  max-height: 46px !important;
+  display: none !important;
+  place-items: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(255,255,255,.18) !important;
+  background: linear-gradient(180deg, #e13b43 0%, #99151d 100%) !important;
+  color: #fff !important;
+  box-shadow: 0 10px 22px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.22) !important;
+  cursor: pointer !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  line-height: 1 !important;
+}
+
+#od19521-sheet-menu-toggle span,
+#od19521-sheet-menu-toggle span::before,
+#od19521-sheet-menu-toggle span::after {
+  content: "" !important;
+  display: block !important;
+  width: 22px !important;
+  height: 3px !important;
+  border-radius: 999px !important;
+  background: #fff !important;
+  box-shadow: 0 1px 0 rgba(0,0,0,.25) !important;
+}
+
+#od19521-sheet-menu-toggle span { position: relative !important; }
+#od19521-sheet-menu-toggle span::before,
+#od19521-sheet-menu-toggle span::after {
+  position: absolute !important;
+  left: 0 !important;
+}
+#od19521-sheet-menu-toggle span::before { top: -7px !important; }
+#od19521-sheet-menu-toggle span::after { top: 7px !important; }
+body.od19521-sheet-ui #od19521-sheet-menu-toggle { display: grid !important; }
+
+body.od19521-sheet-ui #topbar-menu-toggle,
+body.od19521-sheet-ui .topbar-menu-toggle,
+body.od19521-sheet-ui #od1954-sheet-menu-toggle,
+body.od19521-sheet-ui .od1954-sheet-menu-toggle,
+body.od19521-sheet-ui #main-topbar #sidebar-dock-btn,
+body.od19521-sheet-ui #main-topbar #master-dashboard-dock-btn,
+body.od19521-sheet-ui #main-topbar .sidebar-toggle-btn,
+body.od19521-sheet-ui #main-topbar [aria-label*="Fechar"],
+body.od19521-sheet-ui #main-topbar [title*="Fechar"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+body.od19521-sheet-ui #main-topbar {
+  position: fixed !important;
+  top: 14px !important;
+  right: 14px !important;
+  left: auto !important;
+  z-index: 2147482000 !important;
+  max-width: min(560px, calc(100vw - 28px)) !important;
+  width: min(560px, calc(100vw - 28px)) !important;
+  max-height: calc(100vh - 28px) !important;
+  overflow: auto !important;
+  transform: none !important;
+  clip-path: none !important;
+}
+
+body.od19521-sheet-ui #main-topbar.collapsed {
+  width: 0 !important;
+  height: 0 !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  pointer-events: none !important;
+}
+
+body.od19521-sheet-ui #main-topbar.collapsed .topbar-content,
+body.od19521-sheet-ui #main-topbar.collapsed #campaign-mini-card {
+  display: none !important;
+}
+
+body.od19521-sheet-ui #main-topbar:not(.collapsed) {
+  display: grid !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  padding: 70px 16px 16px !important;
+  border-radius: 18px !important;
+  border: 1px solid var(--od19521-border) !important;
+  background: linear-gradient(145deg, rgba(7,8,9,.98), rgba(12,15,14,.96)) !important;
+  box-shadow: 0 22px 52px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,.04) !important;
+}
+
+body.od19521-sheet-ui #main-topbar:not(.collapsed) .brand { display: none !important; }
+body.od19521-sheet-ui #main-topbar:not(.collapsed) .topbar-content {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 10px !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+body.od19521-sheet-ui #main-topbar:not(.collapsed) .top-actions {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+}
+body.od19521-sheet-ui #main-topbar:not(.collapsed) .top-actions > * {
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 42px !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+/* Cards de personagens compactos: cabem antes da barra de scroll e deixam Excluir clicável. */
+html.od19521-characters-compact body #sessions-screen.active #od71-character-list,
+body.od19521-characters-compact #sessions-screen.active #od71-character-list,
+#sessions-screen.active #od71-character-list.od19521-character-list {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 16px !important;
+  width: 100% !important;
+  max-width: 1120px !important;
+  margin: 0 auto !important;
+  overflow: visible !important;
+  padding-right: 0 !important;
+}
+
+#sessions-screen.active #od71-character-list > article.od19521-character-card,
+#sessions-screen.active #od71-character-list > article[data-od19521-compact="true"] {
+  display: grid !important;
+  grid-template-columns: 132px minmax(0, 1fr) 250px !important;
+  gap: 18px !important;
+  align-items: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 176px !important;
+  padding: 18px 20px !important;
+  border-radius: 24px !important;
+  overflow: visible !important;
+  box-sizing: border-box !important;
+  background: radial-gradient(circle at 18% 12%, rgba(205,33,40,.12), transparent 28%), linear-gradient(180deg, rgba(8,10,12,.94), rgba(4,6,8,.94)) !important;
+  border: 1px solid color-mix(in srgb, var(--accent, #ef2f3b), transparent 30%) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.035), 0 16px 36px rgba(0,0,0,.22) !important;
+}
+
+#sessions-screen.active #od71-character-list .od19521-character-art,
+#sessions-screen.active #od71-character-list .od1811-character-art {
+  width: 132px !important;
+  max-width: 132px !important;
+  display: grid !important;
+  place-items: center !important;
+}
+
+#sessions-screen.active #od71-character-list .od19521-character-art img,
+#sessions-screen.active #od71-character-list .od1811-character-art img,
+#sessions-screen.active #od71-character-list > article.od19521-character-card > img {
+  width: 118px !important;
+  height: 118px !important;
+  max-width: 118px !important;
+  border-radius: 20px !important;
+  object-fit: cover !important;
+}
+
+#sessions-screen.active #od71-character-list .od19521-character-main,
+#sessions-screen.active #od71-character-list .od1811-character-main,
+#sessions-screen.active #od71-character-list .od71-card-body {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  padding: 4px 16px 4px 0 !important;
+  border-right: 1px solid rgba(255,255,255,.12) !important;
+}
+
+#sessions-screen.active #od71-character-list .od19521-character-title,
+#sessions-screen.active #od71-character-list .od1811-character-card h3,
+#sessions-screen.active #od71-character-list .od85-character-card h3 {
+  font-size: clamp(1.55rem, 1.7vw, 2.15rem) !important;
+  line-height: 1.03 !important;
+  max-width: 100% !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+  hyphens: none !important;
+}
+
+#sessions-screen.active #od71-character-list .od19521-character-actions,
+#sessions-screen.active #od71-character-list .od1811-character-actions,
+#sessions-screen.active #od71-character-list .od85-card-actions {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 9px !important;
+  width: 100% !important;
+  max-width: 250px !important;
+  min-width: 0 !important;
+  justify-self: end !important;
+  position: relative !important;
+  z-index: 20 !important;
+  overflow: visible !important;
+}
+
+#sessions-screen.active #od71-character-list .od19521-character-actions button,
+#sessions-screen.active #od71-character-list .od1811-character-actions button,
+#sessions-screen.active #od71-character-list .od85-card-actions button,
+#sessions-screen.active #od71-character-list [data-od71-delete-character],
+#sessions-screen.active #od71-character-list [data-delete-account-character] {
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 42px !important;
+  padding: 9px 12px !important;
+  white-space: normal !important;
+  position: relative !important;
+  z-index: 25 !important;
+  pointer-events: auto !important;
+}
+
+@media (max-width: 980px) {
+  html.od19521-characters-compact body #sessions-screen.active #od71-character-list,
+  body.od19521-characters-compact #sessions-screen.active #od71-character-list,
+  #sessions-screen.active #od71-character-list.od19521-character-list {
+    width: min(100%, calc(100vw - 24px)) !important;
+    max-width: min(100%, calc(100vw - 24px)) !important;
+  }
+  #sessions-screen.active #od71-character-list > article.od19521-character-card,
+  #sessions-screen.active #od71-character-list > article[data-od19521-compact="true"] {
+    grid-template-columns: 1fr !important;
+    min-height: 0 !important;
+  }
+  #sessions-screen.active #od71-character-list .od19521-character-main,
+  #sessions-screen.active #od71-character-list .od1811-character-main,
+  #sessions-screen.active #od71-character-list .od71-card-body {
+    border-right: 0 !important;
+    padding-right: 0 !important;
+  }
+  #sessions-screen.active #od71-character-list .od19521-character-actions,
+  #sessions-screen.active #od71-character-list .od1811-character-actions,
+  #sessions-screen.active #od71-character-list .od85-card-actions {
+    max-width: none !important;
+    justify-self: stretch !important;
+  }
+}

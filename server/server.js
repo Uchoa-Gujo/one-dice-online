@@ -55,7 +55,16 @@ function sendIndex(_req, res) {
   res.sendFile(path.join(clientDir, 'index.html'));
 }
 
-app.use(cors());
+
+const corsOrigin = String(process.env.CORS_ORIGIN || '').trim();
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin || !corsOrigin) return callback(null, true);
+    const allowed = corsOrigin.split(',').map(item => item.trim()).filter(Boolean);
+    return callback(null, allowed.includes(origin));
+  },
+  credentials: true
+}));
 app.use(express.json({ limit: process.env.JSON_LIMIT || '15mb' }));
 
 if (LOG_REQUESTS) {
@@ -127,7 +136,11 @@ app.use(express.static(clientDir, {
   lastModified: true,
   setHeaders(res, filePath) {
     const ext = path.extname(filePath).toLowerCase();
-    if (['.html', '.js', '.css'].includes(ext)) {
+    if (ext === '.html') {
+      res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+      return;
+    }
+    if (['.js', '.css'].includes(ext)) {
       res.set('Cache-Control', 'no-cache, must-revalidate');
       return;
     }

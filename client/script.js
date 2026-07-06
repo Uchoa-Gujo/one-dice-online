@@ -2491,9 +2491,16 @@ function od42SetSession(payload) {
   }
 }
 function od42ClearSession() {
+  try {
+    fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin', keepalive: true, headers: { 'Content-Type': 'application/json' }, body: '{}' });
+  } catch (_) {}
+  try { document.cookie = 'od_session_hint=; Max-Age=0; path=/; SameSite=Lax'; } catch (_) {}
   localStorage.removeItem(OD42_SESSION_KEY);
   sessionStorage.removeItem(OD42_SESSION_KEY);
   clearSessionValue();
+}
+function od42HasCookieSessionHint() {
+  try { return /(?:^|;\s*)od_session_hint=1(?:;|$)/.test(document.cookie || ''); } catch (_) { return false; }
 }
 function od42Token() { return od42GetSession()?.token || ""; }
 function od42Headers(extra = {}) {
@@ -2503,6 +2510,7 @@ function od42Headers(extra = {}) {
 }
 async function od42Api(path, options = {}) {
   const response = await fetch(path, {
+    credentials: 'same-origin',
     ...options,
     headers: od42Headers({ "Content-Type": "application/json", ...(options.headers || {}) })
   });
@@ -2836,11 +2844,11 @@ async function od42Boot() {
   od42Booted = true;
   od42WireForms();
   const session = od42GetSession();
-  if (!session?.token) return;
+  if (!session?.token && !od42HasCookieSessionHint()) return;
   try {
     const data = await od42Api('/api/auth/me');
     currentUser = od42User(data.user);
-    od42SetSession({ token: session.token, user: currentUser });
+    od42SetSession({ token: data.token || session?.token || '', user: currentUser });
     setSessionValue(currentUser.id);
     od42MergeById(STORAGE.users, [currentUser]);
     await od42RefreshOwnCharacters();
@@ -3010,7 +3018,7 @@ function od44EnsureSocket() {
   if (od44Socket) {
     try { od44Socket.disconnect(); } catch (_) {}
   }
-  od44Socket = io({ auth: { token: od42Token() }, transports: ['websocket', 'polling'] });
+  od44Socket = io({ auth: { token: od42Token() }, transports: ['websocket', 'polling'], withCredentials: true });
 
   od44Socket.on('connect', () => {
     if (currentCampaignId) od44Socket.emit('table:join', { tableId: currentCampaignId });
@@ -26483,40 +26491,43 @@ function od66InventoryMutationUnlockSoon() {
 })();
 
 /* =========================
-   V1.95.20 - Correção limpa pós-rollback: menu da ficha, Firefox e cards de personagens
+   V1.95.21 - Correção limpa: personagens compactos, excluir real, menu da ficha e fundo sem textura
    Motivo:
-   - A base voltou para a v1.95.8 estável, mas os bugs visuais ainda precisam ser corrigidos sem mexer em boot/login/socket.
-   - O menu antigo da ficha tinha botão que sumia, fallback com X e estilos conflitantes.
-   - O Firefox ainda podia exibir fundo antigo e renderizar cards novos com medidas antigas.
+   - A v1.95.20 ainda deixava estilos inline largos nos cards, cortando botões atrás do scroll.
+   - O botão excluir podia ficar fora da área clicável ou cair em fluxo antigo.
+   - O menu da ficha dependia de detecção frágil e podia sumir quando a rota /personagem/ era aberta no Firefox.
+   - O fundo antigo vinha do ::before dos painéis .manga-panel, não apenas do .paper-bg.
 ========================= */
-(function od19520SheetMenuFirefoxAndCharacterCards(){
+(function od19521CompactCardsDeleteMenuAndBackground(){
   'use strict';
-  if (window.__od19520SheetMenuFirefoxAndCharacterCardsInstalled) return;
-  window.__od19520SheetMenuFirefoxAndCharacterCardsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.20';
+  if (window.__od19521CompactCardsDeleteMenuAndBackgroundInstalled) return;
+  window.__od19521CompactCardsDeleteMenuAndBackgroundInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.95.21';
 
+  const DELETED_KEY = 'od_deleted_characters_v70';
   const CHARACTER_ROUTE = 'characters';
-  let repairTimer = null;
   let menuOpen = false;
+  let repairTimer = null;
 
   function $(id){ return document.getElementById(id); }
-  function safe(fn, fallback = null){ try { return fn(); } catch (error) { console.warn('[One Dice v1.95.20]', error?.message || error); return fallback; } }
+  function safe(fn, fallback = null){ try { return fn(); } catch (error) { console.warn('[One Dice v1.95.21]', error?.message || error); return fallback; } }
+  function pathIsSheet(){ return /^\/(ficha|personagem)(\/|$)/i.test(location.pathname || ''); }
+  function authActive(){ return $('auth-screen')?.classList.contains('active'); }
   function appActive(){ return $('app-screen')?.classList.contains('active'); }
   function sessionsActive(){ return $('sessions-screen')?.classList.contains('active'); }
-  function authActive(){ return $('auth-screen')?.classList.contains('active'); }
   function isCampaign(){
+    if (pathIsSheet()) return false;
     return !!$('od1901-campaign-manager') ||
       document.body?.dataset?.od195Layer === 'campaign' ||
       document.body?.dataset?.od1945Layer === 'campaign' ||
       document.body?.classList.contains('od1901-campaign-manager-mode') ||
-      location.pathname.startsWith('/campanha/') ||
-      location.pathname.startsWith('/mesa/');
+      /^\/(campanha|mesa)(\/|$)/i.test(location.pathname || '');
   }
   function isSheet(){
-    if (authActive() || sessionsActive() || isCampaign()) return false;
-    if (location.pathname.startsWith('/ficha/') || location.pathname.startsWith('/personagem/')) return true;
+    if (authActive() || isCampaign()) return false;
+    if (pathIsSheet()) return true;
     if (!appActive()) return false;
-    return !!(safe(() => accountSheetMode, false) || safe(() => currentCharacterId, null) || document.querySelector('.sheet, .sheet-area'));
+    return !!(safe(() => accountSheetMode, false) || safe(() => currentCharacterId, null) || document.querySelector('.sheet-area'));
   }
   function isCharactersHub(){
     const path = String(location.pathname || '').toLowerCase();
@@ -26524,12 +26535,110 @@ function od66InventoryMutationUnlockSoon() {
       (sessionsActive() && localStorage.getItem('od71_tab') === CHARACTER_ROUTE) ||
       path.includes('personagens') || path.includes('fichas');
   }
+  function esc(value){
+    return String(value ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  }
+
+  function getDeletedSet(){ return new Set(safe(() => get(DELETED_KEY, []), []).map(String)); }
+  function setDeletedSet(set){ safe(() => set(DELETED_KEY, [...set])); }
+  function markDeleted(id){ const ids = getDeletedSet(); ids.add(String(id)); setDeletedSet(ids); }
+  function purgeDeletedCharacters(){
+    const ids = getDeletedSet();
+    if (!ids.size) return;
+    safe(() => set(STORAGE.characters, get(STORAGE.characters, []).filter(c => !ids.has(String(c.id)))));
+    safe(() => setMembers(getMembers().map(m => ids.has(String(m.characterId)) ? { ...m, characterId: null } : m)));
+    if (ids.has(String(safe(() => currentCharacterId, '')))) safe(() => { currentCharacterId = null; });
+  }
+  function removeCharacterBackups(id){
+    const key = 'od_sheet_backups_v140';
+    try {
+      const raw = localStorage.getItem(key);
+      if (!raw) return;
+      const store = JSON.parse(raw);
+      if (store && typeof store === 'object') {
+        delete store[String(id)];
+        localStorage.setItem(key, JSON.stringify(store));
+      }
+    } catch (_) {}
+  }
+  function refreshCharacterScreens(){
+    purgeDeletedCharacters();
+    safe(() => renderAccountCharacterMenu());
+    safe(() => renderCharacterList());
+    safe(() => renderCampaignMenu());
+    if (isCharactersHub()) {
+      if (typeof od71SetTab === 'function') safe(() => od71SetTab('characters'));
+      scheduleCharacterRepair('refresh-delete');
+    }
+  }
+  async function deleteCharacterHard(id, sourceButton = null){
+    id = String(id || '').trim();
+    if (!id) return;
+    const list = safe(() => get(STORAGE.characters, []), []);
+    const char = list.find(c => String(c.id) === id);
+    const name = char?.name || 'esta ficha';
+    const linked = safe(() => getMembers().some(m => String(m.characterId) === id), false);
+    const msg = linked
+      ? `A ficha "${name}" está vinculada a uma mesa. Excluir mesmo assim?`
+      : `Excluir a ficha "${name}"?`;
+    if (!confirm(msg)) return;
+
+    const oldText = sourceButton?.textContent;
+    if (sourceButton) {
+      sourceButton.disabled = true;
+      sourceButton.textContent = 'Excluindo...';
+    }
+
+    markDeleted(id);
+    removeCharacterBackups(id);
+    purgeDeletedCharacters();
+    refreshCharacterScreens();
+
+    try {
+      if (typeof od42Token === 'function' && od42Token() && typeof od42Api === 'function') {
+        await od42Api(`/api/characters/${encodeURIComponent(id)}`, { method: 'DELETE' });
+        await safe(() => od42RefreshOwnCharacters(), Promise.resolve());
+        await safe(() => od42RefreshTables(), Promise.resolve());
+      }
+      purgeDeletedCharacters();
+      refreshCharacterScreens();
+    } catch (error) {
+      console.warn('[One Dice v1.95.21] Falha ao excluir no servidor:', error);
+      alert(error?.message || 'A ficha foi removida da tela, mas o servidor não confirmou a exclusão. Recarregue e tente novamente se ela voltar.');
+    } finally {
+      if (sourceButton) {
+        sourceButton.disabled = false;
+        sourceButton.textContent = oldText || 'Excluir';
+      }
+    }
+  }
+
+  function installDeleteHandler(){
+    if (window.__od19521DeleteHandlerInstalled) return;
+    window.__od19521DeleteHandlerInstalled = true;
+    document.addEventListener('click', event => {
+      const btn = event.target.closest?.('[data-od71-delete-character], [data-delete-account-character], .od85-delete-character');
+      if (!btn) return;
+      const id = btn.dataset.od71DeleteCharacter || btn.dataset.deleteAccountCharacter || btn.getAttribute('data-character-id') || btn.closest('[data-character-id]')?.dataset?.characterId;
+      if (!id) return;
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      deleteCharacterHard(id, btn);
+    }, true);
+
+    if (typeof deleteAccountCharacter === 'function' && !deleteAccountCharacter.__od19521HardDelete) {
+      deleteAccountCharacter = function od19521DeleteAccountCharacter(id){ return deleteCharacterHard(id); };
+      deleteAccountCharacter.__od19521HardDelete = true;
+      safe(() => { window.deleteAccountCharacter = deleteAccountCharacter; });
+    }
+  }
 
   function ensureMenuButton(){
-    let btn = $('od19520-sheet-menu-toggle');
+    let btn = $('od19521-sheet-menu-toggle');
     if (!btn) {
       btn = document.createElement('button');
-      btn.id = 'od19520-sheet-menu-toggle';
+      btn.id = 'od19521-sheet-menu-toggle';
       btn.type = 'button';
       btn.title = 'Abrir menu da ficha';
       btn.setAttribute('aria-label', 'Abrir menu da ficha');
@@ -26537,6 +26646,7 @@ function od66InventoryMutationUnlockSoon() {
       btn.innerHTML = '<span aria-hidden="true"></span>';
       btn.addEventListener('click', event => {
         event.preventDefault();
+        event.stopPropagation();
         event.stopImmediatePropagation();
         toggleSheetMenu();
       }, true);
@@ -26544,54 +26654,42 @@ function od66InventoryMutationUnlockSoon() {
     }
     return btn;
   }
-
-  function hideOldCloseButtons(){
-    const topbar = $('main-topbar');
-    if (!topbar) return;
-    // Remove apenas botões visuais de fechar/dock dentro do menu da ficha. O botão oficial fica fora do painel.
-    ['topbar-menu-toggle','od1954-sheet-menu-toggle','sidebar-dock-btn','master-dashboard-dock-btn'].forEach(id => {
+  function hideOldMenuButtons(){
+    ['od19520-sheet-menu-toggle','topbar-menu-toggle','od1954-sheet-menu-toggle','sidebar-dock-btn','master-dashboard-dock-btn'].forEach(id => {
       const el = $(id);
-      if (!el) return;
-      if (id === 'topbar-menu-toggle' || id === 'od1954-sheet-menu-toggle') {
-        el.setAttribute('aria-hidden', 'true');
-      }
+      if (!el || id === 'od19521-sheet-menu-toggle') return;
+      el.setAttribute('aria-hidden', 'true');
       el.style.setProperty('display', 'none', 'important');
       el.style.setProperty('visibility', 'hidden', 'important');
       el.style.setProperty('pointer-events', 'none', 'important');
     });
-    topbar.querySelectorAll('button').forEach(button => {
+    $('main-topbar')?.querySelectorAll('button').forEach(button => {
       const text = (button.textContent || '').trim();
       const label = `${button.getAttribute('aria-label') || ''} ${button.title || ''}`.toLowerCase();
-      if (text === '×' || text === '✕' || (label.includes('fechar') && button.id !== 'od19520-sheet-menu-toggle')) {
+      if (button.id === 'od19521-sheet-menu-toggle') return;
+      if (text === '×' || text === '✕' || label.includes('fechar') || label.includes('dock') || button.classList.contains('sidebar-toggle-btn')) {
+        button.setAttribute('aria-hidden', 'true');
         button.style.setProperty('display', 'none', 'important');
         button.style.setProperty('visibility', 'hidden', 'important');
         button.style.setProperty('pointer-events', 'none', 'important');
-        button.setAttribute('aria-hidden', 'true');
       }
     });
   }
-
   function applySheetMenuState(open = menuOpen){
     const btn = ensureMenuButton();
     const topbar = $('main-topbar');
-
     if (!isSheet()) {
-      document.body?.classList.remove('od19520-sheet-ui');
-      if (btn) {
-        btn.style.setProperty('display', 'none', 'important');
-        btn.setAttribute('aria-expanded', 'false');
-      }
+      document.body?.classList.remove('od19521-sheet-ui');
+      btn.style.setProperty('display', 'none', 'important');
+      btn.setAttribute('aria-expanded', 'false');
       return;
     }
 
-    document.body?.classList.add('od19520-sheet-ui');
+    document.body?.classList.add('od19521-sheet-ui');
     document.body?.classList.remove('sidebar-collapsed');
-    if (document.body) {
-      document.body.dataset.od195Layer = 'sheet';
-      document.body.dataset.od1945Layer = 'sheet';
-    }
-
-    btn.style.removeProperty('display');
+    btn.style.setProperty('display', 'grid', 'important');
+    btn.style.setProperty('visibility', 'visible', 'important');
+    btn.style.setProperty('pointer-events', 'auto', 'important');
     btn.setAttribute('aria-expanded', String(!!open));
     btn.title = open ? 'Fechar menu da ficha' : 'Abrir menu da ficha';
     btn.setAttribute('aria-label', btn.title);
@@ -26601,29 +26699,23 @@ function od66InventoryMutationUnlockSoon() {
       topbar.style.setProperty('visibility', 'visible', 'important');
       topbar.style.setProperty('pointer-events', open ? 'auto' : 'none', 'important');
       topbar.classList.toggle('collapsed', !open);
-      topbar.dataset.od1957MenuOpen = open ? 'true' : 'false';
+      topbar.dataset.od19521MenuOpen = open ? 'true' : 'false';
     }
-
-    hideOldCloseButtons();
+    hideOldMenuButtons();
   }
-
-  function toggleSheetMenu(){
-    menuOpen = !menuOpen;
-    applySheetMenuState(menuOpen);
-  }
-
-  function closeSheetMenu(){
-    if (!menuOpen) return;
-    menuOpen = false;
-    applySheetMenuState(false);
-  }
+  function toggleSheetMenu(){ menuOpen = !menuOpen; applySheetMenuState(menuOpen); }
+  function closeSheetMenu(){ menuOpen = false; applySheetMenuState(false); }
 
   function removeOldBackground(){
-    document.documentElement.style.setProperty('background-color', '#050607', 'important');
-    document.body?.style.setProperty('background-color', '#050607', 'important');
+    document.documentElement.style.setProperty('background', '#050607', 'important');
+    document.body?.style.setProperty('background', '#050607', 'important');
     document.querySelectorAll('.paper-bg').forEach(el => {
       el.style.setProperty('display', 'none', 'important');
       el.style.setProperty('background', 'none', 'important');
+      el.style.setProperty('background-image', 'none', 'important');
+      el.style.setProperty('opacity', '0', 'important');
+    });
+    document.querySelectorAll('.manga-panel, .right-panel, .sheet-area, .sheet, .panel, .sidebar, .dice-box, .chat-box, .session-history-box').forEach(el => {
       el.style.setProperty('background-image', 'none', 'important');
     });
   }
@@ -26631,98 +26723,124 @@ function od66InventoryMutationUnlockSoon() {
   function markCharactersRoute(){
     if (!isCharactersHub() || !sessionsActive()) return;
     safe(() => localStorage.setItem('od71_tab', CHARACTER_ROUTE));
-    document.documentElement.classList.add('od19520-characters-modern', 'od19511-characters-modern');
-    document.body?.classList.add('od19520-characters-modern', 'od19511-characters-modern');
+    document.documentElement.classList.add('od19521-characters-compact', 'od19520-characters-modern', 'od19511-characters-modern');
+    document.body?.classList.add('od19521-characters-compact', 'od19520-characters-modern', 'od19511-characters-modern');
     document.documentElement.dataset.od171Route = CHARACTER_ROUTE;
     if (document.body) document.body.dataset.od171Route = CHARACTER_ROUTE;
     $('od71-shell')?.setAttribute('data-od171-route', CHARACTER_ROUTE);
   }
-
   function normalizeCharacterCards(){
     if (!isCharactersHub() || !sessionsActive()) return;
     markCharactersRoute();
     const list = $('od71-character-list');
     if (!list) return;
-    list.classList.add('od19520-character-list', 'od19511-character-list', 'od1811-character-list', 'od1715-character-list');
+    list.classList.add('od19521-character-list', 'od19520-character-list', 'od19511-character-list', 'od1811-character-list', 'od1715-character-list');
     list.style.setProperty('display', 'grid', 'important');
     list.style.setProperty('grid-template-columns', '1fr', 'important');
-    list.style.setProperty('gap', '18px', 'important');
-    list.style.setProperty('max-width', '1320px', 'important');
+    list.style.setProperty('gap', '16px', 'important');
+    list.style.setProperty('width', '100%', 'important');
+    list.style.setProperty('max-width', '1120px', 'important');
     list.style.setProperty('margin', '0 auto', 'important');
+    list.style.setProperty('overflow', 'visible', 'important');
 
     const desktop = safe(() => window.matchMedia('(min-width: 981px)').matches, true);
     list.querySelectorAll('article, .account-character-card').forEach(card => {
-      card.classList.add('od19520-character-card', 'od19511-character-card', 'od1811-character-card', 'od71-character-card', 'od85-character-card');
+      card.classList.add('od19521-character-card', 'od19520-character-card', 'od19511-character-card', 'od1811-character-card', 'od71-character-card', 'od85-character-card');
       card.style.setProperty('display', 'grid', 'important');
       card.style.setProperty('width', '100%', 'important');
+      card.style.setProperty('max-width', '100%', 'important');
       card.style.setProperty('max-height', 'none', 'important');
-      card.style.setProperty('overflow', 'hidden', 'important');
-      if (desktop) {
-        card.style.setProperty('grid-template-columns', '160px minmax(0, 1fr) minmax(300px, 380px)', 'important');
-        card.style.setProperty('gap', '22px', 'important');
-        card.style.setProperty('min-height', '210px', 'important');
-      } else {
-        card.style.setProperty('grid-template-columns', '1fr', 'important');
-        card.style.setProperty('min-height', '0', 'important');
-      }
+      card.style.setProperty('overflow', 'visible', 'important');
+      card.style.setProperty('box-sizing', 'border-box', 'important');
+      card.style.setProperty('padding', desktop ? '18px 20px' : '18px', 'important');
+      card.style.setProperty('min-height', desktop ? '176px' : '0', 'important');
+      card.style.setProperty('gap', desktop ? '18px' : '14px', 'important');
+      card.style.setProperty('grid-template-columns', desktop ? '132px minmax(0, 1fr) 250px' : '1fr', 'important');
+      card.dataset.od19521Compact = 'true';
 
-      const art = card.querySelector('.od1811-character-art, .od1715-character-img, img');
-      if (art && art.tagName !== 'IMG') art.classList.add('od19520-character-art', 'od19511-character-art');
+      const artBox = card.querySelector('.od1811-character-art, .od1715-character-img');
+      if (artBox) {
+        artBox.classList.add('od19521-character-art');
+        artBox.style.setProperty('width', '132px', 'important');
+        artBox.style.setProperty('max-width', '132px', 'important');
+        artBox.style.setProperty('display', 'grid', 'important');
+        artBox.style.setProperty('place-items', 'center', 'important');
+      }
+      card.querySelectorAll('.od1811-character-art img, .od1715-character-img img, :scope > img').forEach(img => {
+        img.style.setProperty('width', '118px', 'important');
+        img.style.setProperty('height', '118px', 'important');
+        img.style.setProperty('max-width', '118px', 'important');
+        img.style.setProperty('object-fit', 'cover', 'important');
+      });
+
       const body = card.querySelector('.od1811-character-main, .od71-card-body, .od1715-character-body, .account-character-info');
-      if (body) body.classList.add('od19520-character-main', 'od19511-character-main');
+      if (body) {
+        body.classList.add('od19521-character-main');
+        body.style.setProperty('min-width', '0', 'important');
+        body.style.setProperty('max-width', '100%', 'important');
+        body.style.setProperty('padding', desktop ? '4px 16px 4px 0' : '0', 'important');
+        body.style.setProperty('border-right', desktop ? '1px solid rgba(255,255,255,.12)' : '0', 'important');
+      }
       const title = card.querySelector('h3, strong');
       if (title) {
-        title.classList.add('od19520-character-title', 'od19511-character-title');
+        title.classList.add('od19521-character-title');
+        title.style.setProperty('font-size', 'clamp(1.55rem, 1.7vw, 2.15rem)', 'important');
+        title.style.setProperty('line-height', '1.03', 'important');
+        title.style.setProperty('white-space', 'normal', 'important');
         title.style.setProperty('word-break', 'normal', 'important');
         title.style.setProperty('overflow-wrap', 'break-word', 'important');
         title.style.setProperty('hyphens', 'none', 'important');
-        title.setAttribute('title', (title.textContent || '').trim());
+        title.style.setProperty('max-width', '100%', 'important');
       }
       const actions = card.querySelector('.od1811-character-actions, .od85-card-actions, .od71-card-actions, .account-character-actions');
       if (actions) {
-        actions.classList.add('od19520-character-actions', 'od19511-character-actions');
+        actions.classList.add('od19521-character-actions');
         actions.style.setProperty('display', 'grid', 'important');
-        actions.style.setProperty('grid-template-columns', desktop ? 'repeat(3, minmax(0, 1fr))' : '1fr', 'important');
-        actions.style.setProperty('gap', '10px', 'important');
+        actions.style.setProperty('grid-template-columns', desktop ? '1fr' : '1fr', 'important');
+        actions.style.setProperty('gap', '9px', 'important');
+        actions.style.setProperty('width', '100%', 'important');
+        actions.style.setProperty('min-width', '0', 'important');
+        actions.style.setProperty('max-width', '250px', 'important');
+        actions.style.setProperty('justify-self', desktop ? 'end' : 'stretch', 'important');
+        actions.style.setProperty('position', 'relative', 'important');
+        actions.style.setProperty('z-index', '20', 'important');
       }
+      actions?.querySelectorAll('button').forEach(button => {
+        button.style.setProperty('width', '100%', 'important');
+        button.style.setProperty('min-width', '0', 'important');
+        button.style.setProperty('min-height', '42px', 'important');
+        button.style.setProperty('padding', '9px 12px', 'important');
+        button.style.setProperty('white-space', 'normal', 'important');
+        button.style.setProperty('position', 'relative', 'important');
+        button.style.setProperty('z-index', '25', 'important');
+      });
     });
   }
-
   function scheduleCharacterRepair(reason = 'render'){
     clearTimeout(repairTimer);
-    [0, 60, 160, 380, 800, 1500].forEach(ms => setTimeout(normalizeCharacterCards, ms));
-    repairTimer = setTimeout(normalizeCharacterCards, 2200);
+    [0, 80, 220, 520, 1000].forEach(ms => setTimeout(normalizeCharacterCards, ms));
+    repairTimer = setTimeout(normalizeCharacterCards, 1600);
   }
 
-  function installCharacterCreateGuard(){
-    if (typeof createAccountCharacter === 'function' && !createAccountCharacter.__od19520DesignLock) {
-      const previousCreateAccountCharacter = createAccountCharacter;
-      createAccountCharacter = function od19520CreateAccountCharacter(openAfterCreate = true){
-        const keepOnModernHub = isCharactersHub();
-        if (keepOnModernHub) markCharactersRoute();
-        const result = previousCreateAccountCharacter.call(this, keepOnModernHub ? false : openAfterCreate);
-        if (keepOnModernHub) scheduleCharacterRepair('create-character');
+  function installCreateGuard(){
+    if (typeof createAccountCharacter === 'function' && !createAccountCharacter.__od19521DesignLock) {
+      const previous = createAccountCharacter;
+      createAccountCharacter = function od19521CreateAccountCharacter(openAfterCreate = true){
+        const stay = isCharactersHub();
+        if (stay) markCharactersRoute();
+        const result = previous.call(this, stay ? false : openAfterCreate);
+        if (stay) scheduleCharacterRepair('create-character');
         return result;
       };
-      createAccountCharacter.__od19520DesignLock = true;
+      createAccountCharacter.__od19521DesignLock = true;
       safe(() => { window.createAccountCharacter = createAccountCharacter; });
-    }
-
-    if (typeof renderAccountCharacterMenu === 'function' && !renderAccountCharacterMenu.__od19520DesignLock) {
-      const previousRenderAccountCharacterMenu = renderAccountCharacterMenu;
-      renderAccountCharacterMenu = function od19520RenderAccountCharacterMenu(){
-        const result = previousRenderAccountCharacterMenu.apply(this, arguments);
-        if (isCharactersHub()) scheduleCharacterRepair('render-account-character-menu');
-        return result;
-      };
-      renderAccountCharacterMenu.__od19520DesignLock = true;
-      safe(() => { window.renderAccountCharacterMenu = renderAccountCharacterMenu; });
     }
   }
 
   function tick(){
+    installDeleteHandler();
+    installCreateGuard();
     removeOldBackground();
-    installCharacterCreateGuard();
     applySheetMenuState(menuOpen);
     if (isCharactersHub()) scheduleCharacterRepair('tick');
   }
@@ -26732,32 +26850,23 @@ function od66InventoryMutationUnlockSoon() {
       markCharactersRoute();
       scheduleCharacterRepair('click-character');
     }
-    if (event.target.closest?.('#back-to-sessions-btn, .sheet-tab, [data-od71-tab], [data-od75-tab], [data-edit-account-character], [data-od71-open-character]')) {
+    if (event.target.closest?.('[data-od71-open-character], [data-edit-account-character], .sheet-tab, #back-to-sessions-btn, [data-od71-tab], [data-od75-tab]')) {
       setTimeout(tick, 80);
-      setTimeout(tick, 350);
+      setTimeout(tick, 360);
     }
   }, true);
-
-  document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && isSheet()) closeSheetMenu();
-  }, true);
-
+  document.addEventListener('keydown', event => { if (event.key === 'Escape' && isSheet()) closeSheetMenu(); }, true);
   window.addEventListener('resize', () => { setTimeout(tick, 80); scheduleCharacterRepair('resize'); });
   window.addEventListener('popstate', () => setTimeout(tick, 100));
   document.addEventListener('visibilitychange', () => { if (!document.hidden) setTimeout(tick, 120); });
-
-  const observer = new MutationObserver(() => {
-    clearTimeout(window.__od19520MutationTick);
-    window.__od19520MutationTick = setTimeout(tick, 120);
-  });
-  if (document.body) observer.observe(document.body, { childList: true, subtree: true });
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tick, { once: true });
   else tick();
   [80, 260, 700, 1400, 2600].forEach(ms => setTimeout(tick, ms));
 
-  window.od19520SheetMenuFirefoxAndCharacterCards = {
+  window.od19521CompactCardsDeleteMenuAndBackground = {
     tick,
+    deleteCharacterHard,
     applySheetMenuState,
     normalizeCharacterCards,
     scheduleCharacterRepair,

@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { parseCookieHeader, AUTH_COOKIE_NAME } = require('../middleware');
 
 // V194.3 - presença por socket organizada por socketId + timestamp.
 // Evita jogador preso online quando o navegador reconecta ou duplica join.
@@ -82,7 +83,8 @@ function removePresence(io, socket, tableId) {
 
 function registerSockets(io) {
   io.use((socket, next) => {
-    const token = socket.handshake.auth?.token;
+    const cookies = parseCookieHeader(socket.handshake.headers?.cookie || '');
+    const token = socket.handshake.auth?.token || cookies[AUTH_COOKIE_NAME];
     if (!token) return next(new Error('login_required'));
     try {
       socket.user = jwt.verify(token, process.env.JWT_SECRET);
