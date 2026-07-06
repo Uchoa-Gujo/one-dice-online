@@ -21603,7 +21603,7 @@ body.od1952-sheet-open #main-topbar .od19512-legacy-close-removed {
 }
 
 /* =========================
-   v1.95.14 — Remoção definitiva de loading infinito
+   v1.95.15 — Remoção definitiva de loading infinito
    Motivo: camadas legadas od180/od1805/od1776 podiam voltar e cobrir login/início/ficha.
 ========================= */
 #od180-boot-screen,
@@ -21640,4 +21640,29 @@ html.od19514-no-boot #sessions-screen.screen.active,
 html.od19514-no-boot #app-screen.screen.active {
   visibility: visible !important;
   opacity: 1 !important;
+}
+
+
+/* =========================
+   v1.95.15 — Failsafe definitivo contra tela de carregamento/restauração presa
+   Remove também o pseudo-loader de rota da v177.5, que podia permanecer visível se qualquer camada posterior quebrasse.
+========================= */
+html.od1775-restoring-route body::before,
+body.od1775-restoring-route::before {
+  content: none !important;
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+#od180-boot-screen,
+#od1805-boot-screen,
+#od1776-solid-loader,
+.od1776-solid-loader,
+.od180-loader-stuck {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  animation: none !important;
 }

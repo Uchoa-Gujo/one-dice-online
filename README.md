@@ -1,10 +1,12 @@
-# One Dice Site v1.95.14
+# One Dice Site v1.95.15
 
 ## Foco
 
-Patch direto no código-fonte para resolver o problema em que o site continuava **carregando/rodando infinitamente** mesmo após a correção anterior.
+Correção direta no código-fonte para resolver o carregamento infinito que começou depois da versão **1.95.10**.
 
-Desta vez a busca foi feita de forma geral, sem focar apenas no login. Foram revisadas as camadas de abertura, login, restauração de sessão, telas ativas, loaders antigos, CSS de boot, scripts inline do `index.html`, funções finais do `script.js`, observadores e regras visuais que podiam esconder a interface.
+A busca foi feita de forma geral, mas a diferença principal encontrada foi que a v1.95.10 adicionou um bloco de exclusão de personagens que rodava durante o boot da aplicação. Esse bloco tinha observador global, manipulação direta de funções antigas e reaplicação de renderizações logo na abertura. Mesmo sendo feito para corrigir o botão **EXCLUIR**, ele ficou perigoso para a inicialização do site porque passou a executar código de personagens enquanto o login/boot ainda estava montando a interface.
+
+Nesta versão, a correção não tenta apenas esconder o loading. O bloco problemático da v1.95.10 foi removido e a exclusão foi refeita de forma segura, sem interferir no carregamento inicial.
 
 Esta versão mantém as correções anteriores:
 
@@ -18,24 +20,15 @@ Esta versão mantém as correções anteriores:
 
 ## Corrigido
 
-- removi fisicamente as telas de boot do `index.html`:
-  - `#od180-boot-screen`;
-  - `#od1805-boot-screen`;
-- removi o script inline que adicionava `od180-booting` na abertura do site;
-- removi o preboot antigo `od1805`, que escondia `#auth-screen`, `#sessions-screen`, `#app-screen` e `#overlay-screen`;
-- neutralizei a função antiga `ensureBoot()`, que ainda podia recriar o loader `od180`;
-- neutralizei a função antiga `showBoot()`, que ainda podia recriar o loader `od1805`;
-- adicionei uma proteção inicial `od19514EarlyNoInfiniteBoot` no começo do `script.js`;
-- adicionei uma proteção inline no `index.html` para remover qualquer loader antes mesmo do script principal terminar de carregar;
-- adicionei CSS final que impede qualquer loader antigo de aparecer por cima do site;
-- forcei a remoção das classes antigas de boot:
-  - `od180-booting`;
-  - `od1805-booting`;
-  - `od1775-restoring-route`;
-  - `od180-booting-body`;
-  - `od1805-booting-body`;
-- garanti que as telas reais não fiquem invisíveis se alguma classe antiga de boot voltar;
-- atualizei todas as referências de versão para **1.95.14**.
+- removi fisicamente do `client/script.js` o bloco **V195.10 - Exclusão real de personagens no código-fonte**;
+- refiz a exclusão de personagem no bloco novo **V195.15**, sem observador global rodando durante o boot;
+- mantive o botão **EXCLUIR** funcionando por delegação de evento segura;
+- removi a dependência de `MutationObserver` para decorar botões de exclusão durante todo carregamento;
+- removi a necessidade de alterar botões de exclusão assim que a página abre;
+- adicionei failsafe final para remover qualquer loader/restauração presa;
+- adicionei proteção contra o pseudo-loader da v177.5, que podia mostrar “Carregando ficha...” se a classe `od1775-restoring-route` ficasse presa;
+- mantive a limpeza de loaders antigos `od180`, `od1805` e `od1776`;
+- atualizei todas as referências de versão para **1.95.15**.
 
 ## Arquivos alterados
 
@@ -47,88 +40,84 @@ Esta versão mantém as correções anteriores:
 
 ## Limpezas realizadas e motivo
 
-### 1. Remoção dos loaders do HTML
+### 1. Remoção do bloco V195.10
 
 **O que foi removido:**  
-Foram removidos do `index.html` os blocos visuais dos loaders `od180` e `od1805`, além do preboot que criava a tela “Carregando One Dice”.
+Foi removido do `client/script.js` o bloco inteiro **V195.10 - Exclusão real de personagens no código-fonte**.
 
 **Por que foi removido:**  
-A versão anterior tentava fechar os loaders por JavaScript, mas eles ainda existiam fisicamente no HTML. Se alguma função antiga falhasse, fosse interrompida ou recriasse uma classe de boot, a tela de loading podia continuar cobrindo tudo.
+O problema de carregamento começou após essa versão. Esse bloco corrigia o botão **EXCLUIR**, mas fazia isso instalando um observador global, decorando botões durante a montagem do DOM e substituindo funções antigas diretamente. Isso era arriscado porque a área de personagens passava a interferir na abertura do site, mesmo antes do usuário chegar na tela de personagens.
 
 **Como foi substituído:**  
-O HTML agora abre direto com a tela real. O script inicial apenas aplica tema escuro/acento e não cria mais tela de carregamento.
+Foi criado o bloco **V195.15 - Correção raiz do carregamento após v1.95.10**, que só age quando o usuário realmente clica em um botão de exclusão. Ele não observa o DOM inteiro e não força renderizações durante o boot.
 
-### 2. Remoção do preboot `od1805`
+### 2. Exclusão de personagem refeita sem quebrar o boot
+
+**O que foi refeito:**  
+A função de exclusão foi recriada com delegação de clique segura para:
+
+- `[data-od71-delete-character]`;
+- `[data-delete-account-character]`;
+- `[data-od19515-delete-character]`.
+
+**Por que foi refeito:**  
+O botão **EXCLUIR** precisava continuar funcionando, mas a solução anterior era pesada demais para ficar ativa durante o carregamento inicial.
+
+**Como funciona agora:**  
+A exclusão só roda quando o botão é clicado. Ela confirma a ação, marca a ficha como excluída, remove localmente, limpa vínculos com mesas, remove backups locais, tenta excluir no servidor e atualiza a interface.
+
+### 3. Remoção do observador global de exclusão
 
 **O que foi removido:**  
-Foi removida a camada `od1805-preboot`, que adicionava `od1805-booting` no `<html>` e escondia as telas principais.
+Foi removido o `MutationObserver` do bloco de exclusão da v1.95.10.
 
 **Por que foi removido:**  
-Essa camada era perigosa porque escondia login, início e ficha com CSS. Mesmo que o site estivesse funcionando, a interface podia continuar invisível.
+Esse observador ficava monitorando mudanças no corpo inteiro do site. Em um projeto com muitas camadas antigas e renderizações sucessivas, isso aumenta o risco de loops, renderização repetida e travamento visual.
 
 **Como foi substituído:**  
-A versão 1.95.14 não usa mais preboot visual. Se o sistema precisar restaurar sessão, ele faz isso sem cobrir o site inteiro.
+A v1.95.15 usa apenas um listener de clique em captura. Isso é suficiente para pegar botões novos e antigos sem observar o DOM continuamente.
 
-### 3. Neutralização de `ensureBoot()`
-
-**O que foi limpo:**  
-A função antiga `ensureBoot()` não cria mais `#od180-boot-screen`.
-
-**Por que foi limpo:**  
-Ela ainda podia ser chamada por camadas antigas e recriar a tela de carregamento depois que outra correção já tinha removido o loader.
-
-**Como foi substituído:**  
-Agora essa função apenas remove loaders/classes antigas e retorna `null`.
-
-### 4. Neutralização de `showBoot()`
-
-**O que foi limpo:**  
-A função antiga `showBoot()` não cria mais `#od1805-boot-screen` e não adiciona mais `od1805-booting`.
-
-**Por que foi limpo:**  
-Várias partes antigas chamavam `showBoot()` em login, logout, restauração e troca de tela. Isso podia fazer o site voltar a carregar infinitamente mesmo depois de uma limpeza anterior.
-
-**Como foi substituído:**  
-As chamadas antigas ainda podem acontecer, mas agora só executam uma limpeza segura em vez de abrir um overlay.
-
-### 5. Proteção dupla contra regressão
+### 4. Failsafe contra qualquer loading/restauração presa
 
 **O que foi adicionado:**  
-Foram adicionadas duas proteções:
+Foi adicionado um failsafe final que remove:
 
-- uma inline no `index.html`;
-- uma no começo do `client/script.js`.
-
-**Por que foi adicionado:**  
-Se qualquer camada antiga tentar recriar o loader, adicionar classes de boot ou esconder as telas, a proteção remove isso imediatamente durante os primeiros segundos de carregamento.
-
-**Como foi substituído:**  
-Não depende mais de um único failsafe no final. A limpeza roda antes, durante e depois da inicialização.
-
-### 6. CSS de segurança final
-
-**O que foi adicionado:**  
-Foi adicionado CSS no fim do `style.css` para esconder permanentemente loaders antigos.
+- `#od180-boot-screen`;
+- `#od1805-boot-screen`;
+- `#od1776-solid-loader`;
+- `.od1776-solid-loader`;
+- `.od180-loader-stuck`;
+- classes `od180-booting`, `od1805-booting` e `od1775-restoring-route`.
 
 **Por que foi adicionado:**  
-Mesmo se algum JavaScript antigo recriar o elemento visual, ele não aparece e não bloqueia clique.
+Mesmo depois de remover o bloco da v1.95.10, ainda existem camadas antigas de boot no projeto. O failsafe impede que qualquer uma delas deixe a tela presa.
 
 **Como foi substituído:**  
-O CSS força `display:none`, `visibility:hidden`, `opacity:0` e `pointer-events:none` em todos os loaders antigos conhecidos.
+A tela real aparece sem depender de um overlay de loading. Se nenhuma tela ativa for encontrada, o login é exibido como recuperação segura.
+
+### 5. Bloqueio do pseudo-loader da v177.5
+
+**O que foi corrigido:**  
+Foi adicionado CSS para esconder `html.od1775-restoring-route body::before` e `body.od1775-restoring-route::before`.
+
+**Por que foi corrigido:**  
+Esse pseudo-elemento mostrava uma tela “Carregando ficha...”. Se uma classe de restauração ficasse presa, o usuário via carregamento infinito mesmo sem existir um elemento de loader no HTML.
+
+**Como foi substituído:**  
+Agora esse pseudo-loader é desativado por CSS final e por limpeza em JavaScript.
 
 ## Como testar
 
 1. Rodar `npm run check`.
 2. Abrir o site em navegador com cache limpo.
 3. Confirmar que o login aparece sem tela “Carregando One Dice”.
-4. Recarregar a página algumas vezes.
-5. Testar em aba anônima.
-6. Testar com sessão antiga salva no navegador.
-7. Fazer login e confirmar que a tela inicial aparece.
-8. Testar senha errada e confirmar que o site não fica preso em loading.
-9. Abrir **Seus Personagens**.
-10. Criar personagem novo e confirmar que o design moderno continua fixo.
-11. Abrir uma ficha e confirmar que o menu de três traços e os atributos continuam como na versão anterior.
+4. Testar em aba anônima.
+5. Testar com sessão antiga salva no navegador.
+6. Fazer login e confirmar que a tela inicial aparece.
+7. Entrar em **Seus Personagens**.
+8. Criar um personagem e confirmar que a aba não volta ao design antigo.
+9. Excluir um personagem e confirmar que ele não volta por cache.
+10. Abrir uma ficha e confirmar que o menu de três traços e os atributos continuam corretos.
 
 ## Validação feita
 
@@ -145,4 +134,4 @@ O CSS força `display:none`, `visibility:hidden`, `opacity:0` e `pointer-events:
 
 ## Versão
 
-1.95.14
+1.95.15

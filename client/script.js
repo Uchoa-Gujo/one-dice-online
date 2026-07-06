@@ -4,7 +4,7 @@
 ========================= */
 (function od19514EarlyNoInfiniteBoot(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
   window.__OD_BOOT_DISABLED = true;
   function kill(){
     try {
@@ -29,7 +29,7 @@
 ========================= */
 (function od139EarlyGuards(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
   if (!window.CSS) window.CSS = {};
   if (typeof window.CSS.escape !== 'function') {
     window.CSS.escape = function(value) {
@@ -13452,7 +13452,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od136AttributesClean(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const ATTRS = [
     ['forca', 'Força'], ['agilidade', 'Agilidade'], ['vigor', 'Vigor'], ['intelecto', 'Intelecto'], ['presenca', 'Presença']
@@ -13620,7 +13620,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od137SheetStabilityAndManualDefenseDodge(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const $ = id => document.getElementById(id);
   const EDITABLE = 'input, textarea, select, [contenteditable="true"]';
@@ -13982,7 +13982,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od138AuditAndDuplicateSheetInstalled) return;
   window.__od138AuditAndDuplicateSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const DUP_SELECTOR = '[data-od138-duplicate-character], [data-od71-copy-character], [data-copy-account-character]';
 
@@ -14175,7 +14175,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od139ExtraErrorFixesInstalled) return;
   window.__od139ExtraErrorFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const IMAGE_KEYS = [
     'portrait','portraitUrl','image','imageUrl','photo','photoUrl','avatar','avatarUrl','retrato','foto',
@@ -14330,7 +14330,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od140GeneralImprovementsInstalled) return;
   window.__od140GeneralImprovementsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const VERSION = '1.80.5';
   const BACKUP_KEY = 'od_sheet_backups_v140';
@@ -14811,7 +14811,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od141AuditHardeningInstalled) return;
   window.__od141AuditHardeningInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   function pruneBackups(){
     try {
@@ -14862,7 +14862,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od142FinalCleanupInstalled) return;
   window.__od142FinalCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   function keepFirst(selector){
     const nodes = Array.from(document.querySelectorAll(selector));
@@ -14948,7 +14948,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od148SafeRollbackPatchInstalled) return;
   window.__od148SafeRollbackPatchInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
   const BACKUP_KEY = 'od_sheet_backups_v140';
   function hideManualNotes(){
     ['defense-effective-note','dodge-formula-note'].forEach(id => {
@@ -15001,7 +15001,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od152StableLayoutFixesInstalled) return;
   window.__od152StableLayoutFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const $ = id => document.getElementById(id);
   const n = (value, fallback = 0) => {
@@ -15193,7 +15193,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od155SessionDashboardStability(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const STORE_PREFIX = 'od155_dashboard_collapsed_';
   const lastSig = { player: '', master: '' };
@@ -15349,7 +15349,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od156ProtectOtherPlayersSheetsInstalled) return;
   window.__od156ProtectOtherPlayersSheetsInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const PROTECTED_ARRAYS = ['inventoryItems','blockInventory','abilities','spells','attacks','conditions','transformations','dropItems'];
   const PROTECTED_OBJECTS = ['skills','resistances','attrs','caster','obsIcons','portraitCrop','settings'];
@@ -15454,7 +15454,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od157ProtectOwnSheetPartialAutosaveInstalled) return;
   window.__od157ProtectOwnSheetPartialAutosaveInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   function clone(value){
     try { return structuredClone(value); } catch (_) {
@@ -15610,7 +15610,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od159StableSessionRenderInstalled) return;
   window.__od159StableSessionRenderInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const $ = id => document.getElementById(id);
   const last = { tableSig: '', tableAt: 0, playerSig: '', masterSig: '' };
@@ -15743,7 +15743,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od160AccountSheetIsolationInstalled) return;
   window.__od160AccountSheetIsolationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const $ = id => document.getElementById(id);
 
@@ -15894,7 +15894,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od161EquipmentProficienciesInstalled) return;
   window.__od161EquipmentProficienciesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const GROUPS = {
     weapons: [
@@ -16061,7 +16061,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od164StableCleanRoutesInstalled) return;
   window.__od164StableCleanRoutesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const VERSION = '1.80.5';
   let applyingRoute = false;
@@ -16269,7 +16269,7 @@ function od66InventoryMutationUnlockSoon() {
 ========================= */
 (function od165ExactPortraitCrop(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
   if (window.__od165ExactPortraitCropInstalled) return;
   window.__od165ExactPortraitCropInstalled = true;
 
@@ -16391,7 +16391,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1685AreaSeparationInstalled) return;
   window.__od1685AreaSeparationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const AREA = {
     AUTH: 'login',
@@ -16580,7 +16580,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1699StableSkillUntrainInstalled) return;
   window.__od1699StableSkillUntrainInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const pending = new Map();
   let flushTimer = null;
@@ -16808,7 +16808,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16910SkillSaveMergeInstalled) return;
   window.__od16910SkillSaveMergeInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   let lastExplicit = {};
   let lastExplicitAt = 0;
@@ -17024,7 +17024,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od16911StablePortraitDuringResourcesInstalled) return;
   window.__od16911StablePortraitDuringResourcesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const RESOURCE_SELECTOR = '#pv-current, #pv-max, #pe-current, #pe-max';
   const MAIN_SELECTOR = '#char-portrait-preview';
@@ -17196,7 +17196,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od170ModularSheetInstalled) return;
   window.__od170ModularSheetInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const STORE_KEY = 'od170_modules_state_v1';
   const DENSE_KEY = 'od170_dense_sheet_v1';
@@ -17440,7 +17440,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od171HubNavigationAndScrollInstalled) return;
   window.__od171HubNavigationAndScrollInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   let pending = false;
 
@@ -17564,7 +17564,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1715ScrollAndSmartCollapseInstalled) return;
   window.__od1715ScrollAndSmartCollapseInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   let scheduled = false;
 
@@ -17806,7 +17806,7 @@ function od66InventoryMutationUnlockSoon() {
    A correção principal está no index.html e no server/server.js.
 ========================= */
 (function od1762ReloadPathFixMarker(){
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 })();
 
 
@@ -17829,7 +17829,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1775ReloadRouteRestoreInstalled) return;
   window.__od1775ReloadRouteRestoreInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const INITIAL_PATH = location.pathname + location.search;
   const INITIAL_PARTS = location.pathname.split('/').filter(Boolean).map(part => {
@@ -18034,7 +18034,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od178SkillsDesignPolishInstalled) return;
   window.__od178SkillsDesignPolishInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   let timer = null;
 
@@ -18107,7 +18107,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1781AttributeTextFixInstalled) return;
   window.__od1781AttributeTextFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   let timer = null;
 
@@ -18294,7 +18294,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1787AttributeNameNoEllipsisInstalled) return;
   window.__od1787AttributeNameNoEllipsisInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const DISPLAY = {
     'força': 'FORÇA',
@@ -18390,7 +18390,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1788AttributeFullNamesInstalled) return;
   window.__od1788AttributeFullNamesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const FULL = {
     forca: 'FORÇA',
@@ -18490,7 +18490,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od17814AttributesStableFinalInstalled) return;
   window.__od17814AttributesStableFinalInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const ATTRS = [
     ['forca', 'FORÇA'],
@@ -18661,7 +18661,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1801SafeShellInstalled) return;
   window.__od1801SafeShellInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const SETTINGS_KEY = 'od_settings';
   const DEFAULTS = { theme: 'dark', accent: 'red', skillsCompact: true, font: 'medieval', sound: true };
@@ -18736,7 +18736,7 @@ function od66InventoryMutationUnlockSoon() {
   }
 
   function ensureBoot(){
-    // v1.95.14: boot visual removido. O loader antigo podia prender o site mesmo quando a tela já estava pronta.
+    // v1.95.15: boot visual removido. O loader antigo podia prender o site mesmo quando a tela já estava pronta.
     hidden = true;
     document.querySelectorAll('#od180-boot-screen,#od1805-boot-screen,#od1776-solid-loader,.od1776-solid-loader,.od180-loader-stuck').forEach(el => el.remove());
     document.documentElement.classList.remove('od180-booting','od1805-booting','od1775-restoring-route');
@@ -18855,7 +18855,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1802RobustLoginInstalled) return;
   window.__od1802RobustLoginInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   function $(id){ return document.getElementById(id); }
   function cleanNick(value){
@@ -18996,7 +18996,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1803AreaCleanupInstalled) return;
   window.__od1803AreaCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const AREA = {
     AUTH: 'login',
@@ -19236,7 +19236,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1804LoginAndAudioFixInstalled) return;
   window.__od1804LoginAndAudioFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   let loginBusy = false;
   let loginTicket = 0;
@@ -19494,7 +19494,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1805FinalShellInstalled) return;
   window.__od1805FinalShellInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   let hideTimer = null;
   let shellTimer = null;
@@ -19503,7 +19503,7 @@ function od66InventoryMutationUnlockSoon() {
   function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
 
   function bootScreen(){
-    // v1.95.14: não cria mais tela de loading. A tela real deve aparecer imediatamente.
+    // v1.95.15: não cria mais tela de loading. A tela real deve aparecer imediatamente.
     document.querySelectorAll('#od180-boot-screen,#od1805-boot-screen,#od1776-solid-loader,.od1776-solid-loader,.od180-loader-stuck').forEach(el => el.remove());
     document.documentElement.classList.remove('od180-booting','od1805-booting','od1775-restoring-route');
     document.body?.classList.remove('od180-booting-body','od1805-booting-body','od1775-restoring-route');
@@ -19511,7 +19511,7 @@ function od66InventoryMutationUnlockSoon() {
   }
 
   function showBoot(){
-    // v1.95.14: chamadas antigas ainda existem, mas foram neutralizadas para não cobrir login/início.
+    // v1.95.15: chamadas antigas ainda existem, mas foram neutralizadas para não cobrir login/início.
     bootScreen();
     clearTimeout(hideTimer);
   }
@@ -19736,7 +19736,7 @@ function od66InventoryMutationUnlockSoon() {
     }
   }, true);
 
-  // v1.95.14: só mostra boot inicial quando existe sessão para restaurar.
+  // v1.95.15: só mostra boot inicial quando existe sessão para restaurar.
   // Em login limpo, o loader não fica cobrindo a tela antes do formulário aparecer.
   hideBoot(0);
   safe(() => window.od19514KillBoot?.(), null);
@@ -19793,7 +19793,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1809CleanEditorsModesInstalled) return;
   window.__od1809CleanEditorsModesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   let saveTimer = null;
   let renderTimer = null;
@@ -20386,7 +20386,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1810FinalFixesInstalled) return;
   window.__od1810FinalFixesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   function $(id){ return document.getElementById(id); }
   function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
@@ -20494,7 +20494,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1811HubRefreshInstalled) return;
   window.__od1811HubRefreshInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   function cleanSessionProfile(){
     document.querySelectorAll('.od108-info-card,.od90-profile-card,[data-od90-profile-card],.session-profile-card,.account-profile-card,.menu-profile-card,#session-profile-card,#account-menu-profile,.od108-panel-user-info').forEach(el => el.remove());
@@ -20538,7 +20538,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1812CompactHubInstalled) return;
   window.__od1812CompactHubInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   function removeProfileCards(){
     document.querySelectorAll('#sessions-menu-panel .od90-user-menu-card, #sessions-menu-panel .od75-account-menu-card, .od90-user-menu-card, .od75-account-menu-card, .od108-panel-user-info, .od108-info-card, .od171-back-home').forEach(el => el.remove());
@@ -20576,7 +20576,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1813ThemeLinkedHubInstalled) return;
   window.__od1813ThemeLinkedHubInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const THEMES = {
     red:     { main: '#ef2f3b', dark: '#9d1018', soft: 'rgba(239,47,59,.16)', line: 'rgba(239,47,59,.72)' },
@@ -20674,7 +20674,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1815StableSheetTabsRouteInstalled) return;
   window.__od1815StableSheetTabsRouteInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const HUB_ROUTES = new Set(['/inicio', '/personagens', '/campanhas', '/mesas']);
 
@@ -20756,7 +20756,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1816ClickableAttributesInstalled) return;
   window.__od1816ClickableAttributesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const ATTRS = [
     ['forca', 'Força'],
@@ -20916,7 +20916,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1817ClickableAttackDamageInstalled) return;
   window.__od1817ClickableAttackDamageInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   function $(id){ return document.getElementById(id); }
   function esc(value){
@@ -21101,7 +21101,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1818ClickableAbilityCostInstalled) return;
   window.__od1818ClickableAbilityCostInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   function $(id){ return document.getElementById(id); }
   function safe(fn, fallback){ try { return fn(); } catch (_) { return fallback; } }
@@ -21246,7 +21246,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1819RemoveFichaAvulsaMenuCardInstalled) return;
   window.__od1819RemoveFichaAvulsaMenuCardInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   function run(){
     const topbar = document.getElementById('main-topbar');
@@ -21294,7 +21294,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od192CompleteCombatManagerInstalled) return;
   window.__od192CompleteCombatManagerInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const previous191 = window.od191CampaignManager || {};
   const previous1902 = window.od1902CampaignAndHubHotfix || {};
@@ -21777,7 +21777,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od193CompleteCampaignEditorInstalled) return;
   window.__od193CompleteCampaignEditorInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   let pendingCoverData = '';
   let pendingBannerData = '';
@@ -22215,7 +22215,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od194OwlbearBasicIntegrationInstalled) return;
   window.__od194OwlbearBasicIntegrationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const OWLBEAR_HOME = 'https://www.owlbear.rodeo/';
   let injectedEditor = false;
@@ -22523,7 +22523,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1941LiveStabilityAndOwlbearFixInstalled) return;
   window.__od1941LiveStabilityAndOwlbearFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const LIVE_MIN_MS = 2200;
   const MESSAGE_MIN_MS = 1400;
@@ -22843,7 +22843,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1942StrongStabilityCoreInstalled) return;
   window.__od1942StrongStabilityCoreInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const STATE_TTL = 2600;
   const MSG_TTL = 1800;
@@ -23110,7 +23110,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1943HostRealtimeOrchestratorInstalled) return;
   window.__od1943HostRealtimeOrchestratorInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const EVENT_POLL_MS = 1650;
   const HOT_POLL_MS = 850;
@@ -23351,7 +23351,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1944FrontendReviewGuardInstalled) return;
   window.__od1944FrontendReviewGuardInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   // Compatibilidade para chamadas antigas que apontavam para nomes não exportados.
   if (!window.od191CampaignManagerRedesign && window.od191CampaignManager) {
@@ -23522,7 +23522,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1945LayeredCampaignCleanupInstalled) return;
   window.__od1945LayeredCampaignCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const VERSION = '1.94.5';
   const SESSION_TABS = { home: '/inicio', characters: '/personagens', campaigns: '/campanhas' };
@@ -23901,7 +23901,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od195LayerByLayerValidationInstalled) return;
   window.__od195LayerByLayerValidationInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const VERSION = '1.95.0';
   const CAMPAIGN_TABS = ['visao','personagens','combate','jogadores','chat','escudo'];
@@ -24136,7 +24136,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1951CampaignUsabilityHotfixInstalled) return;
   window.__od1951CampaignUsabilityHotfixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const CAMPAIGN_MODE_CLASSES = [
     'od1901-campaign-manager-mode','od1902-campaign-manager-mode','od191-campaign-manager-mode','od192-campaign-manager-mode',
@@ -24401,7 +24401,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1952CampaignSheetRollbackInstalled) return;
   window.__od1952CampaignSheetRollbackInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const TABS = ['visao','personagens','combate','jogadores','chat','escudo'];
 
@@ -24709,7 +24709,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1953CampaignBattleChatStabilityInstalled) return;
   window.__od1953CampaignBattleChatStabilityInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const OWLBEAR_HOME = 'https://www.owlbear.rodeo/';
   const TABS = ['visao','personagens','combate','jogadores','chat','escudo'];
@@ -25235,7 +25235,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1954SheetMenuButtonRestoreInstalled) return;
   window.__od1954SheetMenuButtonRestoreInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   function $(id){ return document.getElementById(id); }
   function isCampaign(){
@@ -25370,7 +25370,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1955CampaignScrollCombatCompactInstalled) return;
   window.__od1955CampaignScrollCombatCompactInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const nativeScrollTo = window.scrollTo.bind(window);
   const nativeScrollBy = window.scrollBy.bind(window);
@@ -25567,7 +25567,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1956CampaignSingleLayerFixInstalled) return;
   window.__od1956CampaignSingleLayerFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   let tickTimer = null;
   let renderLock = false;
@@ -25759,7 +25759,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1957SheetMenuAndHistoryInstalled) return;
   window.__od1957SheetMenuAndHistoryInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const HUB_PATHS = { home: '/inicio', characters: '/personagens', campaigns: '/campanhas' };
   const CAMPAIGN_TABS = ['visao','personagens','combate','jogadores','chat','escudo'];
@@ -26009,7 +26009,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1958CampaignFlickerCombatHardeningInstalled) return;
   window.__od1958CampaignFlickerCombatHardeningInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const OWLBEAR_HOME = 'https://www.owlbear.rodeo/';
   const STATUS_LABEL = {
@@ -26499,7 +26499,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od1959LoginAndFontCleanupInstalled) return;
   window.__od1959LoginAndFontCleanupInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   function $(id){ return document.getElementById(id); }
   function safe(fn, fallback = null){ try { return fn(); } catch (_) { return fallback; } }
@@ -26599,186 +26599,6 @@ function od66InventoryMutationUnlockSoon() {
 
 
 /* =========================
-   V195.10 - Exclusão real de personagens no código-fonte
-   - Consolida todos os botões de excluir personagem em um único fluxo.
-   - Remove a dependência do handler antigo que chamava renderCharacterList sem guarda.
-   - Exclui no servidor quando houver login online, limpa vínculos locais e bloqueia retorno por cache.
-========================= */
-(function od19510CharacterDeleteSourceFix(){
-  'use strict';
-  if (window.__od19510CharacterDeleteSourceFixInstalled) return;
-  window.__od19510CharacterDeleteSourceFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
-
-  const DELETE_SELECTOR = '[data-od19510-delete-character], [data-od71-delete-character], [data-delete-account-character]';
-  const DELETED_KEY = 'od_deleted_characters_v70';
-  const BACKUP_KEY = 'od_sheet_backups_v140';
-  const pendingDeletes = new Set();
-
-  function safe(fn, fallback = null){ try { return fn(); } catch (_) { return fallback; } }
-  function esc(value){ try { return escapeHtml(value ?? ''); } catch (_) { return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); } }
-  function readJson(key, fallback){ try { return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback)); } catch (_) { return fallback; } }
-  function writeJson(key, value){ safe(() => localStorage.setItem(key, JSON.stringify(value)), null); }
-  function characters(){ return safe(() => typeof get === 'function' ? get(STORAGE.characters, []) : readJson('od_characters', []), []); }
-  function saveCharacters(list){ safe(() => typeof set === 'function' ? set(STORAGE.characters, list) : writeJson('od_characters', list), null); }
-  function members(){ return safe(() => typeof getMembers === 'function' ? getMembers() : readJson(STORAGE.campaignMembers || 'od_campaign_members', []), []); }
-  function saveMembers(list){ safe(() => typeof setMembers === 'function' ? setMembers(list) : writeJson(STORAGE.campaignMembers || 'od_campaign_members', list), null); }
-  function charName(char){ return String(char?.name || char?.characterName || 'Novo Personagem').trim() || 'Novo Personagem'; }
-  function canUseOnline(){ return !!safe(() => typeof od42Api === 'function' && typeof od42Token === 'function' && !!od42Token(), false); }
-
-  function markDeleted(id){
-    const cleanId = String(id || '');
-    if (!cleanId) return;
-    const list = Array.isArray(readJson(DELETED_KEY, [])) ? readJson(DELETED_KEY, []) : [];
-    if (!list.map(String).includes(cleanId)) list.push(cleanId);
-    writeJson(DELETED_KEY, list);
-  }
-
-  function removeCharacterBackups(id){
-    const store = readJson(BACKUP_KEY, {});
-    if (store && typeof store === 'object' && String(id) in store) {
-      delete store[String(id)];
-      writeJson(BACKUP_KEY, store);
-    }
-  }
-
-  function clearCharacterRuntime(id){
-    const cleanId = String(id || '');
-    if (!cleanId) return;
-    safe(() => clearTimeout(typeof od42SaveTimer !== 'undefined' ? od42SaveTimer : null), null);
-    safe(() => clearTimeout(typeof saveTimer !== 'undefined' ? saveTimer : null), null);
-    safe(() => saveQueue?.delete?.(cleanId), null);
-    if (String(currentCharacterId || '') === cleanId) currentCharacterId = null;
-    if (String(localStorage.getItem(STORAGE.activeCampaign) || '').includes(cleanId)) safe(() => localStorage.removeItem(STORAGE.activeCampaign), null);
-  }
-
-  function unlinkLocal(id){
-    const cleanId = String(id || '');
-    if (!cleanId) return;
-    saveCharacters(characters().filter(char => String(char?.id || '') !== cleanId));
-    saveMembers(members().map(member => String(member?.characterId || '') === cleanId ? { ...member, characterId: null, character_id: null } : member));
-    removeCharacterBackups(cleanId);
-    clearCharacterRuntime(cleanId);
-  }
-
-  function refreshUi(){
-    safe(() => renderAccountCharacterMenu(), null);
-    safe(() => renderAccountCharacterSidebar(), null);
-    safe(() => renderCampaignMenu(), null);
-    safe(() => renderCharacterList(), null);
-    safe(() => od71RenderContent(), null);
-    setTimeout(() => {
-      safe(() => renderAccountCharacterMenu(), null);
-      safe(() => renderCampaignMenu(), null);
-      safe(() => od71RenderContent(), null);
-      decorateDeleteButtons();
-    }, 0);
-  }
-
-  function setPendingVisual(id, pending){
-    document.querySelectorAll(DELETE_SELECTOR).forEach(button => {
-      const buttonId = button.dataset.od19510DeleteCharacter || button.dataset.od71DeleteCharacter || button.dataset.deleteAccountCharacter;
-      if (String(buttonId || '') !== String(id || '')) return;
-      button.disabled = !!pending;
-      button.classList.toggle('od19510-delete-pending', !!pending);
-      if (pending) {
-        button.dataset.od19510OldText = button.textContent || 'Excluir';
-        button.textContent = 'Excluindo...';
-      } else if (button.dataset.od19510OldText) {
-        button.textContent = button.dataset.od19510OldText;
-        delete button.dataset.od19510OldText;
-      }
-    });
-  }
-
-  async function deleteOnline(id){
-    if (!canUseOnline()) return true;
-    try {
-      await od42Api(`/api/characters/${encodeURIComponent(id)}`, { method: 'DELETE' });
-      return true;
-    } catch (error) {
-      const message = String(error?.message || '');
-      if (/404|não encontrada|nao encontrada|not found/i.test(message)) return true;
-      throw error;
-    }
-  }
-
-  async function refreshOnlineAfterDelete(){
-    try { if (typeof od42RefreshOwnCharacters === 'function') await od42RefreshOwnCharacters(); } catch (_) {}
-    try { if (typeof od42RefreshTables === 'function') await od42RefreshTables(); } catch (_) {}
-  }
-
-  async function deleteCharacter(id, options = {}){
-    const cleanId = String(id || '').trim();
-    if (!cleanId || pendingDeletes.has(cleanId)) return false;
-    const char = characters().find(item => String(item?.id || '') === cleanId);
-    if (!char) {
-      markDeleted(cleanId);
-      unlinkLocal(cleanId);
-      refreshUi();
-      return true;
-    }
-    const linkedCount = members().filter(member => String(member?.characterId || '') === cleanId).length;
-    const message = linkedCount
-      ? `Excluir a ficha "${charName(char)}"? Ela está vinculada a ${linkedCount} mesa(s), e o vínculo será limpo.`
-      : `Excluir a ficha "${charName(char)}"?`;
-    if (!options.skipConfirm && !confirm(message)) return false;
-
-    pendingDeletes.add(cleanId);
-    setPendingVisual(cleanId, true);
-    try {
-      await deleteOnline(cleanId);
-      markDeleted(cleanId);
-      unlinkLocal(cleanId);
-      await refreshOnlineAfterDelete();
-      unlinkLocal(cleanId); // roda novamente depois do refresh para impedir retorno por cache antigo
-      refreshUi();
-      return true;
-    } catch (error) {
-      alert(error?.message || 'Erro ao excluir ficha.');
-      return false;
-    } finally {
-      pendingDeletes.delete(cleanId);
-      setPendingVisual(cleanId, false);
-    }
-  }
-
-  function decorateDeleteButtons(){
-    document.querySelectorAll('[data-od71-delete-character], [data-delete-account-character]').forEach(button => {
-      const id = button.dataset.od71DeleteCharacter || button.dataset.deleteAccountCharacter;
-      if (!id) return;
-      button.dataset.od19510DeleteCharacter = id;
-      button.classList.add('od19510-delete-character');
-      if (!button.getAttribute('aria-label')) button.setAttribute('aria-label', 'Excluir personagem');
-    });
-  }
-
-  deleteAccountCharacter = function od19510DeleteAccountCharacter(id){
-    return deleteCharacter(id);
-  };
-  window.od19510DeleteCharacter = deleteCharacter;
-
-  document.addEventListener('click', event => {
-    const button = event.target.closest?.(DELETE_SELECTOR);
-    if (!button) return;
-    const id = button.dataset.od19510DeleteCharacter || button.dataset.od71DeleteCharacter || button.dataset.deleteAccountCharacter;
-    if (!id) return;
-    event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-    deleteCharacter(id);
-  }, true);
-
-  const observer = new MutationObserver(() => decorateDeleteButtons());
-  if (document.body) observer.observe(document.body, { childList: true, subtree: true });
-
-  function boot(){ decorateDeleteButtons(); }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
-  else boot();
-  [80, 240, 700, 1500, 3000].forEach(ms => setTimeout(boot, ms));
-})();
-
-/* =========================
    V195.11 - Trava do design moderno em Seus Personagens após criar ficha
    Corrige retorno para o card antigo/grade antiga quando um novo personagem é criado.
 ========================= */
@@ -26786,7 +26606,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od19511CharactersHubDesignLockInstalled) return;
   window.__od19511CharactersHubDesignLockInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   const CHARACTER_ROUTE = 'characters';
   let repairTimer = null;
@@ -26925,13 +26745,13 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od19513BootMenuAttributesFixInstalled) return;
   window.__od19513BootMenuAttributesFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.14';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
 
   let syncTimer = null;
   let bootTimer = null;
 
   function $(id){ return document.getElementById(id); }
-  function safe(fn, fallback = null){ try { return fn(); } catch (error) { console.warn('[One Dice v1.95.14]', error?.message || error); return fallback; } }
+  function safe(fn, fallback = null){ try { return fn(); } catch (error) { console.warn('[One Dice v1.95.15]', error?.message || error); return fallback; } }
   function isSheetLayer(){
     return document.body?.dataset?.od195Layer === 'sheet' ||
       document.body?.dataset?.od1945Layer === 'sheet' ||
@@ -27158,4 +26978,229 @@ function od66InventoryMutationUnlockSoon() {
   [250, 900, 1800, 3200, 5200, 8500].forEach(ms => setTimeout(() => runAll(`failsafe-${ms}`), ms));
 
   window.od19513BootMenuAttributesFix = { clearStuckLoaders, ensureVisibleScreen, syncMenu, normalizeAttributes, rebuildAttributeSummaryIfBroken, runAll };
+})();
+
+
+
+/* =========================
+   V195.15 - Correção raiz do carregamento após v1.95.10
+   - Remove a dependência do bloco v195.10 que rodava durante o boot.
+   - Mantém a exclusão de personagens por delegação segura, sem MutationObserver global.
+   - Força limpeza de qualquer loader/restauração presa sem recriar tela de loading.
+========================= */
+(function od19515BootRollbackAndSafeDelete(){
+  'use strict';
+  if (window.__od19515BootRollbackAndSafeDeleteInstalled) return;
+  window.__od19515BootRollbackAndSafeDeleteInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.95.15';
+
+  const DELETE_SELECTOR = '[data-od71-delete-character], [data-delete-account-character], [data-od19515-delete-character]';
+  const DELETED_KEY = 'od_deleted_characters_v70';
+  const BACKUP_KEY = 'od_sheet_backups_v140';
+  const pendingDeletes = new Set();
+
+  function safe(fn, fallback = null){ try { return fn(); } catch (_) { return fallback; } }
+  function readJson(key, fallback){
+    try {
+      const raw = localStorage.getItem(key);
+      return raw == null ? fallback : JSON.parse(raw);
+    } catch (_) { return fallback; }
+  }
+  function writeJson(key, value){ safe(() => localStorage.setItem(key, JSON.stringify(value)), null); }
+  function storageKey(name, fallback){ return safe(() => STORAGE?.[name], fallback) || fallback; }
+  function getList(key, fallback = []){
+    return safe(() => typeof get === 'function' ? get(key, fallback) : readJson(key, fallback), fallback) || fallback;
+  }
+  function setList(key, value){ safe(() => typeof set === 'function' ? set(key, value) : writeJson(key, value), null); }
+  function allCharacters(){ return getList(storageKey('characters','od_characters'), []); }
+  function saveCharacters(list){ setList(storageKey('characters','od_characters'), Array.isArray(list) ? list : []); }
+  function allMembers(){ return safe(() => typeof getMembers === 'function' ? getMembers() : getList(storageKey('campaignMembers','od_campaign_members'), []), []) || []; }
+  function saveAllMembers(list){ safe(() => typeof setMembers === 'function' ? setMembers(list) : setList(storageKey('campaignMembers','od_campaign_members'), list), null); }
+  function idOf(char){ return String(char?.id ?? char?._id ?? ''); }
+  function esc(value){ return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+  function charLabel(char){ return String(char?.name || char?.characterName || 'Novo Personagem').trim() || 'Novo Personagem'; }
+
+  function hardStopLoaders(reason = 'v19515'){
+    document.querySelectorAll('#od180-boot-screen,#od1805-boot-screen,#od1776-solid-loader,.od1776-solid-loader,.od180-loader-stuck').forEach(el => el.remove());
+    document.documentElement.classList.remove('od180-booting','od1805-booting','od1775-restoring-route');
+    document.body?.classList.remove('od180-booting-body','od1805-booting-body','od1775-restoring-route');
+    document.documentElement.dataset.od19515BootClear = reason;
+  }
+
+  function hasAnyActiveScreen(){
+    return ['auth-screen','sessions-screen','app-screen'].some(id => document.getElementById(id)?.classList.contains('active'));
+  }
+
+  function hasOnlineSession(){
+    return safe(() => {
+      if (typeof od42GetSession === 'function') return !!od42GetSession()?.token;
+      const raw = localStorage.getItem('od_online_session_v42') || sessionStorage.getItem('od_online_session_v42');
+      return !!JSON.parse(raw || 'null')?.token;
+    }, false);
+  }
+
+  function makeLoginVisibleIfBootFailed(reason = 'failsafe'){
+    hardStopLoaders(reason);
+    if (hasAnyActiveScreen()) return;
+    const auth = document.getElementById('auth-screen');
+    const sessions = document.getElementById('sessions-screen');
+    const app = document.getElementById('app-screen');
+    if (app?.classList.contains('active') || sessions?.classList.contains('active')) return;
+    auth?.classList.add('active');
+  }
+
+  function markDeleted(id){
+    const cleanId = String(id || '').trim();
+    if (!cleanId) return;
+    const deleted = new Set((readJson(DELETED_KEY, []) || []).map(String));
+    deleted.add(cleanId);
+    writeJson(DELETED_KEY, [...deleted]);
+  }
+
+  function purgeDeletedIds(){
+    const deleted = new Set((readJson(DELETED_KEY, []) || []).map(String));
+    if (!deleted.size) return;
+    saveCharacters(allCharacters().filter(char => !deleted.has(idOf(char))));
+    saveAllMembers(allMembers().map(member => {
+      const cid = String(member?.characterId ?? member?.character_id ?? '');
+      return deleted.has(cid) ? { ...member, characterId: null, character_id: null } : member;
+    }));
+    safe(() => {
+      const activeId = String(typeof currentCharacterId !== 'undefined' ? currentCharacterId : '');
+      if (deleted.has(activeId)) currentCharacterId = null;
+    }, null);
+  }
+
+  function removeBackups(id){
+    const cleanId = String(id || '').trim();
+    if (!cleanId) return;
+    const backups = readJson(BACKUP_KEY, {});
+    if (backups && typeof backups === 'object' && Object.prototype.hasOwnProperty.call(backups, cleanId)) {
+      delete backups[cleanId];
+      writeJson(BACKUP_KEY, backups);
+    }
+  }
+
+  function unlinkLocalCharacter(id){
+    const cleanId = String(id || '').trim();
+    if (!cleanId) return;
+    saveCharacters(allCharacters().filter(char => idOf(char) !== cleanId));
+    saveAllMembers(allMembers().map(member => {
+      const cid = String(member?.characterId ?? member?.character_id ?? '');
+      return cid === cleanId ? { ...member, characterId: null, character_id: null } : member;
+    }));
+    removeBackups(cleanId);
+    safe(() => clearTimeout(typeof od42SaveTimer !== 'undefined' ? od42SaveTimer : null), null);
+    safe(() => clearTimeout(typeof saveTimer !== 'undefined' ? saveTimer : null), null);
+    safe(() => saveQueue?.delete?.(cleanId), null);
+    safe(() => { if (String(currentCharacterId || '') === cleanId) currentCharacterId = null; }, null);
+  }
+
+  function refreshCharacterUi(){
+    hardStopLoaders('after-delete');
+    safe(() => renderAccountCharacterMenu(), null);
+    safe(() => renderAccountCharacterSidebar(), null);
+    safe(() => renderCharacterList(), null);
+    safe(() => renderCampaignMenu(), null);
+    safe(() => od71RenderContent(), null);
+    safe(() => window.od19511CharactersHubDesignLock?.scheduleRepair?.('after-delete'), null);
+  }
+
+  function setButtonBusy(id, busy){
+    document.querySelectorAll(DELETE_SELECTOR).forEach(button => {
+      const bid = button.dataset.od71DeleteCharacter || button.dataset.deleteAccountCharacter || button.dataset.od19515DeleteCharacter;
+      if (String(bid || '') !== String(id || '')) return;
+      button.disabled = !!busy;
+      button.classList.toggle('od19515-delete-pending', !!busy);
+      if (busy) {
+        button.dataset.od19515OldText = button.textContent || 'Excluir';
+        button.textContent = 'Excluindo...';
+      } else if (button.dataset.od19515OldText) {
+        button.textContent = button.dataset.od19515OldText;
+        delete button.dataset.od19515OldText;
+      }
+    });
+  }
+
+  async function deleteOnlineCharacter(id){
+    if (!hasOnlineSession() || typeof od42Api !== 'function') return true;
+    try {
+      await od42Api(`/api/characters/${encodeURIComponent(id)}`, { method: 'DELETE' });
+      return true;
+    } catch (error) {
+      const msg = String(error?.message || '');
+      if (/404|not found|não encontrada|nao encontrada/i.test(msg)) return true;
+      throw error;
+    }
+  }
+
+  async function deleteCharacterSafely(id, options = {}){
+    const cleanId = String(id || '').trim();
+    if (!cleanId || pendingDeletes.has(cleanId)) return false;
+    purgeDeletedIds();
+    const char = allCharacters().find(item => idOf(item) === cleanId);
+    const linked = allMembers().filter(member => String(member?.characterId ?? member?.character_id ?? '') === cleanId).length;
+    if (char && !options.skipConfirm) {
+      const msg = linked
+        ? `Excluir a ficha "${charLabel(char)}"? Ela está vinculada a ${linked} mesa(s), e o vínculo será limpo.`
+        : `Excluir a ficha "${charLabel(char)}"?`;
+      if (!confirm(msg)) return false;
+    }
+
+    pendingDeletes.add(cleanId);
+    setButtonBusy(cleanId, true);
+    try {
+      markDeleted(cleanId);
+      unlinkLocalCharacter(cleanId);
+      refreshCharacterUi();
+      await deleteOnlineCharacter(cleanId);
+      safe(() => od42RefreshOwnCharacters?.(), null);
+      safe(() => od42RefreshTables?.(), null);
+      purgeDeletedIds();
+      unlinkLocalCharacter(cleanId);
+      refreshCharacterUi();
+      return true;
+    } catch (error) {
+      alert(error?.message || 'Erro ao excluir ficha.');
+      purgeDeletedIds();
+      refreshCharacterUi();
+      return false;
+    } finally {
+      pendingDeletes.delete(cleanId);
+      setButtonBusy(cleanId, false);
+    }
+  }
+
+  // Export seguro: sem atribuição nua no boot. A atribuição antiga da v1.95.10 foi removida.
+  window.deleteAccountCharacter = deleteCharacterSafely;
+  try {
+    if (typeof deleteAccountCharacter !== 'undefined') deleteAccountCharacter = deleteCharacterSafely;
+  } catch (_) {}
+  window.od19515DeleteCharacter = deleteCharacterSafely;
+
+  document.addEventListener('click', event => {
+    const button = event.target.closest?.(DELETE_SELECTOR);
+    if (!button) return;
+    const id = button.dataset.od71DeleteCharacter || button.dataset.deleteAccountCharacter || button.dataset.od19515DeleteCharacter;
+    if (!id) return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    deleteCharacterSafely(id);
+  }, true);
+
+  window.addEventListener('error', () => makeLoginVisibleIfBootFailed('window-error'));
+  window.addEventListener('unhandledrejection', () => makeLoginVisibleIfBootFailed('promise-error'));
+
+  function boot(){
+    hardStopLoaders('boot');
+    purgeDeletedIds();
+    setTimeout(() => makeLoginVisibleIfBootFailed('boot-late'), 600);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
+  else boot();
+  window.addEventListener('load', () => makeLoginVisibleIfBootFailed('load'), { once: true });
+  [250, 900, 1800, 3500, 7000].forEach(ms => setTimeout(() => makeLoginVisibleIfBootFailed(`failsafe-${ms}`), ms));
+
+  window.od19515BootRollbackAndSafeDelete = { hardStopLoaders, makeLoginVisibleIfBootFailed, deleteCharacterSafely, purgeDeletedIds };
 })();
