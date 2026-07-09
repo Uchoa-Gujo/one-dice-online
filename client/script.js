@@ -17649,10 +17649,10 @@ function od66InventoryMutationUnlockSoon() {
     const html = keys.map(([key, label]) => {
       const value = Number(char?.attrs?.[key] ?? 1);
       const bonus = attrBonus(char, key);
-      return `<button type="button" class="od1715-attr-mini od1816-attr-roll-target" data-od1816-roll-attr="${esc(key)}" title="Rolar ${esc(label)}">
-        <small>${esc(label)}</small>
-        <strong>${esc(value)}</strong>
-        <span>${esc(mod(bonus))}</span>
+      return `<button type="button" class="od1715-attr-mini od1816-attr-roll-target od19527-attr-mini" data-od1816-roll-attr="${esc(key)}" title="Rolar ${esc(label)}">
+        <span class="od19527-attr-name">${esc(label)}</span>
+        <strong class="od19527-attr-value">${esc(value)}</strong>
+        <span class="od19527-attr-bonus">${esc(mod(bonus))}</span>
       </button>`;
     }).join('');
     setSummary(module, 'od1715-attr-summary', html || empty('Sem atributos.'));
@@ -27176,122 +27176,21 @@ function od66InventoryMutationUnlockSoon() {
 })();
 
 /* =========================
-   V1.95.26 - Atributos resumidos em ordem vertical
-   Pedido:
-   - Nome do atributo centralizado.
-   - Valor cheio centralizado.
-   - Bônus centralizado abaixo, dentro do design.
-   Escopo:
-   - Não mexe em login, boot, cookies, socket, menu da ficha ou exclusão.
+   V1.95.27 - Atributos resumidos no modo reduzido
+   - Reverte a intervenção da v1.95.26 no grid expandido (#attributes-grid).
+   - Aplica o design vertical apenas ao resumo reduzido/colapsado de atributos.
 ========================= */
-(function od19526VerticalSummaryAttributes(){
+window.ONE_DICE_CLIENT_VERSION = '1.95.27';
+
+
+/* =========================
+   V1.95.27 - Atributos reduzidos no modelo vertical
+   Pedido:
+   - Aplicar no modo reduzido o mesmo modelo visual nome > valor > bônus.
+   Escopo:
+   - Corrige apenas a versão reduzida do módulo de atributos.
+========================= */
+(function od19527ReducedAttrSummaryFlag(){
   'use strict';
-  if (window.__od19526VerticalSummaryAttributesInstalled) return;
-  window.__od19526VerticalSummaryAttributesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.26';
-
-  const ATTRS = [
-    ['forca', 'FORÇA'],
-    ['agilidade', 'AGILIDADE'],
-    ['vigor', 'VIGOR'],
-    ['intelecto', 'INTELECTO'],
-    ['presenca', 'PRESENÇA']
-  ];
-
-  let renderTimer = null;
-  let observing = false;
-
-  function $(id){ return document.getElementById(id); }
-  function safe(fn, fallback = null){ try { return fn(); } catch (error) { console.warn('[One Dice v1.95.26]', error?.message || error); return fallback; } }
-  function esc(value){
-    return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
-  }
-  function cleanId(value){ return String(value || '').replace(/^"|"$/g, '').trim(); }
-  function getStore(key, fallback){ return safe(() => (typeof get === 'function' ? get(key, fallback) : JSON.parse(localStorage.getItem(key) || 'null') || fallback), fallback); }
-  function chars(){ return getStore(typeof STORAGE !== 'undefined' ? STORAGE.characters : 'od_characters', []); }
-  function currentCharacter(){
-    return safe(() => (typeof currentChar === 'function' ? currentChar() : null), null)
-      || chars().find(c => String(c.id) === String(cleanId(typeof currentCharacterId !== 'undefined' ? currentCharacterId : '')))
-      || null;
-  }
-  function clampAttr(value){
-    const n = Number(value);
-    if (!Number.isFinite(n)) return 10;
-    return Math.max(1, Math.round(n));
-  }
-  function getAttrValue(char, key){ return clampAttr(char?.attrs?.[key] ?? 10); }
-  function getAttrMod(value){
-    return safe(() => (typeof attrMod === 'function' ? attrMod(value) : Math.floor((clampAttr(value) - 10) / 2)), Math.floor((clampAttr(value) - 10) / 2));
-  }
-  function formatModValue(value){
-    return safe(() => (typeof formatMod === 'function' ? formatMod(value) : `${value >= 0 ? '+' : ''}${value}`), `${value >= 0 ? '+' : ''}${value}`);
-  }
-  function buildCard(char, key, label){
-    const value = getAttrValue(char, key);
-    const mod = formatModValue(getAttrMod(value));
-    return `<article class="od19526-attr-card" data-od19526-attr="${esc(key)}">
-      <div class="od19526-attr-name" title="${esc(label)}">${esc(label)}</div>
-      <div class="od19526-attr-value" aria-label="Valor de ${esc(label)}">${esc(value)}</div>
-      <div class="od19526-attr-bonus" aria-label="Bônus de ${esc(label)}">${esc(mod)}</div>
-    </article>`;
-  }
-
-  function renderSummaryAttributes(char = currentCharacter()){
-    const grid = $('attributes-grid');
-    if (!grid || !char) return;
-    grid.className = 'attributes-grid od19526-attributes-grid';
-    grid.innerHTML = ATTRS.map(([key, label]) => buildCard(char, key, label)).join('');
-  }
-
-  function installRenderer(){
-    try { renderAttributes = renderSummaryAttributes; } catch (_) {}
-    try { window.renderAttributes = renderSummaryAttributes; } catch (_) {}
-    window.renderAttributesV19526 = renderSummaryAttributes;
-    window.renderAttributesV19524 = renderSummaryAttributes;
-    if (window.od1952CampaignSheetRollback) window.od1952CampaignSheetRollback.renderClassicAttributes = renderSummaryAttributes;
-  }
-
-  function scheduleRender(delay = 40){
-    clearTimeout(renderTimer);
-    renderTimer = setTimeout(() => {
-      installRenderer();
-      renderSummaryAttributes();
-    }, delay);
-  }
-
-  function observeGrid(){
-    if (observing) return;
-    const grid = $('attributes-grid');
-    if (!grid || typeof MutationObserver === 'undefined') return;
-    observing = true;
-    const observer = new MutationObserver(() => {
-      if (!grid.classList.contains('od19526-attributes-grid') || grid.querySelector('.od1952-attr-card, .od17814-attr-card, .attr-card')) {
-        scheduleRender(20);
-      }
-    });
-    observer.observe(grid, { childList: true, subtree: false, attributes: true, attributeFilter: ['class'] });
-  }
-
-  document.addEventListener('click', event => {
-    if (event.target.closest?.('.sheet-tab, [data-tab], [data-od170-toggle], #attributes-section, #attributes-grid')) {
-      scheduleRender(60);
-    }
-  }, true);
-
-  document.addEventListener('input', event => {
-    if (event.target.closest?.('[data-attr], [data-od17814-input]')) scheduleRender(80);
-  }, true);
-
-  function boot(){
-    installRenderer();
-    observeGrid();
-    renderSummaryAttributes();
-  }
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
-  else boot();
-
-  [120, 420, 900, 1500, 2300, 3100].forEach(ms => setTimeout(boot, ms));
-
-  window.od19526VerticalSummaryAttributes = { renderSummaryAttributes, scheduleRender, installRenderer };
+  window.ONE_DICE_CLIENT_VERSION = '1.95.27';
 })();
