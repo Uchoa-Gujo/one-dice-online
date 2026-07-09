@@ -26877,23 +26877,23 @@ function od66InventoryMutationUnlockSoon() {
 
 
 /* =========================
-   V1.95.23 - Menu da ficha persistente + atributos resumidos centralizados
+   V1.95.24 - Menu da ficha sem flicker + painel compacto
    Motivo:
-   - O botão de três traços ainda podia sumir porque blocos antigos da ficha
-     continuavam alternando menu/topbar em intervalos próprios.
-   - O painel de atributos resumidos ainda usava o modelo antigo com nome e
-     bônus na mesma linha, sem seguir a ordem pedida.
+   - O botão da v1.95.23 ficava preso numa briga com estados antigos de mesa/campanha.
+   - Em algumas contas/navegadores, scripts antigos marcavam a tela como campanha por instantes,
+     fazendo o botão aparecer/sumir e o painel piscar.
+   - O painel aberto ainda ocupava área maior que o necessário.
    Correção limpa:
-   - Cria um único botão final da ficha, fora do topbar antigo, com id próprio.
-   - O botão é forçado apenas em páginas de ficha/personagem e não depende
-     dos botões antigos.
-   - Recria os atributos resumidos na ordem: nome, valor cheio, bônus.
+   - A rota /personagem e /ficha agora tem prioridade sobre estados antigos de campanha.
+   - Remove o setInterval contínuo da v1.95.23 para parar o efeito de piscar.
+   - O painel passa a ser controlado por classes estáveis no body/html, não por loop visual.
+   - Mantém os atributos resumidos no modelo nome > valor > bônus.
 ========================= */
-(function od19523StableSheetMenuAndSummaryAttributes(){
+(function od19524SheetMenuNoFlickerAndCompactPanel(){
   'use strict';
-  if (window.__od19523StableSheetMenuAndSummaryAttributesInstalled) return;
-  window.__od19523StableSheetMenuAndSummaryAttributesInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.23';
+  if (window.__od19524SheetMenuNoFlickerAndCompactPanelInstalled) return;
+  window.__od19524SheetMenuNoFlickerAndCompactPanelInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.95.24';
 
   const ATTRS = [
     ['forca', 'FORÇA'],
@@ -26905,13 +26905,16 @@ function od66InventoryMutationUnlockSoon() {
 
   let menuOpen = false;
   let attrTimer = null;
-  let tickCount = 0;
+  let syncRaf = 0;
+  let applying = false;
 
   function $(id){ return document.getElementById(id); }
-  function safe(fn, fallback = null){ try { return fn(); } catch (error) { console.warn('[One Dice v1.95.23]', error?.message || error); return fallback; } }
+  function safe(fn, fallback = null){ try { return fn(); } catch (error) { console.warn('[One Dice v1.95.24]', error?.message || error); return fallback; } }
   function esc(value){ return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch])); }
+  function sheetRoute(){ return /^\/(ficha|personagem)(\/|$)/i.test(location.pathname || ''); }
   function isAuthActive(){ return $('auth-screen')?.classList.contains('active'); }
   function isCampaignPage(){
+    if (sheetRoute()) return false;
     return /^\/(campanha|mesa)(\/|$)/i.test(location.pathname || '') ||
       !!$('od1901-campaign-manager') ||
       document.body?.dataset?.od195Layer === 'campaign' ||
@@ -26919,18 +26922,19 @@ function od66InventoryMutationUnlockSoon() {
       document.body?.classList.contains('od1901-campaign-manager-mode');
   }
   function isSheetPage(){
-    if (isAuthActive() || isCampaignPage()) return false;
-    if (/^\/(ficha|personagem)(\/|$)/i.test(location.pathname || '')) return true;
+    if (isAuthActive()) return false;
+    if (sheetRoute()) return true;
+    if (isCampaignPage()) return false;
     return !!document.querySelector('.sheet-area, .sheet') && $('app-screen')?.classList.contains('active');
   }
 
   function ensureFinalMenuButton(){
-    let btn = $('od19523-sheet-menu-toggle');
+    let btn = $('od19524-sheet-menu-toggle');
     if (!btn) {
       btn = document.createElement('button');
-      btn.id = 'od19523-sheet-menu-toggle';
+      btn.id = 'od19524-sheet-menu-toggle';
       btn.type = 'button';
-      btn.className = 'od19523-sheet-menu-toggle';
+      btn.className = 'od19524-sheet-menu-toggle';
       btn.innerHTML = '<span aria-hidden="true"></span>';
       btn.setAttribute('aria-label', 'Abrir menu da ficha');
       btn.setAttribute('title', 'Abrir menu da ficha');
@@ -26942,6 +26946,7 @@ function od66InventoryMutationUnlockSoon() {
 
   function hideLegacySheetMenuButtons(){
     const legacySelectors = [
+      '#od19523-sheet-menu-toggle',
       '#od19521-sheet-menu-toggle',
       '#od19520-sheet-menu-toggle',
       '#od1954-sheet-menu-toggle',
@@ -26953,7 +26958,7 @@ function od66InventoryMutationUnlockSoon() {
       '#main-topbar .sidebar-toggle-btn'
     ];
     document.querySelectorAll(legacySelectors.join(',')).forEach(el => {
-      if (!el || el.id === 'od19523-sheet-menu-toggle') return;
+      if (!el || el.id === 'od19524-sheet-menu-toggle') return;
       el.setAttribute('aria-hidden', 'true');
       el.style.setProperty('display', 'none', 'important');
       el.style.setProperty('visibility', 'hidden', 'important');
@@ -26972,51 +26977,70 @@ function od66InventoryMutationUnlockSoon() {
   }
 
   function applyMenuState(open = menuOpen){
-    const btn = ensureFinalMenuButton();
-    const topbar = $('main-topbar');
+    if (applying) return;
+    applying = true;
+    try {
+      const btn = ensureFinalMenuButton();
+      const topbar = $('main-topbar');
 
-    if (!isSheetPage()) {
       document.documentElement.classList.remove('od19523-sheet-page');
       document.body?.classList.remove('od19523-sheet-page');
-      btn.style.setProperty('display', 'none', 'important');
-      btn.style.setProperty('visibility', 'hidden', 'important');
-      btn.setAttribute('aria-expanded', 'false');
-      return;
+
+      if (!isSheetPage()) {
+        menuOpen = false;
+        document.documentElement.classList.remove('od19524-sheet-page', 'od19524-sheet-menu-open');
+        document.body?.classList.remove('od19524-sheet-page', 'od19524-sheet-menu-open');
+        btn.style.setProperty('display', 'none', 'important');
+        btn.style.setProperty('visibility', 'hidden', 'important');
+        btn.setAttribute('aria-expanded', 'false');
+        return;
+      }
+
+      menuOpen = !!open;
+      document.documentElement.classList.add('od19524-sheet-page');
+      document.body?.classList.add('od19524-sheet-page');
+      document.documentElement.classList.toggle('od19524-sheet-menu-open', menuOpen);
+      document.body?.classList.toggle('od19524-sheet-menu-open', menuOpen);
+      document.body?.classList.remove('sidebar-collapsed');
+      if (document.body) {
+        document.body.dataset.od195Layer = 'sheet';
+        document.body.dataset.od1945Layer = 'sheet';
+      }
+
+      btn.style.setProperty('display', 'inline-flex', 'important');
+      btn.style.setProperty('visibility', 'visible', 'important');
+      btn.style.setProperty('opacity', '1', 'important');
+      btn.style.setProperty('pointer-events', 'auto', 'important');
+      btn.setAttribute('aria-expanded', String(menuOpen));
+      btn.setAttribute('aria-label', menuOpen ? 'Fechar menu da ficha' : 'Abrir menu da ficha');
+      btn.setAttribute('title', menuOpen ? 'Fechar menu da ficha' : 'Abrir menu da ficha');
+
+      if (topbar) {
+        topbar.dataset.od19524MenuOpen = menuOpen ? 'true' : 'false';
+        topbar.classList.toggle('collapsed', !menuOpen);
+        topbar.style.setProperty('display', 'grid', 'important');
+        topbar.style.setProperty('visibility', 'visible', 'important');
+        topbar.style.setProperty('opacity', menuOpen ? '1' : '0', 'important');
+        topbar.style.setProperty('pointer-events', menuOpen ? 'auto' : 'none', 'important');
+      }
+
+      hideLegacySheetMenuButtons();
+    } finally {
+      applying = false;
     }
+  }
 
-    document.documentElement.classList.add('od19523-sheet-page');
-    document.body?.classList.add('od19523-sheet-page');
-    document.body?.classList.remove('sidebar-collapsed');
-    if (document.body) {
-      document.body.dataset.od195Layer = 'sheet';
-      document.body.dataset.od1945Layer = 'sheet';
-    }
-
-    btn.style.setProperty('display', 'inline-flex', 'important');
-    btn.style.setProperty('visibility', 'visible', 'important');
-    btn.style.setProperty('opacity', '1', 'important');
-    btn.style.setProperty('pointer-events', 'auto', 'important');
-    btn.setAttribute('aria-expanded', String(!!open));
-    btn.setAttribute('aria-label', open ? 'Fechar menu da ficha' : 'Abrir menu da ficha');
-    btn.setAttribute('title', open ? 'Fechar menu da ficha' : 'Abrir menu da ficha');
-
-    if (topbar) {
-      topbar.style.setProperty('display', 'grid', 'important');
-      topbar.style.setProperty('visibility', 'visible', 'important');
-      topbar.style.setProperty('opacity', open ? '1' : '0', 'important');
-      topbar.style.setProperty('pointer-events', open ? 'auto' : 'none', 'important');
-      topbar.classList.toggle('collapsed', !open);
-      topbar.dataset.od19523MenuOpen = open ? 'true' : 'false';
-    }
-
-    hideLegacySheetMenuButtons();
+  function requestSync(){
+    if (syncRaf) return;
+    syncRaf = requestAnimationFrame(() => {
+      syncRaf = 0;
+      applyMenuState(menuOpen);
+    });
   }
 
   function toggleMenu(){
     menuOpen = !menuOpen;
     applyMenuState(menuOpen);
-    setTimeout(() => applyMenuState(menuOpen), 60);
-    setTimeout(() => applyMenuState(menuOpen), 220);
   }
 
   function getChar(){ return safe(() => (typeof currentChar === 'function' ? currentChar() : null), null); }
@@ -27035,17 +27059,17 @@ function od66InventoryMutationUnlockSoon() {
     const value = getAttrValue(char, key);
     const mod = formatModValue(getAttrMod(value));
     return `
-      <article class="od17814-attr-card od19523-attr-card" data-od19523-attr-card="${esc(key)}">
-        <div class="od19523-attr-name" title="${esc(label)}">${esc(label)}</div>
-        <div class="od19523-attr-value" aria-label="Valor de ${esc(label)}">${esc(value)}</div>
-        <div class="od19523-attr-bonus" aria-label="Bônus de ${esc(label)}">${esc(mod)}</div>
+      <article class="od17814-attr-card od19524-attr-card" data-od19524-attr-card="${esc(key)}">
+        <div class="od19524-attr-name" title="${esc(label)}">${esc(label)}</div>
+        <div class="od19524-attr-value" aria-label="Valor de ${esc(label)}">${esc(value)}</div>
+        <div class="od19524-attr-bonus" aria-label="Bônus de ${esc(label)}">${esc(mod)}</div>
       </article>`;
   }
 
   function renderSummaryAttributes(char = getChar()){
     const grid = $('attributes-grid');
     if (!grid || !char) return;
-    grid.className = 'attributes-grid od17814-attributes-grid od19523-attributes-grid';
+    grid.className = 'attributes-grid od17814-attributes-grid od19524-attributes-grid';
     grid.innerHTML = ATTRS.map(([key, label]) => buildAttrCard(char, key, label)).join('');
   }
 
@@ -27055,13 +27079,12 @@ function od66InventoryMutationUnlockSoon() {
   }
 
   function syncAll(){
-    tickCount += 1;
     applyMenuState(menuOpen);
-    scheduleAttributes(tickCount < 20 ? 40 : 120);
+    scheduleAttributes(90);
   }
 
   document.addEventListener('click', event => {
-    if (event.target.closest?.('#od19523-sheet-menu-toggle')) {
+    if (event.target.closest?.('#od19524-sheet-menu-toggle')) {
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation();
@@ -27082,22 +27105,38 @@ function od66InventoryMutationUnlockSoon() {
     }
   }, true);
 
+  const observer = new MutationObserver(mutations => {
+    if (!isSheetPage()) return;
+    for (const mutation of mutations) {
+      if (mutation.type === 'attributes') {
+        const name = mutation.attributeName || '';
+        if (name === 'class' || name === 'style' || name.startsWith('data-')) {
+          requestSync();
+          break;
+        }
+      }
+    }
+  });
+  if (document.documentElement) observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'style'] });
+  if (document.body) observer.observe(document.body, { attributes: true, attributeFilter: ['class', 'style', 'data-od195-layer', 'data-od1945-layer'] });
+  const topbar = $('main-topbar');
+  if (topbar) observer.observe(topbar, { attributes: true, attributeFilter: ['class', 'style'] });
+
   window.addEventListener('resize', () => setTimeout(syncAll, 80));
   window.addEventListener('popstate', () => setTimeout(syncAll, 100));
   document.addEventListener('visibilitychange', () => { if (!document.hidden) setTimeout(syncAll, 120); });
 
   try { renderAttributes = renderSummaryAttributes; } catch (_) {}
   try { window.renderAttributes = renderSummaryAttributes; } catch (_) {}
-  window.renderAttributesV19523 = renderSummaryAttributes;
+  window.renderAttributesV19524 = renderSummaryAttributes;
 
   function boot(){ syncAll(); renderSummaryAttributes(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
   else boot();
 
-  [60, 180, 420, 900, 1600, 2600, 4200].forEach(ms => setTimeout(boot, ms));
-  setInterval(syncAll, 900);
+  [60, 180, 420, 900, 1600].forEach(ms => setTimeout(boot, ms));
 
-  window.od19523StableSheetMenuAndSummaryAttributes = {
+  window.od19524SheetMenuNoFlickerAndCompactPanel = {
     syncAll,
     applyMenuState,
     renderSummaryAttributes

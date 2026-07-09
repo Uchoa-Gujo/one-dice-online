@@ -1,35 +1,29 @@
-# One Dice Site v1.95.23 — menu da ficha persistente e atributos resumidos centralizados
+# One Dice Site v1.95.24 — menu da ficha sem flicker e painel compacto
 
 ## Resumo
 
-Esta versão continua em cima da base estável recuperada. Não mexe em login, boot, loader, Socket.IO, cookies, banco ou rotas principais.
+Esta versão corrige apenas o tópico atual da ficha: o menu de três traços que estava piscando e o retângulo do menu que estava grande demais.
 
-O foco foi corrigir dois pontos visuais dentro da ficha:
+A base continua sendo a recuperação estável derivada da v1.95.8. Não foram feitas alterações em login, boot, socket, cookies, banco ou loader.
 
-- o botão de três traços que aparecia rapidamente e depois sumia;
-- o desenho dos atributos resumidos, que ainda estava no modelo antigo.
+## Correções feitas
 
-## O que foi feito
-
-- Criei um botão final e único para o menu da ficha: `#od19523-sheet-menu-toggle`.
-- O novo botão fica fora do `main-topbar`, para não ser removido ou escondido pelos scripts antigos do menu.
-- O botão agora aparece em páginas `/ficha/...` e `/personagem/...` de forma persistente.
-- Mantive a função de abrir/fechar o menu no próprio botão de três traços.
-- Reforcei o botão com tamanho menor: **42x42px**.
-- Removi visualmente os botões antigos de menu da ficha:
-  - `#topbar-menu-toggle`;
-  - `.topbar-menu-toggle`;
-  - `#od1954-sheet-menu-toggle`;
-  - `#od19520-sheet-menu-toggle`;
-  - `#od19521-sheet-menu-toggle`.
-- Removi o X/fechar antigo do menu da ficha.
-- Recriei a renderização final dos atributos resumidos.
-- A ordem dos atributos resumidos agora é:
-  1. nome do atributo centralizado;
-  2. valor cheio do atributo centralizado;
-  3. bônus do atributo centralizado dentro do design.
-- Atualizei a versão para **1.95.23**.
-- Atualizei o cache busting do `index.html` para `style.css?v=1.95.23` e `script.js?v=1.95.23`.
+- Corrigi o flicker/piscada do botão de três traços dentro da ficha.
+- Corrigi a causa provável do botão sumir e voltar: estados antigos de campanha/mesa ainda podiam marcar a tela como campanha mesmo na rota `/personagem/...`.
+- A rota `/personagem` e `/ficha` agora tem prioridade sobre classes/datasets antigos.
+- Removi o loop contínuo da v1.95.23 que reaplicava o menu a cada 900ms.
+- O menu agora é controlado por classes estáveis no `body/html`, não por um intervalo visual constante.
+- O botão de três traços foi reduzido para 38x38px.
+- O painel aberto foi compactado:
+  - largura reduzida;
+  - padding reduzido;
+  - botões mais próximos;
+  - blocos centralizados;
+  - altura total menor.
+- Mantive a área de atributos resumidos no formato pedido:
+  - nome do atributo centralizado;
+  - valor cheio centralizado;
+  - bônus centralizado embaixo dentro do design.
 
 ## Arquivos alterados
 
@@ -41,53 +35,49 @@ O foco foi corrigir dois pontos visuais dentro da ficha:
 
 ## Limpezas realizadas e motivo
 
-### 1. Botão de menu dependente do topbar antigo
+### 1. Remoção do intervalo contínuo da v1.95.23
 
-**O que foi limpo:**  
-O novo botão não depende mais do `#topbar-menu-toggle` nem do fallback antigo `#od1954-sheet-menu-toggle`.
+**O que foi removido:**  
+Foi removido o `setInterval(syncAll, 900)` que ficava reaplicando o estado do menu da ficha repetidamente.
 
-**Por que foi limpo:**  
-Esses botões antigos ainda eram controlados por blocos anteriores com intervalos próprios. Por isso o botão podia aparecer no começo e sumir depois, mesmo quando a ficha já estava aberta.
-
-**Como foi substituído:**  
-Foi criado um botão final independente, `#od19523-sheet-menu-toggle`, anexado diretamente ao `body`. Ele controla o `main-topbar`, mas não fica dentro dele.
-
-### 2. X antigo dentro do menu
-
-**O que foi limpo:**  
-Botões com texto `×`/`✕` e botões antigos marcados como fechar/dock dentro do menu da ficha.
-
-**Por que foi limpo:**  
-O menu já deve abrir e fechar pelo botão de três traços. O X era redundante, confundia o design e podia aparecer por cima do layout.
+**Por que foi removido:**  
+Esse intervalo brigava visualmente com scripts antigos que ainda mexiam no `main-topbar`. Em algumas contas/navegadores isso causava o efeito de piscar: o menu era escondido por um bloco antigo e reaparecia quando o intervalo novo rodava de novo.
 
 **Como foi substituído:**  
-O fechamento fica centralizado no botão vermelho de três traços.
+Agora o menu usa classes fixas no `html/body` e um `MutationObserver` leve apenas para reagir quando algum script antigo tentar alterar classe/estilo do menu. Não existe mais loop visual constante.
 
-### 3. Render antigo dos atributos resumidos
+### 2. Correção da detecção de tela da ficha
 
 **O que foi limpo:**  
-A estrutura antiga dos atributos com nome e bônus na mesma linha, além dos controles e botão de rolagem dentro do resumo.
+A verificação antiga tratava estados de campanha/mesa como prioridade. Isso podia fazer o sistema pensar que a ficha era campanha por alguns instantes.
 
 **Por que foi limpo:**  
-O usuário pediu o painel resumido na ordem visual: nome, valor cheio e bônus, todos centralizados.
+Quando isso acontecia, o botão era ocultado e depois recriado, gerando flicker.
 
 **Como foi substituído:**  
-Foi criada uma renderização final `renderAttributesV19523`, mantendo a compatibilidade com a classe antiga `od17814-attr-card` para impedir que o observador antigo recoloque o layout quebrado.
+A rota `/personagem` ou `/ficha` agora tem prioridade. Se o navegador está numa ficha, o menu da ficha permanece ativo mesmo que algum dataset antigo ainda tente dizer que é campanha.
+
+### 3. Compactação do retângulo do menu
+
+**O que foi ajustado:**  
+O painel aberto do menu foi reduzido de tamanho e os botões internos foram centralizados em uma grade compacta.
+
+**Por que foi ajustado:**  
+O retângulo estava grande demais para a quantidade de botões e deixava muito espaço vazio.
+
+**Como foi substituído:**  
+A largura máxima foi reduzida, o padding foi diminuído e os botões/selects agora usam altura menor e ficam mais próximos.
 
 ## Como testar
 
-1. Subir a versão no servidor.
-2. Fazer hard refresh no Chrome/Brave.
-3. Fazer hard refresh no Firefox.
-4. Abrir uma ficha por `/personagem/nome`.
-5. Confirmar que o botão vermelho de três traços aparece e não some depois de alguns segundos.
-6. Clicar no botão e confirmar que o menu abre.
-7. Clicar novamente e confirmar que o menu fecha.
-8. Confirmar que não existe X no menu.
-9. Ir na aba **Resumo**.
-10. Conferir os atributos na ordem: nome, valor cheio e bônus.
-11. Confirmar que o valor e o bônus ficam centralizados no card.
+1. Abrir uma ficha pelo navegador principal.
+2. Confirmar que o botão de três traços permanece visível sem piscar.
+3. Clicar no botão e confirmar que o menu abre.
+4. Esperar alguns segundos com o menu aberto e confirmar que ele não pisca.
+5. Fechar no próprio botão de três traços.
+6. Abrir novamente e verificar se o retângulo ficou menor e os botões ficaram mais centralizados.
+7. Repetir no Firefox.
 
-## Importante
+## Observação
 
-Esta versão não altera login, cookies, exclusão de ficha, campanhas, socket ou carregamento inicial. A correção foi isolada no menu visual da ficha e no painel de atributos resumidos.
+Esta versão resolve só o tópico atual do menu, como combinado. Os outros bugs devem ser tratados um por vez para evitar quebrar novamente a base estável.
