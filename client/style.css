@@ -22722,3 +22722,60 @@ body.od19524-sheet-page.od19524-sheet-menu-open #main-topbar select.accent-selec
 @media (max-width: 460px) {
   .od1715-attr-summary { grid-template-columns: 1fr !important; }
 }
+
+
+/* =========================
+   V1.95.28 - Escopo correto dos atributos
+   - Modo expandido: volta a usar cards editáveis.
+   - Modo reduzido: força ordem nome > valor > bônus com especificidade maior.
+========================= */
+
+/* Remove visual estático quando o módulo está expandido. */
+.od170-module[data-od170-key="resumo-atributos"]:not(.od170-collapsed) #attributes-grid,
+.od170-module[data-od170-key="resumo-atributos"]:not(.od170-collapsed) #attributes-grid.od19524-attributes-grid,
+.od170-module[data-od170-key="resumo-atributos"]:not(.od170-collapsed) #attributes-grid.od19526-attributes-grid {
+  display: grid !important;
+}
+
+/* Esconde qualquer card estático antigo no grid expandido, caso tenha ficado preso em cache/estado. */
+.od170-module[data-od170-key="resumo-atributos"]:not(.od170-collapsed) #attributes-grid > .od19524-attr-card,
+.od170-module[data-od170-key="resumo-atributos"]:not(.od170-collapsed) #attributes-grid > .od19526-attr-card {
+  display: none !important;
+}
+
+/* No reduzido, a ordem correta é nome, valor, bônus. 
+   Esses seletores têm especificidade maior que as regras antigas de span/strong. */
+.od170-module[data-od170-key="resumo-atributos"].od170-collapsed > .od1715-attr-summary .od1715-attr-mini.od19527-attr-mini > .od19527-attr-name {
+  order: 1 !important;
+  display: flex !important;
+  width: 100% !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 auto !important;
+  text-align: center !important;
+}
+
+.od170-module[data-od170-key="resumo-atributos"].od170-collapsed > .od1715-attr-summary .od1715-attr-mini.od19527-attr-mini > .od19527-attr-value {
+  order: 2 !important;
+  display: flex !important;
+  width: 100% !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 auto !important;
+  text-align: center !important;
+}
+
+.od170-module[data-od170-key="resumo-atributos"].od170-collapsed > .od1715-attr-summary .od1715-attr-mini.od19527-attr-mini > .od19527-attr-bonus {
+  order: 3 !important;
+  display: inline-flex !important;
+  width: auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 auto !important;
+  text-align: center !important;
+}
+
+/* Impede que a regra genérica antiga de span empurre o nome para baixo. */
+.od170-module[data-od170-key="resumo-atributos"].od170-collapsed > .od1715-attr-summary .od1715-attr-mini.od19527-attr-mini > span.od19527-attr-name {
+  order: 1 !important;
+}
