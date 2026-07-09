@@ -22659,3 +22659,44 @@ body.od19524-sheet-page.od19524-sheet-menu-open #main-topbar select.accent-selec
     grid-template-columns: 1fr !important;
   }
 }
+
+
+/* =========================
+   V1.95.30 - Sem camada reduzida sobre o editor + modo denso fixo
+   Escopo:
+   - Não modifica o design do editor expandido.
+   - Apenas impede que o resumo fique por cima quando expandido.
+========================= */
+#od170-dense-toggle {
+  display: none !important;
+}
+
+body.od170-dense-sheet .od170-toolbar #od170-dense-toggle,
+.od170-toolbar #od170-dense-toggle {
+  display: none !important;
+}
+
+.od170-module[data-od170-key="resumo-atributos"]:not(.od170-collapsed) > .od1715-attr-summary {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  max-height: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.od170-module[data-od170-key="resumo-atributos"]:not(.od170-collapsed) > .od170-module-body {
+  pointer-events: auto !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.od170-module[data-od170-key="resumo-atributos"]:not(.od170-collapsed) #attributes-grid {
+  pointer-events: auto !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}

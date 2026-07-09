@@ -17355,14 +17355,13 @@ function od66InventoryMutationUnlockSoon() {
       <div class="od170-toolbar-actions">
         <button id="od170-expand-all" class="ghost-btn small" type="button">Expandir tudo</button>
         <button id="od170-collapse-all" class="ghost-btn small" type="button">Reduzir tudo</button>
-        <button id="od170-dense-toggle" class="ghost-btn small" type="button">Modo denso</button>
       </div>`;
     sheet.insertBefore(toolbar, tabs);
 
     $('od170-expand-all')?.addEventListener('click', () => collapseAll(false));
     $('od170-collapse-all')?.addEventListener('click', () => collapseAll(true));
-    $('od170-dense-toggle')?.addEventListener('click', () => setDense(!isDense()));
-    setDense(isDense());
+    setDense(true);
+    document.getElementById('od170-dense-toggle')?.remove();
   }
   function installEvents(){
     if (document.body.dataset.od170Events === '1') return;
@@ -17383,7 +17382,7 @@ function od66InventoryMutationUnlockSoon() {
     wrapResumo();
     wrapEquipamentos();
     installEvents();
-    document.body.classList.toggle('od170-dense-sheet', isDense());
+    document.body.classList.add('od170-dense-sheet');
     booted = true;
   }
   function scheduleBoot(){
@@ -27185,4 +27184,150 @@ function od66InventoryMutationUnlockSoon() {
 (function od19529ReducedAttributesOnly(){
   'use strict';
   window.ONE_DICE_CLIENT_VERSION = '1.95.29';
+})();
+
+
+/* =========================
+   V1.95.30 - Atributos sem camada sobre editor + modo denso fixo
+   Escopo:
+   - Não altera o design do editor expandido.
+   - Apenas remove/oculta a camada resumida quando o módulo está expandido.
+   - Remove o botão Modo confortável/Modo denso e deixa modo denso sempre ativo.
+========================= */
+(function od19530AttributesLayerAndDenseMode(){
+  'use strict';
+  if (window.__od19530AttributesLayerAndDenseModeInstalled) return;
+  window.__od19530AttributesLayerAndDenseModeInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.95.30';
+
+  const ATTR_SELECTOR = '.od170-module[data-od170-key="resumo-atributos"]';
+  const DENSE_KEY = 'od170_dense_sheet_v1';
+  let observerInstalled = false;
+
+  function attrModule(){
+    return document.querySelector(ATTR_SELECTOR);
+  }
+
+  function removeDenseButton(){
+    try { localStorage.setItem(DENSE_KEY, '1'); } catch (_) {}
+    document.body.classList.add('od170-dense-sheet');
+    const btn = document.getElementById('od170-dense-toggle');
+    if (btn) btn.remove();
+
+    document.querySelectorAll('button').forEach(button => {
+      const text = String(button.textContent || '').trim().toLowerCase();
+      if (text === 'modo confortável' || text === 'modo confortavel' || text === 'modo denso') {
+        button.remove();
+      }
+    });
+  }
+
+  function syncAttributesLayer(){
+    const module = attrModule();
+    if (!module) return;
+
+    const collapsed = module.classList.contains('od170-collapsed');
+    const body = module.querySelector(':scope > .od170-module-body');
+    const summary = module.querySelector(':scope > .od1715-attr-summary');
+    const grid = module.querySelector('#attributes-grid');
+
+    if (collapsed) {
+      if (body) {
+        body.hidden = true;
+        body.style.setProperty('display', 'none', 'important');
+        body.style.setProperty('pointer-events', 'none', 'important');
+      }
+      if (grid) {
+        grid.style.setProperty('display', 'none', 'important');
+        grid.style.setProperty('pointer-events', 'none', 'important');
+      }
+      if (summary) {
+        summary.hidden = false;
+        summary.removeAttribute('aria-hidden');
+        summary.style.setProperty('display', 'grid', 'important');
+        summary.style.setProperty('visibility', 'visible', 'important');
+        summary.style.setProperty('height', 'auto', 'important');
+        summary.style.setProperty('overflow', 'visible', 'important');
+        summary.style.setProperty('pointer-events', 'auto', 'important');
+      }
+      return;
+    }
+
+    /* Expandido: a camada reduzida some completamente e o editor original fica livre. */
+    if (summary) {
+      summary.hidden = true;
+      summary.setAttribute('aria-hidden', 'true');
+      summary.style.setProperty('display', 'none', 'important');
+      summary.style.setProperty('visibility', 'hidden', 'important');
+      summary.style.setProperty('height', '0', 'important');
+      summary.style.setProperty('max-height', '0', 'important');
+      summary.style.setProperty('overflow', 'hidden', 'important');
+      summary.style.setProperty('pointer-events', 'none', 'important');
+    }
+
+    if (body) {
+      body.hidden = false;
+      body.style.removeProperty('display');
+      body.style.removeProperty('pointer-events');
+      body.style.removeProperty('visibility');
+      body.style.removeProperty('height');
+      body.style.removeProperty('max-height');
+      body.style.removeProperty('overflow');
+    }
+
+    if (grid) {
+      grid.hidden = false;
+      grid.style.removeProperty('display');
+      grid.style.removeProperty('pointer-events');
+      grid.style.removeProperty('visibility');
+      grid.style.removeProperty('height');
+      grid.style.removeProperty('max-height');
+      grid.style.removeProperty('overflow');
+    }
+  }
+
+  function syncAll(){
+    removeDenseButton();
+    syncAttributesLayer();
+  }
+
+  function scheduleSync(){
+    requestAnimationFrame(() => {
+      syncAll();
+      setTimeout(syncAll, 40);
+      setTimeout(syncAll, 120);
+    });
+  }
+
+  function installObserver(){
+    if (observerInstalled || typeof MutationObserver === 'undefined') return;
+    const module = attrModule();
+    if (!module) return;
+    observerInstalled = true;
+
+    const observer = new MutationObserver(scheduleSync);
+    observer.observe(module, { attributes: true, attributeFilter: ['class'], childList: true, subtree: false });
+  }
+
+  document.addEventListener('click', event => {
+    if (
+      event.target.closest?.(`${ATTR_SELECTOR} [data-od170-toggle]`) ||
+      event.target.closest?.('#od170-expand-all') ||
+      event.target.closest?.('#od170-collapse-all')
+    ) {
+      scheduleSync();
+    }
+  }, true);
+
+  function boot(){
+    installObserver();
+    syncAll();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
+  else boot();
+
+  [80, 220, 500, 1000, 1800].forEach(ms => setTimeout(boot, ms));
+
+  window.od19530AttributesLayerAndDenseMode = { syncAll, syncAttributesLayer, removeDenseButton };
 })();
