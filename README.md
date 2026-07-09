@@ -1,46 +1,57 @@
-# One Dice Site v1.95.30 — atributos sem camada sobre editor e modo denso fixo
+# One Dice Site v1.95.31 — atributos refeitos do zero
 
 ## Resumo
-Esta atualização corrige o problema em que, depois de reduzir e expandir o módulo **Atributos**, o card resumido continuava aparecendo por cima do editor.  
-Também remove o botão **Modo Confortável / Modo Denso**, deixando o **modo denso sempre ativo**, como solicitado.
+Esta versão refaz a parte de **Atributos** do zero para acabar com a confusão entre modo expandido e modo reduzido.
+
+A regra nova é simples:
+
+- **Expandido** = editor real dos atributos, com campo editável, botões de +/− e botão de rolagem.
+- **Reduzido** = resumo visual, sem campo de edição, mostrando somente nome, valor e bônus.
 
 ## O que foi corrigido
-
-- Ao expandir **Atributos**, a camada reduzida é ocultada completamente.
-- O editor original dos atributos volta a ficar livre e clicável.
-- Não foi alterado o design do editor expandido.
-- O modo reduzido continua existindo somente quando o módulo está reduzido.
-- O botão **Modo Confortável / Modo Denso** foi removido da barra de organização.
-- O site passa a manter o **modo denso ativo** automaticamente.
+- Removi a camada antiga que ficava por cima do editor depois de reduzir e expandir.
+- Removi o render de atributos da v1.95.24 que ainda recriava cards resumidos dentro do `#attributes-grid`.
+- Removi as intervenções de atributos da v1.95.29 e v1.95.30.
+- Criei um render novo e único para o editor expandido.
+- Criei um render novo e separado para o resumo reduzido.
+- O modo reduzido agora mostra na ordem correta:
+  1. Nome do atributo;
+  2. Valor do atributo;
+  3. Bônus do atributo.
+- O modo expandido agora fica livre/editável e não recebe card resumido por cima.
+- Removi o botão **Modo confortável / Modo denso**.
+- Mantive o modo denso sempre ativo.
 
 ## Limpezas realizadas e motivo
 
-### 1. Camada reduzida presa sobre o editor
+### 1. Remoção do render de atributos da v1.95.24
+**O que foi removido:**
+O bloco da v1.95.24 deixou de renderizar atributos e agora cuida apenas do menu da ficha.
 
-**O que foi limpo:**  
-A camada `.od1715-attr-summary` agora é forçada a sumir quando o módulo de atributos não está reduzido.
+**Por que foi removido:**
+Esse bloco era uma das causas do bug: ele recriava os cards resumidos dentro do `#attributes-grid`, que é a área do editor. Por isso, ao expandir, a camada visual voltava por cima dos inputs.
 
-**Por que foi limpo:**  
-Depois de reduzir e expandir, o resumo visual podia continuar com `display: grid` preso por estilo inline ou por render antigo. Isso fazia o card resumido aparecer por cima do editor real.
+**Como foi substituído:**
+A renderização de atributos foi movida para um controlador novo da v1.95.31.
 
-**Como foi substituído:**  
-Foi criado um sincronizador específico que observa o estado do módulo:
-- se estiver reduzido, mostra apenas o resumo;
-- se estiver expandido, esconde completamente o resumo e libera o editor original.
+### 2. Remoção das camadas v1.95.29/v1.95.30
+**O que foi removido:**
+As tentativas anteriores de esconder/mostrar resumo por cima do editor.
 
-### 2. Botão Modo Confortável / Modo Denso
+**Por que foi removido:**
+Elas ainda dependiam de esconder camadas antigas, o que causava corte, glitch e editor inacessível.
 
-**O que foi removido:**  
-O botão `#od170-dense-toggle` e qualquer botão recriado com texto “Modo confortável”, “Modo confortavel” ou “Modo denso”.
+**Como foi substituído:**
+Agora o modo reduzido usa um container próprio (`.od19531-attr-summary`) fora do editor. O editor usa somente `#attributes-grid`.
 
-**Por que foi removido:**  
-O usuário pediu para manter somente o modo denso ativo e remover a opção visual de alternância.
+### 3. Separação real entre expandido e reduzido
+**Expandido:**
+Usa `#attributes-grid` com cards editáveis próprios.
 
-**Como foi substituído:**  
-O modo denso agora é aplicado diretamente com `od170-dense-sheet` e salvo como ativo no armazenamento local.
+**Reduzido:**
+Oculta o corpo do editor e mostra apenas o resumo visual.
 
 ## Arquivos alterados
-
 - `client/script.js`
 - `client/style.css`
 - `client/index.html`
@@ -48,16 +59,15 @@ O modo denso agora é aplicado diretamente com `od170-dense-sheet` e salvo como 
 - `README.md`
 
 ## Como testar
-
 1. Abrir uma ficha.
 2. Ir em **Atributos**.
-3. Confirmar que o editor expandido aparece normal.
+3. No modo expandido, confirmar que aparecem campos editáveis, botões −/+, e botão D20.
 4. Clicar em **Reduzir**.
-5. Confirmar que aparece o resumo.
+5. Confirmar que aparece somente o resumo visual com nome, valor e bônus.
 6. Clicar em **Expandir**.
-7. Confirmar que o resumo não fica por cima do editor.
-8. Confirmar que o botão **Modo Confortável / Modo Denso** não aparece mais.
-9. Confirmar que a ficha continua em modo denso.
+7. Confirmar que o editor volta, sem nenhuma camada cobrindo os inputs.
+8. Repetir reduzir/expandir várias vezes.
 
-## Observação importante
-Esta atualização não mexe em login, boot, cookies, socket, criação/exclusão de ficha, menu de três traços ou design do editor expandido.
+## Observação
+Esta versão mexe somente na parte de atributos e no botão de modo denso/confortável.
+Não altera login, cookies, socket, menu da ficha, criação/exclusão de ficha, campanhas ou outras áreas.

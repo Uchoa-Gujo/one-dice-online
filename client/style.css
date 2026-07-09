@@ -22537,31 +22537,64 @@ body.od19524-sheet-page.od19524-sheet-menu-open #main-topbar select.accent-selec
 }
 
 
+
 /* =========================
-   V1.95.29 - Atributos reduzidos sem camada sobre o editor
-   Escopo:
-   - Aplica o visual novo SOMENTE quando o módulo está reduzido/colapsado.
-   - Não altera #attributes-grid, .attr-card, inputs ou controles do editor expandido.
+   V1.95.31 - Atributos refeitos do zero
+   Regras:
+   - Expandido = editor real, clicável e sem camada por cima.
+   - Reduzido = resumo visual nome > valor > bônus.
+   - Modo denso sempre ativo; botão de modo removido.
 ========================= */
-.od170-module[data-od170-key="resumo-atributos"]:not(.od170-collapsed) > .od1715-attr-summary {
+#od170-dense-toggle,
+body.od170-dense-sheet .od170-toolbar #od170-dense-toggle,
+.od170-toolbar #od170-dense-toggle {
   display: none !important;
 }
 
-.od170-module[data-od170-key="resumo-atributos"].od170-collapsed > .od170-module-body,
-.od170-module[data-od170-key="resumo-atributos"].od170-collapsed #attributes-grid {
+.od170-module[data-od170-key="resumo-atributos"] > .od1715-attr-summary,
+.od170-module[data-od170-key="resumo-atributos"] > .od19529-attr-summary,
+.od170-module[data-od170-key="resumo-atributos"] > .od19527-attr-summary,
+.od170-module[data-od170-key="resumo-atributos"] > .od19526-attr-summary {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.od170-module[data-od170-key="resumo-atributos"]:not(.od170-collapsed) > .od19531-attr-summary {
   display: none !important;
 }
 
-.od170-module[data-od170-key="resumo-atributos"].od170-collapsed > .od1715-attr-summary {
+.od170-module[data-od170-key="resumo-atributos"].od170-collapsed > .od170-module-body {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+.od170-module[data-od170-key="resumo-atributos"].od170-collapsed > .od19531-attr-summary {
   display: grid !important;
   grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
   gap: 12px !important;
   width: 100% !important;
   max-width: 100% !important;
+  padding: 8px 8px 12px !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
 }
 
-.od170-module[data-od170-key="resumo-atributos"].od170-collapsed > .od1715-attr-summary .od1715-attr-mini.od19529-attr-mini {
-  min-height: 138px !important;
+.od19531-attr-summary-card {
+  appearance: none !important;
+  border: 1px solid color-mix(in srgb, var(--od-theme-main, var(--accent, #ef2f3b)), white 8%) !important;
+  border-radius: 16px !important;
+  min-height: 132px !important;
   padding: 14px 10px !important;
   display: flex !important;
   flex-direction: column !important;
@@ -22569,28 +22602,21 @@ body.od19524-sheet-page.od19524-sheet-menu-open #main-topbar select.accent-selec
   justify-content: center !important;
   gap: 9px !important;
   text-align: center !important;
-  border-radius: 16px !important;
-  border: 1px solid color-mix(in srgb, var(--od-theme-main, var(--accent, #ef2f3b)), white 8%) !important;
+  color: #fff !important;
   background:
-    radial-gradient(circle at 50% 16%, color-mix(in srgb, var(--od-theme-main, var(--accent, #ef2f3b)), transparent 84%), transparent 50%),
-    linear-gradient(180deg, rgba(10,10,11,.98), rgba(2,2,3,.98)) !important;
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.03), 0 8px 18px rgba(0,0,0,.20) !important;
+    radial-gradient(circle at 50% 15%, color-mix(in srgb, var(--od-theme-main, var(--accent, #ef2f3b)), transparent 84%), transparent 52%),
+    linear-gradient(180deg, rgba(10,10,11,.98), rgba(1,1,2,.98)) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.035), 0 8px 18px rgba(0,0,0,.22) !important;
+  cursor: pointer !important;
 }
 
-.od170-module[data-od170-key="resumo-atributos"].od170-collapsed > .od1715-attr-summary .od1715-attr-mini.od19529-attr-mini > .od19529-attr-name {
+.od19531-summary-name {
   order: 1 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  display: block !important;
   width: 100% !important;
-  margin: 0 auto !important;
-  padding: 0 !important;
   color: rgba(255,255,255,.94) !important;
-  background: transparent !important;
-  border: 0 !important;
-  box-shadow: none !important;
   font-family: Georgia, 'Times New Roman', serif !important;
-  font-size: clamp(.80rem, .92vw, .98rem) !important;
+  font-size: clamp(.78rem, .92vw, .96rem) !important;
   font-weight: 950 !important;
   line-height: 1.08 !important;
   letter-spacing: .065em !important;
@@ -22598,31 +22624,26 @@ body.od19524-sheet-page.od19524-sheet-menu-open #main-topbar select.accent-selec
   text-align: center !important;
 }
 
-.od170-module[data-od170-key="resumo-atributos"].od170-collapsed > .od1715-attr-summary .od1715-attr-mini.od19529-attr-mini > .od19529-attr-value {
+.od19531-summary-value {
   order: 2 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  display: block !important;
   width: 100% !important;
-  margin: 0 auto !important;
   color: #fff !important;
   font-family: Georgia, 'Times New Roman', serif !important;
-  font-size: clamp(2.55rem, 3.05vw, 3.25rem) !important;
+  font-size: clamp(2.45rem, 3vw, 3.15rem) !important;
   font-weight: 1000 !important;
   line-height: .94 !important;
   text-align: center !important;
   text-shadow: 0 2px 0 rgba(0,0,0,.34) !important;
 }
 
-.od170-module[data-od170-key="resumo-atributos"].od170-collapsed > .od1715-attr-summary .od1715-attr-mini.od19529-attr-mini > .od19529-attr-bonus {
+.od19531-summary-bonus {
   order: 3 !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
-  width: auto !important;
   min-width: 44px !important;
   min-height: 28px !important;
-  margin: 0 auto !important;
   padding: 6px 13px !important;
   border-radius: 999px !important;
   color: #fff !important;
@@ -22630,73 +22651,132 @@ body.od19524-sheet-page.od19524-sheet-menu-open #main-topbar select.accent-selec
   font-size: .96rem !important;
   font-weight: 950 !important;
   line-height: 1 !important;
-  background: linear-gradient(180deg, rgba(149, 25, 31, .98), rgba(98, 12, 17, .98)) !important;
+  background: linear-gradient(180deg, rgba(149,25,31,.98), rgba(98,12,17,.98)) !important;
   border: 1px solid rgba(255,255,255,.10) !important;
   box-shadow: inset 0 1px 0 rgba(255,255,255,.10), 0 5px 12px rgba(0,0,0,.24) !important;
 }
 
-/* Garantia explícita: no modo expandido, o editor original fica livre e clicável. */
-.od170-module[data-od170-key="resumo-atributos"]:not(.od170-collapsed) #attributes-grid,
-.od170-module[data-od170-key="resumo-atributos"]:not(.od170-collapsed) .attr-card,
-.od170-module[data-od170-key="resumo-atributos"]:not(.od170-collapsed) input[data-attr] {
+.od170-module[data-od170-key="resumo-atributos"]:not(.od170-collapsed) > .od170-module-body,
+.od170-module[data-od170-key="resumo-atributos"]:not(.od170-collapsed) #attributes-grid {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+#attributes-grid.od19531-attributes-editor-grid {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: visible !important;
+}
+
+#attributes-grid.od19531-attributes-editor-grid > .od19531-attr-editor-card {
+  min-width: 0 !important;
+  min-height: 148px !important;
+  padding: 14px 14px !important;
+  border-radius: 0 !important;
+  border: 1px solid rgba(239,47,59,.84) !important;
+  background: linear-gradient(180deg, rgba(10,10,11,.98), rgba(2,2,3,.98)) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 11px !important;
+  justify-content: space-between !important;
+  box-sizing: border-box !important;
+  pointer-events: auto !important;
+}
+
+.od19531-attr-editor-top {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  width: 100% !important;
+}
+
+.od19531-attr-editor-name {
+  color: #fff !important;
+  font-family: Georgia, 'Times New Roman', serif !important;
+  font-size: .92rem !important;
+  font-weight: 950 !important;
+  letter-spacing: .055em !important;
+  text-transform: uppercase !important;
+  line-height: 1.08 !important;
+}
+
+.od19531-attr-editor-bonus {
+  color: var(--od-theme-main, var(--accent, #ef2f3b)) !important;
+  font-weight: 950 !important;
+  font-size: 1rem !important;
+}
+
+.od19531-attr-editor-controls {
+  display: grid !important;
+  grid-template-columns: auto 34px minmax(48px, 1fr) 34px !important;
+  gap: 8px !important;
+  align-items: center !important;
+}
+
+.od19531-attr-dice {
+  color: rgba(255,255,255,.82) !important;
+  font-size: .78rem !important;
+  font-weight: 900 !important;
+}
+
+.od19531-attr-step {
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  border: 1px solid rgba(255,255,255,.10) !important;
+  border-radius: 8px !important;
+  color: #fff !important;
+  font-size: 1.1rem !important;
+  font-weight: 950 !important;
+  background: linear-gradient(180deg, #d3353d, #9b121b) !important;
+  cursor: pointer !important;
+}
+
+.od19531-attr-input {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 38px !important;
+  text-align: center !important;
+  color: #fff !important;
+  font-weight: 950 !important;
+  background: #020202 !important;
+  border: 2px solid rgba(255,255,255,.18) !important;
+  border-radius: 9px !important;
+  outline: none !important;
+  pointer-events: auto !important;
+}
+
+.od19531-attr-roll {
+  width: 100% !important;
+  min-height: 42px !important;
+  border-radius: 10px !important;
   pointer-events: auto !important;
 }
 
 @media (max-width: 1120px) {
-  .od170-module[data-od170-key="resumo-atributos"].od170-collapsed > .od1715-attr-summary {
+  #attributes-grid.od19531-attributes-editor-grid,
+  .od170-module[data-od170-key="resumo-atributos"].od170-collapsed > .od19531-attr-summary {
     grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   }
 }
-
 @media (max-width: 720px) {
-  .od170-module[data-od170-key="resumo-atributos"].od170-collapsed > .od1715-attr-summary {
+  #attributes-grid.od19531-attributes-editor-grid,
+  .od170-module[data-od170-key="resumo-atributos"].od170-collapsed > .od19531-attr-summary {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 }
-
 @media (max-width: 460px) {
-  .od170-module[data-od170-key="resumo-atributos"].od170-collapsed > .od1715-attr-summary {
+  #attributes-grid.od19531-attributes-editor-grid,
+  .od170-module[data-od170-key="resumo-atributos"].od170-collapsed > .od19531-attr-summary {
     grid-template-columns: 1fr !important;
   }
-}
-
-
-/* =========================
-   V1.95.30 - Sem camada reduzida sobre o editor + modo denso fixo
-   Escopo:
-   - Não modifica o design do editor expandido.
-   - Apenas impede que o resumo fique por cima quando expandido.
-========================= */
-#od170-dense-toggle {
-  display: none !important;
-}
-
-body.od170-dense-sheet .od170-toolbar #od170-dense-toggle,
-.od170-toolbar #od170-dense-toggle {
-  display: none !important;
-}
-
-.od170-module[data-od170-key="resumo-atributos"]:not(.od170-collapsed) > .od1715-attr-summary {
-  display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  max-height: 0 !important;
-  min-height: 0 !important;
-  overflow: hidden !important;
-  pointer-events: none !important;
-  opacity: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-.od170-module[data-od170-key="resumo-atributos"]:not(.od170-collapsed) > .od170-module-body {
-  pointer-events: auto !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
-.od170-module[data-od170-key="resumo-atributos"]:not(.od170-collapsed) #attributes-grid {
-  pointer-events: auto !important;
-  visibility: visible !important;
-  opacity: 1 !important;
 }

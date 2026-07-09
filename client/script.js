@@ -27065,21 +27065,13 @@ function od66InventoryMutationUnlockSoon() {
       </article>`;
   }
 
-  function renderSummaryAttributes(char = getChar()){
-    const grid = $('attributes-grid');
-    if (!grid || !char) return;
-    grid.className = 'attributes-grid od17814-attributes-grid od19524-attributes-grid';
-    grid.innerHTML = ATTRS.map(([key, label]) => buildAttrCard(char, key, label)).join('');
-  }
+  /* v1.95.31: atributos foram removidos deste bloco. Ele agora cuida somente do menu da ficha. */
+  function renderSummaryAttributes(){ /* removido: render antigo de atributos da v1.95.24 */ }
 
-  function scheduleAttributes(delay = 80){
-    clearTimeout(attrTimer);
-    attrTimer = setTimeout(() => renderSummaryAttributes(), delay);
-  }
+  function scheduleAttributes(){ /* removido: não renderiza atributos por cima do editor */ }
 
   function syncAll(){
     applyMenuState(menuOpen);
-    scheduleAttributes(90);
   }
 
   document.addEventListener('click', event => {
@@ -27092,8 +27084,6 @@ function od66InventoryMutationUnlockSoon() {
     }
     if (event.target.closest?.('.sheet-tab, [data-od170-toggle], #attributes-grid, #back-to-sessions-btn')) {
       setTimeout(syncAll, 60);
-      setTimeout(renderSummaryAttributes, 180);
-      setTimeout(renderSummaryAttributes, 360);
     }
   }, true);
 
@@ -27125,11 +27115,9 @@ function od66InventoryMutationUnlockSoon() {
   window.addEventListener('popstate', () => setTimeout(syncAll, 100));
   document.addEventListener('visibilitychange', () => { if (!document.hidden) setTimeout(syncAll, 120); });
 
-  try { renderAttributes = renderSummaryAttributes; } catch (_) {}
-  try { window.renderAttributes = renderSummaryAttributes; } catch (_) {}
-  window.renderAttributesV19524 = renderSummaryAttributes;
+  window.renderAttributesV19524 = null;
 
-  function boot(){ syncAll(); renderSummaryAttributes(); }
+  function boot(){ syncAll(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
   else boot();
 
@@ -27175,159 +27163,335 @@ function od66InventoryMutationUnlockSoon() {
 })();
 
 
-/* =========================
-   V1.95.29 - Correção limpa dos atributos reduzidos
-   Escopo:
-   - Não toca no #attributes-grid nem no editor expandido.
-   - A mudança é só no HTML/CSS do resumo reduzido.
-========================= */
-(function od19529ReducedAttributesOnly(){
-  'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.95.29';
-})();
-
 
 /* =========================
-   V1.95.30 - Atributos sem camada sobre editor + modo denso fixo
-   Escopo:
-   - Não altera o design do editor expandido.
-   - Apenas remove/oculta a camada resumida quando o módulo está expandido.
-   - Remove o botão Modo confortável/Modo denso e deixa modo denso sempre ativo.
+   V1.95.31 - Atributos refeitos do zero
+   Pedido:
+   - Remover todas as camadas antigas dos atributos que cobriam o editor.
+   - Separar de verdade o modo expandido/editor e o modo reduzido/resumo.
+   - Manter modo denso ativo e remover o botão modo confortável/denso.
 ========================= */
-(function od19530AttributesLayerAndDenseMode(){
+(function od19531RebuiltAttributesFromZero(){
   'use strict';
-  if (window.__od19530AttributesLayerAndDenseModeInstalled) return;
-  window.__od19530AttributesLayerAndDenseModeInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.30';
+  if (window.__od19531RebuiltAttributesFromZeroInstalled) return;
+  window.__od19531RebuiltAttributesFromZeroInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.95.31';
 
-  const ATTR_SELECTOR = '.od170-module[data-od170-key="resumo-atributos"]';
+  const MODULE_SELECTOR = '.od170-module[data-od170-key="resumo-atributos"]';
   const DENSE_KEY = 'od170_dense_sheet_v1';
-  let observerInstalled = false;
+  const ATTRS = [
+    ['forca', 'FORÇA'],
+    ['agilidade', 'AGILIDADE'],
+    ['vigor', 'VIGOR'],
+    ['intelecto', 'INTELECTO'],
+    ['presenca', 'PRESENÇA']
+  ];
 
-  function attrModule(){
-    return document.querySelector(ATTR_SELECTOR);
+  let syncTimer = null;
+  let observerReady = false;
+
+  function $(id){ return document.getElementById(id); }
+  function safe(fn, fallback = null){ try { return fn(); } catch (error) { console.warn('[One Dice v1.95.31]', error?.message || error); return fallback; } }
+  function esc(value){ return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch])); }
+  function module(){ return document.querySelector(MODULE_SELECTOR); }
+  function clamp(value, fallback = 10){ const n = Number(value); return Number.isFinite(n) ? Math.max(1, Math.round(n)) : fallback; }
+  function modValue(value){ return safe(() => (typeof attrMod === 'function' ? attrMod(value) : Math.floor((Number(value || 10) - 10) / 2)), Math.floor((Number(value || 10) - 10) / 2)); }
+  function modText(value){ const m = modValue(value); return safe(() => (typeof formatMod === 'function' ? formatMod(m) : `${m >= 0 ? '+' : ''}${m}`), `${m >= 0 ? '+' : ''}${m}`); }
+  function current(){ return safe(() => (typeof currentChar === 'function' ? currentChar() : null), null); }
+
+  function persistChar(char){
+    if (!char) return;
+    safe(() => { if (typeof syncDodge === 'function') syncDodge(char); }, null);
+    safe(() => { if (typeof syncDodgeField === 'function') syncDodgeField(char); }, null);
+    safe(() => { if (typeof updateDerivedStatsDisplay === 'function') updateDerivedStatsDisplay(char); }, null);
+    safe(() => { if (typeof renderSkills === 'function') renderSkills(char); }, null);
+    safe(() => { if (typeof updateBars === 'function') updateBars(char); }, null);
+    safe(() => { if (typeof updateOverlay === 'function') updateOverlay(char); }, null);
+    safe(() => { if (typeof queueSave === 'function') queueSave(); }, null);
+    safe(() => { if (typeof od42ScheduleCharacterSave === 'function') od42ScheduleCharacterSave(char); }, null);
+  }
+
+  function saveAttr(key, value){
+    const next = clamp(value, 10);
+    let char = current();
+    safe(() => {
+      if (typeof updateChar === 'function') {
+        updateChar(c => {
+          c.attrs = c.attrs || {};
+          c.attrs[key] = next;
+        });
+      }
+    }, null);
+    char = current() || char;
+    if (char) {
+      char.attrs = char.attrs || {};
+      char.attrs[key] = next;
+      persistChar(char);
+    }
+    return char;
+  }
+
+  function isCollapsed(mod = module()){
+    if (!mod) return false;
+    if (mod.classList.contains('od170-collapsed')) return true;
+    const btn = mod.querySelector(':scope > .od170-module-head [data-od170-toggle], :scope > .od170-module-head .od170-module-toggle');
+    return /expandir/i.test(String(btn?.textContent || ''));
+  }
+
+  function setToggle(mod, collapsed){
+    const btn = mod?.querySelector(':scope > .od170-module-head [data-od170-toggle], :scope > .od170-module-head .od170-module-toggle');
+    if (!btn) return;
+    btn.textContent = collapsed ? 'Expandir' : 'Reduzir';
+    btn.setAttribute('aria-expanded', String(!collapsed));
+    btn.setAttribute('aria-label', collapsed ? 'Expandir Atributos' : 'Reduzir Atributos');
+  }
+
+  function removeOldAttributeLayers(mod = module()){
+    if (!mod) return;
+    mod.querySelectorAll(':scope > .od1715-attr-summary, :scope > .od19529-attr-summary, :scope > .od19527-attr-summary, :scope > .od19526-attr-summary').forEach(el => el.remove());
+    const grid = mod.querySelector('#attributes-grid');
+    if (grid) {
+      grid.classList.remove('od19524-attributes-grid','od17814-attributes-grid','od19526-attributes-grid','od19527-attributes-grid','od19529-attributes-grid');
+      grid.querySelectorAll('.od19524-attr-card, .od19526-attr-card, .od19527-attr-card, .od19529-attr-card').forEach(el => el.remove());
+      grid.hidden = false;
+      ['display','visibility','opacity','height','max-height','min-height','overflow','pointer-events'].forEach(prop => grid.style.removeProperty(prop));
+    }
+  }
+
+  function bodyOf(mod = module()){
+    return mod?.querySelector(':scope > .od170-module-body') || mod?.querySelector('#attributes-grid')?.parentElement || null;
+  }
+
+  function ensureGrid(mod = module()){
+    if (!mod) return null;
+    let grid = mod.querySelector('#attributes-grid');
+    if (!grid) {
+      const body = bodyOf(mod) || document.createElement('div');
+      body.classList.add('od170-module-body');
+      if (!body.parentElement) mod.appendChild(body);
+      grid = document.createElement('div');
+      grid.id = 'attributes-grid';
+      grid.className = 'attributes-grid';
+      body.appendChild(grid);
+    }
+    return grid;
+  }
+
+  function ensureSummary(mod = module()){
+    if (!mod) return null;
+    let box = mod.querySelector(':scope > .od19531-attr-summary');
+    if (!box) {
+      box = document.createElement('div');
+      box.className = 'od19531-attr-summary';
+      const head = mod.querySelector(':scope > .od170-module-head') || mod.firstElementChild;
+      if (head && head.nextSibling) mod.insertBefore(box, head.nextSibling);
+      else mod.appendChild(box);
+    }
+    return box;
+  }
+
+  function editorCard(char, key, label){
+    const value = clamp(char?.attrs?.[key], 10);
+    const bonus = modText(value);
+    return `<article class="od19531-attr-editor-card" data-od19531-attr-card="${esc(key)}">
+      <div class="od19531-attr-editor-top">
+        <span class="od19531-attr-editor-name">${esc(label)}</span>
+        <span class="od19531-attr-editor-bonus">${esc(bonus)}</span>
+      </div>
+      <div class="od19531-attr-editor-controls">
+        <span class="od19531-attr-dice">D20</span>
+        <button type="button" class="od19531-attr-step" data-od19531-attr-step="${esc(key)}" data-dir="-1" aria-label="Diminuir ${esc(label)}">−</button>
+        <input class="od19531-attr-input" data-attr="${esc(key)}" data-od19531-attr-input="${esc(key)}" type="number" min="1" inputmode="numeric" value="${esc(value)}" aria-label="Valor de ${esc(label)}">
+        <button type="button" class="od19531-attr-step" data-od19531-attr-step="${esc(key)}" data-dir="1" aria-label="Aumentar ${esc(label)}">+</button>
+      </div>
+      <button type="button" class="primary-btn small roll-attr od19531-attr-roll" data-roll-attr="${esc(key)}">D20</button>
+    </article>`;
+  }
+
+  function summaryCard(char, key, label){
+    const value = clamp(char?.attrs?.[key], 10);
+    const bonus = modText(value);
+    return `<button type="button" class="od19531-attr-summary-card od1816-attr-roll-target" data-od1816-roll-attr="${esc(key)}" title="Rolar ${esc(label)}">
+      <span class="od19531-summary-name">${esc(label)}</span>
+      <strong class="od19531-summary-value">${esc(value)}</strong>
+      <span class="od19531-summary-bonus">${esc(bonus)}</span>
+    </button>`;
+  }
+
+  function renderEditor(char = current()){
+    const mod = module();
+    if (!mod || !char) return;
+    removeOldAttributeLayers(mod);
+    const body = bodyOf(mod);
+    const grid = ensureGrid(mod);
+    const summary = mod.querySelector(':scope > .od19531-attr-summary');
+    if (summary) summary.remove();
+
+    mod.classList.remove('od19531-attr-collapsed');
+    mod.classList.add('od19531-attr-expanded');
+    if (body) {
+      body.hidden = false;
+      ['display','visibility','opacity','height','max-height','min-height','overflow','pointer-events'].forEach(prop => body.style.removeProperty(prop));
+    }
+    if (grid) {
+      grid.hidden = false;
+      grid.className = 'attributes-grid od19531-attributes-editor-grid';
+      grid.innerHTML = ATTRS.map(([key, label]) => editorCard(char, key, label)).join('');
+      ['display','visibility','opacity','height','max-height','min-height','overflow','pointer-events'].forEach(prop => grid.style.removeProperty(prop));
+    }
+    setToggle(mod, false);
+  }
+
+  function renderSummary(char = current()){
+    const mod = module();
+    if (!mod || !char) return;
+    removeOldAttributeLayers(mod);
+    const body = bodyOf(mod);
+    const grid = ensureGrid(mod);
+    const summary = ensureSummary(mod);
+
+    mod.classList.add('od19531-attr-collapsed');
+    mod.classList.remove('od19531-attr-expanded');
+    if (body) {
+      body.hidden = true;
+      body.style.setProperty('display', 'none', 'important');
+      body.style.setProperty('pointer-events', 'none', 'important');
+    }
+    if (grid) {
+      grid.hidden = true;
+      grid.style.setProperty('display', 'none', 'important');
+      grid.style.setProperty('pointer-events', 'none', 'important');
+    }
+    if (summary) {
+      summary.hidden = false;
+      summary.removeAttribute('aria-hidden');
+      summary.style.removeProperty('display');
+      summary.style.removeProperty('visibility');
+      summary.style.removeProperty('height');
+      summary.style.removeProperty('max-height');
+      summary.style.removeProperty('overflow');
+      summary.style.removeProperty('pointer-events');
+      summary.innerHTML = ATTRS.map(([key, label]) => summaryCard(char, key, label)).join('');
+    }
+    setToggle(mod, true);
+  }
+
+  function sync(){
+    const mod = module();
+    if (!mod) return;
+    removeDenseButton();
+    if (isCollapsed(mod)) renderSummary();
+    else renderEditor();
+  }
+
+  function schedule(delay = 20){
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(sync, delay);
   }
 
   function removeDenseButton(){
-    try { localStorage.setItem(DENSE_KEY, '1'); } catch (_) {}
-    document.body.classList.add('od170-dense-sheet');
-    const btn = document.getElementById('od170-dense-toggle');
-    if (btn) btn.remove();
-
+    safe(() => localStorage.setItem(DENSE_KEY, '1'), null);
+    document.body?.classList.add('od170-dense-sheet');
+    document.getElementById('od170-dense-toggle')?.remove();
     document.querySelectorAll('button').forEach(button => {
       const text = String(button.textContent || '').trim().toLowerCase();
-      if (text === 'modo confortável' || text === 'modo confortavel' || text === 'modo denso') {
-        button.remove();
-      }
+      if (text === 'modo confortável' || text === 'modo confortavel' || text === 'modo denso') button.remove();
     });
   }
 
-  function syncAttributesLayer(){
-    const module = attrModule();
-    if (!module) return;
-
-    const collapsed = module.classList.contains('od170-collapsed');
-    const body = module.querySelector(':scope > .od170-module-body');
-    const summary = module.querySelector(':scope > .od1715-attr-summary');
-    const grid = module.querySelector('#attributes-grid');
-
-    if (collapsed) {
-      if (body) {
-        body.hidden = true;
-        body.style.setProperty('display', 'none', 'important');
-        body.style.setProperty('pointer-events', 'none', 'important');
-      }
-      if (grid) {
-        grid.style.setProperty('display', 'none', 'important');
-        grid.style.setProperty('pointer-events', 'none', 'important');
-      }
-      if (summary) {
-        summary.hidden = false;
-        summary.removeAttribute('aria-hidden');
-        summary.style.setProperty('display', 'grid', 'important');
-        summary.style.setProperty('visibility', 'visible', 'important');
-        summary.style.setProperty('height', 'auto', 'important');
-        summary.style.setProperty('overflow', 'visible', 'important');
-        summary.style.setProperty('pointer-events', 'auto', 'important');
-      }
-      return;
-    }
-
-    /* Expandido: a camada reduzida some completamente e o editor original fica livre. */
-    if (summary) {
-      summary.hidden = true;
-      summary.setAttribute('aria-hidden', 'true');
-      summary.style.setProperty('display', 'none', 'important');
-      summary.style.setProperty('visibility', 'hidden', 'important');
-      summary.style.setProperty('height', '0', 'important');
-      summary.style.setProperty('max-height', '0', 'important');
-      summary.style.setProperty('overflow', 'hidden', 'important');
-      summary.style.setProperty('pointer-events', 'none', 'important');
-    }
-
-    if (body) {
-      body.hidden = false;
-      body.style.removeProperty('display');
-      body.style.removeProperty('pointer-events');
-      body.style.removeProperty('visibility');
-      body.style.removeProperty('height');
-      body.style.removeProperty('max-height');
-      body.style.removeProperty('overflow');
-    }
-
-    if (grid) {
-      grid.hidden = false;
-      grid.style.removeProperty('display');
-      grid.style.removeProperty('pointer-events');
-      grid.style.removeProperty('visibility');
-      grid.style.removeProperty('height');
-      grid.style.removeProperty('max-height');
-      grid.style.removeProperty('overflow');
-    }
-  }
-
-  function syncAll(){
-    removeDenseButton();
-    syncAttributesLayer();
-  }
-
-  function scheduleSync(){
-    requestAnimationFrame(() => {
-      syncAll();
-      setTimeout(syncAll, 40);
-      setTimeout(syncAll, 120);
-    });
-  }
-
-  function installObserver(){
-    if (observerInstalled || typeof MutationObserver === 'undefined') return;
-    const module = attrModule();
-    if (!module) return;
-    observerInstalled = true;
-
-    const observer = new MutationObserver(scheduleSync);
-    observer.observe(module, { attributes: true, attributeFilter: ['class'], childList: true, subtree: false });
+  function installRenderer(){
+    try { renderAttributes = function od19531RenderAttributes(char){ renderEditor(char || current()); }; } catch (_) {}
+    try { window.renderAttributes = function od19531RenderAttributes(char){ renderEditor(char || current()); }; } catch (_) {}
+    window.renderAttributesV19531 = renderEditor;
   }
 
   document.addEventListener('click', event => {
-    if (
-      event.target.closest?.(`${ATTR_SELECTOR} [data-od170-toggle]`) ||
-      event.target.closest?.('#od170-expand-all') ||
-      event.target.closest?.('#od170-collapse-all')
-    ) {
-      scheduleSync();
+    const mod = module();
+    if (!mod) return;
+
+    const toggle = event.target.closest?.(`${MODULE_SELECTOR} [data-od170-toggle], ${MODULE_SELECTOR} .od170-module-toggle`);
+    if (toggle) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      const nextCollapsed = !isCollapsed(mod);
+      mod.classList.toggle('od170-collapsed', nextCollapsed);
+      safe(() => {
+        const state = JSON.parse(localStorage.getItem('od170_module_state_v1') || '{}');
+        state['resumo-atributos'] = nextCollapsed;
+        localStorage.setItem('od170_module_state_v1', JSON.stringify(state));
+      }, null);
+      nextCollapsed ? renderSummary() : renderEditor();
+      return;
+    }
+
+    const step = event.target.closest?.('[data-od19531-attr-step]');
+    if (step) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      const key = step.dataset.od19531AttrStep;
+      const char = current();
+      const actual = clamp(char?.attrs?.[key], 10);
+      const next = actual + Number(step.dataset.dir || 0);
+      saveAttr(key, next);
+      renderEditor(current());
+      return;
+    }
+
+    if (event.target.closest?.('#od170-expand-all, #od170-collapse-all, .sheet-tab')) {
+      setTimeout(sync, 70);
+      setTimeout(sync, 180);
     }
   }, true);
 
+  document.addEventListener('input', event => {
+    const input = event.target.closest?.('.od19531-attr-input[data-attr]');
+    if (!input) return;
+    const char = saveAttr(input.dataset.attr, input.value);
+    const card = input.closest('.od19531-attr-editor-card');
+    const badge = card?.querySelector('.od19531-attr-editor-bonus');
+    if (badge) badge.textContent = modText(clamp(char?.attrs?.[input.dataset.attr] ?? input.value, 10));
+  }, true);
+
+  document.addEventListener('change', event => {
+    const input = event.target.closest?.('.od19531-attr-input[data-attr]');
+    if (!input) return;
+    event.preventDefault();
+    event.stopPropagation();
+    saveAttr(input.dataset.attr, input.value);
+    renderEditor(current());
+  }, true);
+
+  function observe(){
+    if (observerReady || typeof MutationObserver === 'undefined') return;
+    const mod = module();
+    if (!mod) return;
+    observerReady = true;
+    const observer = new MutationObserver(mutations => {
+      for (const mutation of mutations) {
+        if (mutation.type === 'childList' || mutation.attributeName === 'class') {
+          schedule(40);
+          break;
+        }
+      }
+    });
+    observer.observe(mod, { childList: true, subtree: false, attributes: true, attributeFilter: ['class'] });
+  }
+
   function boot(){
-    installObserver();
-    syncAll();
+    installRenderer();
+    removeDenseButton();
+    observe();
+    sync();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
   else boot();
 
-  [80, 220, 500, 1000, 1800].forEach(ms => setTimeout(boot, ms));
+  [80, 220, 500, 1000, 1800, 3000].forEach(ms => setTimeout(boot, ms));
+  window.addEventListener('popstate', () => setTimeout(boot, 100));
+  window.addEventListener('resize', () => setTimeout(sync, 80));
 
-  window.od19530AttributesLayerAndDenseMode = { syncAll, syncAttributesLayer, removeDenseButton };
+  window.od19531RebuiltAttributesFromZero = { sync, renderEditor, renderSummary, removeOldAttributeLayers, removeDenseButton };
 })();
