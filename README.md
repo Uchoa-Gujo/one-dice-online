@@ -1,47 +1,38 @@
-# One Dice Site v1.95.28 — atributos expandido/reduzido corrigidos
+# One Dice Site v1.95.29 — atributos reduzidos sem camada sobre o editor
 
 ## Resumo
-Esta atualização corrige o erro da v1.95.26/v1.95.27 nos atributos.
-
-O design vertical deve existir **somente no modo reduzido**.  
-O modo expandido precisa voltar a ser editável, com campo de valor, bônus e controles normais.
+Esta versão corrige o erro das versões anteriores nos atributos: o design novo estava sendo aplicado como uma camada por cima do editor expandido.
+A correção agora parte da base estável **v1.95.25** e aplica o visual novo somente no modo reduzido.
 
 ## Bugs corrigidos
+- O editor expandido dos atributos volta a ficar limpo e editável.
+- A camada visual estática que ficava por cima do editor foi removida.
+- O modo reduzido dos atributos agora segue a ordem correta:
+  1. nome do atributo;
+  2. valor do atributo;
+  3. bônus do atributo.
 
-- O design novo dos atributos foi removido da forma **expandida**.
-- A forma expandida volta a permitir editar os atributos.
-- A forma reduzida agora força a ordem correta:
-  1. **Nome do atributo**
-  2. **Valor do atributo**
-  3. **Bônus do atributo**
-- Corrigido o conflito onde uma regra antiga de `span` empurrava o nome para baixo, deixando a ordem como valor → nome → bônus.
+## O que foi limpo/removido
 
-## Limpezas realizadas e motivo
+### 1. Camadas das versões v1.95.26, v1.95.27 e v1.95.28
+**O que foi removido:**
+As tentativas que mexiam no `#attributes-grid` ou tentavam restaurar o editor por cima depois.
 
-### 1. Render estático da v1.95.24 no grid expandido
-**O que foi limpo:**  
-O bloco da v1.95.24 não registra mais `renderSummaryAttributes` como render principal de `#attributes-grid`.
+**Por que foi removido:**
+Porque o `#attributes-grid` é o editor real dos atributos. Ao reescrever esse grid com cards visuais, o editor ficava atrás e não dava para editar corretamente.
 
-**Por que foi limpo:**  
-Esse bloco trocava o grid editável de atributos por cards estáticos. Por isso, quando o módulo estava expandido, não dava mais para editar os atributos.
+**Como foi substituído:**
+A versão foi refeita a partir da base v1.95.25 e a mudança visual foi aplicada somente no resumo reduzido `.od1715-attr-summary`.
 
-**Como foi substituído:**  
-O modo expandido volta a usar o render clássico/editável dos atributos, preservando inputs e controles.
+### 2. Interferência no editor expandido
+**O que foi removido:**
+Qualquer render novo que substituía os cards editáveis do editor expandido.
 
-### 2. Design reduzido com ordem errada
-**O que foi corrigido:**  
-A ordem visual dos elementos no resumo reduzido.
+**Por que foi removido:**
+Porque o pedido era só mudar o visual reduzido, não o design do editor.
 
-**Por que foi corrigido:**  
-Uma regra antiga muito específica aplicava `order` em todo `span`, então o nome do atributo, que também era um `span`, era jogado para baixo.
-
-**Como foi substituído:**  
-Foram adicionadas regras específicas para:
-- `od19527-attr-name`
-- `od19527-attr-value`
-- `od19527-attr-bonus`
-
-Agora o reduzido fica: nome → valor → bônus.
+**Como foi substituído:**
+O editor expandido fica com o render original. A camada reduzida fica escondida quando o módulo está expandido.
 
 ## Arquivos alterados
 - `client/script.js`
@@ -51,17 +42,12 @@ Agora o reduzido fica: nome → valor → bônus.
 - `README.md`
 
 ## Como testar
-
 1. Abrir uma ficha.
-2. Ir em **Atributos** com o bloco expandido.
-3. Confirmar que os atributos estão editáveis novamente.
+2. Ir em **Atributos**.
+3. Com o bloco expandido, confirmar que os atributos estão editáveis normalmente.
 4. Clicar em **Reduzir**.
-5. Confirmar que cada atributo reduzido aparece em ordem:
-   - nome;
-   - valor;
-   - bônus.
-6. Clicar em **Expandir** de novo e confirmar que a edição volta.
+5. Confirmar que os cards reduzidos aparecem em ordem: nome, valor e bônus.
+6. Clicar em **Expandir** novamente e confirmar que o editor volta sem camada por cima.
 
 ## Observação
-Esta atualização mexe somente nos atributos expandido/reduzido.  
-Não altera login, boot, cookies, socket, menu da ficha, criação de ficha ou exclusão.
+Esta atualização não mexe em login, boot, cookies, socket, criação/exclusão de ficha ou menu da ficha.

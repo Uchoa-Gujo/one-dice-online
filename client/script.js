@@ -17649,10 +17649,10 @@ function od66InventoryMutationUnlockSoon() {
     const html = keys.map(([key, label]) => {
       const value = Number(char?.attrs?.[key] ?? 1);
       const bonus = attrBonus(char, key);
-      return `<button type="button" class="od1715-attr-mini od1816-attr-roll-target od19527-attr-mini" data-od1816-roll-attr="${esc(key)}" title="Rolar ${esc(label)}">
-        <span class="od19527-attr-name">${esc(label)}</span>
-        <strong class="od19527-attr-value">${esc(value)}</strong>
-        <span class="od19527-attr-bonus">${esc(mod(bonus))}</span>
+      return `<button type="button" class="od1715-attr-mini od1816-attr-roll-target od19529-attr-mini" data-od1816-roll-attr="${esc(key)}" title="Rolar ${esc(label)}">
+        <small class="od19529-attr-name">${esc(label)}</small>
+        <strong class="od19529-attr-value">${esc(value)}</strong>
+        <span class="od19529-attr-bonus">${esc(mod(bonus))}</span>
       </button>`;
     }).join('');
     setSummary(module, 'od1715-attr-summary', html || empty('Sem atributos.'));
@@ -27067,15 +27067,15 @@ function od66InventoryMutationUnlockSoon() {
   }
 
   function renderSummaryAttributes(char = getChar()){
-    // v1.95.28: esta função não deve mais reescrever o #attributes-grid.
-    // O grid expandido precisa manter o renderer clássico/editável dos atributos.
-    // O design vertical pertence somente ao resumo reduzido (.od1715-attr-summary).
-    return char;
+    const grid = $('attributes-grid');
+    if (!grid || !char) return;
+    grid.className = 'attributes-grid od17814-attributes-grid od19524-attributes-grid';
+    grid.innerHTML = ATTRS.map(([key, label]) => buildAttrCard(char, key, label)).join('');
   }
 
   function scheduleAttributes(delay = 80){
     clearTimeout(attrTimer);
-    // v1.95.28: no-op para impedir que o menu da ficha troque o modo expandido por cards estáticos.
+    attrTimer = setTimeout(() => renderSummaryAttributes(), delay);
   }
 
   function syncAll(){
@@ -27126,9 +27126,11 @@ function od66InventoryMutationUnlockSoon() {
   window.addEventListener('popstate', () => setTimeout(syncAll, 100));
   document.addEventListener('visibilitychange', () => { if (!document.hidden) setTimeout(syncAll, 120); });
 
-  // v1.95.28: não registrar renderSummaryAttributes como renderer principal.
-  // Isso preserva a edição no modo expandido dos atributos.
-  function boot(){ syncAll(); }
+  try { renderAttributes = renderSummaryAttributes; } catch (_) {}
+  try { window.renderAttributes = renderSummaryAttributes; } catch (_) {}
+  window.renderAttributesV19524 = renderSummaryAttributes;
+
+  function boot(){ syncAll(); renderSummaryAttributes(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
   else boot();
 
@@ -27173,99 +27175,14 @@ function od66InventoryMutationUnlockSoon() {
   }, true);
 })();
 
-/* =========================
-   V1.95.27 - Atributos resumidos no modo reduzido
-   - Reverte a intervenção da v1.95.26 no grid expandido (#attributes-grid).
-   - Aplica o design vertical apenas ao resumo reduzido/colapsado de atributos.
-========================= */
-window.ONE_DICE_CLIENT_VERSION = '1.95.27';
-
 
 /* =========================
-   V1.95.27 - Atributos reduzidos no modelo vertical
-   Pedido:
-   - Aplicar no modo reduzido o mesmo modelo visual nome > valor > bônus.
+   V1.95.29 - Correção limpa dos atributos reduzidos
    Escopo:
-   - Corrige apenas a versão reduzida do módulo de atributos.
+   - Não toca no #attributes-grid nem no editor expandido.
+   - A mudança é só no HTML/CSS do resumo reduzido.
 ========================= */
-(function od19527ReducedAttrSummaryFlag(){
+(function od19529ReducedAttributesOnly(){
   'use strict';
-  window.ONE_DICE_CLIENT_VERSION = '1.95.27';
-})();
-
-
-/* =========================
-   V1.95.28 - Correção de atributos expandido/reduzido
-   Pedido:
-   - Remover o design novo da forma expandida para voltar a editar atributos.
-   - Garantir que a forma reduzida fique em ordem: nome > valor > bônus.
-   Escopo:
-   - Não mexe em login, boot, cookies, socket, menu da ficha ou exclusão.
-========================= */
-(function od19528AttributeModesFix(){
-  'use strict';
-  if (window.__od19528AttributeModesFixInstalled) return;
-  window.__od19528AttributeModesFixInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.28';
-
-  function currentCharacterSafe(){
-    try { if (typeof currentChar === 'function') return currentChar(); } catch (_) {}
-    try {
-      const id = String(typeof currentCharacterId !== 'undefined' ? currentCharacterId : '');
-      const all = typeof get === 'function'
-        ? get(typeof STORAGE !== 'undefined' ? STORAGE.characters : 'od_characters', [])
-        : JSON.parse(localStorage.getItem('od_characters') || '[]');
-      return Array.isArray(all) ? all.find(c => String(c.id) === id) : null;
-    } catch (_) { return null; }
-  }
-
-  function isAttributesCollapsed(){
-    return !!document.querySelector('.od170-module[data-od170-key="resumo-atributos"].od170-collapsed');
-  }
-
-  function restoreEditableAttributes(){
-    if (isAttributesCollapsed()) return;
-    const classic = window.od1952CampaignSheetRollback?.renderClassicAttributes;
-    const char = currentCharacterSafe();
-    if (typeof classic === 'function') {
-      try { renderAttributes = classic; } catch (_) {}
-      try { window.renderAttributes = classic; } catch (_) {}
-      if (document.getElementById('attributes-grid') && char) {
-        try { classic(char); } catch (_) {}
-      }
-    }
-  }
-
-  function fixReducedOrder(){
-    const module = document.querySelector('.od170-module[data-od170-key="resumo-atributos"].od170-collapsed');
-    const summary = module?.querySelector(':scope > .od1715-attr-summary');
-    if (!summary) return;
-    summary.querySelectorAll('.od19527-attr-mini').forEach(card => {
-      const name = card.querySelector('.od19527-attr-name');
-      const value = card.querySelector('.od19527-attr-value');
-      const bonus = card.querySelector('.od19527-attr-bonus');
-      if (name) name.style.setProperty('order', '1', 'important');
-      if (value) value.style.setProperty('order', '2', 'important');
-      if (bonus) bonus.style.setProperty('order', '3', 'important');
-    });
-  }
-
-  function sync(){
-    restoreEditableAttributes();
-    fixReducedOrder();
-  }
-
-  document.addEventListener('click', event => {
-    if (event.target.closest?.('[data-od170-toggle], .od170-module-toggle, .sheet-tab, #attributes-grid')) {
-      setTimeout(sync, 40);
-      setTimeout(sync, 160);
-    }
-  }, true);
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', sync, { once: true });
-  else sync();
-
-  [80, 240, 600, 1200, 1900].forEach(ms => setTimeout(sync, ms));
-
-  window.od19528AttributeModesFix = { restoreEditableAttributes, fixReducedOrder, sync };
+  window.ONE_DICE_CLIENT_VERSION = '1.95.29';
 })();
