@@ -22326,3 +22326,212 @@ body.od19524-sheet-page.od19524-sheet-menu-open #main-topbar select.accent-selec
     max-width: 260px !important;
   }
 }
+
+
+/* =========================
+   V1.95.25 - Design do menu da ficha baseado na referência
+   Escopo:
+   - Altera somente o visual do menu aberto pelo botão de três linhas.
+   - Mantém a lógica sem flicker da v1.95.24.
+   - Não usa imagem antiga de fundo; a textura é feita apenas com gradientes CSS.
+========================= */
+body.od19524-sheet-page #od19524-sheet-menu-toggle,
+html.od19524-sheet-page #od19524-sheet-menu-toggle {
+  width: 58px !important;
+  height: 58px !important;
+  min-width: 58px !important;
+  min-height: 58px !important;
+  max-width: 58px !important;
+  max-height: 58px !important;
+  top: 24px !important;
+  right: 30px !important;
+  border-radius: 17px !important;
+  border: 2px solid rgba(255, 96, 102, .72) !important;
+  background:
+    radial-gradient(circle at 35% 20%, rgba(255,255,255,.18), transparent 34%),
+    linear-gradient(180deg, #e23d47 0%, #b91f29 52%, #8f1219 100%) !important;
+  box-shadow:
+    0 12px 26px rgba(0,0,0,.56),
+    0 0 0 1px rgba(255,255,255,.08) inset,
+    0 -7px 12px rgba(70,0,0,.24) inset !important;
+}
+
+#od19524-sheet-menu-toggle span,
+#od19524-sheet-menu-toggle span::before,
+#od19524-sheet-menu-toggle span::after {
+  width: 28px !important;
+  height: 4px !important;
+  border-radius: 999px !important;
+  background: #fff !important;
+  box-shadow: 0 2px 0 rgba(0,0,0,.28) !important;
+}
+#od19524-sheet-menu-toggle span::before { top: -9px !important; }
+#od19524-sheet-menu-toggle span::after { top: 9px !important; }
+
+body.od19524-sheet-page.od19524-sheet-menu-open #main-topbar {
+  top: 14px !important;
+  right: 14px !important;
+  left: auto !important;
+  width: min(760px, calc(100vw - 28px)) !important;
+  max-width: min(760px, calc(100vw - 28px)) !important;
+  min-height: 392px !important;
+  padding: 112px 42px 44px !important;
+  border-radius: 28px !important;
+  border: 2px solid rgba(244, 52, 63, .95) !important;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255,255,255,.055), transparent 32%),
+    radial-gradient(circle at 12% 92%, rgba(190, 20, 30, .12), transparent 30%),
+    repeating-linear-gradient(135deg, rgba(255,255,255,.025) 0 1px, transparent 1px 7px),
+    linear-gradient(180deg, #050606 0%, #030303 100%) !important;
+  box-shadow:
+    0 20px 56px rgba(0,0,0,.68),
+    0 0 0 1px rgba(255,255,255,.035) inset,
+    0 0 24px rgba(238, 44, 55, .10) inset !important;
+  overflow: hidden !important;
+}
+
+body.od19524-sheet-page.od19524-sheet-menu-open #main-topbar::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  pointer-events: none !important;
+  opacity: .34 !important;
+  background:
+    radial-gradient(circle at 20% 24%, rgba(255,255,255,.04) 0 1px, transparent 1px 100%),
+    radial-gradient(circle at 66% 58%, rgba(255,255,255,.035) 0 1px, transparent 1px 100%) !important;
+  background-size: 13px 13px, 17px 17px !important;
+  mix-blend-mode: screen !important;
+}
+
+body.od19524-sheet-page.od19524-sheet-menu-open #main-topbar .topbar-content {
+  position: relative !important;
+  z-index: 1 !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 100% !important;
+}
+
+body.od19524-sheet-page.od19524-sheet-menu-open #main-topbar .brand,
+body.od19524-sheet-page.od19524-sheet-menu-open #campaign-mini-card,
+body.od19524-sheet-page.od19524-sheet-menu-open #theme-toggle,
+body.od19524-sheet-page.od19524-sheet-menu-open #toggle-history-btn {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+body.od19524-sheet-page.od19524-sheet-menu-open #main-topbar .top-actions {
+  width: min(100%, 600px) !important;
+  max-width: 600px !important;
+  margin: 0 auto !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 24px 26px !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+body.od19524-sheet-page.od19524-sheet-menu-open #main-topbar .top-actions > * {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: 64px !important;
+  min-height: 64px !important;
+  padding: 0 22px !important;
+  margin: 0 !important;
+  border-radius: 13px !important;
+  font-family: Georgia, 'Times New Roman', serif !important;
+  font-size: clamp(1rem, 1.55vw, 1.28rem) !important;
+  font-weight: 900 !important;
+  letter-spacing: .035em !important;
+  text-transform: uppercase !important;
+  color: #fff !important;
+  text-shadow: 0 2px 0 rgba(0,0,0,.50) !important;
+  line-height: 1 !important;
+  text-align: center !important;
+  text-align-last: center !important;
+  justify-content: center !important;
+  align-items: center !important;
+  box-sizing: border-box !important;
+  background: linear-gradient(180deg, rgba(6,7,7,.98), rgba(0,0,0,.98)) !important;
+  border: 3px solid rgba(74, 78, 79, .86) !important;
+  box-shadow:
+    0 8px 14px rgba(0,0,0,.36),
+    inset 0 0 0 1px rgba(255,255,255,.025) !important;
+  transition: none !important;
+}
+
+body.od19524-sheet-page.od19524-sheet-menu-open #main-topbar #back-to-sessions-btn { order: 1 !important; }
+body.od19524-sheet-page.od19524-sheet-menu-open #main-topbar #campaign-character-btn { order: 2 !important; }
+body.od19524-sheet-page.od19524-sheet-menu-open #main-topbar #accent-select { order: 3 !important; }
+body.od19524-sheet-page.od19524-sheet-menu-open #main-topbar #font-select { order: 4 !important; }
+body.od19524-sheet-page.od19524-sheet-menu-open #main-topbar #copy-sheet-obs-btn { order: 5 !important; }
+body.od19524-sheet-page.od19524-sheet-menu-open #main-topbar #logout-btn { order: 6 !important; }
+
+body.od19524-sheet-page.od19524-sheet-menu-open #main-topbar #campaign-character-btn {
+  border-color: rgba(255, 86, 94, .92) !important;
+  box-shadow:
+    0 8px 14px rgba(0,0,0,.36),
+    inset 0 0 0 1px rgba(255,255,255,.04),
+    0 0 14px rgba(239,47,59,.10) !important;
+}
+
+body.od19524-sheet-page.od19524-sheet-menu-open #main-topbar #logout-btn {
+  border-color: rgba(255, 83, 91, .90) !important;
+  background:
+    radial-gradient(circle at 36% 15%, rgba(255,255,255,.16), transparent 32%),
+    linear-gradient(180deg, #c93a3f 0%, #a82028 54%, #811219 100%) !important;
+  box-shadow:
+    0 10px 20px rgba(0,0,0,.42),
+    0 0 18px rgba(239,47,59,.16),
+    inset 0 1px 0 rgba(255,255,255,.10) !important;
+}
+
+body.od19524-sheet-page.od19524-sheet-menu-open #main-topbar select.accent-select {
+  appearance: auto !important;
+  -webkit-appearance: auto !important;
+  cursor: pointer !important;
+  text-transform: none !important;
+  font-size: clamp(1rem, 1.5vw, 1.22rem) !important;
+}
+
+@media (max-width: 720px) {
+  body.od19524-sheet-page #od19524-sheet-menu-toggle,
+  html.od19524-sheet-page #od19524-sheet-menu-toggle {
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+    max-width: 48px !important;
+    max-height: 48px !important;
+    top: 14px !important;
+    right: 14px !important;
+    border-radius: 14px !important;
+  }
+  #od19524-sheet-menu-toggle span,
+  #od19524-sheet-menu-toggle span::before,
+  #od19524-sheet-menu-toggle span::after {
+    width: 23px !important;
+    height: 3px !important;
+  }
+  #od19524-sheet-menu-toggle span::before { top: -7px !important; }
+  #od19524-sheet-menu-toggle span::after { top: 7px !important; }
+
+  body.od19524-sheet-page.od19524-sheet-menu-open #main-topbar {
+    min-height: 0 !important;
+    padding: 82px 18px 22px !important;
+    border-radius: 22px !important;
+  }
+  body.od19524-sheet-page.od19524-sheet-menu-open #main-topbar .top-actions {
+    max-width: 100% !important;
+    gap: 12px !important;
+  }
+  body.od19524-sheet-page.od19524-sheet-menu-open #main-topbar .top-actions > * {
+    height: 48px !important;
+    min-height: 48px !important;
+    padding: 0 10px !important;
+    font-size: .82rem !important;
+    border-width: 2px !important;
+    border-radius: 10px !important;
+  }
+}

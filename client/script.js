@@ -26893,7 +26893,7 @@ function od66InventoryMutationUnlockSoon() {
   'use strict';
   if (window.__od19524SheetMenuNoFlickerAndCompactPanelInstalled) return;
   window.__od19524SheetMenuNoFlickerAndCompactPanelInstalled = true;
-  window.ONE_DICE_CLIENT_VERSION = '1.95.24';
+  window.ONE_DICE_CLIENT_VERSION = '1.95.25';
 
   const ATTRS = [
     ['forca', 'FORÇA'],
@@ -26909,7 +26909,7 @@ function od66InventoryMutationUnlockSoon() {
   let applying = false;
 
   function $(id){ return document.getElementById(id); }
-  function safe(fn, fallback = null){ try { return fn(); } catch (error) { console.warn('[One Dice v1.95.24]', error?.message || error); return fallback; } }
+  function safe(fn, fallback = null){ try { return fn(); } catch (error) { console.warn('[One Dice v1.95.25]', error?.message || error); return fallback; } }
   function esc(value){ return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch])); }
   function sheetRoute(){ return /^\/(ficha|personagem)(\/|$)/i.test(location.pathname || ''); }
   function isAuthActive(){ return $('auth-screen')?.classList.contains('active'); }
@@ -27141,4 +27141,36 @@ function od66InventoryMutationUnlockSoon() {
     applyMenuState,
     renderSummaryAttributes
   };
+})();
+
+
+/* =========================
+   V1.95.25 - Texto estável do menu da ficha
+   Motivo:
+   - O menu aberto deve seguir a referência visual atual, com o botão de vínculo exibido como "VINCULAR EM MESA".
+   - Mantém a correção sem flicker da v1.95.24 e altera somente o texto visual do menu.
+========================= */
+(function od19525SheetMenuReferenceText(){
+  'use strict';
+  if (window.__od19525SheetMenuReferenceTextInstalled) return;
+  window.__od19525SheetMenuReferenceTextInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.95.25';
+
+  function syncMenuText(){
+    const linkBtn = document.getElementById('campaign-character-btn');
+    if (linkBtn) linkBtn.textContent = 'Vincular em Mesa';
+    const backBtn = document.getElementById('back-to-sessions-btn');
+    if (backBtn) backBtn.textContent = 'Mesas';
+    const obsBtn = document.getElementById('copy-sheet-obs-btn');
+    if (obsBtn) obsBtn.textContent = 'OBS';
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) logoutBtn.textContent = 'Sair da Mesa';
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', syncMenuText, { once: true });
+  else syncMenuText();
+  [120, 360, 900].forEach(ms => setTimeout(syncMenuText, ms));
+  document.addEventListener('click', event => {
+    if (event.target.closest?.('#od19524-sheet-menu-toggle')) setTimeout(syncMenuText, 30);
+  }, true);
 })();
