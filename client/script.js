@@ -26873,3 +26873,233 @@ function od66InventoryMutationUnlockSoon() {
     removeOldBackground
   };
 })();
+
+
+
+/* =========================
+   V1.95.23 - Menu da ficha persistente + atributos resumidos centralizados
+   Motivo:
+   - O botão de três traços ainda podia sumir porque blocos antigos da ficha
+     continuavam alternando menu/topbar em intervalos próprios.
+   - O painel de atributos resumidos ainda usava o modelo antigo com nome e
+     bônus na mesma linha, sem seguir a ordem pedida.
+   Correção limpa:
+   - Cria um único botão final da ficha, fora do topbar antigo, com id próprio.
+   - O botão é forçado apenas em páginas de ficha/personagem e não depende
+     dos botões antigos.
+   - Recria os atributos resumidos na ordem: nome, valor cheio, bônus.
+========================= */
+(function od19523StableSheetMenuAndSummaryAttributes(){
+  'use strict';
+  if (window.__od19523StableSheetMenuAndSummaryAttributesInstalled) return;
+  window.__od19523StableSheetMenuAndSummaryAttributesInstalled = true;
+  window.ONE_DICE_CLIENT_VERSION = '1.95.23';
+
+  const ATTRS = [
+    ['forca', 'FORÇA'],
+    ['agilidade', 'AGILIDADE'],
+    ['vigor', 'VIGOR'],
+    ['intelecto', 'INTELECTO'],
+    ['presenca', 'PRESENÇA']
+  ];
+
+  let menuOpen = false;
+  let attrTimer = null;
+  let tickCount = 0;
+
+  function $(id){ return document.getElementById(id); }
+  function safe(fn, fallback = null){ try { return fn(); } catch (error) { console.warn('[One Dice v1.95.23]', error?.message || error); return fallback; } }
+  function esc(value){ return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch])); }
+  function isAuthActive(){ return $('auth-screen')?.classList.contains('active'); }
+  function isCampaignPage(){
+    return /^\/(campanha|mesa)(\/|$)/i.test(location.pathname || '') ||
+      !!$('od1901-campaign-manager') ||
+      document.body?.dataset?.od195Layer === 'campaign' ||
+      document.body?.dataset?.od1945Layer === 'campaign' ||
+      document.body?.classList.contains('od1901-campaign-manager-mode');
+  }
+  function isSheetPage(){
+    if (isAuthActive() || isCampaignPage()) return false;
+    if (/^\/(ficha|personagem)(\/|$)/i.test(location.pathname || '')) return true;
+    return !!document.querySelector('.sheet-area, .sheet') && $('app-screen')?.classList.contains('active');
+  }
+
+  function ensureFinalMenuButton(){
+    let btn = $('od19523-sheet-menu-toggle');
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.id = 'od19523-sheet-menu-toggle';
+      btn.type = 'button';
+      btn.className = 'od19523-sheet-menu-toggle';
+      btn.innerHTML = '<span aria-hidden="true"></span>';
+      btn.setAttribute('aria-label', 'Abrir menu da ficha');
+      btn.setAttribute('title', 'Abrir menu da ficha');
+      btn.setAttribute('aria-expanded', 'false');
+      document.body?.appendChild(btn);
+    }
+    return btn;
+  }
+
+  function hideLegacySheetMenuButtons(){
+    const legacySelectors = [
+      '#od19521-sheet-menu-toggle',
+      '#od19520-sheet-menu-toggle',
+      '#od1954-sheet-menu-toggle',
+      '.od1954-sheet-menu-toggle',
+      '#topbar-menu-toggle',
+      '.topbar-menu-toggle',
+      '#sidebar-dock-btn',
+      '#master-dashboard-dock-btn',
+      '#main-topbar .sidebar-toggle-btn'
+    ];
+    document.querySelectorAll(legacySelectors.join(',')).forEach(el => {
+      if (!el || el.id === 'od19523-sheet-menu-toggle') return;
+      el.setAttribute('aria-hidden', 'true');
+      el.style.setProperty('display', 'none', 'important');
+      el.style.setProperty('visibility', 'hidden', 'important');
+      el.style.setProperty('pointer-events', 'none', 'important');
+    });
+    $('main-topbar')?.querySelectorAll('button').forEach(btn => {
+      const text = (btn.textContent || '').trim();
+      const label = `${btn.getAttribute('aria-label') || ''} ${btn.title || ''}`.toLowerCase();
+      if (text === '×' || text === '✕' || label.includes('fechar') || label.includes('dock')) {
+        btn.setAttribute('aria-hidden', 'true');
+        btn.style.setProperty('display', 'none', 'important');
+        btn.style.setProperty('visibility', 'hidden', 'important');
+        btn.style.setProperty('pointer-events', 'none', 'important');
+      }
+    });
+  }
+
+  function applyMenuState(open = menuOpen){
+    const btn = ensureFinalMenuButton();
+    const topbar = $('main-topbar');
+
+    if (!isSheetPage()) {
+      document.documentElement.classList.remove('od19523-sheet-page');
+      document.body?.classList.remove('od19523-sheet-page');
+      btn.style.setProperty('display', 'none', 'important');
+      btn.style.setProperty('visibility', 'hidden', 'important');
+      btn.setAttribute('aria-expanded', 'false');
+      return;
+    }
+
+    document.documentElement.classList.add('od19523-sheet-page');
+    document.body?.classList.add('od19523-sheet-page');
+    document.body?.classList.remove('sidebar-collapsed');
+    if (document.body) {
+      document.body.dataset.od195Layer = 'sheet';
+      document.body.dataset.od1945Layer = 'sheet';
+    }
+
+    btn.style.setProperty('display', 'inline-flex', 'important');
+    btn.style.setProperty('visibility', 'visible', 'important');
+    btn.style.setProperty('opacity', '1', 'important');
+    btn.style.setProperty('pointer-events', 'auto', 'important');
+    btn.setAttribute('aria-expanded', String(!!open));
+    btn.setAttribute('aria-label', open ? 'Fechar menu da ficha' : 'Abrir menu da ficha');
+    btn.setAttribute('title', open ? 'Fechar menu da ficha' : 'Abrir menu da ficha');
+
+    if (topbar) {
+      topbar.style.setProperty('display', 'grid', 'important');
+      topbar.style.setProperty('visibility', 'visible', 'important');
+      topbar.style.setProperty('opacity', open ? '1' : '0', 'important');
+      topbar.style.setProperty('pointer-events', open ? 'auto' : 'none', 'important');
+      topbar.classList.toggle('collapsed', !open);
+      topbar.dataset.od19523MenuOpen = open ? 'true' : 'false';
+    }
+
+    hideLegacySheetMenuButtons();
+  }
+
+  function toggleMenu(){
+    menuOpen = !menuOpen;
+    applyMenuState(menuOpen);
+    setTimeout(() => applyMenuState(menuOpen), 60);
+    setTimeout(() => applyMenuState(menuOpen), 220);
+  }
+
+  function getChar(){ return safe(() => (typeof currentChar === 'function' ? currentChar() : null), null); }
+  function clampAttr(value){
+    const n = Number(value);
+    if (!Number.isFinite(n)) return 10;
+    return Math.max(1, Math.round(n));
+  }
+  function getAttrValue(char, key){ return clampAttr(char?.attrs?.[key] ?? 10); }
+  function getAttrMod(value){
+    return safe(() => (typeof attrMod === 'function' ? attrMod(value) : Math.floor((clampAttr(value) - 10) / 2)), Math.floor((clampAttr(value) - 10) / 2));
+  }
+  function formatModValue(value){ return safe(() => (typeof formatMod === 'function' ? formatMod(value) : `${value >= 0 ? '+' : ''}${value}`), `${value >= 0 ? '+' : ''}${value}`); }
+
+  function buildAttrCard(char, key, label){
+    const value = getAttrValue(char, key);
+    const mod = formatModValue(getAttrMod(value));
+    return `
+      <article class="od17814-attr-card od19523-attr-card" data-od19523-attr-card="${esc(key)}">
+        <div class="od19523-attr-name" title="${esc(label)}">${esc(label)}</div>
+        <div class="od19523-attr-value" aria-label="Valor de ${esc(label)}">${esc(value)}</div>
+        <div class="od19523-attr-bonus" aria-label="Bônus de ${esc(label)}">${esc(mod)}</div>
+      </article>`;
+  }
+
+  function renderSummaryAttributes(char = getChar()){
+    const grid = $('attributes-grid');
+    if (!grid || !char) return;
+    grid.className = 'attributes-grid od17814-attributes-grid od19523-attributes-grid';
+    grid.innerHTML = ATTRS.map(([key, label]) => buildAttrCard(char, key, label)).join('');
+  }
+
+  function scheduleAttributes(delay = 80){
+    clearTimeout(attrTimer);
+    attrTimer = setTimeout(() => renderSummaryAttributes(), delay);
+  }
+
+  function syncAll(){
+    tickCount += 1;
+    applyMenuState(menuOpen);
+    scheduleAttributes(tickCount < 20 ? 40 : 120);
+  }
+
+  document.addEventListener('click', event => {
+    if (event.target.closest?.('#od19523-sheet-menu-toggle')) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      toggleMenu();
+      return;
+    }
+    if (event.target.closest?.('.sheet-tab, [data-od170-toggle], #attributes-grid, #back-to-sessions-btn')) {
+      setTimeout(syncAll, 60);
+      setTimeout(renderSummaryAttributes, 180);
+      setTimeout(renderSummaryAttributes, 360);
+    }
+  }, true);
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && isSheetPage()) {
+      menuOpen = false;
+      applyMenuState(false);
+    }
+  }, true);
+
+  window.addEventListener('resize', () => setTimeout(syncAll, 80));
+  window.addEventListener('popstate', () => setTimeout(syncAll, 100));
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) setTimeout(syncAll, 120); });
+
+  try { renderAttributes = renderSummaryAttributes; } catch (_) {}
+  try { window.renderAttributes = renderSummaryAttributes; } catch (_) {}
+  window.renderAttributesV19523 = renderSummaryAttributes;
+
+  function boot(){ syncAll(); renderSummaryAttributes(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
+  else boot();
+
+  [60, 180, 420, 900, 1600, 2600, 4200].forEach(ms => setTimeout(boot, ms));
+  setInterval(syncAll, 900);
+
+  window.od19523StableSheetMenuAndSummaryAttributes = {
+    syncAll,
+    applyMenuState,
+    renderSummaryAttributes
+  };
+})();
